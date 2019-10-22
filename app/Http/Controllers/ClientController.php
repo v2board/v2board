@@ -22,10 +22,10 @@ class ClientController extends Controller
               }
           }
         }
-        if(strpos($_SERVER['HTTP_USER_AGENT'], 'Quantumult-X') !== -1) {
+        if(strpos($_SERVER['HTTP_USER_AGENT'], 'Quantumult-X') !== false) {
           die($this->quantumultX($user, $server));
         }
-        if(strpos($_SERVER['HTTP_USER_AGENT'], 'Quantumult') !== -1) {
+        if(strpos($_SERVER['HTTP_USER_AGENT'], 'Quantumult') !== false) {
           die($this->quantumult($user, $server));
         }
         die($this->origin($user, $server));
