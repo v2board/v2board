@@ -23,15 +23,15 @@ class ClientController extends Controller
           }
         }
         if(strpos($_SERVER['HTTP_USER_AGENT'], 'Quantumult-X') !== -1) {
-          die($this->qutumultX($user, $server));
+          die($this->quantumultX($user, $server));
         }
         if(strpos($_SERVER['HTTP_USER_AGENT'], 'Quantumult') !== -1) {
-          die($this->qutumult($user, $server));
+          die($this->quantumult($user, $server));
         }
         die($this->origin($user, $server));
     }
 
-    private function qutumultX ($user, $server) {
+    private function quantumultX ($user, $server) {
       $uri = '';
       foreach($server as $item) {
         $uri .= "vmess=".$item->host.":".$item->port.", method=none, password=".$user->v2ray_uuid.", fast-open=false, udp-relay=false, tag=".$item->name."\r\n";
@@ -39,7 +39,7 @@ class ClientController extends Controller
       return base64_encode($uri);
     }
 
-    private function qutumult ($user, $server) {
+    private function quantumult ($user, $server) {
       $uri = '';
       header('subscription-userinfo: upload='.$user->u.'; download='.$user->d.';total='.$user->transfer_enable);
       foreach($server as $item) {
