@@ -17,7 +17,7 @@ class InviteController extends Controller
         }
         $inviteCode = new InviteCode();
         $inviteCode->user_id = $request->session()->get('id');
-        $inviteCode->code = Helper::guid();
+        $inviteCode->code = Helper::randomChar(8);
         return response([
             'data' => $inviteCode->save()
         ]);
