@@ -1,2 +1,1 @@
-composer install
-php artisan key:generate
+sh init.sh
