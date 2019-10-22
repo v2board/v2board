@@ -34,7 +34,7 @@ class ClientController extends Controller
     private function quantumultX ($user, $server) {
       $uri = '';
       foreach($server as $item) {
-        $uri .= "vmess=".$item->host.":".$item->port.", method=none, password=".$user->v2ray_uuid.", fast-open=false, udp-relay=false, tag=".$item->name."\r\n";
+        $uri .= "vmess=".$item->host.":".$item->port.", method=none, password=".$user->v2ray_uuid.", over-tls=".($item->tls?'true':'false').", certificate=0, fast-open=false, udp-relay=false, tag=".$item->name."\r\n";
       }
       return base64_encode($uri);
     }
@@ -43,7 +43,7 @@ class ClientController extends Controller
       $uri = '';
       header('subscription-userinfo: upload='.$user->u.'; download='.$user->d.';total='.$user->transfer_enable);
       foreach($server as $item) {
-        $uri .= "vmess://".base64_encode($item->name.'= vmess, '.$item->host.', '.$item->port.', chacha20-ietf-poly1305, "'.$user->v2ray_uuid.'", over-tls='.($item->tls?"true":"false").', certificate=1, group='.config('v2panel.app_name', 'V2Panel'))."\r\n";
+        $uri .= "vmess://".base64_encode($item->name.'= vmess, '.$item->host.', '.$item->port.', chacha20-ietf-poly1305, "'.$user->v2ray_uuid.'", over-tls='.($item->tls?"true":"false").', certificate=0, group='.config('v2panel.app_name', 'V2Board'))."\r\n";
       }
       return base64_encode($uri);
     }
