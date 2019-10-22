@@ -22,28 +22,48 @@ class ClientController extends Controller
               }
           }
         }
-        $uri = '';
-        if(strpos($_SERVER['HTTP_USER_AGENT'], 'Quantumult') !==false) {
-          header('subscription-userinfo: upload='.$user->u.'; download='.$user->d.';total='.$user->transfer_enable);
-          foreach($server as $item) {
-            $uri .= "vmess://".base64_encode($item->name.'= vmess, '.$item->host.', '.$item->port.', chacha20-ietf-poly1305, "'.$user->v2ray_uuid.'", over-tls='.($item->tls?"true":"false").', certificate=1, group='.config('v2panel.app_name', 'V2Panel'))."\r\n";
-          }
-        }else{
-          foreach($server as $item) {
-            $config = [
-              "ps" => $item->name,
-              "add" => $item->host,
-              "port" => $item->port,
-              "id" => $user->v2ray_uuid,
-              "aid" => "2",
-              "net" => "tcp",
-              "type" => "chacha20-poly1305",
-              "host" => "",
-              "tls" => $item->tls?"tls":"",
-            ];
-            $uri .= "vmess://".base64_encode(json_encode($config))."\r\n";
-          }
+        if(strpos($_SERVER['HTTP_USER_AGENT'], 'Quantumult-X') !== -1) {
+          die($this->qutumultX($user, $server));
         }
-        die(base64_encode($uri));
+        if(strpos($_SERVER['HTTP_USER_AGENT'], 'Quantumult') !== -1) {
+          die($this->qutumult($user, $server));
+        }
+        die($this->origin($user, $server));
+    }
+
+    private function qutumultX ($user, $server) {
+      $uri = '';
+      foreach($server as $item) {
+        $uri .= "vmess=".$item->host.":".$item->port.", method=none, password=".$user->v2ray_uuid.", fast-open=false, udp-relay=false, tag=".$item->name."\r\n";
+      }
+      return base64_encode($uri);
+    }
+
+    private function qutumult ($user, $server) {
+      $uri = '';
+      header('subscription-userinfo: upload='.$user->u.'; download='.$user->d.';total='.$user->transfer_enable);
+      foreach($server as $item) {
+        $uri .= "vmess://".base64_encode($item->name.'= vmess, '.$item->host.', '.$item->port.', chacha20-ietf-poly1305, "'.$user->v2ray_uuid.'", over-tls='.($item->tls?"true":"false").', certificate=1, group='.config('v2panel.app_name', 'V2Panel'))."\r\n";
+      }
+      return base64_encode($uri);
+    }
+
+    private function origin ($user, $server) {
+      $uri = '';
+      foreach($server as $item) {
+        $config = [
+          "ps" => $item->name,
+          "add" => $item->host,
+          "port" => $item->port,
+          "id" => $user->v2ray_uuid,
+          "aid" => "2",
+          "net" => "tcp",
+          "type" => "chacha20-poly1305",
+          "host" => "",
+          "tls" => $item->tls?"tls":"",
+        ];
+        $uri .= "vmess://".base64_encode(json_encode($config))."\r\n";
+      }
+      return base64_encode($uri);
     }
 }
