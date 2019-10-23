@@ -13,7 +13,8 @@
         "laravel/framework": "^6.0",
         "laravel/tinker": "^1.0",
         "lokielse/omnipay-alipay": "3.0.6",
-        "stripe/stripe-php": "^7.5"
+        "stripe/stripe-php": "^7.5",
+        "symfony/yaml": "^4.3"
     },
     "require-dev": {
         "facade/ignition": "^1.4",

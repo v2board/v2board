@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Plan;
 use App\Models\Server;
+use Symfony\Component\Yaml\Yaml;
 
 class ClientController extends Controller
 {
@@ -74,6 +75,27 @@ class ClientController extends Controller
       $proxy = [];
       $proxyGroup = [];
       $proxies = [];
+      foreach ($server as $item) {
+        $array = [];
+        $array['name'] = $item->name;
+        $array['type'] = 'vmess';
+        $array['server'] = $item->host;
+        $array['port'] = $item->port;
+        $array['uuid'] = $user->v2ray_uuid;
+        $array['alterId'] = $user->v2ray_alter_id;
+        $array['cipher'] = 'auto';
+        if ($item->tls) {
+          $array['tls'] = true;
+        }
+        array_push($proxy, $array);
+        array_push($proxies, $item->name);
+      }
+      array_push($proxyGroup, [
+        'name' => config('v2board.app_name', 'V2Board'),
+        'type' => 'select',
+        'proxies' => $proxies
+      ]);
+      
       $config = [
         'port' => 7890,
         'socks-port' => 0,
@@ -94,25 +116,6 @@ class ClientController extends Controller
           'MATCH,'.config('v2board.app_name', 'V2Board')
         ]
       ];
-      foreach ($server as $item) {
-        $obj = new \StdClass();
-        $obj->name = $item->name;
-        $obj->type = 'vmess';
-        $obj->server = $item->host;
-        $obj->port = $item->port;
-        $obj->uuid = $user->v2ray_uuid;
-        $obj->alterId = $user->v2ray_alter_id;
-        $obj->cipher = 'auto';
-        if ($item->tls) {
-          $obj->tls = true;
-        }
-        array_push($proxy, $obj);
-        array_push($proxies, $item->name);
-      }
-      array_push($proxyGroup, [
-        'name' => config('v2board.app_name', 'V2Board'),
-        'type' => 'select',
-        'proxies' => $proxies
-      ]);
+      return Yaml::dump($config);
     }
 }
