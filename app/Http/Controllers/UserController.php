@@ -45,7 +45,7 @@ class UserController extends Controller
         if ($user->plan_id) {
             $user['plan'] = Plan::find($user->plan_id);
         }
-        $user['subscribe_url'] = config('v2panel.app_url', env('APP_URL')) . '/api/v1/client/subscribe?token=' . $user['token'];
+        $user['subscribe_url'] = config('v2board.app_url', env('APP_URL')) . '/api/v1/client/subscribe?token=' . $user['token'];
         $stat = [
             Order::where('status', 0)
                 ->where('user_id', $request->session()->get('id'))
@@ -80,7 +80,7 @@ class UserController extends Controller
                 }
             }
         }
-        $user['subscribe_url'] = config('v2panel.app_url', env('APP_URL')) . '/api/v1/client/subscribe?token=' . $user['token'];
+        $user['subscribe_url'] = config('v2board.app_url', env('APP_URL')) . '/api/v1/client/subscribe?token=' . $user['token'];
         return response([
             'data' => [
                 'user' => $user,

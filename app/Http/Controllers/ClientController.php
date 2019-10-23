@@ -28,6 +28,9 @@ class ClientController extends Controller
         if(strpos($_SERVER['HTTP_USER_AGENT'], 'Quantumult') !== false) {
           die($this->quantumult($user, $server));
         }
+        if(strpos($_SERVER['HTTP_USER_AGENT'], 'clash_win') !== false) {
+          die($this->clash($user, $server));
+        }
         die($this->origin($user, $server));
     }
 
@@ -43,7 +46,7 @@ class ClientController extends Controller
       $uri = '';
       header('subscription-userinfo: upload='.$user->u.'; download='.$user->d.';total='.$user->transfer_enable);
       foreach($server as $item) {
-        $uri .= "vmess://".base64_encode($item->name.'= vmess, '.$item->host.', '.$item->port.', chacha20-ietf-poly1305, "'.$user->v2ray_uuid.'", over-tls='.($item->tls?"true":"false").', certificate=0, group='.config('v2panel.app_name', 'V2Board'))."\r\n";
+        $uri .= "vmess://".base64_encode($item->name.'= vmess, '.$item->host.', '.$item->port.', chacha20-ietf-poly1305, "'.$user->v2ray_uuid.'", over-tls='.($item->tls?"true":"false").', certificate=0, group='.config('v2board.app_name', 'V2Board'))."\r\n";
       }
       return base64_encode($uri);
     }
@@ -65,5 +68,51 @@ class ClientController extends Controller
         $uri .= "vmess://".base64_encode(json_encode($config))."\r\n";
       }
       return base64_encode($uri);
+    }
+
+    private function clash ($user, $server) {
+      $proxy = [];
+      $proxyGroup = [];
+      $proxies = [];
+      $config = [
+        'port' => 7890,
+        'socks-port' => 0,
+        'allow-lan' => false,
+        'mode' => 'Rule',
+        'log-level' => 'info',
+        'external-controller' => '0.0.0.0:9090',
+        'secret' => '',
+        'Proxy' => $proxy,
+        'Proxy Group' => $proxyGroup,
+        'Rule' => [
+          'DOMAIN-SUFFIX,google.com,'.config('v2board.app_name', 'V2Board'),
+          'DOMAIN-KEYWORD,google,'.config('v2board.app_name', 'V2Board'),
+          'DOMAIN,google.com,'.config('v2board.app_name', 'V2Board'),
+          'DOMAIN-SUFFIX,ad.com,REJECT',
+          'IP-CIDR,127.0.0.0/8,DIRECT',
+          'GEOIP,CN,DIRECT',
+          'MATCH,'.config('v2board.app_name', 'V2Board')
+        ]
+      ];
+      foreach ($server as $item) {
+        $obj = new \StdClass();
+        $obj->name = $item->name;
+        $obj->type = 'vmess';
+        $obj->server = $item->host;
+        $obj->port = $item->port;
+        $obj->uuid = $user->v2ray_uuid;
+        $obj->alterId = $user->v2ray_alter_id;
+        $obj->cipher = 'auto';
+        if ($item->tls) {
+          $obj->tls = true;
+        }
+        array_push($proxy, $obj);
+        array_push($proxies, $item->name);
+      }
+      array_push($proxyGroup, [
+        'name' => config('v2board.app_name', 'V2Board'),
+        'type' => 'select',
+        'proxies' => $proxies
+      ]);
     }
 }

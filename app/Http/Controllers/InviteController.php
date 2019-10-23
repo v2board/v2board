@@ -28,7 +28,7 @@ class InviteController extends Controller
             ->where('status', 0)
             ->get();
         for ($i = 0; $i < count($codes); $i++) {
-            $codes[$i]['invite_url'] = config('v2panel.app_url', env('APP_URL')) . '/#/register?code=' . $codes[$i]['code'];
+            $codes[$i]['invite_url'] = config('v2board.app_url', env('APP_URL')) . '/#/register?code=' . $codes[$i]['code'];
         }
         $stat = [
             //已注册用户数

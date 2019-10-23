@@ -13,7 +13,7 @@ class CommController extends Controller
 {
     public function isEmailVerify () {
         return response([
-            'data' => (int)config('v2panel.email_verify', env('DEFAULT_EMAIL_VERIFY')) ? 1 : 0
+            'data' => (int)config('v2board.email_verify', env('DEFAULT_EMAIL_VERIFY')) ? 1 : 0
         ]);
     }
 
@@ -24,12 +24,12 @@ class CommController extends Controller
             abort(500, '验证码已发送，请过一会在请求');
         }
         $code = rand(100000, 999999);
-        $subject = config('v2panel.app_name', 'V2Panel') . '邮箱验证码';
+        $subject = config('v2board.app_name', 'V2Panel') . '邮箱验证码';
         Mail::send(
             'mail.sendEmailVerify', 
             [
                 'code' => $code,
-                'name' => config('v2panel.app_name', 'V2Panel')
+                'name' => config('v2board.app_name', 'V2Panel')
             ],
             function ($message) use($email, $subject) { 
                 $message->to($email)->subject($subject); 

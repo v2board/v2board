@@ -13,6 +13,6 @@
 
 Route::get('/', function () {
     return view('app', [
-        'title' => config('v2panel.app_name', env('APP_NAME'))
+        'title' => config('v2board.app_name', env('APP_NAME'))
     ]);
 });

@@ -67,7 +67,7 @@ class OrderController extends Controller
         $order->total_amount = $plan[$request->input('cycle')];
         if ($user->invite_user_id) {
             $order->invite_user_id = $user->invite_user_id;
-            $order->commission_balance = $order->total_amount * (config('v2panel.invite_commission', env('DEFAULT_INVITE_COMMISSION')) / 100);
+            $order->commission_balance = $order->total_amount * (config('v2board.invite_commission', env('DEFAULT_INVITE_COMMISSION')) / 100);
         }
         if (!$order->save()) {
             abort(500, '订单创建失败');
@@ -92,7 +92,7 @@ class OrderController extends Controller
             // return type => 0: QRCode / 1: URL
             case 0:
                 // alipayF2F
-                if (!(int)config('v2panel.alipay_enable')) {
+                if (!(int)config('v2board.alipay_enable')) {
                     abort(500, '支付方式不可用');
                 }
                 return response([
@@ -101,7 +101,7 @@ class OrderController extends Controller
                 ]);
             case 2:
                 // stripeAlipay
-                if (!(int)config('v2panel.stripe_alipay_enable')) {
+                if (!(int)config('v2board.stripe_alipay_enable')) {
                     abort(500, '支付方式不可用');
                 }
                 return response([
@@ -110,7 +110,7 @@ class OrderController extends Controller
                 ]);
             case 3:
                 // stripeWepay
-                if (!(int)config('v2panel.stripe_wepay_enable')) {
+                if (!(int)config('v2board.stripe_wepay_enable')) {
                     abort(500, '支付方式不可用');
                 }
                 return response([
@@ -137,7 +137,7 @@ class OrderController extends Controller
 
     public function getPaymentMethod () {
         $data = [];
-        if ((int)config('v2panel.alipay_enable')) {
+        if ((int)config('v2board.alipay_enable')) {
             $alipayF2F = new \StdClass();
             $alipayF2F->name = '支付宝';
             $alipayF2F->method = 0;
@@ -145,7 +145,7 @@ class OrderController extends Controller
             array_push($data, $alipayF2F);
         }
 
-        if ((int)config('v2panel.stripe_alipay_enable')) {
+        if ((int)config('v2board.stripe_alipay_enable')) {
             $stripeAlipay = new \StdClass();
             $stripeAlipay->name = '支付宝';
             $stripeAlipay->method = 2;
@@ -153,7 +153,7 @@ class OrderController extends Controller
             array_push($data, $stripeAlipay);
         }
 
-        if ((int)config('v2panel.stripe_wepay_enable')) {
+        if ((int)config('v2board.stripe_wepay_enable')) {
             $stripeWepay = new \StdClass();
             $stripeWepay->name = '微信';
             $stripeWepay->method = 3;
@@ -169,13 +169,13 @@ class OrderController extends Controller
     private function alipayF2F ($tradeNo, $totalAmount) {
         $gateway = Omnipay::create('Alipay_AopF2F');
         $gateway->setSignType('RSA2'); //RSA/RSA2
-        $gateway->setAppId(config('v2panel.alipay_appid'));
-        $gateway->setPrivateKey(config('v2panel.alipay_privkey')); // 可以是路径，也可以是密钥内容
-        $gateway->setAlipayPublicKey(config('v2panel.alipay_pubkey')); // 可以是路径，也可以是密钥内容
-        $gateway->setNotifyUrl(config('v2panel.app_url', env('APP_URL')) . '/api/v1/guest/order/alipayNotify');
+        $gateway->setAppId(config('v2board.alipay_appid'));
+        $gateway->setPrivateKey(config('v2board.alipay_privkey')); // 可以是路径，也可以是密钥内容
+        $gateway->setAlipayPublicKey(config('v2board.alipay_pubkey')); // 可以是路径，也可以是密钥内容
+        $gateway->setNotifyUrl(config('v2board.app_url', env('APP_URL')) . '/api/v1/guest/order/alipayNotify');
         $request = $gateway->purchase();
         $request->setBizContent([
-            'subject'      => config('v2panel.app_name') . ' - 订阅',
+            'subject'      => config('v2board.app_name') . ' - 订阅',
             'out_trade_no' => $tradeNo,
             'total_amount' => $totalAmount / 100
         ]);
@@ -194,13 +194,13 @@ class OrderController extends Controller
         if (!$exchange) {
             abort(500, '货币转换超时，请稍后再试');
         }
-        Stripe::setApiKey(config('v2panel.stripe_sk_live'));
+        Stripe::setApiKey(config('v2board.stripe_sk_live'));
         $source = Source::create([
             'amount' => floor($order->total_amount * $exchange),
             'currency' => 'hkd',
             'type' => 'alipay',
             'redirect' => [
-                'return_url' => config('v2panel.app_url', env('APP_URL')) . '/api/v1/guest/order/stripeReturn'
+                'return_url' => config('v2board.app_url', env('APP_URL')) . '/api/v1/guest/order/stripeReturn'
             ]
         ]);
         if (!$source['redirect']['url']) {
@@ -218,13 +218,13 @@ class OrderController extends Controller
         if (!$exchange) {
             abort(500, '货币转换超时，请稍后再试');
         }
-        Stripe::setApiKey(config('v2panel.stripe_sk_live'));
+        Stripe::setApiKey(config('v2board.stripe_sk_live'));
         $source = Source::create([
             'amount' => floor($order->total_amount * $exchange),
             'currency' => 'hkd',
             'type' => 'wechat',
             'redirect' => [
-                'return_url' => config('v2panel.app_url', env('APP_URL')) . '/api/v1/guest/order/stripeReturn'
+                'return_url' => config('v2board.app_url', env('APP_URL')) . '/api/v1/guest/order/stripeReturn'
             ]
         ]);
         if (!$source['wechat']['qr_code_url']) {
