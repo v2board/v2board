@@ -95,9 +95,9 @@ Route::prefix('v1')
         // Server
         Route::prefix('server')
             ->group(function () {
-                // Server
+                // Deepbwork
                 Route::get('deepbwork/user', 'Server\\DeepbworkController@user');
-                Route::post('deepbwork/submit', 'Server\\DeepbworkController@submit');
                 Route::get('deepbwork/config', 'Server\\DeepbworkController@config');
+                Route::post('deepbwork/submit', 'Server\\DeepbworkController@submit');
             });
     });
