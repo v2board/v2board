@@ -94,11 +94,10 @@ Route::prefix('v1')
             });
         // Server
         Route::prefix('server')
-            ->middleware('server')
             ->group(function () {
                 // Server
-                Route::get('user', 'ServerController@user');
-                Route::post('submit', 'ServerController@submit');
-                Route::get('config', 'ServerController@config');
+                Route::get('deepbwork/user', 'Server\\DeepbworkController@user');
+                Route::post('deepbwork/submit', 'Server\\DeepbworkController@submit');
+                Route::get('deepbwork/config', 'Server\\DeepbworkController@config');
             });
     });
