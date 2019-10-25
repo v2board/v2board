@@ -4,7 +4,7 @@ namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ServerSave extends FormRequest
+class UserSave extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -15,7 +15,6 @@ class ServerSave extends FormRequest
     {
         return [
             'email' => 'required|email',
-            'password' => 'required',
             'transfer_enable' => 'numeric',
             'expired_at' => 'integer',
             'banned' => 'required|in:0,1',
@@ -28,7 +27,6 @@ class ServerSave extends FormRequest
         return [
             'email.required' => '邮箱不能为空',
             'email.email' => '邮箱格式不正确',
-            'password.required'  => '密码不能为空',
             'transfer_enable.numeric' => '流量格式不正确',
             'expired_at.integer' => '到期时间格式不正确',
             'banned.required' => '是否封禁不能为空',

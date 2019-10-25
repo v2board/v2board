@@ -37,6 +37,9 @@ class UserController extends Controller
         if (User::where('email', $request->input('email')->first())) {
             abort(500, '邮箱已被使用');
         }
+        if ($request->input('id') && !$request->input('password')) {
+            abort(500, '密码不能为空');
+        }
         $user->email = $request->input('email');
         $user->password = password_hash($request->input('password'), PASSWORD_DEFAULT);
         $user->transfer_enable = $request->input('transfer_enable') * 1073741824;
