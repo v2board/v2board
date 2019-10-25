@@ -25,25 +25,20 @@ class UserController extends Controller
         ]);
     }
 
-    public function save (UserSave $request) {
-        if ($request->input('id')) {
-            $user = User::find($request->input('id'));
-            if (!$user) {
-                abort(500, '用户不存在');
-            }
-        } else {
-            $user = new User();
+    public function update (UserSave $request) {
+        $user = User::find($request->input('id'));
+        if (!$user) {
+            abort(500, '用户不存在');
         }
-        if (User::where('email', $request->input('email'))->first()) {
+        if (User::where('email', $request->input('email'))->first() && $user->email !== $request->input('email')) {
             abort(500, '邮箱已被使用');
         }
-        if ($request->input('id') && !$request->input('password')) {
-            abort(500, '密码不能为空');
-        }
         $user->email = $request->input('email');
-        $user->password = password_hash($request->input('password'), PASSWORD_DEFAULT);
+        if ($request->input('password')) {
+            $user->password = password_hash($request->input('password'), PASSWORD_DEFAULT);
+        }
         $user->transfer_enable = $request->input('transfer_enable') * 1073741824;
-        $user->expired_at = $request->input('expired_at') ? $request->input('expired_at') : 0;
+        $user->expired_at = $request->input('expired_at');
         $user->banned = $request->input('banned');
         $user->is_admin = $request->input('is_admin');
         if (!$user->save()) {
