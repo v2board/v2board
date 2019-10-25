@@ -27,14 +27,14 @@ class OrderController extends Controller
         if ($obj['status'] == 'succeeded') {
             $order = Order::where('callback_no', $obj['source']['id'])->first();
             if (!$order) {
-                die('ERROR');
+                abort(500, 'ERROR');
             }
             if ($order->status !== 0) {
                 die('SUCCESS');
             }
             $order->status = 1;
             if (!$order->save()) {
-                die('ERROR');
+                abort(500, 'ERROR');
             }
             die('SUCCESS');
         }
