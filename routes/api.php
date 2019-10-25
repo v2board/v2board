@@ -39,6 +39,7 @@ Route::prefix('v1')
                 Route::post('order/repair', 'Admin\\OrderController@repair');
                 // User
                 Route::get('user', 'Admin\\UserController@index');
+                Route::post('user/save', 'Admin\\UserController@save');
             });
         // User
         Route::prefix('user')
