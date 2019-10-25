@@ -25,7 +25,7 @@ class OrderController extends Controller
 
         $obj = $event->data->object;
         if ($obj['status'] == 'succeeded') {
-            $order = Order::where('callback_no', $obj['id'])->first();
+            $order = Order::where('callback_no', $obj['source']['id'])->first();
             if (!$order) {
                 die('ERROR');
             }
