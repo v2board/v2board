@@ -34,7 +34,7 @@ class UserController extends Controller
         } else {
             $user = new User();
         }
-        if (User::where('email', $request->input('email')->first())) {
+        if (User::where('email', $request->input('email'))->first()) {
             abort(500, '邮箱已被使用');
         }
         if ($request->input('id') && !$request->input('password')) {
