@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Requests\Admin\UserSave;
+use App\Http\Requests\Admin\UserUpdate;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
@@ -25,7 +25,7 @@ class UserController extends Controller
         ]);
     }
 
-    public function update (UserSave $request) {
+    public function update (UserUpdate $request) {
         $user = User::find($request->input('id'));
         if (!$user) {
             abort(500, '用户不存在');

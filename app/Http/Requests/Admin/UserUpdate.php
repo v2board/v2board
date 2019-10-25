@@ -4,7 +4,7 @@ namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UserSave extends FormRequest
+class UserUpdate extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
