@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Requests\Admin\UserSave;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
@@ -21,6 +22,29 @@ class UserController extends Controller
             'data' => $userModel->forPage($current, $pageSize)
                 ->get(),
             'total' => $total
+        ]);
+    }
+
+    public function save (UserSave $request) {
+        if ($request->input('id')) {
+            $userModel = User::find($request->input('id'));
+        } else {
+            $userModel = new User();
+        }
+        if (User::where('email', $request->input('email')->first())) {
+            abort(500, '邮箱已被使用');
+        }
+        $userModel->email = $request->input('email');
+        $userModel->password = password_hash($request->input('password'), PASSWORD_DEFAULT);
+        $userModel->transfer_enable = $request->input('transfer_enable') * 1073741824;
+        $userModel->expired_at = $request->input('expired_at');
+        $userModel->banned = $request->input('banned');
+        $userModel->is_admin = $request->input('is_admin');
+        if (!$userModel->save()) {
+            abort(500, '保存失败');
+        }
+        return response([
+            'data' => true
         ]);
     }
 }
