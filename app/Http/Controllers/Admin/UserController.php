@@ -43,7 +43,7 @@ class UserController extends Controller
         $user->email = $request->input('email');
         $user->password = password_hash($request->input('password'), PASSWORD_DEFAULT);
         $user->transfer_enable = $request->input('transfer_enable') * 1073741824;
-        $user->expired_at = $request->input('expired_at');
+        $user->expired_at = $request->input('expired_at') ? $request->input('expired_at') : 0;
         $user->banned = $request->input('banned');
         $user->is_admin = $request->input('is_admin');
         if (!$user->save()) {
