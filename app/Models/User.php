@@ -8,4 +8,5 @@ class User extends Model
 {
     protected $table = 'v2_user';
     protected $dateFormat = 'U';
+    protected $guarded = ['id'];
 }

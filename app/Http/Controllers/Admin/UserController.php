@@ -26,22 +26,28 @@ class UserController extends Controller
     }
 
     public function update (UserUpdate $request) {
+    	$fetchData = $request->only([
+    		'email',
+    		'password',
+    		'transfer_enable',
+    		'expired_at',
+    		'banned',
+    		'is_admin'
+		]);
         $user = User::find($request->input('id'));
         if (!$user) {
             abort(500, '用户不存在');
         }
-        if (User::where('email', $request->input('email'))->first() && $user->email !== $request->input('email')) {
+        if (User::where('email', $fetchData['email'])->first() && $user->email !== $fetchData['email']) {
             abort(500, '邮箱已被使用');
         }
-        $user->email = $request->input('email');
-        if ($request->input('password')) {
-            $user->password = password_hash($request->input('password'), PASSWORD_DEFAULT);
+        if ($fetchData['password']) {
+        	$fetchData['password'] = password_hash($fetchData['password'], PASSWORD_DEFAULT);
+        } else {
+        	unset($fetchData['password']);
         }
-        $user->transfer_enable = $request->input('transfer_enable') * 1073741824;
-        $user->expired_at = $request->input('expired_at');
-        $user->banned = $request->input('banned');
-        $user->is_admin = $request->input('is_admin');
-        if (!$user->save()) {
+        $fetchData['transfer_enable'] = $fetchData['transfer_enable'] * 1073741824;
+        if (!$user->update($fetchData)) {
             abort(500, '保存失败');
         }
         return response([
