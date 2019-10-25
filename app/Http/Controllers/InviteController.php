@@ -32,14 +32,14 @@ class InviteController extends Controller
         }
         $stat = [
             //已注册用户数
-            User::where('invite_user_id', $request->session()->get('id'))->count(),
+            (int)User::where('invite_user_id', $request->session()->get('id'))->count(),
             //有效的佣金
-            Order::where('status', 3)
+            (int)Order::where('status', 3)
                 ->where('commission_status', 1)
                 ->where('invite_user_id', $request->session()->get('id'))
                 ->sum('commission_balance'),
             //确认中的佣金
-            Order::where('status', 3)
+            (int)Order::where('status', 3)
                 ->where('commission_status', 0)
                 ->where('invite_user_id', $request->session()->get('id'))
                 ->sum('commission_balance'),
