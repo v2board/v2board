@@ -21,6 +21,9 @@ class ServerController extends Controller
     public function save (ServerSave $request) {
         if ($request->input('id')) {
             $server = Server::find($request->input('id'));
+            if (!$server) {
+                abort(500, '服务器不存在');
+            }
         } else {
             $server = new Server();
         }

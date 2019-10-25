@@ -21,7 +21,7 @@ class PlanController extends Controller
         if ($request->input('id')) {
             $plan = Plan::find($request->input('id'));
             if (!$plan) {
-                abort(500, '套餐ID不存在');
+                abort(500, '套餐不存在');
             }
         } else {
             $plan = new Plan();

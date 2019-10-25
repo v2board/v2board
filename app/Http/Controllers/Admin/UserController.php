@@ -27,20 +27,23 @@ class UserController extends Controller
 
     public function save (UserSave $request) {
         if ($request->input('id')) {
-            $userModel = User::find($request->input('id'));
+            $user = User::find($request->input('id'));
+            if (!$user) {
+                abort(500, '用户不存在');
+            }
         } else {
-            $userModel = new User();
+            $user = new User();
         }
         if (User::where('email', $request->input('email')->first())) {
             abort(500, '邮箱已被使用');
         }
-        $userModel->email = $request->input('email');
-        $userModel->password = password_hash($request->input('password'), PASSWORD_DEFAULT);
-        $userModel->transfer_enable = $request->input('transfer_enable') * 1073741824;
-        $userModel->expired_at = $request->input('expired_at');
-        $userModel->banned = $request->input('banned');
-        $userModel->is_admin = $request->input('is_admin');
-        if (!$userModel->save()) {
+        $user->email = $request->input('email');
+        $user->password = password_hash($request->input('password'), PASSWORD_DEFAULT);
+        $user->transfer_enable = $request->input('transfer_enable') * 1073741824;
+        $user->expired_at = $request->input('expired_at');
+        $user->banned = $request->input('banned');
+        $user->is_admin = $request->input('is_admin');
+        if (!$user->save()) {
             abort(500, '保存失败');
         }
         return response([
