@@ -41,6 +41,7 @@ class OrderController extends Controller
     }
 
     public function stripeReturn (Request $request) {
+        Log::info('stripeReturnData: ' . json_encode($request->input()));
         header('Location:' . '/#/dashboard');
     }
 }
