@@ -89,9 +89,10 @@ class DeepbworkController extends Controller
     // 后端获取配置
     public function config (Request $request) {
         $nodeId = $request->input('node_id');
+        $localPort = $request->input('local_port');
         $server = Server::find($nodeId);
         $jsonData = json_decode(self::SERVER_CONFIG);
-        $jsonData->inboundDetour[0]->port = (int)$server->local_port;
+        $jsonData->inboundDetour[0]->port = (int)$localPort;
         $jsonData->inbound->port = (int)$server->port;
         if ((int)$server->tls) {
             $jsonData->inbound->streamSettings->security = "tls";

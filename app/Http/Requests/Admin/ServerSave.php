@@ -18,7 +18,7 @@ class ServerSave extends FormRequest
             'group_id' => 'required|array',
             'host' => 'required',
             'port' => 'required',
-            'local_port' => 'required',
+            'server_port' => 'required',
             'tls' => 'required',
             'tags' => 'array',
             'rate' => 'required|numeric'
@@ -33,7 +33,7 @@ class ServerSave extends FormRequest
             'group_id.array' => '权限组格式不正确',
             'host.required' => '节点地址不能为空',
             'port.required' => '连接端口不能为空',
-            'local_port.required' => '后端服务端口不能为空',
+            'server_port.required' => '后端服务端口不能为空',
             'tls.required' => 'TLS不能为空',
             'tags.array' => '标签格式不正确',
             'rate.required' => '倍率不能为空',

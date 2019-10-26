@@ -31,7 +31,7 @@ class ServerController extends Controller
         $server->name = $request->input('name');
         $server->host = $request->input('host');
         $server->port = $request->input('port');
-        $server->local_port = $request->input('local_port');
+        $server->server_port = $request->input('server_port');
         $server->tls = $request->input('tls');
         $server->tags = json_encode($request->input('tags'));
         $server->rate = $request->input('rate');
