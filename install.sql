@@ -1,3 +1,5 @@
+-- Adminer 4.7.3 MySQL dump
+
 SET NAMES utf8;
 SET time_zone = '+00:00';
 SET foreign_key_checks = 0;
@@ -59,7 +61,7 @@ CREATE TABLE `v2_server` (
   `name` varchar(255) NOT NULL,
   `host` varchar(255) NOT NULL,
   `port` int(11) NOT NULL,
-  `local_port` int(11) NOT NULL,
+  `server_port` int(11) NOT NULL,
   `tls` tinyint(4) NOT NULL,
   `tags` varchar(255) NOT NULL DEFAULT '[]',
   `rate` varchar(11) NOT NULL,
@@ -121,4 +123,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2019-10-22 15:50:47
+-- 2019-10-26 10:55:55
