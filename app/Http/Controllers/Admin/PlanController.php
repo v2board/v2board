@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\Admin\PlanSave;
+use App\Http\Requests\Admin\PlanUpdate;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Plan;
@@ -63,7 +64,7 @@ class PlanController extends Controller
         ]);
     }
 
-    public function update (Request $request) {
+    public function update (PlanUpdate $request) {
         $updateData = $request->only([
             'show',
             'renew'
