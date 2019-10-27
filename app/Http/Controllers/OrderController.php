@@ -58,6 +58,10 @@ class OrderController extends Controller
         if (!($plan->show || $user->plan_id == $plan->id)) {
             abort(500, '该订阅已售罄');
         }
+
+        if (!($plan->show || !$plan->renew)) {
+            abort(500, '该订阅无法续费');
+        }
         
         $order = new Order();
         $order->user_id = $request->session()->get('id');
