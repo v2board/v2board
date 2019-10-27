@@ -55,13 +55,13 @@ class OrderController extends Controller
             abort(500, '订阅不存在');
         }
         
-        if (!($plan->show || $user->plan_id == $plan->id)) {
+        if (!($plan->show)) {
             abort(500, '该订阅已售罄');
         }
         
         $order = new Order();
         $order->user_id = $request->session()->get('id');
-        $order->plan_id = $plan->id;
+        $order->plan_data = serialize($plan->toArray());
         $order->cycle = $request->input('cycle');
         $order->trade_no = Helper::guid();
         $order->total_amount = $plan[$request->input('cycle')];
