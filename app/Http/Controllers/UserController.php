@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserUpdate;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\User;
@@ -116,6 +117,25 @@ class UserController extends Controller
         if (!$user->save()) {
             abort(500, '重置失败');
         }
+        return response([
+            'data' => true
+        ]);
+    }
+
+    public function update (UserUpdate $request) {
+        $updateData = $request->only([
+            'remind_expire',
+            'remind_traffic'
+        ]);
+        
+        $user = User::find($request->session()->get('id'));
+        if (!$user) {
+            abort(500, '该用户不存在');
+        }
+        if (!$user->update($updateData)) {
+            abort(500, '保存失败');
+        }
+
         return response([
             'data' => true
         ]);
