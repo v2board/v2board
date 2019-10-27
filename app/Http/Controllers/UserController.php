@@ -18,6 +18,26 @@ class UserController extends Controller
         ]);
     }
 
+    public function changePassword (Request $request) {
+        if (empty($request->input('old_password'))) {
+            abort(500, '旧密码不能为空');
+        }
+        if (empty($request->input('new_password'))) {
+            abort(500, '新密码不能为空');
+        }
+        $user = User::find($request->session()->get('id'));
+        if (!password_verify($request->input('old_password'), $user->password)) {
+            abort(500, '旧密码有误');
+        }
+        $user->password = password_hash($request->input('new_password'), PASSWORD_DEFAULT);
+        if (!$user->save()) {
+            abort(500, '保存失败');
+        }
+        return response([
+            'data' => true
+        ]);
+    }
+
     public function index (Request $request) {
     }
     
