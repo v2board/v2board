@@ -17,6 +17,7 @@ class OrderController extends Controller
 {
     public function index (Request $request) {
         $order = Order::where('user_id', $request->session()->get('id'))
+            ->orderBy('created_at', 'DESC')
             ->get();
         $plan = Plan::get();
         for($i = 0; $i < count($order); $i++) {
