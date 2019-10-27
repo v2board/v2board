@@ -33,6 +33,7 @@ class UserController extends Controller
         if (!$user->save()) {
             abort(500, '保存失败');
         }
+        $request->session()->flush();
         return response([
             'data' => true
         ]);
