@@ -60,7 +60,7 @@ class OrderController extends Controller
         }
 
         if (!$plan->show && !$plan->renew) {
-            abort(500, '该订阅无法续费');
+            abort(500, '该订阅无法续费，请更换其他订阅');
         }
         
         $order = new Order();
