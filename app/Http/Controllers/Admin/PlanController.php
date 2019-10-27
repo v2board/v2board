@@ -21,7 +21,7 @@ class PlanController extends Controller
         if ($request->input('id')) {
             $plan = Plan::find($request->input('id'));
             if (!$plan) {
-                abort(500, '套餐不存在');
+                abort(500, '该订阅不存在');
             }
         } else {
             $plan = new Plan();
@@ -66,9 +66,23 @@ class PlanController extends Controller
     public function show (Request $request) {
         $plan = Plan::find($request->input('id'));
         if (!$plan) {
-            abort(500, '套餐不存在');
+            abort(500, '该订阅不存在');
         }
         $plan->show = $plan->show ? 0 : 1;
+        if (!$plan->save()) {
+            abort(500, '更改失败');
+        }
+        return response([
+            'data' => true
+        ]);
+    }
+
+    public function renew (Request $request) {
+        $plan = Plan::find($request->input('id'));
+        if (!$plan) {
+            abort(500, '该订阅不存在');
+        }
+        $plan->renew = $plan->renew ? 0 : 1;
         if (!$plan->save()) {
             abort(500, '更改失败');
         }
