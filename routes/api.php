@@ -26,7 +26,7 @@ Route::prefix('v1')
                 Route::get('plan', 'Admin\\PlanController@index');
                 Route::post('plan/save', 'Admin\\PlanController@save');
                 Route::post('plan/drop', 'Admin\\PlanController@drop');
-                Route::post('plan/show', 'Admin\\PlanController@show');
+                Route::post('plan/update', 'Admin\\PlanController@update');
                 // Server
                 Route::get('server', 'Admin\\ServerController@index');
                 Route::post('server/save', 'Admin\\ServerController@save');

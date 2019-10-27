@@ -26,7 +26,7 @@ class UserController extends Controller
     }
 
     public function update (UserUpdate $request) {
-    	$fetchData = $request->only([
+    	$updateData = $request->only([
     		'email',
     		'password',
     		'transfer_enable',
@@ -38,16 +38,16 @@ class UserController extends Controller
         if (!$user) {
             abort(500, '用户不存在');
         }
-        if (User::where('email', $fetchData['email'])->first() && $user->email !== $fetchData['email']) {
+        if (User::where('email', $update['email'])->first() && $user->email !== $updateData['email']) {
             abort(500, '邮箱已被使用');
         }
-        if ($fetchData['password']) {
-        	$fetchData['password'] = password_hash($fetchData['password'], PASSWORD_DEFAULT);
+        if ($updateData['password']) {
+        	$updateData['password'] = password_hash($updateData['password'], PASSWORD_DEFAULT);
         } else {
-        	unset($fetchData['password']);
+        	unset($updateData['password']);
         }
-        $fetchData['transfer_enable'] = $fetchData['transfer_enable'] * 1073741824;
-        if (!$user->update($fetchData)) {
+        $updateData['transfer_enable'] = $updateData['transfer_enable'] * 1073741824;
+        if (!$user->update($updateData)) {
             abort(500, '保存失败');
         }
         return response([

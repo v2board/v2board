@@ -63,29 +63,20 @@ class PlanController extends Controller
         ]);
     }
 
-    public function show (Request $request) {
-        $plan = Plan::find($request->input('id'));
-        if (!$plan) {
-            abort(500, '该订阅不存在');
-        }
-        $plan->show = $plan->show ? 0 : 1;
-        if (!$plan->save()) {
-            abort(500, '更改失败');
-        }
-        return response([
-            'data' => true
+    public function update (Request $request) {
+        $updateData = $request->only([
+            'show',
+            'renew'
         ]);
-    }
-
-    public function renew (Request $request) {
+        
         $plan = Plan::find($request->input('id'));
         if (!$plan) {
             abort(500, '该订阅不存在');
         }
-        $plan->renew = $plan->renew ? 0 : 1;
-        if (!$plan->save()) {
-            abort(500, '更改失败');
+        if (!$plan->update($updateData)) {
+            abort(500, '保存失败');
         }
+
         return response([
             'data' => true
         ]);
