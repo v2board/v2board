@@ -38,7 +38,7 @@ class UserController extends Controller
         if (!$user) {
             abort(500, '用户不存在');
         }
-        if (User::where('email', $update['email'])->first() && $user->email !== $updateData['email']) {
+        if (User::where('email', $updateData['email'])->first() && $user->email !== $updateData['email']) {
             abort(500, '邮箱已被使用');
         }
         if ($updateData['password']) {
