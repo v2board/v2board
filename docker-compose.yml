@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  db:
+    container_name: v2board-db
+    image: mysql
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=true
+    volumes:
+      - ./dbdata:/var/lib/mysql
+      - ./install.sql:/install.sql
+  backend:
+    image: composer
+    working_dir: /root/backend
+    volumes:
+      - .:/root/backend
+  nginx:
+    image: nginx
+    volumes:
+      - .:/root/backend
+      - ./nginx:/etc/nginx/conf.d
+    ports:
+      - 8964:80
+
