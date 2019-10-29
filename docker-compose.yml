@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  db:
+    container_name: v2board-db
+    image: mysql
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=true
+    volumes:
+      - ./docker/mysql:/var/lib/mysql
+      - ./install.sql:/install.sql
+  phpfpm:
+    image: bitnami/php-fpm
+    volumes:
+      - .:/app
+  nginx:
+    image: nginx
+    depends_on:
+      - phpfpm
+    volumes:
+      - .:/app
+      - ./docker/nginx:/etc/nginx/conf.d
+    ports:
+      - 8964:80
+
