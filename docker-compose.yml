@@ -7,7 +7,7 @@ services:
     environment:
       - MYSQL_ALLOW_EMPTY_PASSWORD=true
     volumes:
-      - ./dbdata:/var/lib/mysql
+      - ./docker/mysql:/var/lib/mysql
       - ./install.sql:/install.sql
   phpfpm:
     image: bitnami/php-fpm
@@ -19,7 +19,7 @@ services:
       - phpfpm
     volumes:
       - .:/app
-      - ./nginx:/etc/nginx/conf.d
+      - ./docker/nginx:/etc/nginx/conf.d
     ports:
       - 8964:80
 
