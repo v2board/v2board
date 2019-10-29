@@ -2,10 +2,10 @@ version: '3'
 
 services:
   db:
-    container_name: v2board-db
     image: mysql
+    command: --default-authentication-plugin=mysql_native_password
     environment:
-      - MYSQL_ALLOW_EMPTY_PASSWORD=true
+      - MYSQL_ROOT_PASSWORD=123456
     volumes:
       - ./docker/mysql:/var/lib/mysql
       - ./install.sql:/install.sql

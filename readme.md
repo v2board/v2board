@@ -32,5 +32,8 @@
     > docker run --rm -v $(pwd):/app composer install
     > docker run --rm -v $(pwd):/app composer sh init.sh
     > ```
-2. 进入 docker 容器从 `install.sql` 文件中恢复表
+2. 执行 `docker-compose run --rm db` 进入 docker 容器从 `install.sql` 文件中恢复表后执行 `docker-compose down`
 3. 执行 `docker-compose up -d` 启动服务
+
+## 注意
+每次修改 `.env` 文件后需要执行 `docker run --rm -v $(pwd):/app composer sh init.sh`
