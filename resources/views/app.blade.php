@@ -2,7 +2,7 @@
 <html>
     
     <head>
-        <link rel="stylesheet" href="./umi.css?v=0.1.4">
+        <link rel="stylesheet" href="./umi.css?v=0.1.5">
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
         <title>{{$title}}</title>
@@ -17,7 +17,7 @@
     
     <body>
         <div id="root"></div>
-        <script src="./umi.js?v=0.1.4"></script>
+        <script src="./umi.js?v=0.1.5"></script>
     </body>
 
 </html>

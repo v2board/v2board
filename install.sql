@@ -1,3 +1,5 @@
+-- Adminer 4.7.3 MySQL dump
+
 SET NAMES utf8;
 SET time_zone = '+00:00';
 SET foreign_key_checks = 0;
@@ -41,6 +43,7 @@ CREATE TABLE `v2_plan` (
   `transfer_enable` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
   `show` tinyint(1) NOT NULL DEFAULT '0',
+  `renew` tinyint(1) NOT NULL DEFAULT '1',
   `content` text,
   `month_price` int(11) NOT NULL DEFAULT '0',
   `quarter_price` int(11) NOT NULL DEFAULT '0',
@@ -59,7 +62,7 @@ CREATE TABLE `v2_server` (
   `name` varchar(255) NOT NULL,
   `host` varchar(255) NOT NULL,
   `port` int(11) NOT NULL,
-  `local_port` int(11) NOT NULL,
+  `server_port` int(11) NOT NULL,
   `tls` tinyint(4) NOT NULL,
   `tags` varchar(255) NOT NULL DEFAULT '[]',
   `rate` varchar(11) NOT NULL,
@@ -112,6 +115,8 @@ CREATE TABLE `v2_user` (
   `v2ray_level` tinyint(4) NOT NULL DEFAULT '0',
   `group_id` int(11) DEFAULT NULL,
   `plan_id` int(11) DEFAULT NULL,
+  `remind_expire` tinyint(4) DEFAULT '1',
+  `remind_traffic` tinyint(4) DEFAULT '1',
   `token` char(32) NOT NULL,
   `expired_at` bigint(20) NOT NULL DEFAULT '0',
   `created_at` int(11) NOT NULL,
@@ -121,4 +126,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2019-10-22 15:50:47
+-- 2019-10-29 06:15:21

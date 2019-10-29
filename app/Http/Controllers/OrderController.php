@@ -17,6 +17,7 @@ class OrderController extends Controller
 {
     public function index (Request $request) {
         $order = Order::where('user_id', $request->session()->get('id'))
+            ->orderBy('created_at', 'DESC')
             ->get();
         $plan = Plan::get();
         for($i = 0; $i < count($order); $i++) {
@@ -52,11 +53,15 @@ class OrderController extends Controller
         $user = User::find($request->session()->get('id'));
         
         if (!$plan) {
-            abort(500, '订阅不存在');
+            abort(500, '该订阅不存在');
         }
         
         if (!($plan->show || $user->plan_id == $plan->id)) {
             abort(500, '该订阅已售罄');
+        }
+
+        if (!$plan->show && !$plan->renew) {
+            abort(500, '该订阅无法续费，请更换其他订阅');
         }
         
         $order = new Order();

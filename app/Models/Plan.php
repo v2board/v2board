@@ -8,4 +8,5 @@ class Plan extends Model
 {
     protected $table = 'v2_plan';
     protected $dateFormat = 'U';
+    protected $guarded = ['id'];
 }
