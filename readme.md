@@ -25,6 +25,7 @@
 ---
 
 ## Docker 环境部署
+> 首先 `cp docker-compose.yml.example docker-compose.yml` 选择性修改
 1. 执行 `docker-compose run --rm db` 进入 docker 容器
 2. 从 `install.sql` 文件中恢复表后退出容器，执行 `docker-compose down`
 3. 执行 `cp .env.example .env` 然后配置它
