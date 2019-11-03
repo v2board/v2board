@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\User;
+use App\Models\Plan;
 
 class OrderController extends Controller
 {
@@ -17,9 +18,18 @@ class OrderController extends Controller
             $orderModel->where('trade_no', $request->input('trade_no'));
         }
         $total = $orderModel->count();
+        $res = $orderModel->forPage($current, $pageSize)
+            ->get();
+        $plan = Plan::get();
+        for ($i = 0; $i < count($res); $i++) {
+            for ($k = 0; $k < count($plan); $k++) {
+                if ($plan[$k]['id'] == $res[$i]['plan_id']) {
+                    $res[$i]['plan_name'] = $plan[$k]['name'];
+                }
+            }
+        }
         return response([
-            'data' => $orderModel->forPage($current, $pageSize)
-                ->get(),
+            'data' => $res,
             'total' => $total
         ]);
     }
