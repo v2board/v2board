@@ -32,8 +32,6 @@ class PlanController extends Controller
         if ($plan->content) {
             $plan->content = str_replace(PHP_EOL, '', $plan->content);
         }
-        $plan->show = $request->input('show');
-        $plan->renew = $request->input('renew');
         $plan->transfer_enable = $request->input('transfer_enable');
         $plan->group_id = $request->input('group_id');
         $plan->month_price = $request->input('month_price');
