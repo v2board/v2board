@@ -25,7 +25,7 @@ class PlanSave extends FormRequest
         return [
             'name.required' => '套餐名称不能为空',
             'group_id.required' => '权限组不能为空',
-            'transfer_enable' => '流量不能为空'
+            'transfer_enable.required' => '流量不能为空'
         ];
     }
 }
