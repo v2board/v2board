@@ -18,6 +18,7 @@ class ServerController extends Controller
             if (!empty($server[$i]['tags'])) {
                 $server[$i]['tags'] = json_decode($server->tags);
             }
+            $server[$i]['group_id'] = json_decode($server->group_id);
         }
         return response([
             'data' => $server
