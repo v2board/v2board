@@ -41,10 +41,10 @@ class CheckExpire extends Command
     {
         $user = User::all();
         foreach ($user as $item) {
-            if ($user->expired_at < time()) {
-                $user->enable = 0;
+            if ($item->expired_at < time()) {
+                $item->enable = 0;
             } else {
-                $user->enable = 1;
+                $item->enable = 1;
             }
             $item->save();
         }
