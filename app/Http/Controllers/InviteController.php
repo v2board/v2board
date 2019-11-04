@@ -27,9 +27,6 @@ class InviteController extends Controller
         $codes = InviteCode::where('user_id', $request->session()->get('id'))
             ->where('status', 0)
             ->get();
-        for ($i = 0; $i < count($codes); $i++) {
-            $codes[$i]['invite_url'] = config('v2board.app_url', env('APP_URL')) . '/#/register?code=' . $codes[$i]['code'];
-        }
         $stat = [
             //已注册用户数
             (int)User::where('invite_user_id', $request->session()->get('id'))->count(),
