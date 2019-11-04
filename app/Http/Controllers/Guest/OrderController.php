@@ -32,6 +32,7 @@ class OrderController extends Controller
                     die('SUCCESS');
                 }
                 $order->status = 1;
+                $order->callback_no = $_POST['trade_no'];
                 if (!$order->save()) {
                     abort(500, 'ERROR');
                 }
