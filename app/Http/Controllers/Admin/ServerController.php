@@ -16,9 +16,9 @@ class ServerController extends Controller
         $server = Server::get();
         for ($i = 0; $i < count($server); $i++) {
             if (!empty($server[$i]['tags'])) {
-                $server[$i]['tags'] = json_decode($server->tags);
+                $server[$i]['tags'] = json_decode($server[$i]['tags']);
             }
-            $server[$i]['group_id'] = json_decode($server->group_id);
+            $server[$i]['group_id'] = json_decode($server[$i]['group_id']);
         }
         return response([
             'data' => $server
