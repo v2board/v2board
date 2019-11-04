@@ -64,7 +64,7 @@ CREATE TABLE `v2_server` (
   `port` int(11) NOT NULL,
   `server_port` int(11) NOT NULL,
   `tls` tinyint(4) NOT NULL,
-  `tags` varchar(255) NOT NULL DEFAULT '[]',
+  `tags` varchar(255) DEFAULT NULL,
   `rate` varchar(11) NOT NULL,
   `created_at` int(11) NOT NULL,
   `updated_at` int(11) NOT NULL,
@@ -126,4 +126,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2019-11-03 16:48:35
+-- 2019-11-04 11:56:38
