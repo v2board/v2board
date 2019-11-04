@@ -26,15 +26,15 @@ class OrderController extends Controller
             if($response->isPaid()){
                 $order = Order::where('trade_no', $_POST['out_trade_no'])->first();
                 if (!$order) {
-                    abort(500, 'ERROR');
+                    abort(500, 'fail');
                 }
                 if ($order->status !== 0) {
-                    die('SUCCESS');
+                    die('success');
                 }
                 $order->status = 1;
                 $order->callback_no = $_POST['trade_no'];
                 if (!$order->save()) {
-                    abort(500, 'ERROR');
+                    abort(500, 'fail');
                 }
                 /**
                  * Payment is successful
@@ -72,16 +72,16 @@ class OrderController extends Controller
         if ($obj['status'] == 'succeeded') {
             $order = Order::where('callback_no', $obj['source']['id'])->first();
             if (!$order) {
-                abort(500, 'ERROR');
+                abort(500, 'fail');
             }
             if ($order->status !== 0) {
-                die('SUCCESS');
+                die('success');
             }
             $order->status = 1;
             if (!$order->save()) {
-                abort(500, 'ERROR');
+                abort(500, 'fail');
             }
-            die('SUCCESS');
+            die('success');
         }
     }
 
