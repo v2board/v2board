@@ -25,6 +25,8 @@ class ServerLogSaveListener
      * @return void
      */
     public function handle(ServerLogSaveEvent $event) {
-        info($event->serverLog);
+        $redisKey = 'last_submit_server_log_' . $event->serverLog->user_id;
+        Redis::set($redisKey, time());
+        info($redisKey);
     }
 }
