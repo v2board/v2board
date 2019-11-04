@@ -10,6 +10,5 @@ class ServerLog extends Model
     protected $table = 'v2_server_log';
     protected $dateFormat = 'U';
     protected $dispatchesEvents = [
-        'saving' => ServerLogSaveEvent::class,
     ];
 }
