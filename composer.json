@@ -1,9 +1,10 @@
 {
-    "name": "laravel/laravel",
+    "name": "v2board/v2board",
     "type": "project",
-    "description": "The Laravel Framework.",
+    "description": "v2board is a v2ray manage.",
     "keywords": [
-        "framework",
+        "v2board",
+        "v2ray",
         "laravel"
     ],
     "license": "MIT",
