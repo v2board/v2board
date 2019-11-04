@@ -15,7 +15,9 @@ class ServerController extends Controller
     public function index (Request $request) {
         $server = Server::get();
         for ($i = 0; $i < count($server); $i++) {
-            $server[$i]['tags'] = json_decode($server->tags);
+            if (!empty($server[$i]['tags'])) {
+                $server[$i]['tags'] = json_decode($server->tags);
+            }
         }
         return response([
             'data' => $server
