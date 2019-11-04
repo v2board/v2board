@@ -12,7 +12,7 @@
         "fideloper/proxy": "^4.0",
         "laravel/framework": "^6.0",
         "laravel/tinker": "^1.0",
-        "lokielse/omnipay-alipay": "3.0.6",
+        "lokielse/omnipay-alipay": "^3.0",
         "stripe/stripe-php": "^7.5",
         "symfony/yaml": "^4.3"
     },
