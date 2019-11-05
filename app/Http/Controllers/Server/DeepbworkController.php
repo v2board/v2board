@@ -17,6 +17,7 @@ class DeepbworkController extends Controller
     public function user (Request $request) {
         $nodeId = $request->input('node_id');
         $server = Server::find($nodeId);
+        $server->last_check_at = time();
         $users = User::whereIn('group_id', json_decode($server->group_id))
             ->select([
                 'id',
