@@ -22,7 +22,7 @@ class ServerSave extends FormRequest
             'tls' => 'required',
             'tags' => 'array',
             'rate' => 'required|numeric',
-            'network' => 'required|in:tcp,mkcp,websocket,http2,domainsocket,quic'
+            'network' => 'required|in:tcp,kcp,ws,http,domainsocket,quic'
         ];
     }
     

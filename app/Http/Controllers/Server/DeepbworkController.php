@@ -96,6 +96,23 @@ class DeepbworkController extends Controller
         $jsonData = json_decode(self::SERVER_CONFIG);
         $jsonData->inboundDetour[0]->port = (int)$localPort;
         $jsonData->inbound->port = (int)$server->server_port;
+        $jsonData->inbound->streamSettings->network = $server->network;
+        if ($server->settings) {
+            switch ($server->network) {
+                case 'tcp': $jsonData->inbound->streamSettings->tcpSettings = json_decode($server->settings);
+                    break;
+                case 'kcp': $jsonData->inbound->streamSettings->kcpSettings = json_decode($server->settings);
+                    break;
+                case 'ws': $jsonData->inbound->streamSettings->wsSettings = json_decode($server->settings);
+                    break;
+                case 'http': $jsonData->inbound->streamSettings->httpSettings = json_decode($server->settings);
+                    break;
+                case 'kcp': $jsonData->inbound->streamSettings->dsSettings = json_decode($server->settings);
+                    break;
+                case 'kcp': $jsonData->inbound->streamSettings->quicSettings = json_decode($server->settings);
+                    break;
+            }
+        }
         if ((int)$server->tls) {
             $jsonData->inbound->streamSettings->security = "tls";
             $tls = (object) array("certificateFile" => "/home/v2ray.crt", "keyFile" => "/home/v2ray.key");
