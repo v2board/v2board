@@ -85,8 +85,8 @@ class CheckOrder extends Command
         switch ($str) {
             case 'month_price': return strtotime('+1 month', $timestamp);
             case 'quarter_price': return  strtotime('+3 month', $timestamp);
-            case 'quarter_price': return  strtotime('+6 month', $timestamp);
-            case 'quarter_price': return  strtotime('+12 month', $timestamp);
+            case 'half_year_price': return  strtotime('+6 month', $timestamp);
+            case 'year_price': return  strtotime('+12 month', $timestamp);
         }
     }
 }
