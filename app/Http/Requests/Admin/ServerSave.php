@@ -21,7 +21,9 @@ class ServerSave extends FormRequest
             'server_port' => 'required',
             'tls' => 'required',
             'tags' => 'array',
-            'rate' => 'required|numeric'
+            'rate' => 'required|numeric',
+            'network' => 'required|in:tcp,mkcp,websocket,http2,domainsocket,quic',
+            'settings' => 'json'
         ];
     }
     
@@ -37,7 +39,10 @@ class ServerSave extends FormRequest
             'tls.required' => 'TLS不能为空',
             'tags.array' => '标签格式不正确',
             'rate.required' => '倍率不能为空',
-            'rate.numeric' => '倍率格式不正确'
+            'rate.numeric' => '倍率格式不正确',
+            'network.required' => '传输协议不能为空',
+            'network.in' => '传输协议格式不正确',
+            'settings.json' => '传输协议配置格式不正确'
         ];
     }
 }
