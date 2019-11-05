@@ -43,7 +43,9 @@ class ServerController extends Controller
         $server->tags = $request->input('tags') ? json_encode($request->input('tags')) : NULL;
         $server->rate = $request->input('rate');
         $server->network = $request->input('network');
-        $server->settings = $request->input('settings');
+        if ($request->input('settings') && is_object(json_decode($request->input('settings')))) {
+            $server->settings = $request->input('settings');
+        }
         return response([
             'data' => $server->save()
         ]);
