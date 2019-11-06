@@ -66,6 +66,9 @@ CREATE TABLE `v2_server` (
   `tls` tinyint(4) NOT NULL,
   `tags` varchar(255) DEFAULT NULL,
   `rate` varchar(11) NOT NULL,
+  `network` varchar(11) NOT NULL,
+  `settings` text,
+  `last_check_at` int(11) DEFAULT NULL,
   `created_at` int(11) NOT NULL,
   `updated_at` int(11) NOT NULL,
   PRIMARY KEY (`id`)
@@ -126,4 +129,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2019-11-04 11:56:38
+-- 2019-11-06 04:36:56
