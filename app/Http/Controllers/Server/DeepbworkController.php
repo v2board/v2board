@@ -107,9 +107,9 @@ class DeepbworkController extends Controller
                     break;
                 case 'http': $jsonData->inbound->streamSettings->httpSettings = json_decode($server->settings);
                     break;
-                case 'kcp': $jsonData->inbound->streamSettings->dsSettings = json_decode($server->settings);
+                case 'domainsocket': $jsonData->inbound->streamSettings->dsSettings = json_decode($server->settings);
                     break;
-                case 'kcp': $jsonData->inbound->streamSettings->quicSettings = json_decode($server->settings);
+                case 'quic': $jsonData->inbound->streamSettings->quicSettings = json_decode($server->settings);
                     break;
             }
         }
