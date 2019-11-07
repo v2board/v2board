@@ -38,7 +38,7 @@ class ClientController extends Controller
     private function quantumultX ($user, $server) {
       $uri = '';
       foreach($server as $item) {
-        $uri .= "vmess=".$item->host.":".$item->port.", method=none, password=".$user->v2ray_uuid.", over-tls=".($item->tls?'true':'false').", certificate=0, fast-open=false, udp-relay=false, tag=".$item->name;
+        $uri .= "vmess=".$item->host.":".$item->port.", method=none, password=".$user->v2ray_uuid.", fast-open=false, udp-relay=false, tag=".$item->name;
         if ($item->network == 'ws') {
           $uri .= ', obfs=ws';
           if ($item->settings) {
