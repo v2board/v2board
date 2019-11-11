@@ -109,6 +109,16 @@ class ClientController extends Controller
         if ($item->tls) {
           $array['tls'] = true;
         }
+        if ($item->network == 'ws') {
+          $array['network'] = $item->network;
+          if ($item->settings) {
+            $wsSettings = json_decode($item->settings);
+            if ($wsSettings->path) $array['ws-path'] = $wsSettings->path;
+            if ($wsSettings->headers->Host) $array['ws-headers'] = [
+              'Host' => $wsSettings->headers->Host
+            ];
+          }
+        }
         array_push($proxy, $array);
         array_push($proxies, $item->name);
       }
