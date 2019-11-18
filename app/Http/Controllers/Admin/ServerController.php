@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\Admin\ServerSave;
+use App\Http\Requests\Admin\ServerUpdate;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\ServerGroup;
@@ -118,6 +119,24 @@ class ServerController extends Controller
         }
         return response([
             'data' => $server->delete()
+        ]);
+    }
+
+    public function update (ServerUpdate $request) {
+        $updateData = $request->only([
+            'show',
+        ]);
+        
+        $server = Server::find($request->input('id'));
+        if (!$server) {
+            abort(500, '该服务器不存在');
+        }
+        if (!$server->update($updateData)) {
+            abort(500, '保存失败');
+        }
+
+        return response([
+            'data' => true
         ]);
     }
 }
