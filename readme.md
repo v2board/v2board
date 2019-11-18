@@ -6,6 +6,7 @@
 - Composer
 - MySQL5.5+
 - Redis
+- Laravel
 
 
 
