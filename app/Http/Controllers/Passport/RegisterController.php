@@ -54,8 +54,10 @@ class RegisterController extends Controller
                 }
             }
             $user->invite_user_id = $inviteCode->user_id ? $inviteCode->user_id : null;
-            $inviteCode->status = 1;
-            $inviteCode->save();
+            if (!(int)config('v2board.invite_never_expire', env('DEFAULT_INVITE_NEVER_EXPIRE'))) {
+                $inviteCode->status = 1;
+                $inviteCode->save();
+            }
         }
 
         if (!$user->save()) {

@@ -21,7 +21,8 @@ class ConfigController extends Controller
                 'invite' => [
                     'invite_force' => (int)config('v2board.invite_force', env('DEFAULT_INVITE_FORCE')),
                     'invite_commission' => config('v2board.invite_commission', env('DEFAULT_INVITE_COMMISSION')),
-                    'invite_gen_limit' => config('v2board.invite_gen_limit', env('DEFAULT_INVITE_GEN_LIMIT'))
+                    'invite_gen_limit' => config('v2board.invite_gen_limit', env('DEFAULT_INVITE_GEN_LIMIT')),
+                    'invite_never_expire' => config('v2board.invite_never_expire', env('DEFAULT_NEVER_EXPIRE'))
                 ],
                 'site' => [
                     'stop_register' => (int)config('v2board.stop_register', env('DEFAULT_STOP_REGISTER')),

@@ -26,8 +26,12 @@ class LoginController extends Controller
         if ($user->is_admin) {
             $request->session()->put('is_admin', true);
         }
-        return response([
+        $res = [
             'data' => true
-        ]);
+        ];
+        if ($user->is_admin) {
+            $res['is_admin'] = true;
+        }
+        return response($res);
     }
 }

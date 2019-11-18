@@ -10,11 +10,12 @@ class ConfigSave extends FormRequest
         return [
             'invite_force',
             'invite_commission',
+            'invite_gen_limit',
+            'invite_nerver_expire',
             'stop_register',
             'email_verify',
             'app_name',
             'app_url',
-            'invite_gen_limit',
             'server_token',
             // alipay
             'alipay_enable',
@@ -39,9 +40,10 @@ class ConfigSave extends FormRequest
         return [
             'invite_force' => 'in:0,1',
             'invite_commission' => 'integer',
+            'invite_gen_limit' => 'integer',
+            'invite_nerver_expire' => 'in:0,1',
             'stop_register' => 'in:0,1',
             'email_verify' => 'in:0,1',
-            'invite_gen_limit' => 'integer',
             'server_token' => 'min:16',
             'app_url' => 'url',
             // alipay
