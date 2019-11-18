@@ -34,6 +34,7 @@ Route::prefix('v1')
                 Route::post('server/group/save', 'Admin\\ServerController@groupSave');
                 Route::post('server/group/drop', 'Admin\\ServerController@groupDrop');
                 Route::post('server/drop', 'Admin\\ServerController@drop');
+                Route::post('server/update', 'Admin\\ServerController@update');
                 // Order
                 Route::get('order', 'Admin\\OrderController@index');
                 Route::post('order/repair', 'Admin\\OrderController@repair');
