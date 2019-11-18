@@ -1,4 +1,5 @@
-<img src="https://user-gold-cdn.xitu.io/2019/11/18/16e7f1c39b59e52b?w=500&h=500&f=png&s=85055" alt="logo" width="130" height="130" align="center" />
+<img src="https://user-gold-cdn.xitu.io/2019/11/18/16e7f1c39b59e52b?w=500&h=500&f=png&s=85055" alt="logo" width="130" height="130" align="center" style="text-align: center" />
+
 ## 依赖环境:
 
 - PHP7.3+
