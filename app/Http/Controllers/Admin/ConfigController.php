@@ -19,14 +19,14 @@ class ConfigController extends Controller
         return response([
             'data' => [
                 'invite' => [
-                    'invite_force' => (int)config('v2board.invite_force', env('DEFAULT_INVITE_FORCE')),
-                    'invite_commission' => config('v2board.invite_commission', env('DEFAULT_INVITE_COMMISSION')),
-                    'invite_gen_limit' => config('v2board.invite_gen_limit', env('DEFAULT_INVITE_GEN_LIMIT')),
-                    'invite_never_expire' => config('v2board.invite_never_expire', env('DEFAULT_NEVER_EXPIRE'))
+                    'invite_force' => (int)config('v2board.invite_force', env('V2BOARD_INVITE_FORCE')),
+                    'invite_commission' => config('v2board.invite_commission', env('V2BOARD_INVITE_COMMISSION')),
+                    'invite_gen_limit' => config('v2board.invite_gen_limit', env('V2BOARD_INVITE_GEN_LIMIT')),
+                    'invite_never_expire' => config('v2board.invite_never_expire', env('V2BOARD_NEVER_EXPIRE'))
                 ],
                 'site' => [
-                    'stop_register' => (int)config('v2board.stop_register', env('DEFAULT_STOP_REGISTER')),
-                    'email_verify' => (int)config('v2board.email_verify', env('DEFAULT_EMAIL_VERIFY')),
+                    'stop_register' => (int)config('v2board.stop_register', env('V2BOARD_STOP_REGISTER')),
+                    'email_verify' => (int)config('v2board.email_verify', env('V2BOARD_EMAIL_VERIFY')),
                     'app_name' => config('v2board.app_name', env('APP_NAME')),
                     'app_url' => config('v2board.app_url', env('APP_URL'))
                 ],

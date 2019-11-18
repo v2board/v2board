@@ -13,7 +13,7 @@ class CommController extends Controller
 {
     public function isEmailVerify () {
         return response([
-            'data' => (int)config('v2board.email_verify', env('DEFAULT_EMAIL_VERIFY')) ? 1 : 0
+            'data' => (int)config('v2board.email_verify', env('V2BOARD_EMAIL_VERIFY')) ? 1 : 0
         ]);
     }
 

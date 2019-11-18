@@ -72,7 +72,7 @@ class OrderController extends Controller
         $order->total_amount = $plan[$request->input('cycle')];
         if ($user->invite_user_id) {
             $order->invite_user_id = $user->invite_user_id;
-            $order->commission_balance = $order->total_amount * (config('v2board.invite_commission', env('DEFAULT_INVITE_COMMISSION')) / 100);
+            $order->commission_balance = $order->total_amount * (config('v2board.invite_commission', env('V2BOARD_INVITE_COMMISSION')) / 100);
         }
         if (!$order->save()) {
             abort(500, '订单创建失败');
