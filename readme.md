@@ -41,4 +41,4 @@
 
 
 ## 其他
-Telegram Channel: @v2board
+Telegram Channel: [@v2board](https://t.me/v2board)
