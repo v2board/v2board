@@ -13,7 +13,7 @@
 
 Route::get('/', function () {
     return view('app', [
-        'title' => config('v2board.app_name', env('APP_NAME')),
-        'theme' => config('v2board.app_theme', env('V2BOARD_APP_THEME'))
+        'title' => config('v2board.app_name', 'V2Board'),
+        'theme' => config('v2board.app_theme', 1)
     ]);
 });

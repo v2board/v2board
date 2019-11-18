@@ -19,16 +19,16 @@ class ConfigController extends Controller
         return response([
             'data' => [
                 'invite' => [
-                    'invite_force' => (int)config('v2board.invite_force', env('V2BOARD_INVITE_FORCE')),
-                    'invite_commission' => config('v2board.invite_commission', env('V2BOARD_INVITE_COMMISSION')),
-                    'invite_gen_limit' => config('v2board.invite_gen_limit', env('V2BOARD_INVITE_GEN_LIMIT')),
-                    'invite_never_expire' => config('v2board.invite_never_expire', env('V2BOARD_NEVER_EXPIRE'))
+                    'invite_force' => (int)config('v2board.invite_force', 0),
+                    'invite_commission' => config('v2board.invite_commission', 10),
+                    'invite_gen_limit' => config('v2board.invite_gen_limit', 5),
+                    'invite_never_expire' => config('v2board.invite_never_expire', 0)
                 ],
                 'site' => [
-                    'stop_register' => (int)config('v2board.stop_register', env('V2BOARD_STOP_REGISTER')),
-                    'email_verify' => (int)config('v2board.email_verify', env('V2BOARD_EMAIL_VERIFY')),
-                    'app_name' => config('v2board.app_name', env('APP_NAME')),
-                    'app_url' => config('v2board.app_url', env('APP_URL'))
+                    'stop_register' => (int)config('v2board.stop_register', 0),
+                    'email_verify' => (int)config('v2board.email_verify', 0),
+                    'app_name' => config('v2board.app_name', 'V2Board'),
+                    'app_url' => config('v2board.app_url')
                 ],
                 'pay' => [
                     // alipay

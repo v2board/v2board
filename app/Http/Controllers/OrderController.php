@@ -72,7 +72,7 @@ class OrderController extends Controller
         $order->total_amount = $plan[$request->input('cycle')];
         if ($user->invite_user_id) {
             $order->invite_user_id = $user->invite_user_id;
-            $order->commission_balance = $order->total_amount * (config('v2board.invite_commission', env('V2BOARD_INVITE_COMMISSION')) / 100);
+            $order->commission_balance = $order->total_amount * (config('v2board.invite_commission', 10) / 100);
         }
         if (!$order->save()) {
             abort(500, '订单创建失败');
@@ -180,7 +180,7 @@ class OrderController extends Controller
         $gateway->setNotifyUrl(config('v2board.app_url', env('APP_URL')) . '/api/v1/guest/order/alipayNotify');
         $request = $gateway->purchase();
         $request->setBizContent([
-            'subject'      => config('v2board.app_name') . ' - 订阅',
+            'subject'      => config('v2board.app_name', 'V2Board') . ' - 订阅',
             'out_trade_no' => $tradeNo,
             'total_amount' => $totalAmount / 100
         ]);
