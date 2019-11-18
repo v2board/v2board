@@ -15,7 +15,7 @@ class ClientController extends Controller
         $user = $request->user;
         $server = [];
         if ($user->expired_at > time()) {
-          $servers = Server::all();
+          $servers = Server::where('show', 1)->get();
           foreach ($servers as $item) {
               $groupId = json_decode($item['group_id']);
               if (in_array($user->group_id, $groupId)) {
