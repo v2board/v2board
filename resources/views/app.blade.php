@@ -10,7 +10,8 @@
         <script>window.routerBase = "/";</script>
         <script>
             window.v2board = {
-                title: '{{$title}}'
+                title: '{{$title}}',
+                theme: 1
             }
         </script>
     </head>
