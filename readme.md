@@ -38,7 +38,7 @@
 4. 执行 `docker-compose up -d` 启动服务
 
 ## 注意
-每次修改 `.env` 文件后需要执行 `docker run --rm -v $(pwd):/app composer sh init.sh`
+每次修改 `.env` 文件后需要执行 `docker run --rm -v $(pwd):/app composer artisan config:cache`
 
 
 ## 其他
