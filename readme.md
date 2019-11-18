@@ -38,3 +38,7 @@
 
 ## 注意
 每次修改 `.env` 文件后需要执行 `docker run --rm -v $(pwd):/app composer sh init.sh`
+
+
+## 其他
+Telegram Channel: @v2board
