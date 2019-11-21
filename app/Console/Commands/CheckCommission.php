@@ -44,7 +44,7 @@ class CheckCommission extends Command
             ->get();
         foreach ($order as $item) {
             if ($item->invite_user_id) {
-                $inviter = User::find($order->invite_user_id);
+                $inviter = User::find($item->invite_user_id);
                 if (!$inviter) continue;
                 $inviter->commission_balance = $inviter->commission_balance + $order->commission_balance;
                 if ($inviter->save()) {
