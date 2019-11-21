@@ -23,14 +23,16 @@ class ClientController extends Controller
               }
           }
         }
-        if(strpos($_SERVER['HTTP_USER_AGENT'], 'Quantumult%20X') !== false) {
-          die($this->quantumultX($user, $server));
-        }
-        if(strpos($_SERVER['HTTP_USER_AGENT'], 'Quantumult') !== false) {
-          die($this->quantumult($user, $server));
-        }
-        if(strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'clash') !== false) {
-          die($this->clash($user, $server));
+        if(isset($_SERVER['HTTP_USER_AGENT'])) {
+          if(strpos($_SERVER['HTTP_USER_AGENT'], 'Quantumult%20X') !== false) {
+            die($this->quantumultX($user, $server));
+          }
+          if(strpos($_SERVER['HTTP_USER_AGENT'], 'Quantumult') !== false) {
+            die($this->quantumult($user, $server));
+          }
+          if(strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'clash') !== false) {
+            die($this->clash($user, $server));
+          }
         }
         die($this->origin($user, $server));
     }
