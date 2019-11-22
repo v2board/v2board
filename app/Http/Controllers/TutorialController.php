@@ -20,13 +20,13 @@ class TutorialController extends Controller
         if ($user->expired_at < time()) {
             return response([
                 'data' => false
-            ])
+            ]);
         }
         return response([
             'data' => [
                 'apple_id' => config('v2board.apple_id'),
                 'apple_id_password' => config('v2board.apple_id_password')
             ]
-        ])
+        ]);
     }
 }
