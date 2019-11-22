@@ -27,7 +27,10 @@ class ConfigSave extends FormRequest
             'stripe_pk_live',
             'stripe_alipay_enable',
             'stripe_wepay_enable',
-            'stripe_webhook_key'
+            'stripe_webhook_key',
+            // tutorial
+            'apple_id',
+            'apple_id_password'
         ];
     }
     /**
@@ -53,7 +56,9 @@ class ConfigSave extends FormRequest
             'alipay_privkey' => 'max:2048',
             // stripe
             'stripe_alipay_enable' => 'in:0,1',
-            'stripe_wepay_enable' => 'in:0,1'
+            'stripe_wepay_enable' => 'in:0,1',
+            // tutorial
+            'apple_id' => 'email'
         ];
     }
     

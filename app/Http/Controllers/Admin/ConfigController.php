@@ -45,6 +45,9 @@ class ConfigController extends Controller
                 ],
                 'server' => [
                     'server_token' => config('v2board.server_token')
+                ],
+                'tutorial' => [
+                    'apple_id' => config('v2board.apple_id')
                 ]
             ]
         ]);
