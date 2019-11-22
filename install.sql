@@ -55,11 +55,13 @@ CREATE TABLE `v2_plan` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
+SET NAMES utf8mb4;
+
 DROP TABLE IF EXISTS `v2_server`;
 CREATE TABLE `v2_server` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `group_id` varchar(255) NOT NULL,
-  `name` varchar(255) NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
   `host` varchar(255) NOT NULL,
   `port` int(11) NOT NULL,
   `server_port` int(11) NOT NULL,
@@ -68,6 +70,7 @@ CREATE TABLE `v2_server` (
   `rate` varchar(11) NOT NULL,
   `network` varchar(11) NOT NULL,
   `settings` text,
+  `show` tinyint(1) NOT NULL DEFAULT '0',
   `last_check_at` int(11) DEFAULT NULL,
   `created_at` int(11) NOT NULL,
   `updated_at` int(11) NOT NULL,
@@ -129,4 +132,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2019-11-06 04:36:56
+-- 2019-11-22 05:01:40
