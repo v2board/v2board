@@ -16,6 +16,8 @@ class ConfigSave extends FormRequest
             'email_verify',
             'app_name',
             'app_url',
+            'subscribe_url',
+            // server
             'server_token',
             // alipay
             'alipay_enable',
@@ -47,8 +49,10 @@ class ConfigSave extends FormRequest
             'invite_never_expire' => 'in:0,1',
             'stop_register' => 'in:0,1',
             'email_verify' => 'in:0,1',
-            'server_token' => 'min:16',
             'app_url' => 'url',
+            'subscribe_url' => 'url',
+            // server
+            'server_token' => 'min:16',
             // alipay
             'alipay_enable' => 'in:0,1',
             'alipay_appid' => 'integer|min:16',
