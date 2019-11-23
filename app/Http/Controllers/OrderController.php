@@ -70,6 +70,13 @@ class OrderController extends Controller
         $order->cycle = $request->input('cycle');
         $order->trade_no = Helper::guid();
         $order->total_amount = $plan[$request->input('cycle')];
+        if ($user->expired_at > time() && $order->plan_id !== $user->plan_id) {
+            $order->type = 3;
+        } else if ($user->expired_at > time() && $order->plan_id == $user->plan_id) {
+            $order->type = 2;
+        } else {
+            $order->type = 1;
+        }
         if ($user->invite_user_id) {
             $order->invite_user_id = $user->invite_user_id;
             $order->commission_balance = $order->total_amount * (config('v2board.invite_commission', 10) / 100);
