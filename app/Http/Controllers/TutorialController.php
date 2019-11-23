@@ -8,14 +8,14 @@ use App\Models\User;
 
 class TutorialController extends Controller
 {
-    public function getSubscribeUrl () {
+    public function getSubscribeUrl (Request $request) {
         $user = User::find($request->session()->get('id'));
         return response([
             'data' => config('v2board.app_url', env('APP_URL')) . '/api/v1/client/subscribe?token=' . $user['token']
         ]);
     }
 
-    public function getAppleID () {
+    public function getAppleID (Request $request) {
         $user = User::find($request->session()->get('id'));
         if ($user->expired_at < time()) {
             return response([
