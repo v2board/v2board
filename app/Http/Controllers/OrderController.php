@@ -177,7 +177,7 @@ class OrderController extends Controller
         $gateway->setAppId(config('v2board.alipay_appid'));
         $gateway->setPrivateKey(config('v2board.alipay_privkey')); // 可以是路径，也可以是密钥内容
         $gateway->setAlipayPublicKey(config('v2board.alipay_pubkey')); // 可以是路径，也可以是密钥内容
-        $gateway->setNotifyUrl(config('v2board.app_url', env('APP_URL')) . '/api/v1/guest/order/alipayNotify');
+        $gateway->setNotifyUrl(url('/api/v1/guest/order/alipayNotify'));
         $request = $gateway->purchase();
         $request->setBizContent([
             'subject'      => config('v2board.app_name', 'V2Board') . ' - 订阅',
@@ -205,7 +205,7 @@ class OrderController extends Controller
             'currency' => 'hkd',
             'type' => 'alipay',
             'redirect' => [
-                'return_url' => config('v2board.app_url', env('APP_URL')) . '/api/v1/guest/order/stripeReturn'
+                'return_url' => url('/api/v1/guest/order/stripeReturn')
             ]
         ]);
         if (!$source['redirect']['url']) {
@@ -229,7 +229,7 @@ class OrderController extends Controller
             'currency' => 'hkd',
             'type' => 'wechat',
             'redirect' => [
-                'return_url' => config('v2board.app_url', env('APP_URL')) . '/api/v1/guest/order/stripeReturn'
+                'return_url' => url('/api/v1/guest/order/stripeReturn')
             ]
         ]);
         if (!$source['wechat']['qr_code_url']) {

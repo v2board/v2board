@@ -111,7 +111,7 @@ CREATE TABLE `v2_user` (
   `u` bigint(20) NOT NULL DEFAULT '0',
   `d` bigint(20) NOT NULL DEFAULT '0',
   `transfer_enable` bigint(20) NOT NULL DEFAULT '0',
-  `enable` tinyint(1) NOT NULL DEFAULT '0',
+  `enable` tinyint(1) NOT NULL DEFAULT '1',
   `banned` tinyint(1) NOT NULL DEFAULT '0',
   `is_admin` tinyint(1) NOT NULL DEFAULT '0',
   `last_login_at` int(11) NOT NULL,
@@ -132,4 +132,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2019-11-22 05:01:40
+-- 2019-11-23 14:25:15
