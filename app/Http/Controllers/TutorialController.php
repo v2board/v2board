@@ -12,7 +12,7 @@ class TutorialController extends Controller
         $user = User::find($request->session()->get('id'));
         return response([
             'data' => [
-                'subscribe_url' => config('v2board.app_url', env('APP_URL')) . '/api/v1/client/subscribe?token=' . $user['token']
+                'subscribe_url' => config('v2board.subscribe_url', config('v2board.app_url', env('APP_URL'))) . '/api/v1/client/subscribe?token=' . $user['token']
             ]
         ]);
     }
