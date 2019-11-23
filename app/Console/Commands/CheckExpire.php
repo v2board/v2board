@@ -41,7 +41,7 @@ class CheckExpire extends Command
     {
         $user = User::all();
         foreach ($user as $item) {
-            if ($item->expired_at < time()) {
+            if ($item->expired_at < time() || $item->u + $item->d >= $item->transfer_enable) {
                 $item->enable = 0;
             } else {
                 $item->enable = 1;
