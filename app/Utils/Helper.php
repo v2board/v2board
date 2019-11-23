@@ -49,4 +49,23 @@ class Helper
         }
         return $str;
     }
+
+    public static function buildVmessLink($item, $user) {
+        $config = [
+            "ps" => $item->name,
+            "add" => $item->host,
+            "port" => $item->port,
+            "id" => $user->v2ray_uuid,
+            "aid" => "2",
+            "net" => $item->network,
+            "type" => "chacha20-poly1305",
+            "host" => "",
+            "tls" => $item->tls?"tls":"",
+        ];
+        if ($item->network == 'ws') {
+            $wsSettings = json_decode($item->settings);
+            if ($wsSettings->path) $config['path'] = $wsSettings->path;
+        }
+        return "vmess://".base64_encode(json_encode($config))."\r\n";
+    }
 }

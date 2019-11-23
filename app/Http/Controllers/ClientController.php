@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Plan;
 use App\Models\Server;
+use App\Utils\Helper;
 use Symfony\Component\Yaml\Yaml;
 
 class ClientController extends Controller
@@ -75,22 +76,7 @@ class ClientController extends Controller
     private function origin ($user, $server) {
       $uri = '';
       foreach($server as $item) {
-        $config = [
-          "ps" => $item->name,
-          "add" => $item->host,
-          "port" => $item->port,
-          "id" => $user->v2ray_uuid,
-          "aid" => "2",
-          "net" => $item->network,
-          "type" => "chacha20-poly1305",
-          "host" => "",
-          "tls" => $item->tls?"tls":"",
-        ];
-        if ($item->network == 'ws') {
-          $wsSettings = json_decode($item->settings);
-          if ($wsSettings->path) $config['path'] = $wsSettings->path;
-        }
-        $uri .= "vmess://".base64_encode(json_encode($config))."\r\n";
+        $uri .= Helper::buildVmessLink($item, $user);
       }
       return base64_encode($uri);
     }
