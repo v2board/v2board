@@ -11,7 +11,9 @@ class TutorialController extends Controller
     public function getSubscribeUrl (Request $request) {
         $user = User::find($request->session()->get('id'));
         return response([
-            'data' => config('v2board.app_url', env('APP_URL')) . '/api/v1/client/subscribe?token=' . $user['token']
+            'data' => [
+                'subscribe_url' => config('v2board.app_url', env('APP_URL')) . '/api/v1/client/subscribe?token=' . $user['token']
+            ]
         ]);
     }
 
