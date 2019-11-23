@@ -104,7 +104,7 @@ class UserController extends Controller
                 }
             }
         }
-        for ($i = 0; $i <= count($server); $i++) {
+        for ($i = 0; $i < count($server); $i++) {
             $server[$i]['link'] = Helper::buildVmessLink($server[$i], $user);
         }
         $user['subscribe_url'] = config('v2board.subscribe_url', config('v2board.app_url', env('APP_URL'))) . '/api/v1/client/subscribe?token=' . $user['token'];
