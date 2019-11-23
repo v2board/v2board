@@ -19,7 +19,7 @@ class TutorialController extends Controller
 
     public function getAppleID (Request $request) {
         $user = User::find($request->session()->get('id'));
-        if ($user->expired_at >= time()) {
+        if ($user->expired_at < time()) {
             return response([
                 'data' => [
                 ]
