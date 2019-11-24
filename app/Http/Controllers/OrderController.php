@@ -40,6 +40,7 @@ class OrderController extends Controller
             abort(500, '订单不存在');
         }
         $order['plan'] = Plan::find($order->plan_id);
+        $order['upgrade_fee'] = config('v2board.upgrade_fee', 0.5);
         if (!$order['plan']) {
             abort(500, '订阅不存在');
         }

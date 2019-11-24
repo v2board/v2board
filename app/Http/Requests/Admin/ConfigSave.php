@@ -17,8 +17,8 @@ class ConfigSave extends FormRequest
             'app_name',
             'app_url',
             'subscribe_url',
-            'plan_upgrade_fee',
-            'plan_is_upgrade',
+            'plan_update_fee',
+            'plan_is_update',
             // server
             'server_token',
             // alipay
@@ -53,6 +53,8 @@ class ConfigSave extends FormRequest
             'email_verify' => 'in:0,1',
             'app_url' => 'url',
             'subscribe_url' => 'url',
+            'plan_update_fee' => 'in:0,1',
+            'plan_is_update' => 'numeric',
             // server
             'server_token' => 'min:16',
             // alipay

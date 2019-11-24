@@ -30,8 +30,8 @@ class ConfigController extends Controller
                     'app_name' => config('v2board.app_name', 'V2Board'),
                     'app_url' => config('v2board.app_url'),
                     'subscribe_url' => config('v2board.subscribe_url'),
-                    'plan_upgrade_fee' => config('v2board.plan_upgrade_fee', 0.5),
-                    'plan_is_upgrade' => config('v2board.plan_is_upgrade', 1)
+                    'plan_update_fee' => config('v2board.plan_update_fee', 0.5),
+                    'plan_is_update' => config('v2board.plan_is_update', 1)
                 ],
                 'pay' => [
                     // alipay
