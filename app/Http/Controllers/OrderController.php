@@ -40,7 +40,7 @@ class OrderController extends Controller
             abort(500, '订单不存在');
         }
         $order['plan'] = Plan::find($order->plan_id);
-        $order['upgrade_fee'] = config('v2board.upgrade_fee', 0.5);
+        $order['update_fee'] = config('v2board.plan_update_fee', 0.5);
         if (!$order['plan']) {
             abort(500, '订阅不存在');
         }
@@ -73,8 +73,8 @@ class OrderController extends Controller
         $order->total_amount = $plan[$request->input('cycle')];
         if ($user->expired_at > time() && $order->plan_id !== $user->plan_id) {
             $order->type = 3;
-            if ($plan->transfer_enable * 1073741824 < $user->transfer_enable) abort(500, '目前仅允许升级订阅计划');
-            
+            if (!(int)config('v2board.plan_is_update')) abort(500, '目前不允许更改订阅，请联系管理员');
+            $order->total_amount = $order->total_amount + ((($user->expired_at - time()) / 86400) * config('v2board.plan_update_fee', 0.5) * 100);
         } else if ($user->expired_at > time() && $order->plan_id == $user->plan_id) {
             $order->type = 2;
         } else {
