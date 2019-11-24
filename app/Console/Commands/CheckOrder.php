@@ -44,6 +44,7 @@ class CheckOrder extends Command
         $order = Order::get();
         foreach ($order as $item) {
             switch ($item->status) {
+                // cancel
                 case 0:
                     if (strtotime($item->created_at) <= (time() - 1800)) {
                         $item->status = 2;
@@ -60,9 +61,7 @@ class CheckOrder extends Command
     
     private function orderHandle ($order) {
         $user = User::find($order->user_id);
-        if (!$user->plan_id || $order->plan_id == $user->plan_id) {
-            return $this->buy($order, $user);
-        }
+        return $this->buy($order, $user);
     }
     
     private function buy ($order, $user) {
