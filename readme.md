@@ -45,6 +45,8 @@
 ## 注意
 每次修改 `.env` 文件后需要执行 `docker run --rm -v $(pwd):/app composer artisan config:cache`
 
+## 投喂
+ETH&(USDT-ERC20): 0x84F85A89105B93F74c3b5db6410Ee8630F01063f
 
 ## 其他
 Telegram Channel: [@v2board](https://t.me/v2board)
