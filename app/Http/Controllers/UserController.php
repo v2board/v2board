@@ -55,7 +55,8 @@ class UserController extends Controller
                 'enable',
                 'is_admin',
                 'remind_expire',
-                'remind_traffic'
+                'remind_traffic',
+                'expired_at'
             ])
             ->first();
         $user['avatar_url'] = 'https://cdn.v2ex.com/gravatar/' . md5($user->email) . '?s=64&d=identicon';
