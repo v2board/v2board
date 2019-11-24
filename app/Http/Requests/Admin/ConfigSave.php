@@ -17,6 +17,8 @@ class ConfigSave extends FormRequest
             'app_name',
             'app_url',
             'subscribe_url',
+            'plan_upgrade_fee',
+            'plan_is_upgrade',
             // server
             'server_token',
             // alipay

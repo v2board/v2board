@@ -72,6 +72,8 @@ class OrderController extends Controller
         $order->total_amount = $plan[$request->input('cycle')];
         if ($user->expired_at > time() && $order->plan_id !== $user->plan_id) {
             $order->type = 3;
+            if ($plan->transfer_enable * 1073741824 < $user->transfer_enable) abort(500, '目前仅允许升级订阅计划');
+            
         } else if ($user->expired_at > time() && $order->plan_id == $user->plan_id) {
             $order->type = 2;
         } else {
