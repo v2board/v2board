@@ -11,7 +11,14 @@ use Illuminate\Support\Facades\Redis;
 
 class CommController extends Controller
 {
-    public function isEmailVerify () {
+    public function config () {
+        return response([
+            'isEmailVerify' => (int)config('v2board.email_verify', 0) ? 1 : 0,
+            'isInviteForce' => (int)config('v2board.invite_force', 0) ? 1 : 0,
+        ]);
+    }
+
+    private function isEmailVerify () {
         return response([
             'data' => (int)config('v2board.email_verify', 0) ? 1 : 0
         ]);

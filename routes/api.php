@@ -77,7 +77,7 @@ Route::prefix('v1')
                 // Register
                 Route::post('register', 'Passport\\RegisterController@index');
                 // Comm
-                Route::get('isEmailVerify', 'Passport\\CommController@isEmailVerify');
+                Route::get('config', 'Passport\\CommController@config');
                 Route::post('sendEmailVerify', 'Passport\\CommController@sendEmailVerify');
                 // Login
                 Route::post('login', 'Passport\\LoginController@index');
