@@ -14,6 +14,7 @@
 Route::get('/', function () {
     return view('app', [
         'title' => config('v2board.app_name', 'V2Board'),
-        'theme' => config('v2board.app_theme', 1)
+        'theme' => config('v2board.app_theme', 1),
+        'verison' => '0.1.6'
     ]);
 });
