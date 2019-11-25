@@ -64,6 +64,10 @@ class OrderController extends Controller
         if (!$plan->show && !$plan->renew) {
             abort(500, '该订阅无法续费，请更换其他订阅');
         }
+
+        if (!(int)$plan[$request->input('cycle')]) {
+            abort(500, '该订阅周期无法进行购买，请选择其他周期');
+        }
         
         $order = new Order();
         $order->user_id = $request->session()->get('id');
