@@ -13,8 +13,10 @@ class CommController extends Controller
 {
     public function config () {
         return response([
-            'isEmailVerify' => (int)config('v2board.email_verify', 0) ? 1 : 0,
-            'isInviteForce' => (int)config('v2board.invite_force', 0) ? 1 : 0,
+            'data' => [
+                'isEmailVerify' => (int)config('v2board.email_verify', 0) ? 1 : 0,
+                'isInviteForce' => (int)config('v2board.invite_force', 0) ? 1 : 0,
+            ]
         ]);
     }
 
