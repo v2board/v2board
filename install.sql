@@ -23,6 +23,7 @@ CREATE TABLE `v2_order` (
   `invite_user_id` int(11) DEFAULT NULL,
   `user_id` int(11) NOT NULL,
   `plan_id` int(11) NOT NULL,
+  `type` int(11) NOT NULL COMMENT '1新购2续费3升级',
   `cycle` varchar(255) NOT NULL,
   `trade_no` varchar(36) NOT NULL,
   `callback_no` varchar(255) DEFAULT NULL,
@@ -55,13 +56,11 @@ CREATE TABLE `v2_plan` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-SET NAMES utf8mb4;
-
 DROP TABLE IF EXISTS `v2_server`;
 CREATE TABLE `v2_server` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `group_id` varchar(255) NOT NULL,
-  `name` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
+  `name` varchar(255) NOT NULL,
   `host` varchar(255) NOT NULL,
   `port` int(11) NOT NULL,
   `server_port` int(11) NOT NULL,
@@ -106,6 +105,7 @@ CREATE TABLE `v2_user` (
   `invite_user_id` int(11) DEFAULT NULL,
   `email` varchar(64) NOT NULL,
   `password` varchar(64) NOT NULL,
+  `commission_rate` int(11) DEFAULT NULL,
   `commission_balance` int(11) NOT NULL DEFAULT '0',
   `t` int(11) NOT NULL DEFAULT '0',
   `u` bigint(20) NOT NULL DEFAULT '0',
@@ -132,4 +132,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2019-11-23 14:25:15
+-- 2019-11-27 11:46:36

@@ -41,7 +41,9 @@ class UserController extends Controller
     		'password',
     		'transfer_enable',
     		'expired_at',
-    		'banned',
+            'banned',
+            'plan_id',
+            'commission_rate',
     		'is_admin'
 		]);
         $user = User::find($request->input('id'));
@@ -57,6 +59,13 @@ class UserController extends Controller
         	unset($updateData['password']);
         }
         $updateData['transfer_enable'] = $updateData['transfer_enable'] * 1073741824;
+        if ($updateData['plan_id']) {
+            $plan = Plan::find($updateData['plan_id']);
+            if (!$plan) {
+                abort(500, '订阅计划不存在');
+            }
+            $updateData['group_id'] = $plan->group_id;
+        }
         if (!$user->update($updateData)) {
             abort(500, '保存失败');
         }
