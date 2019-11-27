@@ -53,13 +53,13 @@ class UserController extends Controller
         if (User::where('email', $updateData['email'])->first() && $user->email !== $updateData['email']) {
             abort(500, '邮箱已被使用');
         }
-        if ($updateData['password']) {
+        if (isset($updateData['password'])) {
         	$updateData['password'] = password_hash($updateData['password'], PASSWORD_DEFAULT);
         } else {
         	unset($updateData['password']);
         }
         $updateData['transfer_enable'] = $updateData['transfer_enable'] * 1073741824;
-        if ($updateData['plan_id']) {
+        if (isset($updateData['plan_id'])) {
             $plan = Plan::find($updateData['plan_id']);
             if (!$plan) {
                 abort(500, '订阅计划不存在');
