@@ -87,12 +87,10 @@ class OrderController extends Controller
         if ($user->invite_user_id) {
             $order->invite_user_id = $user->invite_user_id;
             $inviter = User::find($user->invite_user_id);
-            if ($inviter) {
-                if ($inviter->commission_rate) {
-                    $order->commission_balance = $order->total_amount * ($inviter->commission_rate / 100);
-                } else {
-                    $order->commission_balance = $order->total_amount * (config('v2board.invite_commission', 10) / 100);
-                }
+            if ($inviter && $inviter->commission_rate) {
+                $order->commission_balance = $order->total_amount * ($inviter->commission_rate / 100);
+            } else {
+                $order->commission_balance = $order->total_amount * (config('v2board.invite_commission', 10) / 100);
             }
         }
         if (!$order->save()) {
