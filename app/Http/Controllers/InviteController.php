@@ -23,6 +23,21 @@ class InviteController extends Controller
         ]);
     }
 
+    public function details (Request $request) {
+        return response([
+            'data' => Order::where('invite_user_id', $request->session()->get('id'))
+                ->where('status', 1)
+                ->select([
+                    'id',
+                    'commission_status',
+                    'commission_balance',
+                    'created_at',
+                    'updated_at'
+                ])
+                ->get()
+        ]);
+    }
+
     public function index (Request $request) {
         $codes = InviteCode::where('user_id', $request->session()->get('id'))
             ->where('status', 0)

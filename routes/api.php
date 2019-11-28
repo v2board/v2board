@@ -66,6 +66,7 @@ Route::prefix('v1')
                 // Invite
                 Route::get('invite', 'InviteController@index');
                 Route::get('invite/save', 'InviteController@save');
+                Route::get('invite/details', 'InviteController@details');
                 // Tutorial
                 Route::get('tutorial/getSubscribeUrl', 'TutorialController@getSubscribeUrl');
                 Route::get('tutorial/getAppleID', 'TutorialController@getAppleID');
