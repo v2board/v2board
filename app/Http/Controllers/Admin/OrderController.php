@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Requests\Admin\OrderUpdate;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
@@ -37,6 +38,27 @@ class OrderController extends Controller
         return response([
             'data' => $res,
             'total' => $total
+        ]);
+    }
+
+    public function update (OrderUpdate $request) {
+        $updateData = $request->only([
+            'status',
+            'commission_status'
+        ]);
+
+        $order = Order::where('trade_no', $request->input('trade_no'))
+            ->first();
+        if (!$order) {
+            abort(500, '订单不存在');
+        }
+
+        if (!$order->update($updateData)) {
+            abort(500, '保存失败');
+        }
+
+        return response([
+            'data' => true
         ]);
     }
 

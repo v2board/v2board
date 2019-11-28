@@ -38,6 +38,7 @@ Route::prefix('v1')
                 // Order
                 Route::get('order', 'Admin\\OrderController@index');
                 Route::post('order/repair', 'Admin\\OrderController@repair');
+                Route::post('order/update', 'Admin\\OrderController@update');
                 // User
                 Route::get('user', 'Admin\\UserController@index');
                 Route::post('user/update', 'Admin\\UserController@update');
