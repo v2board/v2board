@@ -17,6 +17,9 @@ class OrderController extends Controller
         if ($request->input('trade_no')) {
             $orderModel->where('trade_no', $request->input('trade_no'));
         }
+        if ($request->input('is_commission')) {
+            $orderModel->where('invite_user_id', '!=', NULL);
+        }
         $total = $orderModel->count();
         $res = $orderModel->forPage($current, $pageSize)
             ->get();
