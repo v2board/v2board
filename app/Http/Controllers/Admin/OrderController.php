@@ -20,6 +20,9 @@ class OrderController extends Controller
         if ($request->input('is_commission')) {
             $orderModel->where('invite_user_id', '!=', NULL);
         }
+        if ($request->input('id')) {
+            $orderModel->where('id', $request->input('id'));
+        }
         $total = $orderModel->count();
         $res = $orderModel->forPage($current, $pageSize)
             ->get();
