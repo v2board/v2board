@@ -26,7 +26,7 @@ class InviteController extends Controller
     public function details (Request $request) {
         return response([
             'data' => Order::where('invite_user_id', $request->session()->get('id'))
-                ->where('status', 1)
+                ->where('status', 3)
                 ->select([
                     'id',
                     'commission_status',
