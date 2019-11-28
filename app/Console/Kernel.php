@@ -26,7 +26,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('check:order')->everyMinute();
         $schedule->command('check:expire')->everyMinute();
-        $schedule->command('check:commission')->hourly();
+        $schedule->command('check:commission')->everyMinute();
         // $schedule->command('inspire')
         //          ->hourly();
     }
