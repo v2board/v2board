@@ -39,7 +39,7 @@ class CheckCommission extends Command
      */
     public function handle()
     {
-        $order = Order::where('commission_status', 0)
+        $order = Order::where('commission_status', 1)
             ->where('status', 3)
             ->get();
         foreach ($order as $item) {
@@ -48,7 +48,7 @@ class CheckCommission extends Command
                 if (!$inviter) continue;
                 $inviter->commission_balance = $inviter->commission_balance + $item->commission_balance;
                 if ($inviter->save()) {
-                    $item->commission_status = 1;
+                    $item->commission_status = 2;
                     $item->save();
                 }
             }

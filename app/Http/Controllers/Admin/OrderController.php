@@ -55,7 +55,7 @@ class OrderController extends Controller
         }
 
         if (!$order->update($updateData)) {
-            abort(500, '保存失败');
+            abort(500, '更新失败');
         }
 
         return response([
