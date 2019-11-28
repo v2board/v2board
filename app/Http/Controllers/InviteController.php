@@ -27,6 +27,11 @@ class InviteController extends Controller
         $codes = InviteCode::where('user_id', $request->session()->get('id'))
             ->where('status', 0)
             ->get();
+        $commission_rate = config('v2board.invite_commission');
+        $user = User::find($request->session()->get('id'));
+        if ($user->commission_rate) {
+            $commission_rate = $user->commission_rate;
+        }
         $stat = [
             //已注册用户数
             (int)User::where('invite_user_id', $request->session()->get('id'))->count(),
@@ -40,9 +45,8 @@ class InviteController extends Controller
                 ->where('commission_status', 0)
                 ->where('invite_user_id', $request->session()->get('id'))
                 ->sum('commission_balance'),
-            //已提现佣金
-            0
-            
+            //佣金比例
+            (int)$commission_rate
         ];
         return response([
             'data' => [
