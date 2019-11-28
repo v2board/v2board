@@ -28,7 +28,7 @@ class OrderController extends Controller
                 if (!$order) {
                     abort(500, 'fail');
                 }
-                if ($order->status !== 0) {
+                if ($order->status == 1) {
                     die('success');
                 }
                 $order->status = 1;
