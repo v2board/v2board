@@ -46,7 +46,7 @@ class CheckCommission extends Command
             if ($item->invite_user_id) {
                 $inviter = User::find($item->invite_user_id);
                 if (!$inviter) continue;
-                $inviter->commission_balance = $inviter->commission_balance + $order->commission_balance;
+                $inviter->commission_balance = $inviter->commission_balance + $item->commission_balance;
                 if ($inviter->save()) {
                     $item->commission_status = 1;
                     $item->save();
