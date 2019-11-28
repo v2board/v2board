@@ -105,6 +105,7 @@ CREATE TABLE `v2_user` (
   `invite_user_id` int(11) DEFAULT NULL,
   `email` varchar(64) NOT NULL,
   `password` varchar(64) NOT NULL,
+  `balance` int(11) NOT NULL DEFAULT '0',
   `commission_rate` int(11) DEFAULT NULL,
   `commission_balance` int(11) NOT NULL DEFAULT '0',
   `t` int(11) NOT NULL DEFAULT '0',
@@ -132,4 +133,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2019-11-27 11:46:36
+-- 2019-11-28 17:14:25
