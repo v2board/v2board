@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Order;
 use Omnipay\Omnipay;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Redis;
 
 class OrderController extends Controller
 {
@@ -70,9 +71,13 @@ class OrderController extends Controller
 
         $obj = $event->data->object;
         if ($obj['status'] == 'chargeable') {
-            $order = Order::where('callback_no', $obj['id'])->first();
+            $trade_no = Redis::get($obj['id']);
+            if (!$trade_no) {
+                abort(500, 'redis is not found trade no by stripe source id.');
+            }
+            $order = Order::where('trade_no', $trade_no)->first();
             if (!$order) {
-                abort(500, 'fail');
+                abort(500, 'order is not found');
             }
             if ($order->status !== 0) {
                 die('order is paid');
@@ -81,6 +86,7 @@ class OrderController extends Controller
             if (!$order->save()) {
                 abort(500, 'fail');
             }
+            Redis::del($obj['id']);
             die('success');
         }
     }
