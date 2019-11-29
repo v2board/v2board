@@ -69,13 +69,13 @@ class OrderController extends Controller
         }
 
         $obj = $event->data->object;
-        if ($obj['status'] == 'succeeded') {
-            $order = Order::where('callback_no', $obj['source']['id'])->first();
+        if ($obj['status'] == 'chargeable') {
+            $order = Order::where('callback_no', $obj['id'])->first();
             if (!$order) {
                 abort(500, 'fail');
             }
             if ($order->status !== 0) {
-                die('success');
+                die('order is paid');
             }
             $order->status = 1;
             if (!$order->save()) {
