@@ -83,6 +83,7 @@ class OrderController extends Controller
                 die('order is paid');
             }
             $order->status = 1;
+            $order->callback_no = $obj['id'];
             if (!$order->save()) {
                 abort(500, 'fail');
             }
