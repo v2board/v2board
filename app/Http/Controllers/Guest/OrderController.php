@@ -71,7 +71,7 @@ class OrderController extends Controller
         switch ($event->type) {
             case 'source.chargeable':
                 $source = $event->data->object;
-                $charge = Charge::create([
+                $charge = \Stripe\Charge::create([
                     'amount' => $source['amount'],
                     'currency' => $source['currency'],
                     'source' => $source['id'],
