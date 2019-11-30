@@ -83,6 +83,8 @@ Route::prefix('v1')
                 Route::post('sendEmailVerify', 'Passport\\CommController@sendEmailVerify');
                 // Login
                 Route::post('login', 'Passport\\LoginController@index');
+                // Forget
+                Route::post('forget', 'Passport\\ForgetController@index');
             });
         // No Auth
         Route::prefix('guest')

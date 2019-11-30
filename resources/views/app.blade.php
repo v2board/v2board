@@ -12,7 +12,8 @@
         <script>
             window.v2board = {
                 title: '{{$title}}',
-                theme: '{{$theme}}'
+                theme: '{{$theme}}',
+                verison: '{{$verison}}'
             }
         </script>
     </head>
