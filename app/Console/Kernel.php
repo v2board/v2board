@@ -24,11 +24,14 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        // check order
         $schedule->command('check:order')->everyMinute();
+        // check expire
         $schedule->command('check:expire')->everyMinute();
+        // check commission
         $schedule->command('check:commission')->everyMinute();
-        // $schedule->command('inspire')
-        //          ->hourly();
+        // system cache
+        $schedule->command('system:cache')->everyMinute();
     }
 
     /**
