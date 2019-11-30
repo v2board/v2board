@@ -68,27 +68,37 @@ class OrderController extends Controller
         } catch (\Stripe\Error\SignatureVerification $e) {
             abort(400);
         }
-
-        $obj = $event->data->object;
-        if ($obj['status'] == 'chargeable') {
-            $trade_no = Redis::get($obj['id']);
-            if (!$trade_no) {
-                abort(500, 'redis is not found trade no by stripe source id.');
-            }
-            $order = Order::where('trade_no', $trade_no)->first();
-            if (!$order) {
-                abort(500, 'order is not found');
-            }
-            if ($order->status !== 0) {
-                die('order is paid');
-            }
-            $order->status = 1;
-            $order->callback_no = $obj['id'];
-            if (!$order->save()) {
-                abort(500, 'fail');
-            }
-            Redis::del($obj['id']);
-            die('success');
+        switch ($event->type) {
+            case 'source.chargeable':
+                $source = $event->data->object;
+                $charge = Charge::create([
+                    'amount' => $source['amount'],
+                    'currency' => $source['currency'],
+                    'source' => $source['id'],
+                ]);
+                if ($charge['status'] == 'succeeded') {
+                    $trade_no = Redis::get($source['id']);
+                    if (!$trade_no) {
+                        abort(500, 'redis is not found trade no by stripe source id.');
+                    }
+                    $order = Order::where('trade_no', $trade_no)->first();
+                    if (!$order) {
+                        abort(500, 'order is not found');
+                    }
+                    if ($order->status !== 0) {
+                        die('order is paid');
+                    }
+                    $order->status = 1;
+                    $order->callback_no = $source['id'];
+                    if (!$order->save()) {
+                        abort(500, 'fail');
+                    }
+                    Redis::del($source['id']);
+                    die('success');
+                }
+                break;
+            default:
+                abort(500, 'event is not support');
         }
     }
 
