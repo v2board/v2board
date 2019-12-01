@@ -49,14 +49,15 @@ class RegisterController extends Controller
                 ->where('status', 0)
                 ->first();
             if (!$inviteCode) {
-                if ((int)config('v2board.invite_force', env('V2BOARD_INVITE_FOCE'))) {
+                if ((int)config('v2board.invite_force', 0)) {
                     abort(500, '邀请码无效');
                 }
-            }
-            $user->invite_user_id = $inviteCode->user_id ? $inviteCode->user_id : null;
-            if (!(int)config('v2board.invite_never_expire', env('V2BOARD_INVITE_NEVER_EXPIRE'))) {
-                $inviteCode->status = 1;
-                $inviteCode->save();
+            } else {
+                $user->invite_user_id = $inviteCode->user_id ? $inviteCode->user_id : null;
+                if (!(int)config('v2board.invite_never_expire', env('V2BOARD_INVITE_NEVER_EXPIRE'))) {
+                    $inviteCode->status = 1;
+                    $inviteCode->save();
+                }
             }
         }
 

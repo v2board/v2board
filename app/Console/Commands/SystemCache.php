@@ -4,8 +4,8 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Models\User;
-use App\Utils\Helper;
 use App\Models\Order;
+use App\Utils\Helper;
 use Illuminate\Support\Facades\Redis;
 
 class SystemCache extends Command
