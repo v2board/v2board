@@ -48,7 +48,7 @@ Route::prefix('v1')
             ->middleware('user')
             ->group(function () {
                 // User
-                Route::get('resetUUID', 'UserController@resetUUID');
+                Route::get('resetSecurity', 'UserController@resetSecurity');
                 Route::get('dashboard', 'UserController@dashboard');
                 Route::get('subscribe', 'UserController@subscribe');
                 Route::get('logout', 'UserController@logout');
