@@ -30,11 +30,13 @@ class AppController extends Controller
             }
         }
         return response([
-            'nodes' => $nodes,
-            'u' => $user->u,
-            'd' => $user->d,
-            'transfer_enable' => $user->transfer_enable,
-            'expired_time' => $user->expired_at
+            'data' => [
+                'nodes' => $nodes,
+                'u' => $user->u,
+                'd' => $user->d,
+                'transfer_enable' => $user->transfer_enable,
+                'expired_time' => $user->expired_at
+            ]
         ]);
     }
 }
