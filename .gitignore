@@ -2,6 +2,7 @@
 /config/v2panel.php
 /public/hot
 /public/storage
+/public/env.example.js
 /storage/*.key
 /vendor
 .env
