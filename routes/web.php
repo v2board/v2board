@@ -1,5 +1,5 @@
 <?php
-
+use Illuminate\Http\Request;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -11,7 +11,10 @@
 |
 */
 
-Route::get('/', function () {
+Route::get('/', function (Request $request) {
+    if (config('v2board_url') && ($request->getSchemeAndHttpHost() !== config('v2board.url'))) {
+        abort(403, 'forbidden');
+    }
     return view('app', [
         'title' => config('v2board.app_name', 'V2Board'),
         'theme' => config('v2board.app_theme', 1),

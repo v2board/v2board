@@ -191,13 +191,13 @@ class OrderController extends Controller
         ]);
     }
 
-    private function alipayF2F ($tradeNo, $totalAmount) {
+    private function alipayF2F ($tradeNo, $totalAmount, Request $request) {
         $gateway = Omnipay::create('Alipay_AopF2F');
         $gateway->setSignType('RSA2'); //RSA/RSA2
         $gateway->setAppId(config('v2board.alipay_appid'));
         $gateway->setPrivateKey(config('v2board.alipay_privkey')); // 可以是路径，也可以是密钥内容
         $gateway->setAlipayPublicKey(config('v2board.alipay_pubkey')); // 可以是路径，也可以是密钥内容
-        $gateway->setNotifyUrl(config('v2board.app_url', env('APP_URL')) . '/api/v1/guest/order/alipayNotify');
+        $gateway->setNotifyUrl($request->getSchemeAndHttpHost() . '/api/v1/guest/order/alipayNotify');
         $request = $gateway->purchase();
         $request->setBizContent([
             'subject'      => config('v2board.app_name', 'V2Board') . ' - 订阅',
