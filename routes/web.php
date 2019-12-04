@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 */
 
 Route::get('/', function (Request $request) {
-    if (config('v2board_url') && ($request->getSchemeAndHttpHost() !== config('v2board.url'))) {
+    if (config('v2board.app_url') && ($request->getSchemeAndHttpHost() !== config('v2board.app_url'))) {
         abort(403, 'forbidden');
     }
     return view('app', [
