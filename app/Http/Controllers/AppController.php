@@ -39,7 +39,7 @@ class AppController extends Controller
                 'u' => $user->u,
                 'd' => $user->d,
                 'transfer_enable' => $user->transfer_enable,
-                'expired_time' => $user->expired_at,
+                'expired_at' => $user->expired_at,
                 'plan' => isset($user['plan']) ? $user['plan'] : false
             ]
         ]);
