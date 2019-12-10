@@ -96,32 +96,32 @@ class DeepbworkController extends Controller
         $nodeId = $request->input('node_id');
         $localPort = $request->input('local_port');
         $server = Server::find($nodeId);
-        $jsonData = json_decode(self::SERVER_CONFIG);
-        $jsonData->inboundDetour[0]->port = (int)$localPort;
-        $jsonData->inbound->port = (int)$server->server_port;
-        $jsonData->inbound->streamSettings->network = $server->network;
+        $json = json_decode(self::SERVER_CONFIG);
+        $json->inboundDetour[0]->port = (int)$localPort;
+        $json->inbound->port = (int)$server->server_port;
+        $json->inbound->streamSettings->network = $server->network;
         if ($server->settings) {
             switch ($server->network) {
-                case 'tcp': $jsonData->inbound->streamSettings->tcpSettings = json_decode($server->settings);
+                case 'tcp': $json->inbound->streamSettings->tcpSettings = json_decode($server->settings);
                     break;
-                case 'kcp': $jsonData->inbound->streamSettings->kcpSettings = json_decode($server->settings);
+                case 'kcp': $json->inbound->streamSettings->kcpSettings = json_decode($server->settings);
                     break;
-                case 'ws': $jsonData->inbound->streamSettings->wsSettings = json_decode($server->settings);
+                case 'ws': $json->inbound->streamSettings->wsSettings = json_decode($server->settings);
                     break;
-                case 'http': $jsonData->inbound->streamSettings->httpSettings = json_decode($server->settings);
+                case 'http': $json->inbound->streamSettings->httpSettings = json_decode($server->settings);
                     break;
-                case 'domainsocket': $jsonData->inbound->streamSettings->dsSettings = json_decode($server->settings);
+                case 'domainsocket': $json->inbound->streamSettings->dsSettings = json_decode($server->settings);
                     break;
-                case 'quic': $jsonData->inbound->streamSettings->quicSettings = json_decode($server->settings);
+                case 'quic': $json->inbound->streamSettings->quicSettings = json_decode($server->settings);
                     break;
             }
         }
         if ((int)$server->tls) {
-            $jsonData->inbound->streamSettings->security = "tls";
+            $json->inbound->streamSettings->security = "tls";
             $tls = (object) array("certificateFile" => "/home/v2ray.crt", "keyFile" => "/home/v2ray.key");
-            $jsonData->inbound->streamSettings->tlsSettings->certificates[0] = $tls;
+            $json->inbound->streamSettings->tlsSettings->certificates[0] = $tls;
         }
         
-        die(json_encode($jsonData, JSON_UNESCAPED_UNICODE));
+        die(json_encode($json, JSON_UNESCAPED_UNICODE));
     }
 }

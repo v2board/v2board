@@ -104,6 +104,7 @@ Route::prefix('v1')
                 Route::get ('subscribe', 'ClientController@subscribe');
                 // App
                 Route::get ('app/data', 'AppController@data');
+                Route::get ('app/config', 'AppController@config');
             });
         // Server
         Route::prefix('server')
