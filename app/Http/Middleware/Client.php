@@ -18,11 +18,11 @@ class Client
     {
         $token = $request->input('token');
         if (empty($token)) {
-            abort(500, 'token is null');
+            abort(403, 'token is null');
         }
         $user = User::where('token', $token)->first();
         if (!$user) {
-            abort(500, 'token is error');
+            abort(403, 'token is error');
         }
         $request->user = $user;
         return $next($request);
