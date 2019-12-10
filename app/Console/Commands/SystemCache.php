@@ -48,8 +48,8 @@ class SystemCache extends Command
     private function setMonthIncome() {
         Redis::set(
             'month_income',
-            Order::where('created_at', '>', strtotime(date('Y-m-1')))
-                ->where('created_at', '>', time())
+            Order::where('created_at', '>=', strtotime(date('Y-m-1')))
+                ->where('created_at', '<', time())
                 ->where('status', '3')
                 ->where('callback_no', '!=', NULL)
                 ->sum('total_amount')
@@ -59,8 +59,8 @@ class SystemCache extends Command
     private function setMonthRegisterTotal() {
         Redis::set(
             'month_register_total',
-            User::where('created_at', '>', strtotime(date('Y-m-1')))
-                ->where('created_at', '>', time())
+            User::where('created_at', '>=', strtotime(date('Y-m-1')))
+                ->where('created_at', '<', time())
                 ->count()
         );
     }
