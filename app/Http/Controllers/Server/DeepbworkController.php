@@ -95,7 +95,13 @@ class DeepbworkController extends Controller
     public function config (Request $request) {
         $nodeId = $request->input('node_id');
         $localPort = $request->input('local_port');
+        if (empty($nodeId) || empty($localPort)) {
+            abort(1000, '参数错误');
+        }
         $server = Server::find($nodeId);
+        if (!$server) {
+            abort(1001, '节点不存在');
+        }
         $json = json_decode(self::SERVER_CONFIG);
         $json->inboundDetour[0]->port = (int)$localPort;
         $json->inbound->port = (int)$server->server_port;
