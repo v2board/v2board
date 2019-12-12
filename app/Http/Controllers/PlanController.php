@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Plan;
-use App\Models\User;
 
 class PlanController extends Controller
 {
@@ -17,7 +16,6 @@ class PlanController extends Controller
         if (!$plan) {
             abort(500, '该订阅不存在');
         }
-        $user = User::find($request->session()->get('id'));
         return response([
             'data' => $plan
         ]);

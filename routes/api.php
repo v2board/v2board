@@ -80,6 +80,8 @@ Route::prefix('v1')
                 Route::get ('tutorial/getAppleID', 'TutorialController@getAppleID');
                 // Notice
                 Route::get ('notice', 'NoticeController@index');
+                // Ticket
+                Route::post('ticket/save', 'TicketController@save');
             });
 
         // Passport

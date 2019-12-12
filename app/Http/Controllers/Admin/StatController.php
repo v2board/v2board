@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Requests\Admin\ServerSave;
-use App\Http\Requests\Admin\ServerUpdate;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\ServerGroup;
