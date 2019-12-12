@@ -50,7 +50,7 @@ class NoticeController extends Controller
         if (!$notice) {
             abort(500, '公告不存在');
         }
-        if ($notice->delete()) {
+        if (!$notice->delete()) {
             abort(500, '删除失败');
         }
         return response([
