@@ -83,6 +83,7 @@ Route::prefix('v1')
                 // Ticket
                 Route::get ('ticket', 'TicketController@index');
                 Route::post('ticket/save', 'TicketController@save');
+                Route::post('ticket/reply', 'TicketController@reply');
             });
 
         // Passport
