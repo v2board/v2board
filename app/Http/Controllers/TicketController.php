@@ -21,7 +21,7 @@ class TicketController extends Controller
                 abort(500, '工单不存在');
             }
             $ticket['message'] = TicketMessage::where('ticket_id', $ticket->id)->get();
-            for ($i = 0; $i <= count($ticket['message']); $i++) {
+            for ($i = 0; $i < count($ticket['message']); $i++) {
                 if ($ticket['message'][$i]['user_id'] == $request->session()->get('id')) {
                     $ticket['message'][$i]['is_me'] = true;
                 } else {
