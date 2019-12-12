@@ -41,4 +41,20 @@ class NoticeController extends Controller
             'data' => true
         ]);
     }
+
+    public function drop (Request $request) {
+        if (empty($request->input('id'))) {
+            abort(500, '参数错误');
+        }
+        $notice = Notice::find($request->input('id'));
+        if (!$notice) {
+            abort(500, '公告不存在');
+        }
+        if ($notice->delete()) {
+            abort(500, '删除失败');
+        }
+        return response([
+            'data' => true
+        ]);
+    }
 }
