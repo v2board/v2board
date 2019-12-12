@@ -51,7 +51,6 @@ class SystemCache extends Command
             Order::where('created_at', '>=', strtotime(date('Y-m-1')))
                 ->where('created_at', '<', time())
                 ->where('status', '3')
-                ->where('callback_no', '!=', NULL)
                 ->sum('total_amount')
         );
     }
