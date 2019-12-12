@@ -81,6 +81,7 @@ Route::prefix('v1')
                 // Notice
                 Route::get ('notice', 'NoticeController@index');
                 // Ticket
+                Route::get ('ticket', 'TicketController@index');
                 Route::post('ticket/save', 'TicketController@save');
             });
 
