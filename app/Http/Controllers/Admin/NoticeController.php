@@ -12,7 +12,7 @@ class NoticeController extends Controller
 {
     public function index (Request $request) {
         return response([
-            'data' => Notice::get()
+            'data' => Notice::orderBy('id', 'DESC')->get()
         ]);
     }
 
