@@ -18,3 +18,11 @@ ALTER TABLE `v2_user`
 ADD `commission_rate` int(11) NULL AFTER `password`;
 ALTER TABLE `v2_user`
 ADD `balance` int(11) NOT NULL DEFAULT '0' AFTER `password`;
+
+CREATE TABLE `v2_notice` (
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `title` varchar(255) NOT NULL,
+  `content` text NOT NULL,
+  `created_at` int(11) NOT NULL,
+  `updated_at` int(11) NOT NULL
+);

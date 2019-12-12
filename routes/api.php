@@ -44,6 +44,9 @@ Route::prefix('v1')
                 Route::post('user/update', 'Admin\\UserController@update');
                 // Stat
                 Route::get ('stat/dashboard', 'Admin\\StatController@dashboard');
+                // Notice
+                Route::get ('notice', 'Admin\\NoticeController@index');
+                Route::post('notice/save', 'Admin\\NoticeController@save');
             });
         // User
         Route::prefix('user')
@@ -73,6 +76,8 @@ Route::prefix('v1')
                 // Tutorial
                 Route::get ('tutorial/getSubscribeUrl', 'TutorialController@getSubscribeUrl');
                 Route::get ('tutorial/getAppleID', 'TutorialController@getAppleID');
+                // Notice
+                Route::get ('notice', 'NoticeController@index');
             });
 
         // Passport
