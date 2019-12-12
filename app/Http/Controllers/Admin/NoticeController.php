@@ -21,8 +21,11 @@ class NoticeController extends Controller
             'title',
             'content'
         ]);
+        if (!Notice::create($data)) {
+            abort(500, '保存失败');
+        }
         return response([
-            'data' => Notice::create($data)
+            'data' => true
         ]);
     }
 }
