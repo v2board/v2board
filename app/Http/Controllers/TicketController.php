@@ -13,6 +13,18 @@ use Illuminate\Support\Facades\DB;
 class TicketController extends Controller
 {
     public function index (Request $request) {
+        if ($request->input('id')) {
+            $ticket = Ticket::where('id', $request->input('id'))
+                ->where('user_id', $request->session()->get('id'))
+                ->first();
+            if (!$ticket) {
+                abort(500, '工单不存在');
+            }
+            $ticket['message'] = TicketMessage::where('ticket_id', $ticket->id)->get();
+            return response([
+                'data' => $ticket
+            ]);
+        }
         return response([
             'data' => Ticket::where('user_id', $request->session()->get('id'))
                 ->orderBy('created_at', 'DESC')
