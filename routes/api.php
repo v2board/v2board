@@ -47,6 +47,7 @@ Route::prefix('v1')
                 // Notice
                 Route::get ('notice', 'Admin\\NoticeController@index');
                 Route::post('notice/save', 'Admin\\NoticeController@save');
+                Route::post('notice/update', 'Admin\\NoticeController@update');
             });
         // User
         Route::prefix('user')

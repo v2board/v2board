@@ -28,4 +28,17 @@ class NoticeController extends Controller
             'data' => true
         ]);
     }
+
+    public function update (NoticeSave $request) {
+        $data = $request->only([
+            'title',
+            'content'
+        ]);
+        if (!Notice::where('id', $request->input('id'))->update($data)) {
+            abort(500, '保存失败');
+        }
+        return response([
+            'data' => true
+        ]);
+    }
 }
