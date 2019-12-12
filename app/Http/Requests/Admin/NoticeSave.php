@@ -15,7 +15,8 @@ class NoticeSave extends FormRequest
     {
         return [
             'title' => 'required',
-            'content' => 'required'
+            'content' => 'required',
+            'img_url' => 'url'
         ];
     }
     
@@ -23,7 +24,8 @@ class NoticeSave extends FormRequest
     {
         return [
             'title.required' => '标题不能为空',
-            'content.required' => '内容不能为空'
+            'content.required' => '内容不能为空',
+            'img_url.url' => '图片URL格式不正确'
         ];
     }
 }

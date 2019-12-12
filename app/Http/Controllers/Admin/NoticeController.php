@@ -19,7 +19,8 @@ class NoticeController extends Controller
     public function save (NoticeSave $request) {
         $data = $request->only([
             'title',
-            'content'
+            'content',
+            'img_url'
         ]);
         if (!Notice::create($data)) {
             abort(500, '保存失败');
@@ -32,7 +33,8 @@ class NoticeController extends Controller
     public function update (NoticeSave $request) {
         $data = $request->only([
             'title',
-            'content'
+            'content',
+            'img_url'
         ]);
         if (!Notice::where('id', $request->input('id'))->update($data)) {
             abort(500, '保存失败');
