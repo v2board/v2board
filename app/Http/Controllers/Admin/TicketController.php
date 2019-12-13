@@ -34,4 +34,29 @@ class TicketController extends Controller
                 ->get()
         ]);
     }
+
+    public function reply (Request $request) {
+        if (empty($request->input('id'))) {
+            abort(500, '参数错误');
+        }
+        if (empty($request->input('message'))) {
+            abort(500, '消息不能为空');
+        }
+        $ticket = Ticket::where('id', $request->input('id'))
+            ->first();
+        if (!$ticket) {
+            abort(500, '工单不存在');
+        }
+        $ticketMessage = TicketMessage::create([
+            'user_id' => $request->session()->get('id'),
+            'ticket_id' => $ticket->id,
+            'message' => $request->input('message')
+        ]);
+        if (!$ticketMessage) {
+            abort(500, '工单回复失败');
+        }
+        return response([
+            'data' => true
+        ]);
+    }
 }
