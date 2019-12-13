@@ -22,7 +22,7 @@ class TicketController extends Controller
             }
             $ticket['message'] = TicketMessage::where('ticket_id', $ticket->id)->get();
             for ($i = 0; $i < count($ticket['message']); $i++) {
-                if ($ticket['message'][$i]['user_id'] == $request->session()->get('id')) {
+                if ($ticket['message'][$i]['user_id'] == $ticket->user_id) {
                     $ticket['message'][$i]['is_me'] = true;
                 } else {
                     $ticket['message'][$i]['is_me'] = false;
