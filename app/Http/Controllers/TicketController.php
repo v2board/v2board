@@ -80,7 +80,7 @@ class TicketController extends Controller
             abort(500, '工单不存在');
         }
         if ($request->session()->get('id') == $this->getLastMessage()->user_id) {
-            abort(500, '请等待管理员回复');
+            abort(500, '请等待技术支持回复');
         }
         $ticketMessage = TicketMessage::create([
             'user_id' => $request->session()->get('id'),
