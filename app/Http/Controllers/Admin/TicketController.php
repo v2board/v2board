@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Ticket;
 use App\Models\TicketMessage;
-use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\DB;
 
 class TicketController extends Controller
 {
@@ -29,7 +29,6 @@ class TicketController extends Controller
             $ticket['user'] = User::select([
                 'email'
             ])->find($ticket->user_id);
-            $ticket['avatar_url'] = 'https://cdn.v2ex.com/gravatar/' . md5($ticket['user']->email) . '?s=64&d=identicon';
             return response([
                 'data' => $ticket
             ]);
@@ -52,14 +51,18 @@ class TicketController extends Controller
         if (!$ticket) {
             abort(500, '工单不存在');
         }
+        DB::beginTransaction();
         $ticketMessage = TicketMessage::create([
             'user_id' => $request->session()->get('id'),
             'ticket_id' => $ticket->id,
             'message' => $request->input('message')
         ]);
-        if (!$ticketMessage) {
+        $ticket->last_reply_user_id = $request->session()->get('id');
+        if (!$ticketMessage || !$ticket->save()) {
+            DB::rollback();
             abort(500, '工单回复失败');
         }
+        DB::commit();
         return response([
             'data' => true
         ]);

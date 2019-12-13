@@ -22,6 +22,7 @@ CREATE TABLE `v2_notice` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL,
   `content` text NOT NULL,
+  `img_url` varchar(255) DEFAULT NULL,
   `created_at` int(11) NOT NULL,
   `updated_at` int(11) NOT NULL,
   PRIMARY KEY (`id`)
@@ -110,6 +111,31 @@ CREATE TABLE `v2_server_log` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
+DROP TABLE IF EXISTS `v2_ticket`;
+CREATE TABLE `v2_ticket` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `subject` varchar(255) NOT NULL,
+  `level` tinyint(1) NOT NULL,
+  `status` tinyint(1) NOT NULL DEFAULT '0',
+  `created_at` int(11) NOT NULL,
+  `updated_at` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+DROP TABLE IF EXISTS `v2_ticket_message`;
+CREATE TABLE `v2_ticket_message` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `ticket_id` int(11) NOT NULL,
+  `message` varchar(255) NOT NULL,
+  `created_at` int(11) NOT NULL,
+  `updated_at` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
 DROP TABLE IF EXISTS `v2_user`;
 CREATE TABLE `v2_user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -144,4 +170,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2019-12-12 05:40:39
+-- 2019-12-13 08:54:25

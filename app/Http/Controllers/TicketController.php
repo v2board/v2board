@@ -45,7 +45,8 @@ class TicketController extends Controller
             'subject',
             'level'
         ]), [
-            'user_id' => $request->session()->get('id')
+            'user_id' => $request->session()->get('id'),
+            'last_reply_user_id' => $request->session()->get('id')
         ]));
         if (!$ticket) {
             DB::rollback();
@@ -82,14 +83,18 @@ class TicketController extends Controller
         if ($request->session()->get('id') == $this->getLastMessage($ticket->id)->user_id) {
             abort(500, '请等待技术支持回复');
         }
+        DB::beginTransaction();
         $ticketMessage = TicketMessage::create([
             'user_id' => $request->session()->get('id'),
             'ticket_id' => $ticket->id,
             'message' => $request->input('message')
         ]);
-        if (!$ticketMessage) {
+        $ticket->last_reply_user_id = $request->session()->get('id');
+        if (!$ticketMessage || !$ticket->save()) {
+            DB::rollback();
             abort(500, '工单回复失败');
         }
+        DB::commit();
         return response([
             'data' => true
         ]);
