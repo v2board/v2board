@@ -118,6 +118,7 @@ CREATE TABLE `v2_ticket` (
   `last_reply_user_id` int(11) NOT NULL,
   `subject` varchar(255) NOT NULL,
   `level` tinyint(1) NOT NULL,
+  `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0:已开启 1:已关闭',
   `created_at` int(11) NOT NULL,
   `updated_at` int(11) NOT NULL,
   PRIMARY KEY (`id`)
@@ -170,4 +171,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2019-12-13 09:09:07
+-- 2019-12-13 09:26:39

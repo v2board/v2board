@@ -52,6 +52,7 @@ Route::prefix('v1')
                 // Ticket
                 Route::get ('ticket', 'Admin\\TicketController@index');
                 Route::post('ticket/reply', 'Admin\\TicketController@reply');
+                Route::post('ticket/close', 'Admin\\TicketController@close');
             });
         // User
         Route::prefix('user')
@@ -87,6 +88,7 @@ Route::prefix('v1')
                 Route::get ('ticket', 'TicketController@index');
                 Route::post('ticket/save', 'TicketController@save');
                 Route::post('ticket/reply', 'TicketController@reply');
+                Route::post('ticket/close', 'TicketController@close');
             });
 
         // Passport

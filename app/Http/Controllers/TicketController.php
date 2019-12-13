@@ -108,6 +108,26 @@ class TicketController extends Controller
         ]);
     }
 
+
+    public function close (Request $request) {
+        if (empty($request->input('id'))) {
+            abort(500, '参数错误');
+        }
+        $ticket = Ticket::where('id', $request->input('id'))
+            ->where('user_id', $request->session()->get('id'))
+            ->first();
+        if (!$ticket) {
+            abort(500, '工单不存在');
+        }
+        $ticket->status = 1;
+        if (!$ticket->save()) {
+            abort(500, '关闭失败');
+        }
+        return response([
+            'data' => true
+        ]);
+    }
+
     private function getLastMessage ($ticketId) {
         return TicketMessage::where('ticket_id', $ticketId)
             ->orderBy('id', 'DESC')

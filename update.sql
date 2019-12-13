@@ -50,3 +50,6 @@ CREATE TABLE `v2_ticket_message` (
 
 ALTER TABLE `v2_ticket`
 ADD `last_reply_user_id` int(11) NOT NULL AFTER `user_id`;
+
+ALTER TABLE `v2_ticket`
+ADD `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0:已开启 1:已关闭' AFTER `level`;
