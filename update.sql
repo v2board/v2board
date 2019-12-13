@@ -49,4 +49,4 @@ CREATE TABLE `v2_ticket_message` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 ALTER TABLE `v2_ticket`
-ADD `status` tinyint(1) NOT NULL DEFAULT '0' AFTER `level`;
+ADD `last_reply_user_id` int(11) NOT NULL AFTER `user_id`;
