@@ -29,6 +29,7 @@ class TicketController extends Controller
             $ticket['user'] = User::select([
                 'email'
             ])->find($ticket->user_id);
+            $ticket['avatar_url'] = 'https://cdn.v2ex.com/gravatar/' . md5($ticket['user']->email) . '?s=64&d=identicon';
             return response([
                 'data' => $ticket
             ]);
