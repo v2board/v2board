@@ -59,6 +59,9 @@ class TicketController extends Controller
         if (!$ticket) {
             abort(500, '工单不存在');
         }
+        if ($ticket->status) {
+            abort(500, '工单已关闭，无法回复');
+        }
         DB::beginTransaction();
         $ticketMessage = TicketMessage::create([
             'user_id' => $request->session()->get('id'),
