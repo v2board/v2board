@@ -27,6 +27,9 @@ CREATE TABLE `v2_notice` (
   `updated_at` int(11) NOT NULL
 );
 
+ALTER TABLE `v2_notice`
+ADD `img_url` varchar(255) COLLATE 'utf8_general_ci' NULL AFTER `content`;
+
 CREATE TABLE `v2_ticket` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
