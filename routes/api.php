@@ -50,7 +50,8 @@ Route::prefix('v1')
                 Route::post('notice/update', 'Admin\\NoticeController@update');
                 Route::post('notice/drop', 'Admin\\NoticeController@drop');
                 // Ticket
-                Route::get('ticket', 'Admin\\TicketController@index');
+                Route::get ('ticket', 'Admin\\TicketController@index');
+                Route::post('ticket/reply', 'Admin\\TicketControllr@reply');
             });
         // User
         Route::prefix('user')
