@@ -32,10 +32,18 @@ class TicketController extends Controller
                 'data' => $ticket
             ]);
         }
+        $ticket = Ticket::where('user_id', $request->session()->get('id'))
+            ->orderBy('created_at', 'DESC')
+            ->get();
+        for ($i = 0; $i < count($ticket); $i++) {
+            if ($ticket[$i]['last_replay_user_id'] == $request->session()->get('id')) {
+                $ticket[$i]['reply_status'] = 0;
+            } else {
+                $ticket[$i]['reply_status'] = 1;
+            }
+        }
         return response([
-            'data' => Ticket::where('user_id', $request->session()->get('id'))
-                ->orderBy('created_at', 'DESC')
-                ->get()
+            'data' => $ticket
         ]);
     }
 
