@@ -88,6 +88,9 @@ class TicketController extends Controller
         if (!$ticket) {
             abort(500, '工单不存在');
         }
+        if ($ticket->status) {
+            abort(500, '工单已关闭，无法回复');
+        }
         if ($request->session()->get('id') == $this->getLastMessage($ticket->id)->user_id) {
             abort(500, '请等待技术支持回复');
         }
