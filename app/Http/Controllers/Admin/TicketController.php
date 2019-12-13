@@ -26,9 +26,9 @@ class TicketController extends Controller
                     $ticket['message'][$i]['is_me'] = false;
                 }
             }
-            $ticket['user'] = User::find($ticket->user_id)->select([
+            $ticket['user'] = User::select([
                 'email'
-            ]);
+            ])->find($ticket->user_id);
             return response([
                 'data' => $ticket
             ]);
