@@ -67,8 +67,11 @@ class TicketController extends Controller
     }
 
     public function reply (Request $request) {
-        if (empty($request->input('id')) || empty($request->input('message'))) {
+        if (empty($request->input('id'))) {
             abort(500, '参数错误');
+        }
+        if (empty($request->input('message'))) {
+            abort(500, '消息不能为空');
         }
         $ticket = Ticket::where('id', $request->input('id'))
             ->where('user_id', $request->session()->get('id'))
