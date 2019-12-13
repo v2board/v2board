@@ -51,7 +51,7 @@ Route::prefix('v1')
                 Route::post('notice/drop', 'Admin\\NoticeController@drop');
                 // Ticket
                 Route::get ('ticket', 'Admin\\TicketController@index');
-                Route::post('ticket/reply', 'Admin\\TicketControllr@reply');
+                Route::post('ticket/reply', 'Admin\\TicketController@reply');
             });
         // User
         Route::prefix('user')
