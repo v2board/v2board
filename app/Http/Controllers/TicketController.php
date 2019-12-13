@@ -36,7 +36,7 @@ class TicketController extends Controller
             ->orderBy('created_at', 'DESC')
             ->get();
         for ($i = 0; $i < count($ticket); $i++) {
-            if ($ticket[$i]['last_replay_user_id'] == $request->session()->get('id')) {
+            if ($ticket[$i]['last_reply_user_id'] == $request->session()->get('id')) {
                 $ticket[$i]['reply_status'] = 0;
             } else {
                 $ticket[$i]['reply_status'] = 1;
