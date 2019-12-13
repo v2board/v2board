@@ -79,6 +79,9 @@ class TicketController extends Controller
         if (!$ticket) {
             abort(500, '工单不存在');
         }
+        if ($request->session()->get('id') == $this->getLastMessage()->user_id) {
+            abort(500, '请等待管理员回复');
+        }
         $ticketMessage = TicketMessage::create([
             'user_id' => $request->session()->get('id'),
             'ticket_id' => $ticket->id,
@@ -90,5 +93,11 @@ class TicketController extends Controller
         return response([
             'data' => true
         ]);
+    }
+
+    private function getLastMessage ($ticketId) {
+        return TicketMessage::where('ticket_id', $ticketId)
+            ->orderBy('id', 'DESC')
+            ->first();
     }
 }
