@@ -49,6 +49,8 @@ Route::prefix('v1')
                 Route::post('notice/save', 'Admin\\NoticeController@save');
                 Route::post('notice/update', 'Admin\\NoticeController@update');
                 Route::post('notice/drop', 'Admin\\NoticeController@drop');
+                // Ticket
+                Route::get('ticket', 'Admin\\TicketController@index');
             });
         // User
         Route::prefix('user')
