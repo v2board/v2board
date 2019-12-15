@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class ResetTraffic extends Command
 {
@@ -38,9 +38,6 @@ class ResetTraffic extends Command
      */
     public function handle()
     {
-        User::all()->update([
-            'u' => 0,
-            'd' => 0
-        ]);
+        DB::update('update v2_user set u = 0, d = 0');
     }
 }
