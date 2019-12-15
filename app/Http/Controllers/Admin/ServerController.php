@@ -14,7 +14,8 @@ use App\Models\User;
 class ServerController extends Controller
 {
     public function index (Request $request) {
-        $server = Server::get();
+        $server = Server::orderBy('name')
+            ->get();
         for ($i = 0; $i < count($server); $i++) {
             if (!empty($server[$i]['tags'])) {
                 $server[$i]['tags'] = json_decode($server[$i]['tags']);
