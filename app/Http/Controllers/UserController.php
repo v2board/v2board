@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Plan;
 use App\Models\Server;
+use App\Models\Ticket;
 use App\Utils\Helper;
 use App\Models\Order;
 
@@ -77,7 +78,9 @@ class UserController extends Controller
             Order::where('status', 0)
                 ->where('user_id', $request->session()->get('id'))
                 ->count(),
-            0,
+            Ticket::where('status', 0)
+                ->where('user_id', $request->session()->get('id'))
+                ->count(),
             User::where('invite_user_id', $request->session()->get('id'))
                 ->count()
         ];
