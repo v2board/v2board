@@ -38,7 +38,7 @@ class ResetTraffic extends Command
      */
     public function handle()
     {
-        User::update([
+        User::all()->update([
             'u' => 0,
             'd' => 0
         ]);
