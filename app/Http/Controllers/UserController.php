@@ -98,7 +98,9 @@ class UserController extends Controller
                 abort(500, '订阅计划不存在');
             }
             if ($user->expired_at > time()) {
-                $servers = Server::where('show', 1)->get();
+                $servers = Server::where('show', 1)
+                    ->orderBy('name')
+                    ->get();
                 foreach ($servers as $item) {
                     $groupId = json_decode($item['group_id']);
                     if (in_array($user->group_id, $groupId)) {
