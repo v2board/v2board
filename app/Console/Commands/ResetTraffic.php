@@ -38,6 +38,9 @@ class ResetTraffic extends Command
      */
     public function handle()
     {
-        DB::update('update v2_user set u = 0, d = 0');
+        DB::table('v2_user')->update([
+            'u' => 0,
+            'd' => 0
+        ]);
     }
 }
