@@ -42,6 +42,7 @@ Route::prefix('v1')
                 // User
                 Route::get ('user', 'Admin\\UserController@index');
                 Route::post('user/update', 'Admin\\UserController@update');
+                Route::get ('user/id2UserInfo/{id}', 'Admin\\UserController@id2UserInfo');
                 // Stat
                 Route::get ('stat/dashboard', 'Admin\\StatController@dashboard');
                 // Notice

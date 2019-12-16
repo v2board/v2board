@@ -35,6 +35,21 @@ class UserController extends Controller
         ]);
     }
 
+    public function id2UserInfo ($id) {
+        if (empty($id)) {
+            abort(500, '参数错误');
+        }
+        return response([
+            'data' => User::select([
+                'email',
+                'u',
+                'd',
+                'transfer_enable',
+                'expired_at'
+            ])->find($id)
+        ]);
+    }
+
     public function update (UserUpdate $request) {
     	$updateData = $request->only([
     		'email',
