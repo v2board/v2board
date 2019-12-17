@@ -20,7 +20,7 @@ class UserUpdate extends FormRequest
             'banned' => 'required|in:0,1',
             'is_admin' => 'required|in:0,1',
             'plan_id' => 'integer',
-            'commission_rate' => 'integer|min:0|max:100'
+            'commission_rate' => 'integer|min:0|max:100|nullable'
         ];
     }
     
@@ -37,6 +37,7 @@ class UserUpdate extends FormRequest
             'is_admin.in' => '是否管理员格式不正确',
             'plan_id.integer' => '订阅计划格式不正确',
             'commission_rate.integer' => '推荐返利比例格式不正确',
+            'commission_rate.nullable' => '推荐返利比例格式不正确',
             'commission_rate.min' => '推荐返利比例最小为0',
             'commission_rate.max' => '推荐返利比例最大为100'
         ];
