@@ -25,6 +25,6 @@ class ServerCreatedListener
      * @return void
      */
     public function handle(ServerCreatedEvent $event) {
-        info('listener', $event->serverLog);
+        info('listener', json_encode($event->serverLog));
     }
 }
