@@ -70,8 +70,8 @@ class SystemCache extends Command
     private function setMonthServerTrafficTotal () {
         $servers = Server::get();
         foreach ($servers as $item) {
-            $serverLog = ServerLog::where('created_at', '>=', $item->created_at)
-                ->where('created_at', '<', strtotime('+1 month', $item->created_at))
+            $serverLog = ServerLog::where('created_at', '>=', strtotime(date('Y-m-1')))
+                ->where('created_at', '<', time())
                 ->where('node_id', $item->id);
             Redis::set('month_server_traffic_total_u_' . $item->id, $serverLog->sum('u'));
             Redis::set('month_server_traffic_total_d_' . $item->id, $serverLog->sum('d'));
