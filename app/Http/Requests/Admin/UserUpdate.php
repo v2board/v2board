@@ -20,7 +20,7 @@ class UserUpdate extends FormRequest
             'banned' => 'required|in:0,1',
             'is_admin' => 'required|in:0,1',
             'plan_id' => 'integer',
-            'commission_rate' => 'integer|min:0|max:100|nullable'
+            'commission_rate' => 'nullable|integer|min:0|max:100'
         ];
     }
     
