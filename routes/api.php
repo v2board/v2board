@@ -43,8 +43,8 @@ Route::prefix('v1')
                 Route::get ('user', 'Admin\\UserController@index');
                 Route::post('user/update', 'Admin\\UserController@update');
                 Route::get ('user/id2UserInfo/{id}', 'Admin\\UserController@id2UserInfo');
-                // Stat
-                Route::get ('stat/dashboard', 'Admin\\StatController@dashboard');
+                // Dashboard
+                Route::get ('dashboard', 'Admin\\DashboardController@index');
                 // Notice
                 Route::get ('notice', 'Admin\\NoticeController@index');
                 Route::post('notice/save', 'Admin\\NoticeController@save');

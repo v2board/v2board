@@ -45,7 +45,6 @@ class SystemCache extends Command
     {
         $this->setMonthIncome();
         $this->setMonthRegisterTotal();
-        $this->setMonthServerTrafficTotal();
     }
 
     private function setMonthIncome() {
@@ -65,16 +64,5 @@ class SystemCache extends Command
                 ->where('created_at', '<', time())
                 ->count()
         );
-    }
-
-    private function setMonthServerTrafficTotal () {
-        $servers = Server::get();
-        foreach ($servers as $item) {
-            $serverLog = ServerLog::where('created_at', '>=', strtotime(date('Y-m-1')))
-                ->where('created_at', '<', time())
-                ->where('node_id', $item->id);
-            Redis::set('month_server_traffic_total_u_' . $item->id, $serverLog->sum('u'));
-            Redis::set('month_server_traffic_total_d_' . $item->id, $serverLog->sum('d'));
-        }
     }
 }
