@@ -24,7 +24,7 @@ class DashboardController extends Controller
                 'ticket_pendding_total' => Ticket::where('status', 0)
                     ->count(),
                 'commission_pendding_total' => Order::where('commission_status', 0)
-                    ->where('status', 3)
+                    ->where('status', 2)
                     ->count(),
                 
             ]
