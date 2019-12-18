@@ -12,7 +12,7 @@ use App\Models\Ticket;
 use App\Models\Order;
 use Illuminate\Support\Facades\Redis;
 
-class StatController extends Controller
+class DashboardController extends Controller
 {
     public function index (Request $request) {
         return response([
