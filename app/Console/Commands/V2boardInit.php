@@ -48,7 +48,7 @@ class V2boardInit extends Command
 			abort(500, '数据库文件格式有误');
 		}
 		foreach($sql as $item) {
-			echo 'RUN' . $item . "\r\n";
+			echo 'RUN ' . $item . "\r\n";
 			try {
 				DB::select(DB::raw($item));
 			} catch (\Exception $e) {}
