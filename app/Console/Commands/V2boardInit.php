@@ -38,7 +38,7 @@ class V2boardInit extends Command
      */
     public function handle()
     {
-        if (\File::get(base_path() . '/.lock')) {
+        if (\File::exists(base_path() . '/.lock')) {
             abort(500, 'V2board 已安装，如需重新初始化请删除目录下.lock文件');
         }
         \Artisan::call('key:generate');
