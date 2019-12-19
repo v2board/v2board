@@ -153,7 +153,7 @@ CREATE TABLE `v2_user` (
   `enable` tinyint(1) NOT NULL DEFAULT '1',
   `banned` tinyint(1) NOT NULL DEFAULT '0',
   `is_admin` tinyint(1) NOT NULL DEFAULT '0',
-  `last_login_at` int(11) NOT NULL,
+  `last_login_at` int(11) DEFAULT NULL,
   `last_login_ip` int(11) DEFAULT NULL,
   `v2ray_uuid` varchar(36) NOT NULL,
   `v2ray_alter_id` tinyint(4) NOT NULL DEFAULT '2',
@@ -171,4 +171,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2019-12-13 09:26:39
+-- 2019-12-19 14:14:39

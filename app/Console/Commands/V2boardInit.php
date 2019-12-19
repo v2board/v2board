@@ -3,6 +3,8 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use App\Models\User;
+use App\Utils\Helper;
 use Illuminate\Support\Facades\DB;
 
 class V2boardInit extends Command
@@ -53,12 +55,34 @@ class V2boardInit extends Command
 		if (!is_array($sql)) {
 			abort(500, '数据库文件格式有误');
 		}
+		$this->info('正在导入数据库请稍等...');
 		foreach($sql as $item) {
-			echo 'RUN ' . $item . "\r\n";
 			try {
 				DB::select(DB::raw($item));
 			} catch (\Exception $e) {}
         }
+        $email = '';
+        while (!$email) {
+        	$email = $this->ask('请输入管理员邮箱?');
+        }
+        $password = '';
+        while (!$password) {
+    		$password = $this->ask('请输入管理员密码?');
+        }
+        if (!$this->registerAdmin($email, $password)) {
+        	abort(500, '管理员账号注册失败，请重试');
+        }
+        
+		$this->info('一切就绪');
         \File::put(base_path() . '/.lock', time());
+    }
+    
+    private function registerAdmin ($email, $password) {
+        $user = new User();
+        $user->email = $email;
+        $user->password = password_hash($password, PASSWORD_DEFAULT);
+        $user->v2ray_uuid = Helper::guid(true);
+        $user->token = Helper::guid();
+        return $user->save();
     }
 }

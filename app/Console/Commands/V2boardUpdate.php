@@ -48,12 +48,13 @@ class V2boardUpdate extends Command
 		$sql = preg_split("/;/", $sql);
 		if (!is_array($sql)) {
 			abort(500, '数据库文件格式有误');
-		}
+        }
+        $this->info('正在导入数据库请稍等...');
 		foreach($sql as $item) {
-			echo 'RUN ' . $item . "\r\n";
 			try {
 				DB::select(DB::raw($item));
 			} catch (\Exception $e) {}
 		}
+        $this->info('更新完毕');
     }
 }

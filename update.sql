@@ -56,3 +56,6 @@ CREATE TABLE `v2_ticket_message` (
 
 ALTER TABLE `v2_ticket`
 ADD `last_reply_user_id` int(11) NOT NULL AFTER `user_id`;
+
+ALTER TABLE `v2_user`
+CHANGE `last_login_at` `last_login_at` int(11) NULL AFTER `is_admin`;
