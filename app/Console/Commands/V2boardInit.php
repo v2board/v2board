@@ -38,14 +38,14 @@ class V2boardInit extends Command
      */
     public function handle()
     {
-    	$file = \File::get(base_path() . '/update.sql');
+    	$file = \File::get(base_path() . '/install.sql');
     	if (!$file) {
-    		abort(500, '数据库更新文件不存在');
+    		abort(500, '数据库文件不存在');
     	}
 		$sql = str_replace("\n", "", $file);
 		$sql = preg_split("/;/", $sql);
 		if (!is_array($sql)) {
-			abort(500, '数据库更新文件格式有误');
+			abort(500, '数据库文件格式有误');
 		}
 		foreach($sql as $item) {
 			echo 'RUN' . $item . "\r\n";
