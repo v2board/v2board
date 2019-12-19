@@ -5,22 +5,23 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Models\Order;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
-class AppUpdate extends Command
+class V2boardUpdate extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'app:update';
+    protected $signature = 'v2board:update';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = '从git强制覆盖更新';
+    protected $description = 'v2board 更新';
 
     /**
      * Create a new command instance.
@@ -39,6 +40,6 @@ class AppUpdate extends Command
      */
     public function handle()
     {
+        
     }
-    
 }
