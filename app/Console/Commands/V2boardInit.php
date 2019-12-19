@@ -5,21 +5,21 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
-class V2boardUpdate extends Command
+class V2boardInit extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'v2board:update';
+    protected $signature = 'v2board:init';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'v2board 更新';
+    protected $description = 'v2board 初始化';
 
     /**
      * Create a new command instance.
