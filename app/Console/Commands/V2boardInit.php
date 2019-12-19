@@ -38,6 +38,9 @@ class V2boardInit extends Command
      */
     public function handle()
     {
+        if (\File::get(base_path() . '/.lock')) {
+            abort(500, 'V2board 已安装，如需重新初始化请删除目录下.lock文件');
+        }
         \Artisan::call('key:generate');
         \Artisan::call('config:cache');
     	DB::connection()->getPdo();
@@ -55,6 +58,7 @@ class V2boardInit extends Command
 			try {
 				DB::select(DB::raw($item));
 			} catch (\Exception $e) {}
-		}
+        }
+        \File::put(base_path() . '/.lock', time());
     }
 }
