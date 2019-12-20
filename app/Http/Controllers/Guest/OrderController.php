@@ -101,9 +101,4 @@ class OrderController extends Controller
                 abort(500, 'event is not support');
         }
     }
-
-    public function stripeReturn (Request $request) {
-        Log::info('stripeReturnData: ' . json_encode($request->input()));
-        header('Location:' . config('v2board.app_url', env('APP_URL')) . '/#/dashboard');
-    }
 }
