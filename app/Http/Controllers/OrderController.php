@@ -225,7 +225,7 @@ class OrderController extends Controller
             'currency' => 'hkd',
             'type' => 'alipay',
             'redirect' => [
-                'return_url' => config('v2board.app_url', env('APP_URL')) . '/api/v1/guest/order/stripeReturn'
+                'return_url' => url('/api/v1/guest/order/stripeReturn')
             ]
         ]);
         if (!$source['redirect']['url']) {
@@ -250,7 +250,7 @@ class OrderController extends Controller
             'currency' => 'hkd',
             'type' => 'wechat',
             'redirect' => [
-                'return_url' => config('v2board.app_url', env('APP_URL')) . '/api/v1/guest/order/stripeReturn'
+                'return_url' => url('/api/v1/guest/order/stripeReturn')
             ]
         ]);
         if (!$source['wechat']['qr_code_url']) {

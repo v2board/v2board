@@ -104,6 +104,6 @@ class OrderController extends Controller
 
     public function stripeReturn (Request $request) {
         Log::info('stripeReturnData: ' . json_encode($request->input()));
-        header('Location:' . '/#/dashboard');
+        header('Location:' . config('v2board.app_url', env('APP_URL')) . '/#/dashboard');
     }
 }
