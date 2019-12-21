@@ -83,6 +83,7 @@ class V2boardInit extends Command
         $user->password = password_hash($password, PASSWORD_DEFAULT);
         $user->v2ray_uuid = Helper::guid(true);
         $user->token = Helper::guid();
+        $user->is_admin = 1;
         return $user->save();
     }
 }
