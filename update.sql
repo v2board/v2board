@@ -59,3 +59,9 @@ ADD `last_reply_user_id` int(11) NOT NULL AFTER `user_id`;
 
 ALTER TABLE `v2_user`
 CHANGE `last_login_at` `last_login_at` int(11) NULL AFTER `is_admin`;
+
+ALTER TABLE `v2_server_log`
+CHANGE `node_id` `server_id` int(11) NOT NULL AFTER `user_id`,
+CHANGE `u` `u` varchar(255) COLLATE 'utf8_general_ci' NOT NULL AFTER `server_id`,
+CHANGE `d` `d` varchar(255) COLLATE 'utf8_general_ci' NOT NULL AFTER `u`,
+CHANGE `rate` `rate` int(11) NOT NULL AFTER `d`;

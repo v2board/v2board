@@ -78,7 +78,7 @@ class DeepbworkController extends Controller
             
             $serverLog = new ServerLog();
             $serverLog->user_id = $item['user_id'];
-            $serverLog->node_id = $request->input('node_id');
+            $serverLog->server_id = $request->input('node_id');
             $serverLog->u = $item['u'];
             $serverLog->d = $item['d'];
             $serverLog->rate = $server->rate;
