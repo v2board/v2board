@@ -7,21 +7,21 @@ use App\Models\User;
 use App\Utils\Helper;
 use Illuminate\Support\Facades\DB;
 
-class V2boardInit extends Command
+class V2boardInstall extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'v2board:init';
+    protected $signature = 'v2board:install';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'v2board 初始化';
+    protected $description = 'v2board 安装';
 
     /**
      * Create a new command instance.
@@ -41,7 +41,7 @@ class V2boardInit extends Command
     public function handle()
     {
         if (\File::exists(base_path() . '/.lock')) {
-            abort(500, 'V2board 已安装，如需重新初始化请删除目录下.lock文件');
+            abort(500, 'V2board 已安装，如需重新安装请删除目录下.lock文件');
         }
         \Artisan::call('key:generate');
         \Artisan::call('config:cache');

@@ -22,9 +22,9 @@
     > ```
 2. 从 `install.sql` 文件中恢复表
 3. 执行 `cp .env.example .env` 然后配置它
-4. 执行配置脚本
-    > ```shell script
-    > sh init.sh
+4. 执行安装
+    > ```install script
+    > php artisan v2board:install
     > ```
     > 
 
