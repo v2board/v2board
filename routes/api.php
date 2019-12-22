@@ -67,6 +67,7 @@ Route::prefix('v1')
                 Route::get ('info', 'UserController@info');
                 Route::post('changePassword', 'UserController@changePassword');
                 Route::post('update', 'UserController@update');
+                Route::get ('getTrafficLog', 'UserController@getTrafficLog');
                 // Order
                 Route::get ('order', 'OrderController@index');
                 Route::post('order/save', 'OrderController@save');

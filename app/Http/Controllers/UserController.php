@@ -11,6 +11,7 @@ use App\Models\Server;
 use App\Models\Ticket;
 use App\Utils\Helper;
 use App\Models\Order;
+use App\Models\ServerLog;
 
 class UserController extends Controller
 {
@@ -39,12 +40,6 @@ class UserController extends Controller
         return response([
             'data' => true
         ]);
-    }
-
-    public function index (Request $request) {
-    }
-    
-    public function save (Request $request) {
     }
     
     public function info (Request $request) {
