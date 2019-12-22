@@ -32,8 +32,9 @@ class Kernel extends ConsoleKernel
         $schedule->command('check:commission')->everyMinute();
         // system cache
         $schedule->command('system:cache')->hourly();
-        // reset traffic
+        // reset
         $schedule->command('reset:traffic')->monthlyOn(1, '00:00');
+        $schedule->command('reset:serverLog')->monthlyOn(1, '00:00');
     }
 
     /**
