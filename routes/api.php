@@ -61,8 +61,6 @@ Route::prefix('v1')
             ->group(function () {
                 // User
                 Route::get ('resetSecurity', 'UserController@resetSecurity');
-                Route::get ('dashboard', 'UserController@dashboard');
-                Route::get ('subscribe', 'UserController@subscribe');
                 Route::get ('logout', 'UserController@logout');
                 Route::get ('info', 'UserController@info');
                 Route::post('changePassword', 'UserController@changePassword');

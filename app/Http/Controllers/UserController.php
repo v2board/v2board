@@ -62,30 +62,6 @@ class UserController extends Controller
             'data' => $user
         ]);
     }
-    
-    public function dashboard (Request $request) {
-        $user = User::find($request->session()->get('id'));
-        if ($user->plan_id) {
-            $user['plan'] = Plan::find($user->plan_id);
-        }
-        $user['subscribe_url'] = config('v2board.subscribe_url', config('v2board.app_url', env('APP_URL'))) . '/api/v1/client/subscribe?token=' . $user['token'];
-        $stat = [
-            Order::where('status', 0)
-                ->where('user_id', $request->session()->get('id'))
-                ->count(),
-            Ticket::where('status', 0)
-                ->where('user_id', $request->session()->get('id'))
-                ->count(),
-            User::where('invite_user_id', $request->session()->get('id'))
-                ->count()
-        ];
-        return response([
-            'data' => [
-                'user' => $user,
-                'stat' => $stat
-            ]
-        ]);
-    }
 
     public function getStat (Request $request) {
         $stat = [
@@ -114,38 +90,6 @@ class UserController extends Controller
         }
         return response([
             'data' => $user
-        ]);
-    }
-    
-    public function subscribe (Request $request) {
-        $user = User::find($request->session()->get('id'));
-        $server = [];
-        if ($user->plan_id) {
-            $user['plan'] = Plan::find($user->plan_id);
-            if (!$user['plan']) {
-                abort(500, '订阅计划不存在');
-            }
-            if ($user->expired_at > time()) {
-                $servers = Server::where('show', 1)
-                    ->orderBy('name')
-                    ->get();
-                foreach ($servers as $item) {
-                    $groupId = json_decode($item['group_id']);
-                    if (in_array($user->group_id, $groupId)) {
-                        array_push($server, $item);
-                    }
-                }
-            }
-        }
-        for ($i = 0; $i < count($server); $i++) {
-            $server[$i]['link'] = Helper::buildVmessLink($server[$i], $user);
-        }
-        $user['subscribe_url'] = config('v2board.subscribe_url', config('v2board.app_url', env('APP_URL'))) . '/api/v1/client/subscribe?token=' . $user['token'];
-        return response([
-            'data' => [
-                'user' => $user,
-                'server' => $server
-            ]
         ]);
     }
     

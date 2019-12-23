@@ -65,3 +65,6 @@ CHANGE `node_id` `server_id` int(11) NOT NULL AFTER `user_id`,
 CHANGE `u` `u` varchar(255) COLLATE 'utf8_general_ci' NOT NULL AFTER `server_id`,
 CHANGE `d` `d` varchar(255) COLLATE 'utf8_general_ci' NOT NULL AFTER `u`,
 CHANGE `rate` `rate` int(11) NOT NULL AFTER `d`;
+
+ALTER TABLE `v2_server`
+DROP `last_check_at`;
