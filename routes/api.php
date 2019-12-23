@@ -86,15 +86,15 @@ Route::prefix('v1')
                 Route::get ('tutorial/getSubscribeUrl', 'TutorialController@getSubscribeUrl');
                 Route::get ('tutorial/getAppleID', 'TutorialController@getAppleID');
                 // Notice
-                Route::get ('notice', 'NoticeController@index');
+                Route::get ('notice/getNotice', 'NoticeController@getNotice');
                 // Ticket
                 Route::get ('ticket', 'TicketController@index');
                 Route::post('ticket/save', 'TicketController@save');
                 Route::post('ticket/reply', 'TicketController@reply');
                 Route::post('ticket/close', 'TicketController@close');
                 // Server
-                Route::get ('server/getTrafficLog', 'ServerController@getTrafficLog');
                 Route::get ('server/getServers', 'ServerController@getServers');
+                Route::get ('server/getTrafficLog', 'ServerController@getTrafficLog');
             });
 
         // Passport

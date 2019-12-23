@@ -12,6 +12,29 @@ use App\Models\User;
 use App\Utils\Helper;
 
 class ServerController extends Controller {
+    public function getServers (Request $request) {
+        $user = User::find($request->session()->get('id'));
+        $server = [];
+        if ($user->expired_at > time()) {
+            $servers = Server::where('show', 1)
+                ->orderBy('name')
+                ->get();
+            foreach ($servers as $item) {
+                $groupId = json_decode($item['group_id']);
+                if (in_array($user->group_id, $groupId)) {
+                    array_push($server, $item);
+                }
+            }
+        }
+        for ($i = 0; $i < count($server); $i++) {
+            $server[$i]['link'] = Helper::buildVmessLink($server[$i], $user);
+            $server[$i]['last_check_at'] = Redis::get('server_last_check_at_' . $server[$i]['id']);
+        }
+        return response([
+            'data' => $server
+        ]);
+    }
+
     public function getTrafficLog (Request $request) {
     	$type = $request->input('type') ? $request->input('type') : 0;
         $current = $request->input('current') ? $request->input('current') : 1;
@@ -36,29 +59,6 @@ class ServerController extends Controller {
             'data' => $res,
             'total' => $total,
             'sum' => $sum
-        ]);
-    }
-
-    public function getServers (Request $request) {
-        $user = User::find($request->session()->get('id'));
-        $server = [];
-        if ($user->expired_at > time()) {
-            $servers = Server::where('show', 1)
-                ->orderBy('name')
-                ->get();
-            foreach ($servers as $item) {
-                $groupId = json_decode($item['group_id']);
-                if (in_array($user->group_id, $groupId)) {
-                    array_push($server, $item);
-                }
-            }
-        }
-        for ($i = 0; $i < count($server); $i++) {
-            $server[$i]['link'] = Helper::buildVmessLink($server[$i], $user);
-            $server[$i]['last_check_at'] = Redis::get('server_last_check_at_' . $server[$i]['id']);
-        }
-        return response([
-            'data' => $server
         ]);
     }
 }
