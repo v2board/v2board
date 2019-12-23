@@ -15,7 +15,7 @@ class ConfigController extends Controller
 
     }
 
-    public function index () {
+    public function fetch () {
         return response([
             'data' => [
                 'invite' => [

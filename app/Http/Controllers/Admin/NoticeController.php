@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Redis;
 
 class NoticeController extends Controller
 {
-    public function index (Request $request) {
+    public function fetch (Request $request) {
         return response([
             'data' => Notice::orderBy('id', 'DESC')->get()
         ]);

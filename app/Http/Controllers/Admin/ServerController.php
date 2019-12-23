@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Redis;
 
 class ServerController extends Controller
 {
-    public function index (Request $request) {
+    public function fetch (Request $request) {
         $server = Server::get();
         for ($i = 0; $i < count($server); $i++) {
             if (!empty($server[$i]['tags'])) {
@@ -57,7 +57,7 @@ class ServerController extends Controller
         ]);
     }
     
-    public function group (Request $request) {
+    public function groupFetch (Request $request) {
         if ($request->input('group_id')) {
             return response([
                 'data' => [ServerGroup::find($request->input('group_id'))]

@@ -12,7 +12,7 @@ use App\Models\User;
 
 class PlanController extends Controller
 {
-    public function index (Request $request) {
+    public function fetch (Request $request) {
         return response([
             'data' => Plan::get()
         ]);

@@ -20,38 +20,38 @@ Route::prefix('v1')
             ->middleware('admin')
             ->group(function () {
                 // Config
-                Route::get ('config', 'Admin\\ConfigController@index');
+                Route::get ('config/fetch', 'Admin\\ConfigController@fetch');
                 Route::post('config/save', 'Admin\\ConfigController@save');
                 // Plan
-                Route::get ('plan', 'Admin\\PlanController@index');
+                Route::get ('plan/fetch', 'Admin\\PlanController@fetch');
                 Route::post('plan/save', 'Admin\\PlanController@save');
                 Route::post('plan/drop', 'Admin\\PlanController@drop');
                 Route::post('plan/update', 'Admin\\PlanController@update');
                 // Server
-                Route::get ('server', 'Admin\\ServerController@index');
+                Route::get ('server/fetch', 'Admin\\ServerController@fetch');
                 Route::post('server/save', 'Admin\\ServerController@save');
-                Route::get ('server/group', 'Admin\\ServerController@group');
+                Route::get ('server/group/fetch', 'Admin\\ServerController@groupFetch');
                 Route::post('server/group/save', 'Admin\\ServerController@groupSave');
                 Route::post('server/group/drop', 'Admin\\ServerController@groupDrop');
                 Route::post('server/drop', 'Admin\\ServerController@drop');
                 Route::post('server/update', 'Admin\\ServerController@update');
                 // Order
-                Route::get ('order', 'Admin\\OrderController@index');
+                Route::get ('order/fetch', 'Admin\\OrderController@fetch');
                 Route::post('order/repair', 'Admin\\OrderController@repair');
                 Route::post('order/update', 'Admin\\OrderController@update');
                 // User
-                Route::get ('user', 'Admin\\UserController@index');
+                Route::get ('user/fetch', 'Admin\\UserController@fetch');
                 Route::post('user/update', 'Admin\\UserController@update');
                 Route::get ('user/id2UserInfo/{id}', 'Admin\\UserController@id2UserInfo');
                 // Dashboard
                 Route::get ('dashboard', 'Admin\\DashboardController@index');
                 // Notice
-                Route::get ('notice', 'Admin\\NoticeController@index');
+                Route::get ('notice/fetch', 'Admin\\NoticeController@fetch');
                 Route::post('notice/save', 'Admin\\NoticeController@save');
                 Route::post('notice/update', 'Admin\\NoticeController@update');
                 Route::post('notice/drop', 'Admin\\NoticeController@drop');
                 // Ticket
-                Route::get ('ticket', 'Admin\\TicketController@index');
+                Route::get ('ticket/fetch', 'Admin\\TicketController@fetch');
                 Route::post('ticket/reply', 'Admin\\TicketController@reply');
                 Route::post('ticket/close', 'Admin\\TicketController@close');
             });
@@ -114,7 +114,7 @@ Route::prefix('v1')
         Route::prefix('guest')
             ->group(function () {
                 // Plan
-                Route::get ('plan', 'Guest\\PlanController@index');
+                Route::get ('plan/getPlans', 'Guest\\PlanController@getPlans');
                 // Order
                 Route::post('order/alipayNotify', 'Guest\\OrderController@alipayNotify');
                 Route::post('order/stripeNotify', 'Guest\\OrderController@stripeNotify');

@@ -11,7 +11,7 @@ use App\Models\Plan;
 
 class OrderController extends Controller
 {
-    public function index (Request $request) {
+    public function fetch (Request $request) {
         $current = $request->input('current') ? $request->input('current') : 1;
         $pageSize = $request->input('pageSize') >= 10 ? $request->input('pageSize') : 10;
         $orderModel = Order::orderBy('created_at', 'DESC');
