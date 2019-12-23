@@ -16,7 +16,7 @@ use Stripe\Source;
 
 class OrderController extends Controller
 {
-    public function getOrders (Request $request) {
+    public function fetch (Request $request) {
         $order = Order::where('user_id', $request->session()->get('id'))
             ->orderBy('created_at', 'DESC')
             ->get();

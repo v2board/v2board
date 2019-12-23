@@ -23,7 +23,7 @@ class InviteController extends Controller
         ]);
     }
 
-    public function getDetails (Request $request) {
+    public function details (Request $request) {
         return response([
             'data' => Order::where('invite_user_id', $request->session()->get('id'))
                 ->where('status', 3)
@@ -38,7 +38,7 @@ class InviteController extends Controller
         ]);
     }
 
-    public function getInvites (Request $request) {
+    public function fetch (Request $request) {
         $codes = InviteCode::where('user_id', $request->session()->get('id'))
             ->where('status', 0)
             ->get();

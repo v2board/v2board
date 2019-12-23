@@ -12,7 +12,7 @@ use App\Models\User;
 use App\Utils\Helper;
 
 class ServerController extends Controller {
-    public function getServers (Request $request) {
+    public function fetch (Request $request) {
         $user = User::find($request->session()->get('id'));
         $server = [];
         if ($user->expired_at > time()) {
@@ -35,7 +35,7 @@ class ServerController extends Controller {
         ]);
     }
 
-    public function getTrafficLog (Request $request) {
+    public function logFetch (Request $request) {
     	$type = $request->input('type') ? $request->input('type') : 0;
         $current = $request->input('current') ? $request->input('current') : 1;
         $pageSize = $request->input('pageSize') >= 10 ? $request->input('pageSize') : 10;

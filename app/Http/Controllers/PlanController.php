@@ -8,7 +8,7 @@ use App\Models\Plan;
 
 class PlanController extends Controller
 {
-    public function getInfo (Request $request) {
+    public function fetch (Request $request) {
         if (empty($request->input('plan_id'))) {
             abort(500, '参数错误');
         }

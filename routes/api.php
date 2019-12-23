@@ -74,27 +74,27 @@ Route::prefix('v1')
                 Route::post('order/checkout', 'OrderController@checkout');
                 Route::get ('order/check', 'OrderController@check');
                 Route::get ('order/details', 'OrderController@details');
-                Route::get ('order/getOrders', 'OrderController@getOrders');
+                Route::get ('order/fetch', 'OrderController@fetch');
                 Route::get ('order/getPaymentMethod', 'OrderController@getPaymentMethod');
                 // Plan
-                Route::post('plan/getInfo', 'PlanController@getInfo');
+                Route::post('plan/fetch', 'PlanController@fetch');
                 // Invite
                 Route::get ('invite/save', 'InviteController@save');
-                Route::get ('invite/getInvites', 'InviteController@getInvites');
-                Route::get ('invite/getDetails', 'InviteController@getDetails');
+                Route::get ('invite/fetch', 'InviteController@fetch');
+                Route::get ('invite/details', 'InviteController@details');
                 // Tutorial
                 Route::get ('tutorial/getSubscribeUrl', 'TutorialController@getSubscribeUrl');
                 Route::get ('tutorial/getAppleID', 'TutorialController@getAppleID');
                 // Notice
-                Route::get ('notice/getNotice', 'NoticeController@getNotice');
+                Route::get ('notice/fetch', 'NoticeController@fetch');
                 // Ticket
                 Route::post('ticket/reply', 'TicketController@reply');
                 Route::post('ticket/close', 'TicketController@close');
                 Route::post('ticket/save', 'TicketController@save');
-                Route::get ('ticket/getTickets', 'TicketController@getTickets');
+                Route::get ('ticket/fetch', 'TicketController@fetch');
                 // Server
-                Route::get ('server/getServers', 'ServerController@getServers');
-                Route::get ('server/getTrafficLog', 'ServerController@getTrafficLog');
+                Route::get ('server/fetch', 'ServerController@fetch');
+                Route::get ('server/log/fetch', 'ServerController@logFetch');
             });
 
         // Passport
@@ -114,7 +114,7 @@ Route::prefix('v1')
         Route::prefix('guest')
             ->group(function () {
                 // Plan
-                Route::get ('plan/getPlans', 'Guest\\PlanController@getPlans');
+                Route::get ('plan/fetch', 'Guest\\PlanController@fetch');
                 // Order
                 Route::post('order/alipayNotify', 'Guest\\OrderController@alipayNotify');
                 Route::post('order/stripeNotify', 'Guest\\OrderController@stripeNotify');
