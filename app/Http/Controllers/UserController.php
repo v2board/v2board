@@ -87,6 +87,22 @@ class UserController extends Controller
         ]);
     }
 
+    public function getStat (Request $request) {
+        $stat = [
+            Order::where('status', 0)
+                ->where('user_id', $request->session()->get('id'))
+                ->count(),
+            Ticket::where('status', 0)
+                ->where('user_id', $request->session()->get('id'))
+                ->count(),
+            User::where('invite_user_id', $request->session()->get('id'))
+                ->count()
+        ];
+        return response([
+            'data' => $stat
+        ]);
+    }
+
     public function getSubscribe (Request $request) {
         $user = User::find($request->session()->get('id'));
         $server = [];

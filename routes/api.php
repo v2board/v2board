@@ -68,6 +68,7 @@ Route::prefix('v1')
                 Route::post('changePassword', 'UserController@changePassword');
                 Route::post('update', 'UserController@update');
                 Route::get ('getSubscribe', 'UserController@getSubscribe');
+                Route::get ('getStat', 'UserController@getStat');
                 // Order
                 Route::get ('order', 'OrderController@index');
                 Route::post('order/save', 'OrderController@save');
