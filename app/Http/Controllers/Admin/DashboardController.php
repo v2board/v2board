@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Redis;
 
 class DashboardController extends Controller
 {
-    public function index (Request $request) {
+    public function override (Request $request) {
         return response([
             'data' => [
                 'month_income' => Redis::get('month_income'),

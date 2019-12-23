@@ -44,7 +44,7 @@ Route::prefix('v1')
                 Route::post('user/update', 'Admin\\UserController@update');
                 Route::get ('user/id2UserInfo/{id}', 'Admin\\UserController@id2UserInfo');
                 // Dashboard
-                Route::get ('dashboard', 'Admin\\DashboardController@index');
+                Route::get ('dashboard/override', 'Admin\\DashboardController@override');
                 // Notice
                 Route::get ('notice/fetch', 'Admin\\NoticeController@fetch');
                 Route::post('notice/save', 'Admin\\NoticeController@save');
