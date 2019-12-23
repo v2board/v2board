@@ -82,7 +82,6 @@ CREATE TABLE `v2_server` (
   `network` varchar(11) NOT NULL,
   `settings` text,
   `show` tinyint(1) NOT NULL DEFAULT '0',
-  `last_check_at` int(11) DEFAULT NULL,
   `created_at` int(11) NOT NULL,
   `updated_at` int(11) NOT NULL,
   PRIMARY KEY (`id`)
@@ -102,10 +101,10 @@ CREATE TABLE `v2_server_group` (
 DROP TABLE IF EXISTS `v2_server_log`;
 CREATE TABLE `v2_server_log` (
   `user_id` int(11) NOT NULL,
+  `server_id` int(11) NOT NULL,
   `u` varchar(255) NOT NULL,
   `d` varchar(255) NOT NULL,
   `rate` int(11) NOT NULL,
-  `node_id` int(11) NOT NULL,
   `created_at` int(11) NOT NULL,
   `updated_at` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -171,4 +170,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2019-12-19 14:14:39
+-- 2019-12-23 08:30:39
