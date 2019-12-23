@@ -12,9 +12,9 @@ use App\Models\Ticket;
 use App\Models\Order;
 use Illuminate\Support\Facades\Redis;
 
-class DashboardController extends Controller
+class StatController extends Controller
 {
-    public function override (Request $request) {
+    public function getOverride (Request $request) {
         return response([
             'data' => [
                 'month_income' => Redis::get('month_income'),

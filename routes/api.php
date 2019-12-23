@@ -43,8 +43,8 @@ Route::prefix('v1')
                 Route::get ('user/fetch', 'Admin\\UserController@fetch');
                 Route::post('user/update', 'Admin\\UserController@update');
                 Route::get ('user/id2UserInfo/{id}', 'Admin\\UserController@id2UserInfo');
-                // Dashboard
-                Route::get ('dashboard/override', 'Admin\\DashboardController@override');
+                // Stat
+                Route::get ('stat/getOverride', 'Admin\\StatController@getOverride');
                 // Notice
                 Route::get ('notice/fetch', 'Admin\\NoticeController@fetch');
                 Route::post('notice/save', 'Admin\\NoticeController@save');
