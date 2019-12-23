@@ -10,6 +10,7 @@ use App\Models\ServerGroup;
 use App\Models\Server;
 use App\Models\Plan;
 use App\Models\User;
+use Illuminate\Support\Facades\Redis;
 
 class ServerController extends Controller
 {
@@ -20,6 +21,7 @@ class ServerController extends Controller
                 $server[$i]['tags'] = json_decode($server[$i]['tags']);
             }
             $server[$i]['group_id'] = json_decode($server[$i]['group_id']);
+            $server[$i]['last_check_at'] = Redis::get('server_last_check_at_' . $server[$i]['id']);
         }
         return response([
             'data' => $server

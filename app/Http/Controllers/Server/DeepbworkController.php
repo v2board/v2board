@@ -9,6 +9,7 @@ use App\Models\Plan;
 use App\Models\Server;
 use App\Models\ServerLog;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Redis;
 
 class DeepbworkController extends Controller
 {
@@ -20,8 +21,7 @@ class DeepbworkController extends Controller
         if (!$server) {
             abort(500, 'fail');
         }
-        $server->last_check_at = time();
-        $server->save();
+        Redis::set('server_last_check_at_' . $server->id, time());
         $users = User::whereIn('group_id', json_decode($server->group_id))
             ->select([
                 'id',

@@ -3,9 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redis;
 use App\Http\Controllers\Controller;
 use App\Models\Server;
 use App\Models\ServerLog;
+use App\Models\User;
+
+use App\Utils\Helper;
 
 class ServerController extends Controller {
     public function getTrafficLog (Request $request) {
@@ -32,6 +36,29 @@ class ServerController extends Controller {
             'data' => $res,
             'total' => $total,
             'sum' => $sum
+        ]);
+    }
+
+    public function getServers (Request $request) {
+        $user = User::find($request->session()->get('id'));
+        $server = [];
+        if ($user->expired_at > time()) {
+            $servers = Server::where('show', 1)
+                ->orderBy('name')
+                ->get();
+            foreach ($servers as $item) {
+                $groupId = json_decode($item['group_id']);
+                if (in_array($user->group_id, $groupId)) {
+                    array_push($server, $item);
+                }
+            }
+        }
+        for ($i = 0; $i < count($server); $i++) {
+            $server[$i]['link'] = Helper::buildVmessLink($server[$i], $user);
+            $server[$i]['last_check_at'] = Redis::get('server_last_check_at' . $server[$i]['id']);
+        }
+        return response([
+            'data' => $server
         ]);
     }
 }

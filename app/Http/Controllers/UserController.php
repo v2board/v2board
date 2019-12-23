@@ -86,6 +86,20 @@ class UserController extends Controller
             ]
         ]);
     }
+
+    public function getSubscribe (Request $request) {
+        $user = User::find($request->session()->get('id'));
+        $server = [];
+        if ($user->plan_id) {
+            $user['plan'] = Plan::find($user->plan_id);
+            if (!$user['plan']) {
+                abort(500, '订阅计划不存在');
+            }
+        }
+        return response([
+            'data' => $user
+        ]);
+    }
     
     public function subscribe (Request $request) {
         $user = User::find($request->session()->get('id'));

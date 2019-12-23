@@ -67,6 +67,7 @@ Route::prefix('v1')
                 Route::get ('info', 'UserController@info');
                 Route::post('changePassword', 'UserController@changePassword');
                 Route::post('update', 'UserController@update');
+                Route::get ('getSubscribe', 'UserController@getSubscribe');
                 // Order
                 Route::get ('order', 'OrderController@index');
                 Route::post('order/save', 'OrderController@save');
@@ -92,6 +93,7 @@ Route::prefix('v1')
                 Route::post('ticket/close', 'TicketController@close');
                 // Server
                 Route::get ('server/getTrafficLog', 'ServerController@getTrafficLog');
+                Route::get ('server/getServers', 'ServerController@getServers');
             });
 
         // Passport
