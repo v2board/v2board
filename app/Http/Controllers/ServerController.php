@@ -55,7 +55,7 @@ class ServerController extends Controller {
         }
         for ($i = 0; $i < count($server); $i++) {
             $server[$i]['link'] = Helper::buildVmessLink($server[$i], $user);
-            $server[$i]['last_check_at'] = Redis::get('server_last_check_at' . $server[$i]['id']);
+            $server[$i]['last_check_at'] = Redis::get('server_last_check_at_' . $server[$i]['id']);
         }
         return response([
             'data' => $server
