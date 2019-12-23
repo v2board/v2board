@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\DB;
 
 class TicketController extends Controller
 {
-    public function index (Request $request) {
+    public function getTickets (Request $request) {
         if ($request->input('id')) {
             $ticket = Ticket::where('id', $request->input('id'))
                 ->where('user_id', $request->session()->get('id'))

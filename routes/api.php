@@ -70,28 +70,28 @@ Route::prefix('v1')
                 Route::get ('getSubscribe', 'UserController@getSubscribe');
                 Route::get ('getStat', 'UserController@getStat');
                 // Order
-                Route::get ('order', 'OrderController@index');
                 Route::post('order/save', 'OrderController@save');
                 Route::post('order/checkout', 'OrderController@checkout');
                 Route::get ('order/check', 'OrderController@check');
                 Route::get ('order/details', 'OrderController@details');
+                Route::get ('order/getOrders', 'OrderController@getOrders');
                 Route::get ('order/getPaymentMethod', 'OrderController@getPaymentMethod');
                 // Plan
-                Route::post('plan/info', 'PlanController@info');
+                Route::post('plan/getInfo', 'PlanController@getInfo');
                 // Invite
-                Route::get ('invite', 'InviteController@index');
                 Route::get ('invite/save', 'InviteController@save');
-                Route::get ('invite/details', 'InviteController@details');
+                Route::get ('invite/getInvites', 'InviteController@getInvites');
+                Route::get ('invite/getDetails', 'InviteController@getDetails');
                 // Tutorial
                 Route::get ('tutorial/getSubscribeUrl', 'TutorialController@getSubscribeUrl');
                 Route::get ('tutorial/getAppleID', 'TutorialController@getAppleID');
                 // Notice
                 Route::get ('notice/getNotice', 'NoticeController@getNotice');
                 // Ticket
-                Route::get ('ticket', 'TicketController@index');
-                Route::post('ticket/save', 'TicketController@save');
                 Route::post('ticket/reply', 'TicketController@reply');
                 Route::post('ticket/close', 'TicketController@close');
+                Route::post('ticket/save', 'TicketController@save');
+                Route::get ('ticket/getTickets', 'TicketController@getTickets');
                 // Server
                 Route::get ('server/getServers', 'ServerController@getServers');
                 Route::get ('server/getTrafficLog', 'ServerController@getTrafficLog');
