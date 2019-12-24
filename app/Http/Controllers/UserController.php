@@ -81,13 +81,13 @@ class UserController extends Controller
 
     public function getSubscribe (Request $request) {
         $user = User::find($request->session()->get('id'));
-        $server = [];
         if ($user->plan_id) {
             $user['plan'] = Plan::find($user->plan_id);
             if (!$user['plan']) {
                 abort(500, '订阅计划不存在');
             }
         }
+        $user['subscribe_url'] = config('v2board.app_url', env('APP_URL')) . '/api/v1/client/subscribe?token=' . $user['token'];
         return response([
             'data' => $user
         ]);
