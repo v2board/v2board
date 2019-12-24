@@ -87,7 +87,7 @@ class UserController extends Controller
                 abort(500, '订阅计划不存在');
             }
         }
-        $user['subscribe_url'] = config('v2board.app_url', env('APP_URL')) . '/api/v1/client/subscribe?token=' . $user['token'];
+        $user['subscribe_url'] = config('v2board.subscribe_url', config('v2board.app_url', env('APP_URL'))) . '/api/v1/client/subscribe?token=' . $user['token'];
         return response([
             'data' => $user
         ]);
