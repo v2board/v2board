@@ -33,4 +33,23 @@ class LoginController extends Controller
             ]
         ]);
     }
+
+    public function token2Login ($request) {
+        if (empty($request->input('token'))) {
+            abort(500, '参数错误');
+        }
+        $user = User::where('token', $request->input('token'))->first();
+        if ($user) {
+            $request->session()->put('email', $user->email);
+            $request->session()->put('id', $user->id);
+            if ($user->is_admin) {
+                $request->session()->put('is_admin', true);
+            }
+        }
+        $location = url('/#/' . $request->input('redirect') ? $request->input('redirect') : 'dashboard');
+        if (config('v2board.app_url')) {
+            $location = config('v2board.app_url') . $request->input('redirect') ? $request->input('redirect') : 'dashboard';
+        }
+        header('Location:' . config('v2board.app_url') . '/#/dashboard');
+    }
 }

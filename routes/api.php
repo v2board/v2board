@@ -105,6 +105,7 @@ Route::prefix('v1')
                 Route::post('sendEmailVerify', 'Passport\\CommController@sendEmailVerify');
                 // Login
                 Route::post('login', 'Passport\\LoginController@index');
+                Route::get ('token2Login', 'Passport\\LoginController@token2Login');
                 // Forget
                 Route::post('forget', 'Passport\\ForgetController@index');
             });
