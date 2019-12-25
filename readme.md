@@ -11,7 +11,7 @@
 ## 演示
 
 [Demo](https://v2board.com)
-演示站点由 👉[Moack](https://www.moack.co.kr/index.php?rp=/announcements/5/11.html)👈 强力驱动
+演示站点由 👉[Moack](https://www.moack.co.kr/dedicated.php)👈 强力驱动
 
 ## 本地环境部署
 
@@ -26,8 +26,13 @@
     > php artisan v2board:install
     > ```
     > 
+4. 设置定时任务每分钟执行
+    > ```set crontable
+    > php artisan schedule:run
+    > ```
 
 > 每次修改 `.env` 文件后需要执行 `php artisan config:cache` 重建缓存
+> 请务必安装redis
 
 
 ## Docker 环境部署
