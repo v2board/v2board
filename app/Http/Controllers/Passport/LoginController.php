@@ -48,7 +48,7 @@ class LoginController extends Controller
         }
         $location = url('/#/' . $request->input('redirect') ? $request->input('redirect') : 'dashboard');
         if (config('v2board.app_url')) {
-            $location = config('v2board.app_url') . $request->input('redirect') ? $request->input('redirect') : 'dashboard';
+            $location = config('v2board.app_url') . '/#/' . $request->input('redirect') ? $request->input('redirect') : 'dashboard';
         }
         header('Location:' . $location);
     }
