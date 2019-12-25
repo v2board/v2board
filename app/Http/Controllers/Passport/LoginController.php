@@ -50,6 +50,6 @@ class LoginController extends Controller
         if (config('v2board.app_url')) {
             $location = config('v2board.app_url') . $request->input('redirect') ? $request->input('redirect') : 'dashboard';
         }
-        header('Location:' . config('v2board.app_url') . '/#/dashboard');
+        header('Location:' . $location);
     }
 }
