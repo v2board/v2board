@@ -30,9 +30,9 @@
     > ```set crontable
     > php artisan schedule:run
     > ```
-
-> 每次修改 `.env` 文件后需要执行 `php artisan config:cache` 重建缓存
-> 请务必安装redis
+5. 其他注意事项
+    > 每次修改 `.env` 文件后需要执行 `php artisan config:cache` 重建缓存  
+    > 请务必安装 `redis`
 
 
 ## Docker 环境部署
