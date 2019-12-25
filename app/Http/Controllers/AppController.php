@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Plan;
 use App\Models\Server;
+use App\Models\Notice;
 use App\Utils\Helper;
 
 class AppController extends Controller
@@ -42,7 +43,8 @@ class AppController extends Controller
                 'd' => $user->d,
                 'transfer_enable' => $user->transfer_enable,
                 'expired_at' => $user->expired_at,
-                'plan' => isset($user['plan']) ? $user['plan'] : false
+                'plan' => isset($user['plan']) ? $user['plan'] : false,
+                'notice' => Notice::orderBy('created_at', 'DESC')->first()
             ]
         ]);
     }
