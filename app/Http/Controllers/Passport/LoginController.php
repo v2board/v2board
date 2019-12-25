@@ -38,6 +38,7 @@ class LoginController extends Controller
         if (empty($request->input('token'))) {
             abort(500, '参数错误');
         }
+        $redirect = $request->input('redirect') ? $request->input('redirect') : 'dashboard';
         $user = User::where('token', $request->input('token'))->first();
         if ($user) {
             $request->session()->put('email', $user->email);
@@ -47,9 +48,9 @@ class LoginController extends Controller
             }
         }
         if (config('v2board.app_url')) {
-            $location = config('v2board.app_url') . '/#/' . $request->input('redirect') ? $request->input('redirect') : 'dashboard';
+            $location = config('v2board.app_url') . '/#/' . $redirect;
         } else {
-            $location = url('/#/' . $request->input('redirect') ? $request->input('redirect') : 'dashboard');
+            $location = url('/#/' . $redirect);
         }
         header('Location:' . $location);
     }
