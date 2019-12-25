@@ -34,7 +34,7 @@ class LoginController extends Controller
         ]);
     }
 
-    public function token2Login ($request) {
+    public function token2Login (Request $request) {
         if (empty($request->input('token'))) {
             abort(500, '参数错误');
         }
