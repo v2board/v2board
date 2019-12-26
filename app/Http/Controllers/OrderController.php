@@ -13,6 +13,7 @@ use App\Utils\Helper;
 use Omnipay\Omnipay;
 use Stripe\Stripe;
 use Stripe\Source;
+use Library\BitpayX;
 
 class OrderController extends Controller
 {
@@ -142,6 +143,15 @@ class OrderController extends Controller
                     'type' => 0,
                     'data' => $this->stripeWepay($order)
                 ]);
+            case 4:
+                // bitpayX
+                if (!(int)config('v2board.bitpayx_enable')) {
+                    abort(500, '支付方式不可用');
+                }
+                return response([
+                    'type' => 1,
+                    'data' => $this->bitpayX($order)
+                ]);
             default:
                 abort(500, '支付方式不存在');
         }
@@ -184,6 +194,14 @@ class OrderController extends Controller
             $stripeWepay->method = 3;
             $stripeWepay->icon = 'wechat';
             array_push($data, $stripeWepay);
+        }
+
+        if ((int)config('v2board.bitpayx_enable')) {
+            $bitpayX = new \StdClass();
+            $bitpayX->name = '虚拟货币';
+            $bitpayX->method = 4;
+            $bitpayX->icon = 'bitcoin';
+            array_push($data, $bitpayX);
         }
 
         return response([
@@ -261,5 +279,24 @@ class OrderController extends Controller
         }
         Redis::expire($source['id'], 3600);
         return $source['wechat']['qr_code_url'];
+    }
+
+    private function bitpayX ($order) {
+        $bitpayX = new BitpayX(config('v2board.bitpayx_appsecret'));
+    	$params = [
+    		'merchant_order_id' => 'V2Board_' . $order->trade_no,
+	        'price_amount' => $order->total_amount / 100,
+	        'price_currency' => 'CNY',
+	        'title' => '支付单号：' . $order->trade_no,
+	        'description' => '充值：' . $order->total_amount / 100 . ' 元',
+	        'callback_url' => url('/api/v1/guest/order/bitpayXNotify'),
+	        'success_url' => config('v2board.app_url', env('APP_URL')) . '/#/order',
+	        'cancel_url' => config('v2board.app_url', env('APP_URL')) . '/#/order'
+        ];
+        $strToSign = $bitpayX->prepareSignId($params['merchant_order_id']);
+	    $params['token'] = $bitpayX->sign($strToSign);
+        $result = $bitpayX->mprequest($params);
+        Log::info('bitpayXSubmit: ' . json_encode($result));
+        return isset($result['payment_url']) ? $result['payment_url'] : false;
     }
 }

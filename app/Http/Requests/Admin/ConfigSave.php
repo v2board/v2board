@@ -32,6 +32,9 @@ class ConfigSave extends FormRequest
             'stripe_alipay_enable',
             'stripe_wepay_enable',
             'stripe_webhook_key',
+            // bitpayx,
+            'bitpayx_enable',
+            'bitpayx_appsecret',
             // tutorial
             'apple_id',
             'apple_id_password'
@@ -65,6 +68,8 @@ class ConfigSave extends FormRequest
             // stripe
             'stripe_alipay_enable' => 'in:0,1',
             'stripe_wepay_enable' => 'in:0,1',
+            // bitpayx
+            'bitpayx_enable' => 'in:0,1',
             // tutorial
             'apple_id' => 'email'
         ];
