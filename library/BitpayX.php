@@ -9,7 +9,6 @@ class BitpayX {
 	 * @param merKey	签名密钥
 	 */
 	public function __construct($bitpayxAppSecret) {
-		var_dump('123');exit;
 		$this->bitpayxAppSecret = $bitpayxAppSecret;
 		$this->bitpayxGatewayUri = 'https://api.mugglepay.com/v1/';
 	}

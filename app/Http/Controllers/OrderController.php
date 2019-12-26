@@ -112,7 +112,7 @@ class OrderController extends Controller
             ->where('status', 0)
             ->first();
         if (!$order) {
-            abort(500, '订单不存在或以支付');
+            abort(500, '订单不存在或已支付');
         }
         switch ($method) {
             // return type => 0: QRCode / 1: URL
