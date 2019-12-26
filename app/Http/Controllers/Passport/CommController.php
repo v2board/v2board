@@ -8,7 +8,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redis;
-use App\Jobs\SendEmail;
 
 class CommController extends Controller
 {
@@ -35,15 +34,21 @@ class CommController extends Controller
         }
         $code = rand(100000, 999999);
         $subject = config('v2board.app_name', 'V2Board') . '邮箱验证码';
-    	$this->dispatch(new SendEmail([
-    		'email' => $email,
-    		'template_name' => 'mail.sendEmailVerify',
-    		'template_value' => [
-    			'code' => $code,
-    			'name' => config('v2board.app_name', 'V2Board')
-    		],
-    		'subject' => $subject
-    	]));
+        Mail::send(
+            'mail.sendEmailVerify', 
+            [
+                'code' => $code,
+                'name' => config('v2board.app_name', 'V2Board')
+            ],
+            function ($message) use($email, $subject) { 
+                $message->to($email)->subject($subject); 
+            }
+        );
+        if (count(Mail::failures()) >= 1) {
+            // 发送失败
+            abort(500, '发送失败');
+        }
+
         Redis::set($redisKey, $code);
         Redis::expire($redisKey, 600);
         return response([
