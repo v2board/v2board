@@ -6,6 +6,7 @@ use App\Http\Requests\OrderSave;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Log;
 use App\Models\Order;
 use App\Models\Plan;
 use App\Models\User;
