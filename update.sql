@@ -71,3 +71,9 @@ DROP `last_check_at`;
 
 ALTER TABLE `v2_server`
 CHANGE `name` `name` varchar(255) COLLATE 'utf8mb4_general_ci' NOT NULL AFTER `group_id`;
+
+ALTER TABLE `v2_plan`
+CHANGE `month_price` `month_price` int(11) NULL DEFAULT '0' AFTER `content`,
+CHANGE `quarter_price` `quarter_price` int(11) NULL DEFAULT '0' AFTER `month_price`,
+CHANGE `half_year_price` `half_year_price` int(11) NULL DEFAULT '0' AFTER `quarter_price`,
+CHANGE `year_price` `year_price` int(11) NULL DEFAULT '0' AFTER `half_year_price`;
