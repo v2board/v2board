@@ -8,6 +8,7 @@ use App\Models\Order;
 use Omnipay\Omnipay;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
+use Library\BitpayX;
 
 class OrderController extends Controller
 {
@@ -25,21 +26,13 @@ class OrderController extends Controller
             $response = $request->send();
             
             if($response->isPaid()){
-                $order = Order::where('trade_no', $_POST['out_trade_no'])->first();
-                if (!$order) {
-                    abort(500, 'fail');
-                }
-                if ($order->status == 1) {
-                    die('success');
-                }
-                $order->status = 1;
-                $order->callback_no = $_POST['trade_no'];
-                if (!$order->save()) {
-                    abort(500, 'fail');
-                }
                 /**
                  * Payment is successful
                  */
+                if (!$this->handle($_POST['out_trade_no'], $_POST['trade_no'])) {
+                    abort(500, 'fail');
+                }
+
                 die('success'); //The response should be 'success' only
             }else{
                 /**
@@ -79,18 +72,9 @@ class OrderController extends Controller
                 if ($charge['status'] == 'succeeded') {
                     $trade_no = Redis::get($source['id']);
                     if (!$trade_no) {
-                        abort(500, 'redis is not found trade no by stripe source id.');
+                        abort(500, 'redis is not found trade no by stripe source id');
                     }
-                    $order = Order::where('trade_no', $trade_no)->first();
-                    if (!$order) {
-                        abort(500, 'order is not found');
-                    }
-                    if ($order->status !== 0) {
-                        die('order is paid');
-                    }
-                    $order->status = 1;
-                    $order->callback_no = $source['id'];
-                    if (!$order->save()) {
+                    if (!$this->handle($trade_no, $source['id'])) {
                         abort(500, 'fail');
                     }
                     Redis::del($source['id']);
@@ -100,5 +84,59 @@ class OrderController extends Controller
             default:
                 abort(500, 'event is not support');
         }
+    }
+
+    public function bitpayXNotify (Request $request) {
+        $inputString = file_get_contents('php://input', 'r');
+        Log::info('bitpayXNotifyData: ' . $inputString);
+        $inputStripped = str_replace(array("\r", "\n", "\t", "\v"), '', $inputString);
+        $inputJSON = json_decode($inputStripped, true); //convert JSON into array
+
+        $bitpayX = new BitpayX(config('v2board.bitpayx_appsecret'));
+        $params = [
+            'status'                 => $inputJSON['status'],
+            'order_id'               => $inputJSON['order_id'],
+            'merchant_order_id'      => $inputJSON['merchant_order_id'],
+            'price_amount'           => $inputJSON['price_amount'],
+            'price_currency'         => $inputJSON['price_currency'],
+            'pay_amount'             => $inputJSON['pay_amount'],
+            'pay_currency'           => $inputJSON['pay_currency'],
+            'created_at_t'           => $inputJSON['created_at_t']
+        ];
+        $strToSign = $bitpayX->prepareSignId($inputJSON['merchant_order_id']);
+        if (!$bitpayX->verify($strToSign, $inputJSON['token'])) {
+            die([
+                'status' => 400,
+                'error' => 'sign error'
+            ]);
+        }
+        if ($params['status'] !== 'PAID') {
+            die([
+                'status' => 400,
+                'error' => 'order is not paid'
+            ]);
+        }
+        if (!$this->handle($params['merchant_order_id'], $params['order_id'])) {
+            die([
+                'status' => 400,
+                'error' => 'order process fail'
+            ]);
+        }
+        die([
+            'status' => 200
+        ]);
+    }
+
+    private function handle ($tradeNo, $callbackNo) {
+        $order = Order::where('trade_no', $tradeNo)->first();
+        if (!$order) {
+            abort(500, 'order is not found');
+        }
+        if ($order->status !== 0) {
+            abort(500, 'order is paid');
+        }
+        $order->status = 1;
+        $order->callback_no = $callbackNo;
+        return $order->save();
     }
 }
