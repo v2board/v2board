@@ -106,6 +106,7 @@ Route::prefix('v1')
                 // Login
                 Route::post('login', 'Passport\\LoginController@index');
                 Route::get ('token2Login', 'Passport\\LoginController@token2Login');
+                Route::get ('check', 'Passport\\LoginController@check');
                 // Forget
                 Route::post('forget', 'Passport\\ForgetController@index');
             });

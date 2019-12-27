@@ -54,4 +54,10 @@ class LoginController extends Controller
         }
         header('Location:' . $location);
     }
+
+    public function check (Request $request) {
+        return response([
+            'data' => $request->session()->get('id') ? true : false
+        ]);
+    }
 }
