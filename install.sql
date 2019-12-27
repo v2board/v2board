@@ -68,11 +68,13 @@ CREATE TABLE `v2_plan` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
+SET NAMES utf8mb4;
+
 DROP TABLE IF EXISTS `v2_server`;
 CREATE TABLE `v2_server` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `group_id` varchar(255) NOT NULL,
-  `name` varchar(255) NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
   `host` varchar(255) NOT NULL,
   `port` int(11) NOT NULL,
   `server_port` int(11) NOT NULL,
@@ -170,4 +172,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2019-12-23 08:30:39
+-- 2019-12-27 07:14:40

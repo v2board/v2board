@@ -68,3 +68,6 @@ CHANGE `rate` `rate` int(11) NOT NULL AFTER `d`;
 
 ALTER TABLE `v2_server`
 DROP `last_check_at`;
+
+ALTER TABLE `v2_server`
+CHANGE `name` `name` varchar(255) COLLATE 'utf8mb4_general_ci' NOT NULL AFTER `group_id`;
