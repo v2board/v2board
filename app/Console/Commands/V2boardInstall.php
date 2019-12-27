@@ -44,6 +44,7 @@ class V2boardInstall extends Command
             abort(500, 'V2board 已安装，如需重新安装请删除目录下.lock文件');
         }
         \Artisan::call('key:generate');
+        sleep(2);
         \Artisan::call('config:cache');
     	DB::connection()->getPdo();
     	$file = \File::get(base_path() . '/install.sql');
