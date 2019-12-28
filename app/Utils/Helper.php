@@ -65,6 +65,7 @@ class Helper
         if ($item->network == 'ws') {
             $wsSettings = json_decode($item->settings);
             if ($wsSettings->path) $config['path'] = $wsSettings->path;
+            if ($wsSettings->headers) $config['host'] = $wsSettings->headers->host;
         }
         return "vmess://".base64_encode(json_encode($config))."\r\n";
     }
