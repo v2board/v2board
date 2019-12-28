@@ -42,10 +42,11 @@ class LoginController extends Controller
             if (!$user) {
                 return header('Location:' . config('v2board.app_url'));
             }
-            $key = 'token2Login_' . Helper::guid();
+            $code = Helper::guid();
+            $key = 'token2Login_' . $code;
             Redis::set($key, $user->id);
             Redis::expire($key, 600);
-            $redirect = '/#/login?verify='. $key .'&redirect=' . ($request->input('redirect') ? $request->input('redirect') : 'dashboard');
+            $redirect = '/#/login?verify='. $code .'&redirect=' . ($request->input('redirect') ? $request->input('redirect') : 'dashboard');
             if (config('v2board.app_url')) {
                 $location = config('v2board.app_url') . $redirect;
             } else {
