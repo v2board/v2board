@@ -22,6 +22,12 @@ class DeepbworkController extends Controller
             abort(500, 'fail');
         }
         Redis::set('server_last_check_at_' . $server->id, time());
+        if ($request->input('extraids')) {
+            $extraIds = preg_split('/;/', $request->input('extraids'));
+            foreach ($extraIds as $v) {
+                Redis::set('server_last_check_at' . $v, time());
+            }
+        }
         $users = User::whereIn('group_id', json_decode($server->group_id))
             ->select([
                 'id',
