@@ -52,15 +52,17 @@ class Helper
 
     public static function buildVmessLink($item, $user) {
         $config = [
-            "ps" => $item->name,
-            "add" => $item->host,
-            "port" => $item->port,
-            "id" => $user->v2ray_uuid,
-            "aid" => "2",
-            "net" => $item->network,
-            "type" => "chacha20-poly1305",
-            "host" => "",
-            "tls" => $item->tls?"tls":"",
+            "v" => "2",
+		    "ps" => $item->name,
+		    "add" => $item->host,
+		    "port" => $item->port,
+		    "id" => $user->v2ray_uuid,
+		    "aid" => "2",
+		    "net" => $item->network,
+		    "type" => "none",
+		    "host" => "",
+		    "path" => "",
+		    "tls" => $item->tls?"tls":""
         ];
         if ($item->network == 'ws') {
             $wsSettings = json_decode($item->settings);
