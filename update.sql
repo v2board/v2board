@@ -77,3 +77,6 @@ CHANGE `month_price` `month_price` int(11) NULL DEFAULT '0' AFTER `content`,
 CHANGE `quarter_price` `quarter_price` int(11) NULL DEFAULT '0' AFTER `month_price`,
 CHANGE `half_year_price` `half_year_price` int(11) NULL DEFAULT '0' AFTER `quarter_price`,
 CHANGE `year_price` `year_price` int(11) NULL DEFAULT '0' AFTER `half_year_price`;
+
+ALTER TABLE `v2_server`
+ADD `parent_id` int(11) NULL AFTER `group_id`;

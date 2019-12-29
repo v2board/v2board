@@ -58,10 +58,10 @@ CREATE TABLE `v2_plan` (
   `show` tinyint(1) NOT NULL DEFAULT '0',
   `renew` tinyint(1) NOT NULL DEFAULT '1',
   `content` text,
-  `month_price` int(11) NOT NULL DEFAULT '0',
-  `quarter_price` int(11) NOT NULL DEFAULT '0',
-  `half_year_price` int(11) NOT NULL DEFAULT '0',
-  `year_price` int(11) NOT NULL DEFAULT '0',
+  `month_price` int(11) DEFAULT '0',
+  `quarter_price` int(11) DEFAULT '0',
+  `half_year_price` int(11) DEFAULT '0',
+  `year_price` int(11) DEFAULT '0',
   `created_at` int(11) NOT NULL,
   `updated_at` int(11) NOT NULL,
   PRIMARY KEY (`id`)
@@ -74,6 +74,7 @@ DROP TABLE IF EXISTS `v2_server`;
 CREATE TABLE `v2_server` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `group_id` varchar(255) NOT NULL,
+  `parent_id` int(11) DEFAULT NULL,
   `name` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
   `host` varchar(255) NOT NULL,
   `port` int(11) NOT NULL,
@@ -172,4 +173,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2019-12-27 07:14:40
+-- 2019-12-29 04:58:01

@@ -21,39 +21,63 @@ class ServerController extends Controller
                 $server[$i]['tags'] = json_decode($server[$i]['tags']);
             }
             $server[$i]['group_id'] = json_decode($server[$i]['group_id']);
-            $server[$i]['last_check_at'] = Redis::get('server_last_check_at_' . $server[$i]['id']);
+            if ($server[$i]['parent_id']) {
+                Redis::get('server_last_check_at_' . $server[$i]['parent_id']);
+            } else {
+                $server[$i]['last_check_at'] = Redis::get('server_last_check_at_' . $server[$i]['id']);
+            }
         }
         return response([
             'data' => $server
         ]);
     }
-    
+
     public function save (ServerSave $request) {
-        if ($request->input('id')) {
-            $server = Server::find($request->input('id'));
-            if (!$server) {
-                abort(500, '服务器不存在');
-            }
-        } else {
-            $server = new Server();
+        $params = $request->only([
+            'show',
+            'group_id',
+            'parent_id',
+            'name',
+            'host',
+            'port',
+            'server_port',
+            'tls',
+            'tags',
+            'rate',
+            'network',
+            'settings'
+        ]);
+        $params['group_id'] = json_encode($params['group_id']);
+        if (isset($params['tags'])) {
+            $params['tags'] = json_encode($params['tags']);
         }
-        $server->group_id = json_encode($request->input('group_id'));
-        $server->name = $request->input('name');
-        $server->host = $request->input('host');
-        $server->port = $request->input('port');
-        $server->server_port = $request->input('server_port');
-        $server->tls = $request->input('tls');
-        $server->tags = $request->input('tags') ? json_encode($request->input('tags')) : NULL;
-        $server->rate = $request->input('rate');
-        $server->network = $request->input('network');
-        if ($request->input('settings')) {
-            if (!is_object(json_decode($request->input('settings')))) {
+
+        if (isset($params['settings'])) {
+            if (!is_object(json_decode($params['settings']))) {
                 abort(500, '传输协议配置格式不正确');
             }
-            $server->settings = $request->input('settings');
+            $server->settings = $params['settings'];
         }
+        
+		if ($request->input('id')) {
+			$server = Server::find($request->input('id'));
+			if (!$server) {
+				abort(500, '服务器不存在');
+			}
+			if (!$server->update($params)) {
+				abort(500, '保存失败');
+			}
+			return response([
+				'data' => true
+			]);
+		}
+		
+        if (!Server::create($params)) {
+            abort(500, '创建失败');
+        }
+
         return response([
-            'data' => $server->save()
+            'data' => true
         ]);
     }
     
@@ -125,15 +149,16 @@ class ServerController extends Controller
     }
 
     public function update (ServerUpdate $request) {
-        $updateData = $request->only([
+        $params = $request->only([
             'show',
         ]);
         
         $server = Server::find($request->input('id'));
+
         if (!$server) {
             abort(500, '该服务器不存在');
         }
-        if (!$server->update($updateData)) {
+        if (!$server->update($params)) {
             abort(500, '保存失败');
         }
 

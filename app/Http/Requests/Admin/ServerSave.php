@@ -16,6 +16,7 @@ class ServerSave extends FormRequest
         return [
             'name' => 'required',
             'group_id' => 'required|array',
+            'parent_id' => 'integer',
             'host' => 'required',
             'port' => 'required',
             'server_port' => 'required',
@@ -32,6 +33,7 @@ class ServerSave extends FormRequest
             'name.required' => '节点名称不能为空',
             'group_id.required'  => '权限组不能为空',
             'group_id.array' => '权限组格式不正确',
+            'parent_id.integer' => '父ID格式不正确',
             'host.required' => '节点地址不能为空',
             'port.required' => '连接端口不能为空',
             'server_port.required' => '后端服务端口不能为空',
