@@ -56,7 +56,6 @@ class ServerController extends Controller
             if (!is_object(json_decode($params['settings']))) {
                 abort(500, '传输协议配置格式不正确');
             }
-            $server->settings = $params['settings'];
         }
         
 		if ($request->input('id')) {
