@@ -16,7 +16,7 @@ class ServerSave extends FormRequest
         return [
             'name' => 'required',
             'group_id' => 'required|array',
-            'parent_id' => 'integer',
+            'parent_id' => 'nullable|integer',
             'host' => 'required',
             'port' => 'required',
             'server_port' => 'required',
