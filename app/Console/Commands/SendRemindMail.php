@@ -48,32 +48,33 @@ class SendRemindMail extends Command
     }
     
     private function remindExpire ($user) {
-        if ($user->expired_at > time()) return;
-        if ($user->expired_at - 86400 > time()) return;
-        SendEmail::dispatch([
-            'email' => $user->email,
-            'subject' => '在' . config('v2board.app_name', 'V2board') . '的服务即将到期',
-            'template_name' => 'mail.sendRemindExpire',
-            'template_value' => [
-                'name' => config('v2board.app_name', 'V2Board')
-            ]
-        ]);
+        if (($user->expired_at - 86400) < time() && $user->expired_at > time()) {
+            SendEmail::dispatch([
+                'email' => $user->email,
+                'subject' => '在' . config('v2board.app_name', 'V2board') . '的服务即将到期',
+                'template_name' => 'mail.sendRemindExpire',
+                'template_value' => [
+                    'name' => config('v2board.app_name', 'V2Board')
+                ]
+            ]);
+        }
     }
 
     private function remindTraffic ($user) {
-        if (!$this->remindTrafficIsWarnValue(($user->u + $user->d), $user->transfer_enable)) return;
-        $sendCount = MailLog::where('created_at', '>=', strtotime(date('Y-m-1')))
-            ->where('template_name', 'mail.sendRemindTraffic')
-            ->count();
-        if ($sendCount > 0) return;
-        SendEmail::dispatch([
-            'email' => $user->email,
-            'subject' => '在' . config('v2board.app_name', 'V2board') . '的流量使用已达到80%',
-            'template_name' => 'mail.sendRemindTraffic',
-            'template_value' => [
-                'name' => config('v2board.app_name', 'V2Board')
-            ]
-        ]);
+        if ($this->remindTrafficIsWarnValue(($user->u + $user->d), $user->transfer_enable)) {
+        	$sendCount = MailLog::where('created_at', '>=', strtotime(date('Y-m-1')))
+            	->where('template_name', 'mail.sendRemindTraffic')
+            	->count();
+            if ($sendCount > 0) return;
+            SendEmail::dispatch([
+                'email' => $user->email,
+                'subject' => '在' . config('v2board.app_name', 'V2board') . '的流量使用已达到80%',
+                'template_name' => 'mail.sendRemindTraffic',
+                'template_value' => [
+                    'name' => config('v2board.app_name', 'V2Board')
+                ]
+            ]);
+        }
     }
     
     private function remindTrafficIsWarnValue ($ud, $transfer_enable) {
