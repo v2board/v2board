@@ -24,12 +24,12 @@ class MailController extends Controller
         foreach ($users as $user) {
             SendEmail::dispatch([
                 'email' => $user->email,
-                'subject' => $subject,
+                'subject' => $request->input('subject'),
                 'template_name' => 'mail.sendCustom',
                 'template_value' => [
                     'name' => config('v2board.app_name', 'V2Board'),
                     'url' => config('v2board.app_url'),
-                    'content' => $content
+                    'content' => $request->input('content')
                 ]
             ]);
         }
