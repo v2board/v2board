@@ -41,23 +41,30 @@ class SendRemindMail extends Command
     {
         $users = User::all();
         foreach ($users as $user) {
-            if ($user->remind_expire) {
-                $this->remindExpire($user);
-            }
+            if ($user->remind_expire) $this->remindExpire($user);
+            if ($user->remind_traffic) $this->remindTraffic($user);
         }
     }
     
     private function remindExpire ($user) {
         if (($user->expired_at - 86400) < time() && $user->expired_at > time()) {
-            $this->dispatch(new SendEmail([
+            SendEmail::dispatch([
                 'email' => $user->email,
                 'subject' => '在' . config('v2board.app_name', 'V2board') . '的服务即将到期',
                 'template_name' => 'mail.sendRemindExpire',
                 'template_value' => [
                     'name' => config('v2board.app_name', 'V2Board')
                 ]
-            ]));
+            ]);
         }
     }
+
+    private function remindTraffic ($user) {
+        if ((($user->u + $user->d) / $user->transfer_enable * 100) >= 80) {
+            
+        }
+    }
+
+
 
 }

@@ -80,3 +80,13 @@ CHANGE `year_price` `year_price` int(11) NULL DEFAULT '0' AFTER `half_year_price
 
 ALTER TABLE `v2_server`
 ADD `parent_id` int(11) NULL AFTER `group_id`;
+
+CREATE TABLE `v2_mail_log` (
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `email` varchar(64) NOT NULL,
+  `subject` varchar(255) NOT NULL,
+  `template_name` varchar(255) NOT NULL,
+  `error` varchar(255) DEFAULT NULL,
+  `created_at` int(11) NOT NULL,
+  `updated_at` int(11) NOT NULL
+);

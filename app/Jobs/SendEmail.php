@@ -8,6 +8,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Mail;
+use App\Models\MailLog;
 
 class SendEmail implements ShouldQueue
 {
@@ -40,5 +41,12 @@ class SendEmail implements ShouldQueue
                 $message->to($email)->subject($subject); 
             }
         );
+
+        MailLog::create([
+            'email' => $params['email'],
+            'subject' => $params['subject'],
+            'template_name' => $params['template_name'],
+            'error' => count(Mail::failures()) > 0 ? Mail::failures()[0] : NULL
+        ]);
     }
 }
