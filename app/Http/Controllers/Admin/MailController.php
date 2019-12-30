@@ -11,11 +11,11 @@ use App\Jobs\SendEmail;
 class MailController extends Controller
 {
     public function send (MailSend $request) {
-        if ($request->input('type') == 2 && $request->input('recevicer')) {
+        if ($request->input('type') == 2 && $request->input('receiver')) {
             abort(500, '收件人不能为空');
         }
 
-        if ($request->input('recevicer')) {
+        if ($request->input('receiver')) {
             $users = User::whereIn('id', $recevicer)->get();
         } else {
             $users = User::all();
@@ -25,7 +25,7 @@ class MailController extends Controller
             SendEmail::dispatch([
                 'email' => $user->email,
                 'subject' => $request->input('subject'),
-                'template_name' => 'mail.sendCustom',
+                'template_name' => 'mail.sendEmailCustom',
                 'template_value' => [
                     'name' => config('v2board.app_name', 'V2Board'),
                     'url' => config('v2board.app_url'),
