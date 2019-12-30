@@ -60,11 +60,14 @@ class SendRemindMail extends Command
     }
 
     private function remindTraffic ($user) {
-        if ((($user->u + $user->d) / $user->transfer_enable * 100) >= 80) {
+        function isWarnValue ($ud, $transfer_enable) {
+            if ($ud <= 0) return false;
+            if (($ud / $transfer_enable * 100) < 80) return false;
+            return true;
+        }
+        if (isWarnValue()) {
             
         }
     }
-
-
 
 }
