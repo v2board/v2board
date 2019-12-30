@@ -33,5 +33,9 @@ class MailController extends Controller
                 ]
             ]);
         }
+
+        return response([
+            'data' => true
+        ]);
     }
 }
