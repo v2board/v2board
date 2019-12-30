@@ -65,7 +65,7 @@ class SendRemindMail extends Command
             if (($ud / $transfer_enable * 100) < 80) return false;
             return true;
         }
-        if (isWarnValue()) {
+        if (isWarnValue(($user->u + $user->d), $user->transfer_enable)) {
             
         }
     }
