@@ -54,6 +54,8 @@ Route::prefix('v1')
                 Route::get ('ticket/fetch', 'Admin\\TicketController@fetch');
                 Route::post('ticket/reply', 'Admin\\TicketController@reply');
                 Route::post('ticket/close', 'Admin\\TicketController@close');
+                // Mail
+                Route::post('mail/send', 'Admin\\MailController@send');
             });
         // User
         Route::prefix('user')
