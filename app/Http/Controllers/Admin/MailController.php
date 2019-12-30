@@ -16,7 +16,7 @@ class MailController extends Controller
         }
 
         if ($request->input('receiver')) {
-            $users = User::whereIn('id', $recevicer)->get();
+            $users = User::whereIn('id', $request->input('receiver'))->get();
         } else {
             $users = User::all();
         }
