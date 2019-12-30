@@ -10,21 +10,21 @@ use App\Models\ServerLog;
 use App\Utils\Helper;
 use Illuminate\Support\Facades\Redis;
 
-class SystemCache extends Command
+class V2boardCache extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'system:cache';
+    protected $signature = 'v2board:cache';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = '系统缓存任务';
+    protected $description = '缓存任务';
 
     /**
      * Create a new command instance.

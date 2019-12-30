@@ -38,7 +38,8 @@ class CommController extends Controller
             'mail.sendEmailVerify', 
             [
                 'code' => $code,
-                'name' => config('v2board.app_name', 'V2Board')
+                'name' => config('v2board.app_name', 'V2Board'),
+                'url' => config('v2board.app_url')
             ],
             function ($message) use($email, $subject) { 
                 $message->to($email)->subject($subject); 

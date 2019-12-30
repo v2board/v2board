@@ -24,12 +24,12 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        // v2board
+        $schedule->command('v2board:cache')->hourly();
         // check
         $schedule->command('check:order')->everyMinute();
         $schedule->command('check:expire')->everyMinute();
         $schedule->command('check:commission')->everyMinute();
-        // system cache
-        $schedule->command('system:cache')->hourly();
         // reset
         $schedule->command('reset:traffic')->monthlyOn(1, '00:00');
         $schedule->command('reset:serverLog')->monthlyOn(1, '00:00');

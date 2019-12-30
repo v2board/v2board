@@ -17,6 +17,19 @@ CREATE TABLE `v2_invite_code` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
+DROP TABLE IF EXISTS `v2_mail_log`;
+CREATE TABLE `v2_mail_log` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `email` varchar(64) NOT NULL,
+  `subject` varchar(255) NOT NULL,
+  `template_name` varchar(255) NOT NULL,
+  `error` varchar(255) DEFAULT NULL,
+  `created_at` int(11) NOT NULL,
+  `updated_at` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
 DROP TABLE IF EXISTS `v2_notice`;
 CREATE TABLE `v2_notice` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -74,8 +87,8 @@ DROP TABLE IF EXISTS `v2_server`;
 CREATE TABLE `v2_server` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `group_id` varchar(255) NOT NULL,
-  `parent_id` int(11) DEFAULT NULL,
   `name` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
+  `parent_id` int(11) DEFAULT NULL,
   `host` varchar(255) NOT NULL,
   `port` int(11) NOT NULL,
   `server_port` int(11) NOT NULL,
@@ -173,4 +186,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2019-12-29 04:58:01
+-- 2019-12-30 11:13:16

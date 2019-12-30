@@ -54,7 +54,8 @@ class SendRemindMail extends Command
                 'subject' => '在' . config('v2board.app_name', 'V2board') . '的服务即将到期',
                 'template_name' => 'mail.sendRemindExpire',
                 'template_value' => [
-                    'name' => config('v2board.app_name', 'V2Board')
+                    'name' => config('v2board.app_name', 'V2Board'),
+                    'url' => config('v2board.app_url')
                 ]
             ]);
         }
@@ -71,7 +72,8 @@ class SendRemindMail extends Command
                 'subject' => '在' . config('v2board.app_name', 'V2board') . '的流量使用已达到80%',
                 'template_name' => 'mail.sendRemindTraffic',
                 'template_value' => [
-                    'name' => config('v2board.app_name', 'V2Board')
+                    'name' => config('v2board.app_name', 'V2Board'),
+                    'url' => config('v2board.app_url')
                 ]
             ]);
         }

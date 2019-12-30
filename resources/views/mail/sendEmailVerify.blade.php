@@ -59,6 +59,17 @@
                                         </tr>
 
 
+                                        <tr>
+                                            <td style="padding:0 0 27px;">
+                                                <table cellpadding="0" cellspacing="0" align="center" style="margin:0 auto !important;">
+                                                    <tbody><tr>
+                                                        <td style="font:14px/16px Open Sans, Arial, Verdana, sans-serif; color:#fff; mso-padding-alt:12px 18px; border-radius:5px;" bgcolor="#05365d">
+                                                            <a target="_blank" style="text-decoration:none; color:#fff; display:block; padding:12px 18px;" href="{{$url}}">登录到{{$name}}</a>
+                                                        </td>
+                                                    </tr>
+                                                </tbody></table>
+                                            </td>
+                                        </tr>
 
                                         
 
