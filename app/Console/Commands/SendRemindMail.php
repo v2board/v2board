@@ -56,7 +56,7 @@ class SendRemindMail extends Command
                 'template_value' => [
                     'name' => config('v2board.app_name', 'V2Board')
                 ]
-            ])->delay(10);
+            ]);
         }
     }
 
@@ -73,7 +73,7 @@ class SendRemindMail extends Command
                 'template_value' => [
                     'name' => config('v2board.app_name', 'V2Board')
                 ]
-            ])->delay(10);
+            ]);
         }
     }
     

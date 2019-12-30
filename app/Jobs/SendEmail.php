@@ -8,6 +8,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Mail;
+use App\Models\MailLog;
 
 class SendEmail implements ShouldQueue
 {
@@ -33,12 +34,23 @@ class SendEmail implements ShouldQueue
         $params = $this->params;
         $email = $params['email'];
         $subject = $params['subject'];
-        Mail::send(
-            $params['template_name'], 
-            $params['template_value'],
-            function ($message) use($email, $subject) { 
-                $message->to($email)->subject($subject); 
-            }
-        );
+        try {
+            Mail::send(
+                $params['template_name'], 
+                $params['template_value'],
+                function ($message) use($email, $subject) { 
+                    $message->to($email)->subject($subject); 
+                }
+            );
+        } catch (\Exception $e) {
+            $error = $e->getMessage();
+        }
+
+        MailLog::create([
+            'email' => $params['email'],
+            'subject' => $params['subject'],
+            'template_name' => $params['template_name'],
+            'error' => isset($error) ? $error : NULL
+        ]);
     }
 }
