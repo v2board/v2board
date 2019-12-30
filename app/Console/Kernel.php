@@ -24,17 +24,17 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // check order
+        // check
         $schedule->command('check:order')->everyMinute();
-        // check expire
         $schedule->command('check:expire')->everyMinute();
-        // check commission
         $schedule->command('check:commission')->everyMinute();
         // system cache
         $schedule->command('system:cache')->hourly();
         // reset
         $schedule->command('reset:traffic')->monthlyOn(1, '00:00');
         $schedule->command('reset:serverLog')->monthlyOn(1, '00:00');
+        // send
+        $schedule->command('send:remindMail')->dailyAt('11:30');
     }
 
     /**

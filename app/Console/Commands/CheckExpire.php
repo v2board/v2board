@@ -39,14 +39,14 @@ class CheckExpire extends Command
      */
     public function handle()
     {
-        $user = User::all();
-        foreach ($user as $item) {
-            if ($item->expired_at < time() || $item->u + $item->d >= $item->transfer_enable) {
-                $item->enable = 0;
+        $users = User::all();
+        foreach ($users as $user) {
+            if ($user->expired_at < time() || $user->u + $user->d >= $user->transfer_enable) {
+                $user->enable = 0;
             } else {
-                $item->enable = 1;
+                $user->enable = 1;
             }
-            $item->save();
+            $user->save();
         }
     }
     
