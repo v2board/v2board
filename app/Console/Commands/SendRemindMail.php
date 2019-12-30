@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Models\User;
+use App\Models\MailLog;
 use App\Jobs\SendEmail;
 
 class SendRemindMail extends Command
@@ -60,14 +61,23 @@ class SendRemindMail extends Command
     }
 
     private function remindTraffic ($user) {
-        function isWarnValue ($ud, $transfer_enable) {
-            if ($ud <= 0) return false;
-            if (($ud / $transfer_enable * 100) < 80) return false;
-            return true;
+        if ($this->remindTrafficIsWarnValue(($user->u + $user->d), $user->transfer_enable)) {
+            if (MailLog::where('created_at', '>=', strtotime(date('Y-m-1'))->count > 0)) return;
+            SendEmail::dispatch([
+                'email' => $user->email,
+                'subject' => '在' . config('v2board.app_name', 'V2board') . '的流量使用已达到80%',
+                'template_name' => 'mail.sendRemindTraffic',
+                'template_value' => [
+                    'name' => config('v2board.app_name', 'V2Board')
+                ]
+            ]);
         }
-        if (isWarnValue(($user->u + $user->d), $user->transfer_enable)) {
-            
-        }
+    }
+    
+    private function remindTrafficIsWarnValue ($ud, $transfer_enable) {
+        if ($ud <= 0) return false;
+        if (($ud / $transfer_enable * 100) < 80) return false;
+        return true;
     }
 
 }
