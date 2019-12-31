@@ -78,6 +78,9 @@ class OrderController extends Controller
         $order->cycle = $request->input('cycle');
         $order->trade_no = Helper::guid();
         $order->total_amount = $plan[$request->input('cycle')];
+        if ($order->total_amount == 0) {
+            $order->status = 1;
+        }
         if ($user->expired_at > time() && $order->plan_id !== $user->plan_id) {
             $order->type = 3;
             if (!(int)config('v2board.plan_is_update', 1)) abort(500, '目前不允许更改订阅，请联系管理员');
