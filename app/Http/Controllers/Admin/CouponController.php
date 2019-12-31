@@ -16,7 +16,7 @@ class CouponController extends Controller
         ]);
     }
 
-    public function save (Request $request) {
+    public function save (CouponSave $request) {
         $params = $request->only([
             'name',
             'type',
