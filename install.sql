@@ -5,6 +5,22 @@ SET time_zone = '+00:00';
 SET foreign_key_checks = 0;
 SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 
+SET NAMES utf8mb4;
+
+DROP TABLE IF EXISTS `v2_coupon`;
+CREATE TABLE `v2_coupon` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
+  `type` tinyint(1) NOT NULL,
+  `value` int(11) NOT NULL,
+  `status` tinyint(1) NOT NULL DEFAULT '0',
+  `expired_at` int(11) NOT NULL,
+  `created_at` int(11) NOT NULL,
+  `updated_at` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
 DROP TABLE IF EXISTS `v2_invite_code`;
 CREATE TABLE `v2_invite_code` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -80,8 +96,6 @@ CREATE TABLE `v2_plan` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
-SET NAMES utf8mb4;
 
 DROP TABLE IF EXISTS `v2_server`;
 CREATE TABLE `v2_server` (
@@ -186,4 +200,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2019-12-30 11:13:16
+-- 2019-12-31 09:09:02

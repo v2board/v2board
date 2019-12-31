@@ -56,6 +56,9 @@ Route::prefix('v1')
                 Route::post('ticket/close', 'Admin\\TicketController@close');
                 // Mail
                 Route::post('mail/send', 'Admin\\MailController@send');
+                // Coupon
+                Route::get ('coupon/fetch', 'Admin\\CouponController@fetch');
+                Route::post('coupon/save', 'Admin\\CouponController@save');
             });
         // User
         Route::prefix('user')
