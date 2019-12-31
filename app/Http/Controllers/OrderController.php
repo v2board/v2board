@@ -68,7 +68,7 @@ class OrderController extends Controller
             abort(500, '该订阅无法续费，请更换其他订阅');
         }
 
-        if ($plan[$request->input('cycle')] == NULL) {
+        if ($plan[$request->input('cycle')] === NULL) {
             abort(500, '该订阅周期无法进行购买，请选择其他周期');
         }
         
