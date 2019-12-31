@@ -6,7 +6,7 @@ use App\Http\Requests\Admin\CouponSave;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Coupon;
-use App\Models\Helper;
+use App\Utils\Helper;
 
 class CouponController extends Controller
 {
