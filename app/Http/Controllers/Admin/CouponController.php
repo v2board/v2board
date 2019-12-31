@@ -26,7 +26,7 @@ class CouponController extends Controller
             'limit_use'
         ]);
 
-        $params['code'] = Helper::guid();
+        $params['code'] = Helper::randomChar(8);
         if (!Coupon::create($params)) {
             abort(500, '创建失败');
         }
