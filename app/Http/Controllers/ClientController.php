@@ -48,7 +48,7 @@ class ClientController extends Controller
           $uri .= ', obfs=ws';
           if ($item->settings) {
             $wsSettings = json_decode($item->settings);
-            if ($wsSettings->path) $uri .= ', obfs-uri='.$wsSettings->path;
+            if (isset($wsSettings->path)) $uri .= ', obfs-uri='.$wsSettings->path;
           }
         }
         $uri .= "\r\n";
@@ -66,8 +66,8 @@ class ClientController extends Controller
           $str .= ', obfs=ws';
           if ($item->settings) {
             $wsSettings = json_decode($item->settings);
-            if ($wsSettings->path) $str .= ', obfs-path="'.$wsSettings->path.'"';
-            if ($wsSettings->headers->Host) $str .= ', obfs-header="Host:'.$wsSettings->headers->Host.'"';
+            if (isset($wsSettings->path)) $str .= ', obfs-path="'.$wsSettings->path.'"';
+            if (isset($wsSettings->headers->Host)) $str .= ', obfs-header="Host:'.$wsSettings->headers->Host.'"';
           }
         }
         $uri .= "vmess://".base64_encode($str)."\r\n";
@@ -103,8 +103,8 @@ class ClientController extends Controller
           $array['network'] = $item->network;
           if ($item->settings) {
             $wsSettings = json_decode($item->settings);
-            if ($wsSettings->path) $array['ws-path'] = $wsSettings->path;
-            if ($wsSettings->headers->Host) $array['ws-headers'] = [
+            if (isset($wsSettings->path)) $array['ws-path'] = $wsSettings->path;
+            if (isset($wsSettings->headers->Host)) $array['ws-headers'] = [
               'Host' => $wsSettings->headers->Host
             ];
           }
