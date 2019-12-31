@@ -21,7 +21,8 @@ class CouponController extends Controller
             'name',
             'type',
             'value',
-            'expired_at',
+            'started_at',
+            'ended_at',
             'limit_use'
         ]);
 

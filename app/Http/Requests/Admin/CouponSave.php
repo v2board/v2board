@@ -17,7 +17,8 @@ class CouponSave extends FormRequest
             'name' => 'required',
             'type' => 'required|in:1,2',
             'value' => 'required|integer',
-            'expired_at' => 'required|integer',
+            'started_at' => 'required|integer',
+            'ended_at' => 'required|integer',
             'limit_use' => 'nullable|integer'
         ];
     }
@@ -30,8 +31,10 @@ class CouponSave extends FormRequest
             'type.in' => '类型格式有误',
             'value.required' => '金额或比例不能为空',
             'value.integer' => '金额或比例格式有误',
-            'expired_at.required' => '过期时间不能为空',
-            'expired_at.integer' => '过期时间格式有误',
+            'started_at.required' => '开始时间不能为空',
+            'started_at.integer' => '开始时间格式有误',
+            'ended_at.required' => '结束时间不能为空',
+            'ended_at.integer' => '结束时间格式有误',
             'limit_use.integer' => '使用次数格式有误'
         ];
     }
