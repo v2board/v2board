@@ -116,13 +116,14 @@ class OrderController extends Controller
         if (isset($coupon)) {
             switch ($coupon->type) {
                 case 1: $order->discount_amount = $order->total_amount - $coupon->value;
+                    break;
                 case 2: $order->discount_amount = $order->total_amount * ($coupon->value / 100);
+                    break;
             }
             $order->total_amount = $order->total_amount - $order->discount_amount;
         }
         // free process
         if ($order->total_amount <= 0) {
-            $order->total_amount = 0;
             $order->status = 1;
         }
         if (!$order->save()) {
