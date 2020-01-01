@@ -54,7 +54,7 @@ class OrderController extends Controller
         ]);
     }
 
-    private function isExistNotPayOrder () {
+    private function isExistNotPayOrder (Request $request) {
         return Order::where('status', 1)
             ->where('user_id', $request->session()->get('id'))
             ->first();
@@ -64,7 +64,7 @@ class OrderController extends Controller
         if ($this->isExistNotPayOrder()) {
             abort(500, '存在未付款订单，请取消后再试');
         }
-        
+
         $plan = Plan::find($request->input('plan_id'));
         $user = User::find($request->session()->get('id'));
         
