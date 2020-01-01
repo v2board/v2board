@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Log;
 use App\Models\Order;
 use App\Models\Plan;
 use App\Models\User;
+use App\Models\Coupon;
 use App\Utils\Helper;
 use Omnipay\Omnipay;
 use Stripe\Stripe;
@@ -71,6 +72,19 @@ class OrderController extends Controller
         if ($plan[$request->input('cycle')] === NULL) {
             abort(500, '该订阅周期无法进行购买，请选择其他周期');
         }
+
+        if ($request->input('coupon_code')) {
+            $coupon = Coupon::where('code', $request->input('coupon_code'))->first();
+            if (!$coupon) {
+                abort(500, '优惠券无效');
+            }
+            if (time() < $coupon->started_at) {
+                abort(500, '优惠券还未到可用时间');
+            }
+            if (time() > $coupon->ended_at) {
+                abort(500, '优惠券已过期');
+            }
+        }
         
         $order = new Order();
         $order->user_id = $request->session()->get('id');
@@ -78,9 +92,7 @@ class OrderController extends Controller
         $order->cycle = $request->input('cycle');
         $order->trade_no = Helper::guid();
         $order->total_amount = $plan[$request->input('cycle')];
-        if ($order->total_amount == 0) {
-            $order->status = 1;
-        }
+        // renew and change subscribe process
         if ($user->expired_at > time() && $order->plan_id !== $user->plan_id) {
             $order->type = 3;
             if (!(int)config('v2board.plan_is_update', 1)) abort(500, '目前不允许更改订阅，请联系管理员');
@@ -90,6 +102,7 @@ class OrderController extends Controller
         } else {
             $order->type = 1;
         }
+        // invite process
         if ($user->invite_user_id) {
             $order->invite_user_id = $user->invite_user_id;
             $inviter = User::find($user->invite_user_id);
@@ -99,10 +112,21 @@ class OrderController extends Controller
                 $order->commission_balance = $order->total_amount * (config('v2board.invite_commission', 10) / 100);
             }
         }
+        // coupon process
+        if (isset($coupon)) {
+            switch ($coupon->type) {
+                case 1: $order->discount_amount = $order->total_amount - $coupon->value;
+                case 1: $order->discount_amount = $order->total_amount * ($coupon->value / 100);
+            }
+            $order->amount_total = $order->amount_total - $order->discount_amount;
+        }
+        // free process
+        if ($order->total_amount <= 0) {
+            $order->status = 1;
+        }
         if (!$order->save()) {
             abort(500, '订单创建失败');
         }
-        
         return response([
             'data' => $order->trade_no
         ]);
