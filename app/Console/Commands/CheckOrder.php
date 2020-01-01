@@ -7,6 +7,7 @@ use App\Models\Order;
 use App\Models\User;
 use App\Models\Plan;
 use App\Utils\Helper;
+use App\Models\Coupon;
 
 class CheckOrder extends Command
 {

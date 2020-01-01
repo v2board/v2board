@@ -15,6 +15,9 @@ class CouponController extends Controller
         if (!$coupon) {
             abort(500, '优惠券无效');
         }
+        if ($coupon->limit_use <= 0) {
+            abort(500, '优惠券已无可用次数');
+        }
         if (time() < $coupon->started_at) {
             abort(500, '优惠券还未到可用时间');
         }

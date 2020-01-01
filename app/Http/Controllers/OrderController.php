@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\OrderSave;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 use App\Models\Order;
 use App\Models\Plan;
 use App\Models\User;
@@ -78,6 +79,9 @@ class OrderController extends Controller
             if (!$coupon) {
                 abort(500, '优惠券无效');
             }
+            if ($coupon->limit_use <= 0) {
+                abort(500, '优惠券已无可用次数');
+            }
             if (time() < $coupon->started_at) {
                 abort(500, '优惠券还未到可用时间');
             }
@@ -86,6 +90,7 @@ class OrderController extends Controller
             }
         }
         
+        DB::beginTransaction();
         $order = new Order();
         $order->user_id = $request->session()->get('id');
         $order->plan_id = $plan->id;
@@ -115,20 +120,31 @@ class OrderController extends Controller
         // coupon process
         if (isset($coupon)) {
             switch ($coupon->type) {
-                case 1: $order->discount_amount = $order->total_amount - $coupon->value;
+                case 1: $order->discount_amount = $coupon->value;
                     break;
                 case 2: $order->discount_amount = $order->total_amount * ($coupon->value / 100);
                     break;
             }
             $order->total_amount = $order->total_amount - $order->discount_amount;
+            $coupon->limit_use = $coupon->limit_use - 1;
+            if (!$coupon->save()) {
+                DB::rollback();
+                abort(500, '优惠券使用失败');
+            }
         }
         // free process
         if ($order->total_amount <= 0) {
+            $order->total_amount = 0;
             $order->status = 1;
         }
+
         if (!$order->save()) {
+            DB::rollback();
             abort(500, '订单创建失败');
         }
+        
+        DB::commit();
+
         return response([
             'data' => $order->trade_no
         ]);
