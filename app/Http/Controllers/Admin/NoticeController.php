@@ -22,22 +22,14 @@ class NoticeController extends Controller
             'content',
             'img_url'
         ]);
-        if (!Notice::create($data)) {
-            abort(500, '保存失败');
-        }
-        return response([
-            'data' => true
-        ]);
-    }
-
-    public function update (NoticeSave $request) {
-        $data = $request->only([
-            'title',
-            'content',
-            'img_url'
-        ]);
-        if (!Notice::where('id', $request->input('id'))->update($data)) {
-            abort(500, '保存失败');
+        if (!$request->input('id')) {
+            if (!Notice::create($data)) {
+                abort(500, '保存失败');
+            }
+        } else {
+            if (!Notice::find($request->input('id'))->update($data)) {
+                abort(500, '保存失败');
+            }
         }
         return response([
             'data' => true

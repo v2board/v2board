@@ -26,10 +26,16 @@ class CouponController extends Controller
             'limit_use'
         ]);
 
-        $params['code'] = Helper::randomChar(8);
-        if (!Coupon::create($params)) {
-            abort(500, '创建失败');
-        }
+		if (!$request->input('id')) {
+	        $params['code'] = Helper::randomChar(8);
+	        if (!Coupon::create($params)) {
+	            abort(500, '创建失败');
+	        }
+		} else {
+			if (!Coupon::find($request->input('id'))->update($params)) {
+				abort(500, '保存失败');
+			}
+		}
 
         return response([
             'data' => true
