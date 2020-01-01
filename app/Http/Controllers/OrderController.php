@@ -79,7 +79,7 @@ class OrderController extends Controller
             if (!$coupon) {
                 abort(500, '优惠券无效');
             }
-            if ($coupon->limit_use <= 0) {
+            if ($coupon->limit_use <= 0 && $coupon->limit_use !== NULL) {
                 abort(500, '优惠券已无可用次数');
             }
             if (time() < $coupon->started_at) {
