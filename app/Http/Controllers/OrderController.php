@@ -53,8 +53,18 @@ class OrderController extends Controller
             'data' => $order
         ]);
     }
+
+    private function isExistNotPayOrder () {
+        return Order::where('status', 1)
+            ->where('user_id', $request->session()->get('id'))
+            ->first();
+    }
     
     public function save (OrderSave $request) {
+        if ($this->isExistNotPayOrder()) {
+            abort(500, '存在未付款订单，请取消后再试');
+        }
+        
         $plan = Plan::find($request->input('plan_id'));
         $user = User::find($request->session()->get('id'));
         
@@ -254,6 +264,25 @@ class OrderController extends Controller
 
         return response([
             'data' => $data
+        ]);
+    }
+
+    public function cancel (Request $request) {
+        if (empty($request->input('trade_no'))) {
+            abort(500, '参数有误');
+        }
+        $order = Order::where('trade_no', $request->input('trade_no'))
+            ->where('user_id', $request->session()->get('id'))
+            ->first();
+        if (!$order) {
+            abort(500, '订单不存在');
+        }
+        $order->status = 2;
+        if (!$order->save()) {
+            abort(500, '取消失败');
+        }
+        return response([
+            'data' => true
         ]);
     }
 
