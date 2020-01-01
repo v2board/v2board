@@ -55,7 +55,7 @@ class OrderController extends Controller
     }
 
     private function isExistNotPayOrderByUserId ($userId) {
-        $order = Order::where('status', 1)
+        $order = Order::where('status', 0)
             ->where('user_id', $userId)
             ->first();
         if (!$order) {
@@ -281,7 +281,7 @@ class OrderController extends Controller
         if (!$order) {
             abort(500, '订单不存在');
         }
-        if ($order->status !== 1) {
+        if ($order->status !== 0) {
             abort(500, '只可以取消待支付订单');
         }
         $order->status = 2;
