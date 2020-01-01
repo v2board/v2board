@@ -12,6 +12,7 @@ use App\Models\Order;
 use App\Models\Plan;
 use App\Models\User;
 use App\Models\Coupon;
+use App\Models\CouponLog;
 use App\Utils\Helper;
 use Omnipay\Omnipay;
 use Stripe\Stripe;
@@ -126,8 +127,21 @@ class OrderController extends Controller
                     break;
             }
             $order->total_amount = $order->total_amount - $order->discount_amount;
-            $coupon->limit_use = $coupon->limit_use - 1;
-            if (!$coupon->save()) {
+            if ($coupon->limit_use !== NULL) {
+                $coupon->limit_use = $coupon->limit_use - 1;
+                if (!$coupon->save()) {
+                    DB::rollback();
+                    abort(500, '优惠券使用失败');
+                }
+            }
+            // add coupon log
+            if (!CouponLog::create([
+                'coupon_id' => $coupon->id,
+                'user_id' => $order->user_id,
+                'order_id' => $order->id,
+                'total_amount' => $order->total_amount,
+                'discount_amount' => $order->discount_amount
+            ])) {
                 DB::rollback();
                 abort(500, '优惠券使用失败');
             }
