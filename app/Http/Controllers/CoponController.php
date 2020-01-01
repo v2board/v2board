@@ -10,7 +10,7 @@ class CouponController extends Controller
 {
     public function check (Request $request) {
         if (empty($request->input('code'))) {
-            abort(500, '参数错误');
+            abort(500, '优惠券码不能为空');
         }
         $coupon = Coupon::where('code', $request->input('code'))->first();
         if (!$coupon) {
