@@ -79,6 +79,7 @@ Route::prefix('v1')
                 Route::get ('order/details', 'OrderController@details');
                 Route::get ('order/fetch', 'OrderController@fetch');
                 Route::get ('order/getPaymentMethod', 'OrderController@getPaymentMethod');
+                Route::post('order/cancel', 'OrderController@cancel');
                 // Plan
                 Route::post('plan/fetch', 'PlanController@fetch');
                 // Invite
