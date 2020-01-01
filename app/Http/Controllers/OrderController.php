@@ -12,7 +12,6 @@ use App\Models\Order;
 use App\Models\Plan;
 use App\Models\User;
 use App\Models\Coupon;
-use App\Models\CouponLog;
 use App\Utils\Helper;
 use Omnipay\Omnipay;
 use Stripe\Stripe;
@@ -133,17 +132,6 @@ class OrderController extends Controller
                     DB::rollback();
                     abort(500, '优惠券使用失败');
                 }
-            }
-            // add coupon log
-            if (!CouponLog::create([
-                'coupon_id' => $coupon->id,
-                'user_id' => $order->user_id,
-                'order_trade_no' => $order->trade_no,
-                'total_amount' => $order->total_amount,
-                'discount_amount' => $order->discount_amount
-            ])) {
-                DB::rollback();
-                abort(500, '优惠券使用失败');
             }
         }
         // free process
