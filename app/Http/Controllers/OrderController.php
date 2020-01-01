@@ -277,6 +277,9 @@ class OrderController extends Controller
         if (!$order) {
             abort(500, '订单不存在');
         }
+        if ($order->status !== 1) {
+            abort(500, '只可以取消待支付订单');
+        }
         $order->status = 2;
         if (!$order->save()) {
             abort(500, '取消失败');
