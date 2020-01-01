@@ -106,9 +106,9 @@ CREATE TABLE `v2_coupon` (
 
 CREATE TABLE `v2_coupon_log` (
   `id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  `coupon_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
-  `order_id` int(11) NOT NULL,
+  `coupon_id` int(11) NOT NULL,
+  `order_trade_no` char(32) NOT NULL,
   `total_amount` int(11) NOT NULL,
   `discount_amount` int(11) NOT NULL,
   `created_at` int(11) NOT NULL,

@@ -138,7 +138,7 @@ class OrderController extends Controller
             if (!CouponLog::create([
                 'coupon_id' => $coupon->id,
                 'user_id' => $order->user_id,
-                'order_id' => $order->id,
+                'order_trade_no' => $order->trade_no,
                 'total_amount' => $order->total_amount,
                 'discount_amount' => $order->discount_amount
             ])) {
