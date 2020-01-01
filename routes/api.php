@@ -98,6 +98,8 @@ Route::prefix('v1')
                 // Server
                 Route::get ('server/fetch', 'ServerController@fetch');
                 Route::get ('server/log/fetch', 'ServerController@logFetch');
+                // Coupon
+                Route::post('coupon/check', 'CouponController@check');
             });
 
         // Passport

@@ -103,3 +103,14 @@ CREATE TABLE `v2_coupon` (
   `created_at` int(11) NOT NULL,
   `updated_at` int(11) NOT NULL,
 );
+
+CREATE TABLE `v2_coupon_log` (
+  `id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `coupon_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `order_id` int(11) NOT NULL,
+  `total_amount` int(11) NOT NULL,
+  `discount_amount` int(11) NOT NULL,
+  `created_at` int(11) NOT NULL,
+  `updated_at` int(11) NOT NULL
+);
