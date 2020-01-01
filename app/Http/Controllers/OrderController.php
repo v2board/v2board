@@ -118,7 +118,7 @@ class OrderController extends Controller
                 case 1: $order->discount_amount = $order->total_amount - $coupon->value;
                 case 1: $order->discount_amount = $order->total_amount * ($coupon->value / 100);
             }
-            $order->amount_total = $order->amount_total - $order->discount_amount;
+            $order->total_amount = $order->total_amount - $order->discount_amount;
         }
         // free process
         if ($order->total_amount <= 0) {
