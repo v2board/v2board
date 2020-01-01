@@ -55,9 +55,13 @@ class OrderController extends Controller
     }
 
     private function isExistNotPayOrderByUserId ($userId) {
-        return Order::where('status', 1)
+        $order = Order::where('status', 1)
             ->where('user_id', $userId)
             ->first();
+        if (!$order) {
+            return false;
+        }
+        return true;
     }
     
     public function save (OrderSave $request) {
