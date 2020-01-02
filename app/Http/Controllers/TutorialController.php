@@ -63,7 +63,8 @@ class TutorialController extends Controller
         ];
         // fuck support shadowrocket urlsafeb64 subscribe
         $response['data']['safe_area_var']['b64_subscribe_url'] = str_replace(
-            array('+','/','='),array('-','_',''),
+            array('+','/','='),
+            array('-','_',''),
             base64_encode($response['data']['safe_area_var']['subscribe_url'])
         );
         // end
