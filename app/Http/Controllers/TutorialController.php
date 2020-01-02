@@ -35,7 +35,20 @@ class TutorialController extends Controller
     }
 
     public function fetch (Request $request) {
-        $tutorial = Tutorial::select(['id', 'title', 'description', 'icon'])->get();
+        if ($request->input('id')) {
+            $tutorial = Tutorial::where('show', 1)
+                ->where('id', $request->input('id'))
+                ->first();
+            if (!$tutorial) {
+                abort(500, '教程不存在');
+            }
+            return response([
+                'data' => $tutorial
+            ]);
+        }
+        $tutorial = Tutorial::select(['id', 'title', 'description', 'icon'])
+            ->where('show', 1)
+            ->get();
         $user = User::find($request->session()->get('id'));
         $response = [
             'data' => [
