@@ -53,14 +53,14 @@ class TutorialController extends Controller
         $response = [
             'data' => [
                 'tutorials' => $tutorial,
-                'subscribe_url' => config('v2board.subscribe_url', config('v2board.app_url', env('APP_URL'))) . '/api/v1/client/subscribe?token=' . $user['token']
+                'safe_area_var' => [
+                    'subscribe_url' => config('v2board.subscribe_url', config('v2board.app_url', env('APP_URL'))) . '/api/v1/client/subscribe?token=' . $user['token']
+                ]
             ]
         ];
         if ($user->expired_at > time()) {
-            $response['data']['apple_id'] = [
-                'apple_id' => config('v2board.apple_id'),
-                'apple_id_password' => config('v2board.apple_id_password')
-            ];
+            $response['data']['safe_area_var']['apple_id'] = config('v2board.apple_id');
+            $response['data']['safe_area_var']['apple_id_password'] = config('v2board.apple_id_password');
         }
         return response($response);
     }
