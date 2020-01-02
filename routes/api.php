@@ -59,10 +59,12 @@ Route::prefix('v1')
                 // Coupon
                 Route::get ('coupon/fetch', 'Admin\\CouponController@fetch');
                 Route::post('coupon/save', 'Admin\\CouponController@save');
+                Route::post('coupon/drop', 'Admin\\CouponController@drop');
                 // Tutorial
                 Route::get ('tutorial/fetch', 'Admin\\TutorialController@fetch');
                 Route::post('tutorial/save', 'Admin\\TutorialController@save');
                 Route::post('tutorial/show', 'Admin\\TutorialController@show');
+                Route::post('tutorial/drop', 'Admin\\TutorialController@drop');
             });
         // User
         Route::prefix('user')

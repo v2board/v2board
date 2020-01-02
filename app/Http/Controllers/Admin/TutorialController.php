@@ -43,9 +43,29 @@ class TutorialController extends Controller
             abort(500, '参数有误');
         }
         $tutorial = Tutorial::find($request->input('id'));
+        if (!$tutorial) {
+            abort(500, '教程不存在');
+        }
         $tutorial->show = $tutorial->show ? 0 : 1;
         if (!$tutorial->save()) {
             abort(500, '保存失败');
+        }
+
+        return response([
+            'data' => true
+        ]);
+    }
+
+    public function drop (Request $request) {
+        if (empty($request->input('id'))) {
+            abort(500, '参数有误');
+        }
+        $tutorial = Tutorial::find($request->input('id'));
+        if (!$tutorial) {
+            abort(500, '教程不存在');
+        }
+        if (!$tutorial->delete()) {
+            abort(500, '删除失败');
         }
 
         return response([

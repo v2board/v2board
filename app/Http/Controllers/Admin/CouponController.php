@@ -41,4 +41,21 @@ class CouponController extends Controller
             'data' => true
         ]);
     }
+
+    public function drop (Request $request) {
+        if (empty($request->input('id'))) {
+            abort(500, '参数有误');
+        }
+        $coupon = Coupon::find($request->input('id'));
+        if (!$coupon) {
+            abort(500, '优惠券不存在');
+        }
+        if (!$coupon->delete()) {
+            abort(500, '删除失败');
+        }
+
+        return response([
+            'data' => true
+        ]);
+    }
 }
