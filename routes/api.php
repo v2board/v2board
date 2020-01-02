@@ -133,7 +133,7 @@ Route::prefix('v1')
                 // Order
                 Route::post('order/alipayNotify', 'Guest\\OrderController@alipayNotify');
                 Route::post('order/stripeNotify', 'Guest\\OrderController@stripeNotify');
-                Route::post('order/bitpayXNotify', 'Guest\\OrderController@bixpayXNotify');
+                Route::post('order/bitpayXNotify', 'Guest\\OrderController@bitpayXNotify');
             });
         // Client
         Route::prefix('client')
