@@ -36,13 +36,13 @@ class TutorialController extends Controller
 
     public function fetch (Request $request) {
         $tutorial = Tutorial::select(['title', 'description', 'icon'])->get();
+        $user = User::find($request->session()->get('id'));
         $response = [
             'data' => [
                 'tutorials' => $tutorial,
                 'subscribe_url' => config('v2board.subscribe_url', config('v2board.app_url', env('APP_URL'))) . '/api/v1/client/subscribe?token=' . $user['token']
             ]
         ];
-        $user = User::find($request->session()->get('id'));
         if ($user->expired_at > time()) {
             $response['data']['apple_id'] = [
                 'apple_id' => config('v2board.apple_id'),
