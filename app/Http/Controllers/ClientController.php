@@ -48,7 +48,8 @@ class ClientController extends Controller
           $uri .= ', obfs=ws';
           if ($item->settings) {
             $wsSettings = json_decode($item->settings);
-            if (isset($wsSettings->path)) $uri .= ', obfs-uri='.$wsSettings->path;
+            if (isset($wsSettings->path)) $uri .= ', obfs-uri=' . $wsSettings->path;
+            if (isset($wsSettings->headers->Host)) $uri .= ', obfs-host=' . $wsSettings->headers->Host;
           }
         }
         $uri .= "\r\n";

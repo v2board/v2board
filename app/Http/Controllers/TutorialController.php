@@ -54,7 +54,8 @@ class TutorialController extends Controller
             'data' => [
                 'tutorials' => $tutorial,
                 'safe_area_var' => [
-                    'subscribe_url' => config('v2board.subscribe_url', config('v2board.app_url', env('APP_URL'))) . '/api/v1/client/subscribe?token=' . $user['token']
+                    'subscribe_url' => config('v2board.subscribe_url', config('v2board.app_url', env('APP_URL'))) . '/api/v1/client/subscribe?token=' . $user['token'],
+                    'app_name' => config('v2board.app_name', 'V2board')
                 ]
             ]
         ];
