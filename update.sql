@@ -111,6 +111,7 @@ CREATE TABLE `v2_tutorial` (
   `id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `title` varchar(255) COLLATE 'utf8mb4_general_ci' NOT NULL,
   `description` varchar(255) COLLATE 'utf8mb4_general_ci' NOT NULL,
+  `icon` varchar(255) COLLATE 'utf8mb4_general_ci' NOT NULL,
   `steps` text NULL,
   `show` tinyint(1) NOT NULL DEFAULT '0',
   `created_at` int(11) NOT NULL,
