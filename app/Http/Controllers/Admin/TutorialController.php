@@ -18,7 +18,9 @@ class TutorialController extends Controller
     public function save (TutorialSave $request) {
         $params = $request->only([
             'title',
-            'description'
+            'description',
+            'steps',
+            'icon'
         ]);
 
 		if (!$request->input('id')) {

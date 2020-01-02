@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Tutorial;
 
 class TutorialController extends Controller
 {
@@ -31,5 +32,9 @@ class TutorialController extends Controller
                 'apple_id_password' => config('v2board.apple_id_password')
             ]
         ]);
+    }
+
+    public function fetch (Request $request) {
+        $tutorial = Tutorial::select(['title', 'description', 'icon'])->get();
     }
 }

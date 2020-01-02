@@ -16,6 +16,7 @@ class TutorialSave extends FormRequest
         return [
             'title' => 'required',
             'description' => 'required',
+            'icon' => 'required'
         ];
     }
     
@@ -24,6 +25,7 @@ class TutorialSave extends FormRequest
         return [
             'title.required' => '标题不能为空',
             'description.required' => '描述不能为空',
+            'icon.required' => '图标不能为空'
         ];
     }
 }
