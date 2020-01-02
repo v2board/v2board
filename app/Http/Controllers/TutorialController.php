@@ -35,7 +35,7 @@ class TutorialController extends Controller
     }
 
     public function fetch (Request $request) {
-        $tutorial = Tutorial::select(['title', 'description', 'icon'])->get();
+        $tutorial = Tutorial::select(['id', 'title', 'description', 'icon'])->get();
         $user = User::find($request->session()->get('id'));
         $response = [
             'data' => [
