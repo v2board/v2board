@@ -93,6 +93,7 @@ Route::prefix('v1')
                 // Tutorial
                 Route::get ('tutorial/getSubscribeUrl', 'TutorialController@getSubscribeUrl');
                 Route::get ('tutorial/getAppleID', 'TutorialController@getAppleID');
+                Route::get ('tutorial/fetch', 'TutorialController@fetch');
                 // Notice
                 Route::get ('notice/fetch', 'NoticeController@fetch');
                 // Ticket
