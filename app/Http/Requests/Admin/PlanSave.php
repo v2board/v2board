@@ -17,10 +17,10 @@ class PlanSave extends FormRequest
             'name' => 'required',
             'group_id' => 'required',
             'transfer_enable' => 'required',
-            'month_price' => 'nullable｜numeric',
-            'quarter_price' => 'nullable｜numeric',
-            'half_year_price' => 'nullable｜numeric',
-            'year_price' => 'nullable｜numeric'
+            'month_price' => 'nullable|numeric',
+            'quarter_price' => 'nullable|numeric',
+            'half_year_price' => 'nullable|numeric',
+            'year_price' => 'nullable|numeric'
         ];
     }
     
