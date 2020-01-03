@@ -2,6 +2,7 @@
 <html>
     
     <head>
+        <link rel="stylesheet" href="./antd.chunk.css?v={{$verison}}">
         <link rel="stylesheet" href="./umi.css?v={{$verison}}">
         <link rel="stylesheet" href="./custom.css?v={{$verison}}">
         <meta charset="utf-8">
@@ -20,6 +21,8 @@
     
     <body>
         <div id="root"></div>
+        <script src="./vendors.async.js?v={{$verison}}"></script>
+        <script src="./antd.async.js?v={{$verison}}"></script>
         <script src="./umi.js?v={{$verison}}"></script>
         <!-- Global site tag (gtag.js) - Google Analytics -->
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-P1E9Z5LRRK"></script>
