@@ -11,7 +11,6 @@ class PlanController extends Controller
     public function fetch (Request $request) {
         if ($request->input('id')) {
             $plan = Plan::where('id', $request->input('id'))
-                ->where('show', 1)
                 ->first();
             if (!$plan) {
                 abort(500, '该订阅不存在');
