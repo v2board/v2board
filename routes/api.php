@@ -87,7 +87,7 @@ Route::prefix('v1')
                 Route::get ('order/getPaymentMethod', 'OrderController@getPaymentMethod');
                 Route::post('order/cancel', 'OrderController@cancel');
                 // Plan
-                Route::post('plan/fetch', 'PlanController@fetch');
+                Route::get ('plan/fetch', 'PlanController@fetch');
                 // Invite
                 Route::get ('invite/save', 'InviteController@save');
                 Route::get ('invite/fetch', 'InviteController@fetch');
