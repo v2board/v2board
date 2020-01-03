@@ -17,10 +17,10 @@ class PlanSave extends FormRequest
             'name' => 'required',
             'group_id' => 'required',
             'transfer_enable' => 'required',
-            'month_price' => 'nullable|numeric',
-            'quarter_price' => 'nullable|numeric',
-            'half_year_price' => 'nullable|numeric',
-            'year_price' => 'nullable|numeric'
+            'month_price' => 'nullable|integer',
+            'quarter_price' => 'nullable|integer',
+            'half_year_price' => 'nullable|integer',
+            'year_price' => 'nullable|integer'
         ];
     }
     
@@ -30,10 +30,10 @@ class PlanSave extends FormRequest
             'name.required' => '套餐名称不能为空',
             'group_id.required' => '权限组不能为空',
             'transfer_enable.required' => '流量不能为空',
-            'month_price.numeric' => '月付金额格式有误',
-            'quarter_price.numeric' => '季付金额格式有误',
-            'half_year_price.numeric' => '半年付金额格式有误',
-            'year_price.numeric' => '年付金额格式有误'
+            'month_price.integer' => '月付金额格式有误',
+            'quarter_price.integer' => '季付金额格式有误',
+            'half_year_price.integer' => '半年付金额格式有误',
+            'year_price.integer' => '年付金额格式有误'
         ];
     }
 }
