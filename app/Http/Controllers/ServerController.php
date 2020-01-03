@@ -29,7 +29,7 @@ class ServerController extends Controller {
         for ($i = 0; $i < count($server); $i++) {
             $server[$i]['link'] = Helper::buildVmessLink($server[$i], $user);
             if ($server[$i]['parent_id']) {
-                Redis::get('server_last_check_at_' . $server[$i]['parent_id']);
+                $server[$i]['last_check_at'] = Redis::get('server_last_check_at_' . $server[$i]['parent_id']);
             } else {
                 $server[$i]['last_check_at'] = Redis::get('server_last_check_at_' . $server[$i]['id']);
             }
