@@ -176,10 +176,6 @@ class OrderController extends Controller
         if (!$order) {
             abort(500, '订单不存在或已支付');
         }
-        $order->method = $method;
-        if (!$order->save()) {
-            abort(500, '支付失败，请稍后再试');
-        }
         switch ($method) {
             // return type => 0: QRCode / 1: URL
             case 0:

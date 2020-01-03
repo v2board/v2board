@@ -68,7 +68,6 @@ CREATE TABLE `v2_order` (
   `plan_id` int(11) NOT NULL,
   `type` int(11) NOT NULL COMMENT '1新购2续费3升级',
   `cycle` varchar(255) NOT NULL,
-  `method` tinyint(1) DEFAULT NULL COMMENT '支付方式',
   `trade_no` varchar(36) NOT NULL,
   `callback_no` varchar(255) DEFAULT NULL,
   `total_amount` int(11) NOT NULL,
