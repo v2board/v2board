@@ -101,7 +101,7 @@ CREATE TABLE `v2_coupon` (
   `started_at` int(11) NOT NULL,
   `ended_at` int(11) NOT NULL,
   `created_at` int(11) NOT NULL,
-  `updated_at` int(11) NOT NULL,
+  `updated_at` int(11) NOT NULL
 );
 
 ALTER TABLE `v2_order`
