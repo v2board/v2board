@@ -66,7 +66,7 @@ class RegisterController extends Controller
         }
 
         // try out
-        if (config('v2board.try_out_enable', 0)) {
+        if ((int)config('v2board.try_out_enable', 0)) {
             $plan = Plan::find(config('v2board.try_out_plan_id'));
             if ($plan) {
                 $user->plan_id = $plan->id;
