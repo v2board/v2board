@@ -13,6 +13,7 @@ class ConfigSave extends FormRequest
         'invite_never_expire' => 'in:0,1',
         'stop_register' => 'in:0,1',
         'email_verify' => 'in:0,1',
+        'app_name' => '',
         'app_url' => 'url',
         'subscribe_url' => 'url',
         'plan_update_fee' => 'numeric',
@@ -33,10 +34,12 @@ class ConfigSave extends FormRequest
         // bitpayx
         'bitpayx_enable' => 'in:0,1',
         // tutorial
-        'apple_id' => 'email'
+        'apple_id' => 'email',
+        'apple_id_password' => ''
     ];
 
     public static function filter() {
+    	// abort(500, json_encode(array_keys(self::RULES)));
         return array_keys(self::RULES);
     }
     /**
