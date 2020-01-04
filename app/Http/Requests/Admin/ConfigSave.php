@@ -58,6 +58,9 @@ class ConfigSave extends FormRequest
             'subscribe_url' => 'url',
             'plan_update_fee' => 'numeric',
             'plan_is_update' => 'in:0,1',
+            'try_out_register' => 'in:0,1',
+            'try_out_plan_id' => 'integer',
+            'try_out_day' => 'integer',
             // server
             'server_token' => 'min:16',
             // alipay
