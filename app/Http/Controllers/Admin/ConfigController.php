@@ -67,7 +67,7 @@ class ConfigController extends Controller
         $array = \Config::get('v2board');
         foreach ($data as $k => $v) {
             if (!in_array($k, ConfigSave::filter())) {
-                abort(500, '禁止修改');
+                abort(500, '参数' . $k . '不在规则内，禁止修改');
             }
             $array[$k] = $v;
         }
