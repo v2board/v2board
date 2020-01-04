@@ -7,6 +7,7 @@ use App\Http\Requests\Passport\RegisterSendEmailVerify;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Plan;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Redis;
 use App\Utils\Helper;
@@ -14,6 +15,10 @@ use App\Models\InviteCode;
 
 class RegisterController extends Controller
 {
+    private function setTryOut () {
+
+    }
+
     public function index (RegisterIndex $request) {
         if ((int)config('v2board.stop_register', 0)) {
             abort(500, '本站已关闭注册');
@@ -57,6 +62,16 @@ class RegisterController extends Controller
                     $inviteCode->status = 1;
                     $inviteCode->save();
                 }
+            }
+        }
+
+        // try out
+        if (config('v2board.try_out_enable', 0)) {
+            $plan = Plan::find(config('v2board.try_out_plan_id'));
+            if ($plan) {
+                $user->plan_id = $plan->id;
+                $user->group_id = $plan->group_id;
+                $user->expired_at = time() + (config('v2board.try_out_day', 1) * 86400);
             }
         }
 
