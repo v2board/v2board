@@ -7,38 +7,7 @@ use Illuminate\Foundation\Http\FormRequest;
 class ConfigSave extends FormRequest
 {
     public static function filter() {
-        return [
-            'invite_force',
-            'invite_commission',
-            'invite_gen_limit',
-            'invite_never_expire',
-            'stop_register',
-            'email_verify',
-            'app_name',
-            'app_url',
-            'subscribe_url',
-            'plan_update_fee',
-            'plan_is_update',
-            // server
-            'server_token',
-            // alipay
-            'alipay_enable',
-            'alipay_appid',
-            'alipay_pubkey',
-            'alipay_privkey',
-            // stripe
-            'stripe_sk_live',
-            'stripe_pk_live',
-            'stripe_alipay_enable',
-            'stripe_wepay_enable',
-            'stripe_webhook_key',
-            // bitpayx,
-            'bitpayx_enable',
-            'bitpayx_appsecret',
-            // tutorial
-            'apple_id',
-            'apple_id_password'
-        ];
+        return array_keys($this->rules());
     }
     /**
      * Get the validation rules that apply to the request.
