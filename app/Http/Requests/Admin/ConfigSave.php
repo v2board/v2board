@@ -25,12 +25,15 @@ class ConfigSave extends FormRequest
         'server_token' => 'min:16',
         // alipay
         'alipay_enable' => 'in:0,1',
-        'alipay_appid' => 'integer|min:16',
+        'alipay_appid' => 'nullable|integer|min:16',
         'alipay_pubkey' => 'max:2048',
         'alipay_privkey' => 'max:2048',
         // stripe
         'stripe_alipay_enable' => 'in:0,1',
         'stripe_wepay_enable' => 'in:0,1',
+        'stripe_sk_live' => '',
+        'stripe_pk_live' => '',
+        'stripe_webhook_key' => '',
         // bitpayx
         'bitpayx_enable' => 'in:0,1',
         'bitpayx_appsecret' => '',
