@@ -6,8 +6,38 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class ConfigSave extends FormRequest
 {
+    CONST RULES = [
+        'invite_force' => 'in:0,1',
+        'invite_commission' => 'integer',
+        'invite_gen_limit' => 'integer',
+        'invite_never_expire' => 'in:0,1',
+        'stop_register' => 'in:0,1',
+        'email_verify' => 'in:0,1',
+        'app_url' => 'url',
+        'subscribe_url' => 'url',
+        'plan_update_fee' => 'numeric',
+        'plan_is_update' => 'in:0,1',
+        'try_out_register' => 'in:0,1',
+        'try_out_plan_id' => 'integer',
+        'try_out_day' => 'integer',
+        // server
+        'server_token' => 'min:16',
+        // alipay
+        'alipay_enable' => 'in:0,1',
+        'alipay_appid' => 'integer|min:16',
+        'alipay_pubkey' => 'max:2048',
+        'alipay_privkey' => 'max:2048',
+        // stripe
+        'stripe_alipay_enable' => 'in:0,1',
+        'stripe_wepay_enable' => 'in:0,1',
+        // bitpayx
+        'bitpayx_enable' => 'in:0,1',
+        // tutorial
+        'apple_id' => 'email'
+    ];
+
     public static function filter() {
-        return array_keys($this->rules());
+        return array_keys(self::RULES);
     }
     /**
      * Get the validation rules that apply to the request.
@@ -16,35 +46,7 @@ class ConfigSave extends FormRequest
      */
     public function rules()
     {
-        return [
-            'invite_force' => 'in:0,1',
-            'invite_commission' => 'integer',
-            'invite_gen_limit' => 'integer',
-            'invite_never_expire' => 'in:0,1',
-            'stop_register' => 'in:0,1',
-            'email_verify' => 'in:0,1',
-            'app_url' => 'url',
-            'subscribe_url' => 'url',
-            'plan_update_fee' => 'numeric',
-            'plan_is_update' => 'in:0,1',
-            'try_out_register' => 'in:0,1',
-            'try_out_plan_id' => 'integer',
-            'try_out_day' => 'integer',
-            // server
-            'server_token' => 'min:16',
-            // alipay
-            'alipay_enable' => 'in:0,1',
-            'alipay_appid' => 'integer|min:16',
-            'alipay_pubkey' => 'max:2048',
-            'alipay_privkey' => 'max:2048',
-            // stripe
-            'stripe_alipay_enable' => 'in:0,1',
-            'stripe_wepay_enable' => 'in:0,1',
-            // bitpayx
-            'bitpayx_enable' => 'in:0,1',
-            // tutorial
-            'apple_id' => 'email'
-        ];
+        return self::RULES;
     }
     
     public function messages()
