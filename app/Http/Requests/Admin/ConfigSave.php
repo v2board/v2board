@@ -22,7 +22,7 @@ class ConfigSave extends FormRequest
         'try_out_plan_id' => 'integer',
         'try_out_day' => 'integer',
         // server
-        'server_token' => 'min:16',
+        'server_token' => 'nullable|min:16',
         // alipay
         'alipay_enable' => 'in:0,1',
         'alipay_appid' => 'nullable|integer|min:16',
