@@ -33,6 +33,7 @@ class ConfigSave extends FormRequest
         'stripe_wepay_enable' => 'in:0,1',
         // bitpayx
         'bitpayx_enable' => 'in:0,1',
+        'bitpayx_appsecret' => '',
         // tutorial
         'apple_id' => 'email',
         'apple_id_password' => ''
