@@ -21,7 +21,7 @@ class TomatoPay {
             'trade' => $trade
         ];
         $params['signs'] = $this->sign(http_build_query($params));
-
+        return $this->buildHtml($params);
     }
 
     public function sign ($str) {
