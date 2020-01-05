@@ -67,6 +67,11 @@ class CheckOrder extends Command
     
     private function buy ($order, $user) {
         $plan = Plan::find($order->plan_id);
+        // change plan process
+        if ($order->type === 3) {
+            $transferEnableDifference = $plan->transfer_enable - ($user->transfer_enable / 1073741824);
+            $user->expired_at = $user->expired_at - ($transferEnableDifference * 1 * 60);
+        }
         $user->transfer_enable = $plan->transfer_enable * 1073741824;
         $user->enable = 1;
         $user->plan_id = $plan->id;
