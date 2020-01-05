@@ -12,25 +12,40 @@ class TomatoPay {
         $this->key = $key;
     }
     
-    public function alipay ($cny, $type, $trade) {
+    public function alipay ($cny, $trade) {
         $params = [
             'mchid' => $this->mchid,
             'account' => $this->account,
             'cny' => $cny,
-            'type' => $type,
+            'type' => '1',
             'trade' => $trade
         ];
-        $params['signs'] = $this->sign(http_build_query($params));
+        $params['signs'] = $this->sign($params);
         return $this->buildHtml('https://b.fanqieui.com/gateways/alipay.php', $params);
     }
 
-    public function sign ($str) {
-        return md5($str.$this->key);
+    public function wxpay ($cny, $trade) {
+        $params = [
+            'mchid' => $this->mchid,
+            'account' => $this->account,
+            'cny' => $cny,
+            'type' => '1',
+            'trade' => $trade
+        ];
+        $params['signs'] = $this->sign($params);
+        return $this->buildHtml('https://b.fanqieui.com/gateways/wxpay.php', $params);
+    }
+
+    public function sign ($params) {
+    	$o = '';
+        foreach ($params as $k=>$v){
+        	$o.= "$k=".($v)."&";
+        }
+        return md5(substr($o,0,-1).$this->key);
     }
 
     public function buildHtml($url, $params, $method = 'post', $target = '_self'){
-
-        // var_dump($params);exit;
+    	// return var_dump($params);
 		$html = "<form id='submit' name='submit' action='".$url."' method='$method' target='$target'>";
 		foreach ($params as $key => $value) {
 			$html .= "<input type='hidden' name='$key' value='$value'/>";
