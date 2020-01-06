@@ -34,7 +34,7 @@ class ConfigController extends Controller
                     'plan_transfer_hour' => config('v2board.plan_transfer_hour', 12),
                     'try_out_enable' => (int)config('v2board.try_out_enable', 0),
                     'try_out_plan_id' => (int)config('v2board.try_out_plan_id'),
-                    'try_out_day' => (int)config('v2board.try_out_day', 1)
+                    'try_out_hour' => (int)config('v2board.try_out_hour', 1)
                 ],
                 'pay' => [
                     // alipay

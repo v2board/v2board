@@ -8,64 +8,11 @@
 - Redis
 - Laravel
 
-## 演示
+## Demo
 
-[Demo](https://v2board.com)
-演示站点由 👉[Moack](https://www.moack.co.kr/dedicated.php)👈 强力驱动
+[Demo](https://v2board.com)  
+Demo site provided by 👉[Moack](https://www.moack.co.kr/dedicated.php)👈
 
-## 本地环境部署
-
-1. 下载 composer
-    > ```shell script
-    > wget https://getcomposer.org/download/1.9.0/composer.phar
-    > php composer.phar install
-    > ```
-2. 执行 `cp .env.example .env` 然后配置它
-3. 执行安装
-    > ```install script
-    > php artisan v2board:install
-    > ```
-    > 
-4. 设置定时任务每分钟执行
-    > ```set crontable
-    > php artisan schedule:run
-    > ```
-5. 其他注意事项
-    > 每次修改 `.env` 文件后需要执行 `php artisan config:cache` 重建缓存  
-    > 请务必安装 `redis`
-
-
-## Docker 环境部署
-> 首先 `cp docker-compose.yml.example docker-compose.yml` 选择性修改
-1. 执行 `docker-compose run --rm db` 进入 docker 容器
-2. 从 `install.sql` 文件中恢复表后退出容器，执行 `docker-compose down`
-3. 执行 `cp .env.example .env` 然后配置它
-4. 执行配置脚本
-    > ```shell script
-    > docker run --rm -v $(pwd):/app composer install
-    > docker run --rm -v $(pwd):/app composer sh init.sh
-    > ```
-4. 执行 `docker-compose up -d` 启动服务
-> 每次修改 `.env` 文件后需要执行 `docker run --rm -v $(pwd):/app composer artisan config:cache` 重建缓存
-
-## 注意
-
-伪静态：
-```
-location /downloads {
-}
-
-location / {  
-	try_files $uri $uri/ /index.php$is_args$query_string;  
-}
-
-location ~ .*\.(js|css)?$
-{
-    expires      1h;
-    error_log off;
-    access_log /dev/null; 
-}
-```
 
 ## 投喂
 ETH&(USDT-ERC20): 0x84F85A89105B93F74c3b5db6410Ee8630F01063f
