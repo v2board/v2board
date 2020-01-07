@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Order;
 use Omnipay\Omnipay;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Redis;
+use Cache;
 use Library\BitpayX;
 
 class OrderController extends Controller
@@ -70,14 +70,14 @@ class OrderController extends Controller
                     'source' => $source['id'],
                 ]);
                 if ($charge['status'] == 'succeeded') {
-                    $trade_no = Redis::get($source['id']);
+                    $trade_no = Cache::get($source['id']);
                     if (!$trade_no) {
                         abort(500, 'redis is not found trade no by stripe source id');
                     }
                     if (!$this->handle($trade_no, $source['id'])) {
                         abort(500, 'fail');
                     }
-                    Redis::del($source['id']);
+                    Cache::forget($source['id']);
                     die('success');
                 }
                 break;

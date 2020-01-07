@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redis;
+use Cache;
 use App\Http\Controllers\Controller;
 use App\Models\Server;
 use App\Models\ServerLog;
@@ -29,9 +29,9 @@ class ServerController extends Controller {
         for ($i = 0; $i < count($server); $i++) {
             $server[$i]['link'] = Helper::buildVmessLink($server[$i], $user);
             if ($server[$i]['parent_id']) {
-                $server[$i]['last_check_at'] = Redis::get('server_last_check_at_' . $server[$i]['parent_id']);
+                $server[$i]['last_check_at'] = Cache::get('server_last_check_at_' . $server[$i]['parent_id']);
             } else {
-                $server[$i]['last_check_at'] = Redis::get('server_last_check_at_' . $server[$i]['id']);
+                $server[$i]['last_check_at'] = Cache::get('server_last_check_at_' . $server[$i]['id']);
             }
         }
         return response([

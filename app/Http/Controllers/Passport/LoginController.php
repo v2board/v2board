@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\Passport\LoginIndex;
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use Illuminate\Support\Facades\Redis;
+use Cache;
 use App\Utils\Helper;
 
 class LoginController extends Controller
@@ -44,7 +44,7 @@ class LoginController extends Controller
             }
             $code = Helper::guid();
             $key = 'token2Login_' . $code;
-            Redis::set($key, $user->id);
+            Cache::put($key, $user->id);
             Redis::expire($key, 600);
             $redirect = '/#/login?verify='. $code .'&redirect=' . ($request->input('redirect') ? $request->input('redirect') : 'dashboard');
             if (config('v2board.app_url')) {
@@ -57,7 +57,7 @@ class LoginController extends Controller
 
         if ($request->input('verify')) {
             $key = 'token2Login_' . $request->input('verify');
-            $userId = Redis::get($key);
+            $userId = Cache::get($key);
             if (!$userId) {
                 abort(500, '令牌有误');
             }
@@ -70,7 +70,7 @@ class LoginController extends Controller
             if ($user->is_admin) {
                 $request->session()->put('is_admin', true);
             }
-            Redis::del($key);
+            Cache::forget($key);
             return response([
                 'data' => true
             ]);

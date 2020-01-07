@@ -8,7 +8,7 @@ use App\Models\Order;
 use App\Models\Server;
 use App\Models\ServerLog;
 use App\Utils\Helper;
-use Illuminate\Support\Facades\Redis;
+use Cache;
 
 class V2boardCache extends Command
 {
@@ -48,7 +48,7 @@ class V2boardCache extends Command
     }
 
     private function setMonthIncome() {
-        Redis::set(
+        Cache::put(
             'month_income',
             Order::where('created_at', '>=', strtotime(date('Y-m-1')))
                 ->where('created_at', '<', time())
@@ -58,7 +58,7 @@ class V2boardCache extends Command
     }
 
     private function setMonthRegisterTotal() {
-        Redis::set(
+        Cache::put(
             'month_register_total',
             User::where('created_at', '>=', strtotime(date('Y-m-1')))
                 ->where('created_at', '<', time())

@@ -10,7 +10,7 @@ use App\Models\ServerGroup;
 use App\Models\Server;
 use App\Models\Plan;
 use App\Models\User;
-use Illuminate\Support\Facades\Redis;
+use Cache;
 
 class ServerController extends Controller
 {
@@ -22,9 +22,9 @@ class ServerController extends Controller
             }
             $server[$i]['group_id'] = json_decode($server[$i]['group_id']);
             if ($server[$i]['parent_id']) {
-                $server[$i]['last_check_at'] = Redis::get('server_last_check_at_' . $server[$i]['parent_id']);
+                $server[$i]['last_check_at'] = Cache::get('server_last_check_at_' . $server[$i]['parent_id']);
             } else {
-                $server[$i]['last_check_at'] = Redis::get('server_last_check_at_' . $server[$i]['id']);
+                $server[$i]['last_check_at'] = Cache::get('server_last_check_at_' . $server[$i]['id']);
             }
         }
         return response([
@@ -57,7 +57,7 @@ class ServerController extends Controller
                 abort(500, '传输协议配置格式不正确');
             }
         }
-        
+
 		if ($request->input('id')) {
 			$server = Server::find($request->input('id'));
 			if (!$server) {
@@ -70,7 +70,7 @@ class ServerController extends Controller
 				'data' => true
 			]);
 		}
-		
+
         if (!Server::create($params)) {
             abort(500, '创建失败');
         }
@@ -79,7 +79,7 @@ class ServerController extends Controller
             'data' => true
         ]);
     }
-    
+
     public function groupFetch (Request $request) {
         if ($request->input('group_id')) {
             return response([
@@ -95,7 +95,7 @@ class ServerController extends Controller
         if (empty($request->input('name'))) {
             abort(500, '组名不能为空');
         }
-        
+
         if ($request->input('id')) {
             $serverGroup = ServerGroup::find($request->input('id'));
         } else {
@@ -134,7 +134,7 @@ class ServerController extends Controller
             'data' => $serverGroup->delete()
         ]);
     }
-    
+
     public function drop (Request $request) {
         if ($request->input('id')) {
             $server = Server::find($request->input('id'));
@@ -151,7 +151,7 @@ class ServerController extends Controller
         $params = $request->only([
             'show',
         ]);
-        
+
         $server = Server::find($request->input('id'));
 
         if (!$server) {

@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Redis;
+use Cache;
 
 class CommController extends Controller
 {
@@ -29,7 +29,7 @@ class CommController extends Controller
     public function sendEmailVerify (CommSendEmailVerify $request) {
         $email = $request->input('email');
         $redisKey = 'sendEmailVerify:' . $email;
-        if (Redis::get($redisKey)) {
+        if (Cache::get($redisKey)) {
             abort(500, '验证码已发送，请过一会在请求');
         }
         $code = rand(100000, 999999);
@@ -50,7 +50,7 @@ class CommController extends Controller
             abort(500, '发送失败');
         }
 
-        Redis::set($redisKey, $code);
+        Cache::put($redisKey, $code);
         Redis::expire($redisKey, 600);
         return response([
             'data' => true

@@ -9,7 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Plan;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Support\Facades\Redis;
+use Cache;
 use App\Utils\Helper;
 use App\Models\InviteCode;
 
@@ -33,7 +33,7 @@ class RegisterController extends Controller
             if (empty($request->input('email_code'))) {
                 abort(500, '邮箱验证码不能为空');
             }
-            if (Redis::get($redisKey) !== $request->input('email_code')) {
+            if (Cache::get($redisKey) !== $request->input('email_code')) {
                 abort(500, '邮箱验证码有误');
             }
         }
@@ -80,7 +80,7 @@ class RegisterController extends Controller
             abort(500, '注册失败');
         }
         if ((int)config('v2board.email_verify', 0)) {
-            Redis::del($redisKey);
+            Cache::forget($redisKey);
         }
         return response()->json([
             'data' => true

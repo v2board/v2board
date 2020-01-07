@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\OrderSave;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redis;
+use Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use App\Models\Order;
@@ -333,7 +333,7 @@ class OrderController extends Controller
             abort(500, '支付网关请求失败');
         }
         
-        if (!Redis::set($source['id'], $order->trade_no)) {
+        if (!Cache::put($source['id'], $order->trade_no)) {
             abort(500, '订单创建失败');
         }
         Redis::expire($source['id'], 3600);
@@ -357,7 +357,7 @@ class OrderController extends Controller
         if (!$source['wechat']['qr_code_url']) {
             abort(500, '支付网关请求失败');
         }
-        if (!Redis::set($source['id'], $order->trade_no)) {
+        if (!Cache::put($source['id'], $order->trade_no)) {
             abort(500, '订单创建失败');
         }
         Redis::expire($source['id'], 3600);

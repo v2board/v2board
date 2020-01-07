@@ -6,7 +6,7 @@ use App\Http\Requests\Admin\NoticeSave;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Notice;
-use Illuminate\Support\Facades\Redis;
+use Cache;
 
 class NoticeController extends Controller
 {

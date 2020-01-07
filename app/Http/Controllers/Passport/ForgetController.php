@@ -7,13 +7,13 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Redis;
+use Cache;
 
 class ForgetController extends Controller
 {
     public function index (ForgetIndex $request) {
         $redisKey = 'sendEmailVerify:' . $request->input('email');
-        if (Redis::get($redisKey) !== $request->input('email_code')) {
+        if (Cache::get($redisKey) !== $request->input('email_code')) {
             abort(500, '邮箱验证码有误');
         }
         $user = User::where('email', $request->input('email'))->first();
@@ -21,7 +21,7 @@ class ForgetController extends Controller
         if (!$user->save()) {
             abort(500, '重置失败');
         }
-        Redis::del($redisKey);
+        Cache::forget($redisKey);
         return response([
             'data' => true
         ]);
