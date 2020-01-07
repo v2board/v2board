@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Server;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Server\Controller;
 use App\Models\User;
 use App\Models\Plan;
 use App\Models\Server;
@@ -19,7 +18,9 @@ class DeepbworkController extends Controller
         $nodeId = $request->input('node_id');
         $server = Server::find($nodeId);
         if (!$server) {
-            abort(500, 'fail');
+            return response()->json([
+              'msg' => 'fail',
+            ], 500);
         }
         Cache::put('server_last_check_at_' . $server->id, time());
         $users = User::whereIn('group_id', json_decode($server->group_id))
@@ -75,7 +76,7 @@ class DeepbworkController extends Controller
 			$user->u = $user->u + $u;
 			$user->d = $user->d + $d;
             $user->save();
-            
+
             $serverLog = new ServerLog();
             $serverLog->user_id = $item['user_id'];
             $serverLog->server_id = $request->input('node_id');
@@ -84,7 +85,7 @@ class DeepbworkController extends Controller
             $serverLog->rate = $server->rate;
             $serverLog->save();
         }
-        
+
     	return response([
     		'ret' => 1,
     		'msg' => 'ok'
@@ -96,11 +97,15 @@ class DeepbworkController extends Controller
         $nodeId = $request->input('node_id');
         $localPort = $request->input('local_port');
         if (empty($nodeId) || empty($localPort)) {
-            abort(1000, '参数错误');
+            return response()->json([
+              'msg' => '参数错误',
+            ], 400);
         }
         $server = Server::find($nodeId);
         if (!$server) {
-            abort(1001, '节点不存在');
+            return response()->json([
+              'msg' => '节点不存在',
+            ], 400);
         }
         $json = json_decode(self::SERVER_CONFIG);
         $json->inboundDetour[0]->port = (int)$localPort;
@@ -127,7 +132,10 @@ class DeepbworkController extends Controller
             $tls = (object) array("certificateFile" => "/home/v2ray.crt", "keyFile" => "/home/v2ray.key");
             $json->inbound->streamSettings->tlsSettings->certificates[0] = $tls;
         }
-        
-        die(json_encode($json, JSON_UNESCAPED_UNICODE));
+
+    	return response()->json([
+    		'msg' => 'ok',
+        'data' => $json,
+    	]);
     }
 }

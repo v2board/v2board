@@ -9,10 +9,16 @@ class Controller extends BaseController
     public function __construct(Request $request) {
         $token = $request->input('token');
         if (empty($token)) {
-            abort(500, 'token is null');
+            response()->json([
+              'msg' => 'token can not be empty',
+            ], 400)->send();
+            die();
         }
         if ($token !== config('v2board.server_token')) {
-            abort(500, 'token is error');
+            response()->json([
+              'msg' => 'invalid token',
+            ], 400)->send();
+            die();
         }
     }
 }
