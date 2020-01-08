@@ -10,22 +10,22 @@ use App\Models\Plan;
 use App\Models\User;
 use App\Models\Ticket;
 use App\Models\Order;
-use Illuminate\Support\Facades\Redis;
+use Cache;
 
 class StatController extends Controller
 {
     public function getOverride (Request $request) {
         return response([
             'data' => [
-                'month_income' => Redis::get('month_income'),
-                'month_register_total' => Redis::get('month_register_total'),
+                'month_income' => Cache::get('month_income'),
+                'month_register_total' => Cache::get('month_register_total'),
                 'ticket_pendding_total' => Ticket::where('status', 0)
                     ->count(),
                 'commission_pendding_total' => Order::where('commission_status', 0)
                     ->where('invite_user_id', '!=', NULL)
                     ->where('status', 3)
                     ->count(),
-                
+
             ]
         ]);
     }
