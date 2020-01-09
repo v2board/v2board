@@ -50,8 +50,7 @@ class CommController extends Controller
             abort(500, '发送失败');
         }
 
-        Cache::put($redisKey, $code);
-        Redis::expire($redisKey, 600);
+        Cache::put($redisKey, $code, 10);
         return response([
             'data' => true
         ]);
