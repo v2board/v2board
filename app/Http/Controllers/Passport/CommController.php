@@ -28,8 +28,8 @@ class CommController extends Controller
 
     public function sendEmailVerify (CommSendEmailVerify $request) {
         $email = $request->input('email');
-        $redisKey = 'sendEmailVerify:' . $email;
-        if (Cache::get($redisKey)) {
+        $cacheKey = 'sendEmailVerify:' . $email;
+        if (Cache::get($cacheKey)) {
             abort(500, '验证码已发送，请过一会在请求');
         }
         $code = rand(100000, 999999);
@@ -50,7 +50,7 @@ class CommController extends Controller
             abort(500, '发送失败');
         }
 
-        Cache::put($redisKey, $code, 10);
+        Cache::put($cacheKey, $code, 10);
         return response([
             'data' => true
         ]);
