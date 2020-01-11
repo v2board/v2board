@@ -8,7 +8,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Mail;
 use App\Utils\Helper;
-use Cache;
+use Illuminate\Support\Facades\Cache;
 
 class CommController extends Controller
 {

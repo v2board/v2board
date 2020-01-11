@@ -9,7 +9,7 @@ use App\Models\Plan;
 use App\Models\Server;
 use App\Models\ServerLog;
 use Illuminate\Support\Facades\Log;
-use Cache;
+use Illuminate\Support\Facades\Cache;
 
 class DeepbworkController extends Controller
 {

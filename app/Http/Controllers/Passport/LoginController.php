@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\Passport\LoginIndex;
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use Cache;
+use Illuminate\Support\Facades\Cache;
 use App\Utils\Helper;
 
 class LoginController extends Controller

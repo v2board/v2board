@@ -10,7 +10,7 @@ use App\Models\Plan;
 use App\Models\User;
 use App\Models\Ticket;
 use App\Models\Order;
-use Cache;
+use Illuminate\Support\Facades\Cache;
 
 class StatController extends Controller
 {

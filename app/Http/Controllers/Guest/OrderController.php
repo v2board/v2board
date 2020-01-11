@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Order;
 use Omnipay\Omnipay;
 use Illuminate\Support\Facades\Log;
-use Cache;
+use Illuminate\Support\Facades\Cache;
 use Library\BitpayX;
 
 class OrderController extends Controller

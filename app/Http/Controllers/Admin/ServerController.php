@@ -10,7 +10,7 @@ use App\Models\ServerGroup;
 use App\Models\Server;
 use App\Models\Plan;
 use App\Models\User;
-use Cache;
+use Illuminate\Support\Facades\Cache;
 
 class ServerController extends Controller
 {

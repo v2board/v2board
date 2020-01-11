@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Support\Facades\Mail;
-use Cache;
+use Illuminate\Support\Facades\Cache;
 
 class ForgetController extends Controller
 {

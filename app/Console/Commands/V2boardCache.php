@@ -8,7 +8,7 @@ use App\Models\Order;
 use App\Models\Server;
 use App\Models\ServerLog;
 use App\Utils\Helper;
-use Cache;
+use Illuminate\Support\Facades\Cache;
 
 class V2boardCache extends Command
 {

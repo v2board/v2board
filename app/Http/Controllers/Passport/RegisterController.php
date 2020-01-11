@@ -3,13 +3,10 @@
 namespace App\Http\Controllers\Passport;
 
 use App\Http\Requests\Passport\RegisterIndex;
-use App\Http\Requests\Passport\RegisterSendEmailVerify;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Plan;
-use Illuminate\Http\Exceptions\HttpResponseException;
-use Cache;
+use Illuminate\Support\Facades\Cache;
 use App\Utils\Helper;
 use App\Models\InviteCode;
 
