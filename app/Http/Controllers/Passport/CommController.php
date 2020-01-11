@@ -53,7 +53,7 @@ class CommController extends Controller
             abort(500, '发送失败');
         }
 
-        Cache::put($cacheKey, $code, 10);
+        Cache::put($cacheKey, $code, 600);
         return response([
             'data' => true
         ]);
