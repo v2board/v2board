@@ -20,13 +20,14 @@ use Library\BitpayX;
 
 class OrderController extends Controller
 {
-    public function fetch (Request $request) {
+    public function fetch(Request $request)
+    {
         $order = Order::where('user_id', $request->session()->get('id'))
             ->orderBy('created_at', 'DESC')
             ->get();
         $plan = Plan::get();
-        for($i = 0; $i < count($order); $i++) {
-            for($x = 0; $x < count($plan); $x++) {
+        for ($i = 0; $i < count($order); $i++) {
+            for ($x = 0; $x < count($plan); $x++) {
                 if ($order[$i]['plan_id'] === $plan[$x]['id']) {
                     $order[$i]['plan'] = $plan[$x];
                 }
@@ -36,8 +37,9 @@ class OrderController extends Controller
             'data' => $order
         ]);
     }
-    
-    public function details (Request $request) {
+
+    public function details(Request $request)
+    {
         $order = Order::where('user_id', $request->session()->get('id'))
             ->where('trade_no', $request->input('trade_no'))
             ->first();
@@ -54,7 +56,8 @@ class OrderController extends Controller
         ]);
     }
 
-    private function isExistNotPayOrderByUserId ($userId) {
+    private function isExistNotPayOrderByUserId($userId)
+    {
         $order = Order::where('status', 0)
             ->where('user_id', $userId)
             ->first();
@@ -63,19 +66,20 @@ class OrderController extends Controller
         }
         return true;
     }
-    
-    public function save (OrderSave $request) {
+
+    public function save(OrderSave $request)
+    {
         if ($this->isExistNotPayOrderByUserId($request->session()->get('id'))) {
             abort(500, '存在未付款订单，请取消后再试');
         }
 
         $plan = Plan::find($request->input('plan_id'));
         $user = User::find($request->session()->get('id'));
-        
+
         if (!$plan) {
             abort(500, '该订阅不存在');
         }
-        
+
         if (!($plan->show || $user->plan_id == $plan->id)) {
             abort(500, '该订阅已售罄');
         }
@@ -103,7 +107,7 @@ class OrderController extends Controller
                 abort(500, '优惠券已过期');
             }
         }
-        
+
         DB::beginTransaction();
         $order = new Order();
         $order->user_id = $request->session()->get('id');
@@ -133,9 +137,11 @@ class OrderController extends Controller
         // coupon process
         if (isset($coupon)) {
             switch ($coupon->type) {
-                case 1: $order->discount_amount = $coupon->value;
+                case 1:
+                    $order->discount_amount = $coupon->value;
                     break;
-                case 2: $order->discount_amount = $order->total_amount * ($coupon->value / 100);
+                case 2:
+                    $order->discount_amount = $order->total_amount * ($coupon->value / 100);
                     break;
             }
             $order->total_amount = $order->total_amount - $order->discount_amount;
@@ -157,7 +163,7 @@ class OrderController extends Controller
             DB::rollback();
             abort(500, '订单创建失败');
         }
-        
+
         DB::commit();
 
         return response([
@@ -165,7 +171,8 @@ class OrderController extends Controller
         ]);
     }
 
-    public function checkout (Request $request) {
+    public function checkout(Request $request)
+    {
         $tradeNo = $request->input('trade_no');
         $method = $request->input('method');
         $order = Order::where('trade_no', $tradeNo)
@@ -218,7 +225,8 @@ class OrderController extends Controller
         }
     }
 
-    public function check (Request $request) {
+    public function check(Request $request)
+    {
         $tradeNo = $request->input('trade_no');
         $order = Order::where('trade_no', $tradeNo)
             ->where('user_id', $request->session()->get('id'))
@@ -231,7 +239,8 @@ class OrderController extends Controller
         ]);
     }
 
-    public function getPaymentMethod () {
+    public function getPaymentMethod()
+    {
         $data = [];
         if ((int)config('v2board.alipay_enable')) {
             $alipayF2F = new \StdClass();
@@ -270,7 +279,8 @@ class OrderController extends Controller
         ]);
     }
 
-    public function cancel (Request $request) {
+    public function cancel(Request $request)
+    {
         if (empty($request->input('trade_no'))) {
             abort(500, '参数有误');
         }
@@ -292,7 +302,8 @@ class OrderController extends Controller
         ]);
     }
 
-    private function alipayF2F ($tradeNo, $totalAmount) {
+    private function alipayF2F($tradeNo, $totalAmount)
+    {
         $gateway = Omnipay::create('Alipay_AopF2F');
         $gateway->setSignType('RSA2'); //RSA/RSA2
         $gateway->setAppId(config('v2board.alipay_appid'));
@@ -301,7 +312,7 @@ class OrderController extends Controller
         $gateway->setNotifyUrl(url('/api/v1/guest/order/alipayNotify'));
         $request = $gateway->purchase();
         $request->setBizContent([
-            'subject'      => config('v2board.app_name', 'V2Board') . ' - 订阅',
+            'subject' => config('v2board.app_name', 'V2Board') . ' - 订阅',
             'out_trade_no' => $tradeNo,
             'total_amount' => $totalAmount / 100
         ]);
@@ -309,13 +320,14 @@ class OrderController extends Controller
         $response = $request->send();
         $result = $response->getAlipayResponse();
         if ($result['code'] !== '10000') {
-        	abort(500, $result['sub_msg']);
+            abort(500, $result['sub_msg']);
         }
         // 获取收款二维码内容
         return $response->getQrCode();
     }
 
-    private function stripeAlipay ($order) {
+    private function stripeAlipay($order)
+    {
         $exchange = Helper::exchange('CNY', 'HKD');
         if (!$exchange) {
             abort(500, '货币转换超时，请稍后再试');
@@ -332,7 +344,7 @@ class OrderController extends Controller
         if (!$source['redirect']['url']) {
             abort(500, '支付网关请求失败');
         }
-        
+
         if (!Cache::put($source['id'], $order->trade_no)) {
             abort(500, '订单创建失败');
         }
@@ -340,7 +352,8 @@ class OrderController extends Controller
         return $source['redirect']['url'];
     }
 
-    private function stripeWepay ($order) {
+    private function stripeWepay($order)
+    {
         $exchange = Helper::exchange('CNY', 'HKD');
         if (!$exchange) {
             abort(500, '货币转换超时，请稍后再试');
@@ -364,20 +377,21 @@ class OrderController extends Controller
         return $source['wechat']['qr_code_url'];
     }
 
-    private function bitpayX ($order) {
+    private function bitpayX($order)
+    {
         $bitpayX = new BitpayX(config('v2board.bitpayx_appsecret'));
-    	$params = [
-    		'merchant_order_id' => 'V2Board_' . $order->trade_no,
-	        'price_amount' => $order->total_amount / 100,
-	        'price_currency' => 'CNY',
-	        'title' => '支付单号：' . $order->trade_no,
-	        'description' => '充值：' . $order->total_amount / 100 . ' 元',
-	        'callback_url' => url('/api/v1/guest/order/bitpayXNotify'),
-	        'success_url' => config('v2board.app_url', env('APP_URL')) . '/#/order',
-	        'cancel_url' => config('v2board.app_url', env('APP_URL')) . '/#/order'
+        $params = [
+            'merchant_order_id' => 'V2Board_' . $order->trade_no,
+            'price_amount' => $order->total_amount / 100,
+            'price_currency' => 'CNY',
+            'title' => '支付单号：' . $order->trade_no,
+            'description' => '充值：' . $order->total_amount / 100 . ' 元',
+            'callback_url' => url('/api/v1/guest/order/bitpayXNotify'),
+            'success_url' => config('v2board.app_url', env('APP_URL')) . '/#/order',
+            'cancel_url' => config('v2board.app_url', env('APP_URL')) . '/#/order'
         ];
         $strToSign = $bitpayX->prepareSignId($params['merchant_order_id']);
-	    $params['token'] = $bitpayX->sign($strToSign);
+        $params['token'] = $bitpayX->sign($strToSign);
         $result = $bitpayX->mprequest($params);
         Log::info('bitpayXSubmit: ' . json_encode($result));
         return isset($result['payment_url']) ? $result['payment_url'] : false;

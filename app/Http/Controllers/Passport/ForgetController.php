@@ -11,7 +11,8 @@ use Cache;
 
 class ForgetController extends Controller
 {
-    public function index (ForgetIndex $request) {
+    public function index(ForgetIndex $request)
+    {
         $redisKey = 'sendEmailVerify:' . $request->input('email');
         if (Cache::get($redisKey) !== $request->input('email_code')) {
             abort(500, '邮箱验证码有误');

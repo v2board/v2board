@@ -18,7 +18,7 @@ class OrderUpdate extends FormRequest
             'commission_status' => 'in:0,1'
         ];
     }
-    
+
     public function messages()
     {
         return [

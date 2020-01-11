@@ -14,7 +14,8 @@ use Cache;
 
 class StatController extends Controller
 {
-    public function getOverride (Request $request) {
+    public function getOverride(Request $request)
+    {
         return response([
             'data' => [
                 'month_income' => Cache::get('month_income'),

@@ -11,8 +11,10 @@ use App\Models\User;
 
 use App\Utils\Helper;
 
-class ServerController extends Controller {
-    public function fetch (Request $request) {
+class ServerController extends Controller
+{
+    public function fetch(Request $request)
+    {
         $user = User::find($request->session()->get('id'));
         $server = [];
         if ($user->expired_at > time()) {
@@ -39,23 +41,27 @@ class ServerController extends Controller {
         ]);
     }
 
-    public function logFetch (Request $request) {
-    	$type = $request->input('type') ? $request->input('type') : 0;
+    public function logFetch(Request $request)
+    {
+        $type = $request->input('type') ? $request->input('type') : 0;
         $current = $request->input('current') ? $request->input('current') : 1;
         $pageSize = $request->input('pageSize') >= 10 ? $request->input('pageSize') : 10;
         $serverLogModel = ServerLog::where('user_id', $request->session()->get('id'))
             ->orderBy('created_at', 'DESC');
-    	switch ($type) {
-    		case 0: $serverLogModel->where('created_at', '>=', strtotime(date('Y-m-d')));
-    			break;
-    		case 1: $serverLogModel->where('created_at', '>=', strtotime(date('Y-m-d')) - 604800);
-    			break;
-    		case 2: $serverLogModel->where('created_at', '>=', strtotime(date('Y-m-1')));
-    	}
-    	$sum = [
-    		'u' => $serverLogModel->sum('u'),
-    		'd' => $serverLogModel->sum('d')
-    	];
+        switch ($type) {
+            case 0:
+                $serverLogModel->where('created_at', '>=', strtotime(date('Y-m-d')));
+                break;
+            case 1:
+                $serverLogModel->where('created_at', '>=', strtotime(date('Y-m-d')) - 604800);
+                break;
+            case 2:
+                $serverLogModel->where('created_at', '>=', strtotime(date('Y-m-1')));
+        }
+        $sum = [
+            'u' => $serverLogModel->sum('u'),
+            'd' => $serverLogModel->sum('d')
+        ];
         $total = $serverLogModel->count();
         $res = $serverLogModel->forPage($current, $pageSize)
             ->get();

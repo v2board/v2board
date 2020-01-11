@@ -18,7 +18,7 @@ class PlanUpdate extends FormRequest
             'renew' => 'in:0,1'
         ];
     }
-    
+
     public function messages()
     {
         return [

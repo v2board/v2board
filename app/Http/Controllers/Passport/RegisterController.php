@@ -15,11 +15,13 @@ use App\Models\InviteCode;
 
 class RegisterController extends Controller
 {
-    private function setTryOut () {
+    private function setTryOut()
+    {
 
     }
 
-    public function index (RegisterIndex $request) {
+    public function index(RegisterIndex $request)
+    {
         if ((int)config('v2board.stop_register', 0)) {
             abort(500, '本站已关闭注册');
         }

@@ -23,7 +23,7 @@ class PlanSave extends FormRequest
             'year_price' => 'nullable|integer'
         ];
     }
-    
+
     public function messages()
     {
         return [

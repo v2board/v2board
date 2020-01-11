@@ -19,7 +19,7 @@ class TicketSave extends FormRequest
             'message' => 'required'
         ];
     }
-    
+
     public function messages()
     {
         return [

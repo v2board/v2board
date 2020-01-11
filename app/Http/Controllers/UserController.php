@@ -15,13 +15,15 @@ use App\Models\ServerLog;
 
 class UserController extends Controller
 {
-    public function logout (Request $request) {
+    public function logout(Request $request)
+    {
         return response([
             'data' => $request->session()->flush()
         ]);
     }
 
-    public function changePassword (Request $request) {
+    public function changePassword(Request $request)
+    {
         if (empty($request->input('old_password'))) {
             abort(500, '旧密码不能为空');
         }
@@ -41,8 +43,9 @@ class UserController extends Controller
             'data' => true
         ]);
     }
-    
-    public function info (Request $request) {
+
+    public function info(Request $request)
+    {
         $user = User::where('id', $request->session()->get('id'))
             ->select([
                 'email',
@@ -65,7 +68,8 @@ class UserController extends Controller
         ]);
     }
 
-    public function getStat (Request $request) {
+    public function getStat(Request $request)
+    {
         $stat = [
             Order::where('status', 0)
                 ->where('user_id', $request->session()->get('id'))
@@ -81,7 +85,8 @@ class UserController extends Controller
         ]);
     }
 
-    public function getSubscribe (Request $request) {
+    public function getSubscribe(Request $request)
+    {
         $user = User::find($request->session()->get('id'));
         if ($user->plan_id) {
             $user['plan'] = Plan::find($user->plan_id);
@@ -94,8 +99,9 @@ class UserController extends Controller
             'data' => $user
         ]);
     }
-    
-    public function resetSecurity (Request $request) {
+
+    public function resetSecurity(Request $request)
+    {
         $user = User::find($request->session()->get('id'));
         $user->v2ray_uuid = Helper::guid(true);
         $user->token = Helper::guid();
@@ -107,12 +113,13 @@ class UserController extends Controller
         ]);
     }
 
-    public function update (UserUpdate $request) {
+    public function update(UserUpdate $request)
+    {
         $updateData = $request->only([
             'remind_expire',
             'remind_traffic'
         ]);
-        
+
         $user = User::find($request->session()->get('id'));
         if (!$user) {
             abort(500, '该用户不存在');

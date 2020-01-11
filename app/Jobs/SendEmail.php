@@ -14,6 +14,7 @@ class SendEmail implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
     protected $params;
+
     /**
      * Create a new job instance.
      *
@@ -36,10 +37,10 @@ class SendEmail implements ShouldQueue
         $subject = $params['subject'];
         try {
             Mail::send(
-                $params['template_name'], 
+                $params['template_name'],
                 $params['template_value'],
-                function ($message) use($email, $subject) { 
-                    $message->to($email)->subject($subject); 
+                function ($message) use ($email, $subject) {
+                    $message->to($email)->subject($subject);
                 }
             );
         } catch (\Exception $e) {

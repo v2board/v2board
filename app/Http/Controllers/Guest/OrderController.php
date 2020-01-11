@@ -12,7 +12,8 @@ use Library\BitpayX;
 
 class OrderController extends Controller
 {
-    public function alipayNotify (Request $request) {
+    public function alipayNotify(Request $request)
+    {
         Log::info('alipayNotifyData: ' . json_encode($_POST));
         $gateway = Omnipay::create('Alipay_AopF2F');
         $gateway->setSignType('RSA2'); //RSA/RSA2
@@ -24,8 +25,8 @@ class OrderController extends Controller
         try {
             /** @var \Omnipay\Alipay\Responses\AopCompletePurchaseResponse $response */
             $response = $request->send();
-            
-            if($response->isPaid()){
+
+            if ($response->isPaid()) {
                 /**
                  * Payment is successful
                  */
@@ -34,7 +35,7 @@ class OrderController extends Controller
                 }
 
                 die('success'); //The response should be 'success' only
-            }else{
+            } else {
                 /**
                  * Payment is not successful
                  */
@@ -48,7 +49,8 @@ class OrderController extends Controller
         }
     }
 
-    public function stripeNotify (Request $request) {
+    public function stripeNotify(Request $request)
+    {
         Log::info('stripeNotifyData: ' . json_encode($request->input()));
 
         \Stripe\Stripe::setApiKey(config('v2board.stripe_sk_live'));
@@ -86,7 +88,8 @@ class OrderController extends Controller
         }
     }
 
-    public function bitpayXNotify (Request $request) {
+    public function bitpayXNotify(Request $request)
+    {
         $inputString = file_get_contents('php://input', 'r');
         Log::info('bitpayXNotifyData: ' . $inputString);
         $inputStripped = str_replace(array("\r", "\n", "\t", "\v"), '', $inputString);
@@ -94,14 +97,14 @@ class OrderController extends Controller
 
         $bitpayX = new BitpayX(config('v2board.bitpayx_appsecret'));
         $params = [
-            'status'                 => $inputJSON['status'],
-            'order_id'               => $inputJSON['order_id'],
-            'merchant_order_id'      => $inputJSON['merchant_order_id'],
-            'price_amount'           => $inputJSON['price_amount'],
-            'price_currency'         => $inputJSON['price_currency'],
-            'pay_amount'             => $inputJSON['pay_amount'],
-            'pay_currency'           => $inputJSON['pay_currency'],
-            'created_at_t'           => $inputJSON['created_at_t']
+            'status' => $inputJSON['status'],
+            'order_id' => $inputJSON['order_id'],
+            'merchant_order_id' => $inputJSON['merchant_order_id'],
+            'price_amount' => $inputJSON['price_amount'],
+            'price_currency' => $inputJSON['price_currency'],
+            'pay_amount' => $inputJSON['pay_amount'],
+            'pay_currency' => $inputJSON['pay_currency'],
+            'created_at_t' => $inputJSON['created_at_t']
         ];
         $strToSign = $bitpayX->prepareSignId($inputJSON['merchant_order_id']);
         if (!$bitpayX->verify($strToSign, $inputJSON['token'])) {
@@ -127,7 +130,8 @@ class OrderController extends Controller
         ]);
     }
 
-    private function handle ($tradeNo, $callbackNo) {
+    private function handle($tradeNo, $callbackNo)
+    {
         $order = Order::where('trade_no', $tradeNo)->first();
         if (!$order) {
             abort(500, 'order is not found');

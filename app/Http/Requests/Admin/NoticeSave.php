@@ -19,7 +19,7 @@ class NoticeSave extends FormRequest
             'img_url' => 'url'
         ];
     }
-    
+
     public function messages()
     {
         return [

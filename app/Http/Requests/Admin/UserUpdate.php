@@ -23,7 +23,7 @@ class UserUpdate extends FormRequest
             'commission_rate' => 'nullable|integer|min:0|max:100'
         ];
     }
-    
+
     public function messages()
     {
         return [

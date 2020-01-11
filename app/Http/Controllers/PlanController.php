@@ -8,7 +8,8 @@ use App\Models\Plan;
 
 class PlanController extends Controller
 {
-    public function fetch (Request $request) {
+    public function fetch(Request $request)
+    {
         if ($request->input('id')) {
             $plan = Plan::where('id', $request->input('id'))
                 ->first();

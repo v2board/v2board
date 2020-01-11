@@ -11,7 +11,8 @@ use App\Models\Plan;
 
 class UserController extends Controller
 {
-    public function fetch (Request $request) {
+    public function fetch(Request $request)
+    {
         $current = $request->input('current') ? $request->input('current') : 1;
         $pageSize = $request->input('pageSize') >= 10 ? $request->input('pageSize') : 10;
         $userModel = User::orderBy('created_at', 'DESC');
@@ -35,7 +36,8 @@ class UserController extends Controller
         ]);
     }
 
-    public function id2UserInfo ($id) {
+    public function id2UserInfo($id)
+    {
         if (empty($id)) {
             abort(500, '参数错误');
         }
@@ -50,17 +52,18 @@ class UserController extends Controller
         ]);
     }
 
-    public function update (UserUpdate $request) {
-    	$updateData = $request->only([
-    		'email',
-    		'password',
-    		'transfer_enable',
-    		'expired_at',
+    public function update(UserUpdate $request)
+    {
+        $updateData = $request->only([
+            'email',
+            'password',
+            'transfer_enable',
+            'expired_at',
             'banned',
             'plan_id',
             'commission_rate',
-    		'is_admin'
-		]);
+            'is_admin'
+        ]);
         $user = User::find($request->input('id'));
         if (!$user) {
             abort(500, '用户不存在');
@@ -69,9 +72,9 @@ class UserController extends Controller
             abort(500, '邮箱已被使用');
         }
         if (isset($updateData['password'])) {
-        	$updateData['password'] = password_hash($updateData['password'], PASSWORD_DEFAULT);
+            $updateData['password'] = password_hash($updateData['password'], PASSWORD_DEFAULT);
         } else {
-        	unset($updateData['password']);
+            unset($updateData['password']);
         }
         $updateData['transfer_enable'] = $updateData['transfer_enable'] * 1073741824;
         if (isset($updateData['plan_id'])) {

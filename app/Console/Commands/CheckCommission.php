@@ -54,5 +54,5 @@ class CheckCommission extends Command
             }
         }
     }
-    
+
 }

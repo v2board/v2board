@@ -56,16 +56,18 @@ class CheckOrder extends Command
                     $this->orderHandle($item);
                     break;
             }
-            
+
         }
     }
-    
-    private function orderHandle ($order) {
+
+    private function orderHandle($order)
+    {
         $user = User::find($order->user_id);
         return $this->buy($order, $user);
     }
-    
-    private function buy ($order, $user) {
+
+    private function buy($order, $user)
+    {
         $plan = Plan::find($order->plan_id);
         // change plan process
         if ($order->type === 3) {
@@ -82,16 +84,21 @@ class CheckOrder extends Command
             $order->save();
         }
     }
-    
-    private function getTime ($str, $timestamp) {
+
+    private function getTime($str, $timestamp)
+    {
         if ($timestamp < time()) {
             $timestamp = time();
         }
         switch ($str) {
-            case 'month_price': return strtotime('+1 month', $timestamp);
-            case 'quarter_price': return  strtotime('+3 month', $timestamp);
-            case 'half_year_price': return  strtotime('+6 month', $timestamp);
-            case 'year_price': return  strtotime('+12 month', $timestamp);
+            case 'month_price':
+                return strtotime('+1 month', $timestamp);
+            case 'quarter_price':
+                return strtotime('+3 month', $timestamp);
+            case 'half_year_price':
+                return strtotime('+6 month', $timestamp);
+            case 'year_price':
+                return strtotime('+12 month', $timestamp);
         }
     }
 }

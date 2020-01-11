@@ -11,7 +11,8 @@ use App\Utils\Helper;
 
 class InviteController extends Controller
 {
-    public function save (Request $request) {
+    public function save(Request $request)
+    {
         if (InviteCode::where('user_id', $request->session()->get('id'))->where('status', 0)->count() >= config('v2board.invite_gen_limit', 5)) {
             abort(500, '已达到创建数量上限');
         }
@@ -23,7 +24,8 @@ class InviteController extends Controller
         ]);
     }
 
-    public function details (Request $request) {
+    public function details(Request $request)
+    {
         return response([
             'data' => Order::where('invite_user_id', $request->session()->get('id'))
                 ->where('status', 3)
@@ -38,7 +40,8 @@ class InviteController extends Controller
         ]);
     }
 
-    public function fetch (Request $request) {
+    public function fetch(Request $request)
+    {
         $codes = InviteCode::where('user_id', $request->session()->get('id'))
             ->where('status', 0)
             ->get();

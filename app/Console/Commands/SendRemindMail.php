@@ -46,8 +46,9 @@ class SendRemindMail extends Command
             if ($user->remind_traffic) $this->remindTraffic($user);
         }
     }
-    
-    private function remindExpire ($user) {
+
+    private function remindExpire($user)
+    {
         if (($user->expired_at - 86400) < time() && $user->expired_at > time()) {
             SendEmail::dispatch([
                 'email' => $user->email,
@@ -61,11 +62,12 @@ class SendRemindMail extends Command
         }
     }
 
-    private function remindTraffic ($user) {
+    private function remindTraffic($user)
+    {
         if ($this->remindTrafficIsWarnValue(($user->u + $user->d), $user->transfer_enable)) {
-        	$sendCount = MailLog::where('created_at', '>=', strtotime(date('Y-m-1')))
-            	->where('template_name', 'mail.sendRemindTraffic')
-            	->count();
+            $sendCount = MailLog::where('created_at', '>=', strtotime(date('Y-m-1')))
+                ->where('template_name', 'mail.sendRemindTraffic')
+                ->count();
             if ($sendCount > 0) return;
             SendEmail::dispatch([
                 'email' => $user->email,
@@ -78,8 +80,9 @@ class SendRemindMail extends Command
             ]);
         }
     }
-    
-    private function remindTrafficIsWarnValue ($ud, $transfer_enable) {
+
+    private function remindTrafficIsWarnValue($ud, $transfer_enable)
+    {
         if ($ud <= 0) return false;
         if (($ud / $transfer_enable * 100) < 80) return false;
         return true;

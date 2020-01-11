@@ -22,7 +22,7 @@ class CouponSave extends FormRequest
             'limit_use' => 'nullable|integer'
         ];
     }
-    
+
     public function messages()
     {
         return [

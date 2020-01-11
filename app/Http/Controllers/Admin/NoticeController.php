@@ -10,13 +10,15 @@ use Cache;
 
 class NoticeController extends Controller
 {
-    public function fetch (Request $request) {
+    public function fetch(Request $request)
+    {
         return response([
             'data' => Notice::orderBy('id', 'DESC')->get()
         ]);
     }
 
-    public function save (NoticeSave $request) {
+    public function save(NoticeSave $request)
+    {
         $data = $request->only([
             'title',
             'content',
@@ -36,7 +38,8 @@ class NoticeController extends Controller
         ]);
     }
 
-    public function drop (Request $request) {
+    public function drop(Request $request)
+    {
         if (empty($request->input('id'))) {
             abort(500, '参数错误');
         }

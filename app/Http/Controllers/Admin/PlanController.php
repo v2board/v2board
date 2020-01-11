@@ -12,13 +12,15 @@ use App\Models\User;
 
 class PlanController extends Controller
 {
-    public function fetch (Request $request) {
+    public function fetch(Request $request)
+    {
         return response([
             'data' => Plan::get()
         ]);
     }
-    
-    public function save (PlanSave $request) {
+
+    public function save(PlanSave $request)
+    {
         if ($request->input('id')) {
             $plan = Plan::find($request->input('id'));
             if (!$plan) {
@@ -35,13 +37,14 @@ class PlanController extends Controller
         $plan->quarter_price = $request->input('quarter_price');
         $plan->half_year_price = $request->input('half_year_price');
         $plan->year_price = $request->input('year_price');
-        
+
         return response([
             'data' => $plan->save()
         ]);
     }
-    
-    public function drop (Request $request) {
+
+    public function drop(Request $request)
+    {
         if (Order::where('plan_id', $request->input('id'))->first()) {
             abort(500, '该订阅下存在订单无法删除');
         }
@@ -59,12 +62,13 @@ class PlanController extends Controller
         ]);
     }
 
-    public function update (PlanUpdate $request) {
+    public function update(PlanUpdate $request)
+    {
         $updateData = $request->only([
             'show',
             'renew'
         ]);
-        
+
         $plan = Plan::find($request->input('id'));
         if (!$plan) {
             abort(500, '该订阅不存在');

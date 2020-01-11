@@ -7,7 +7,8 @@ use App\Models\Coupon;
 
 class CouponController extends Controller
 {
-    public function check (Request $request) {
+    public function check(Request $request)
+    {
         if (empty($request->input('code'))) {
             abort(500, '优惠券码不能为空');
         }

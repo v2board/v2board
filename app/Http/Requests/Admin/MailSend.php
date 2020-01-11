@@ -20,7 +20,7 @@ class MailSend extends FormRequest
             'receiver' => 'array'
         ];
     }
-    
+
     public function messages()
     {
         return [

@@ -10,7 +10,8 @@ use Illuminate\Support\Facades\DB;
 
 class TicketController extends Controller
 {
-    public function fetch (Request $request) {
+    public function fetch(Request $request)
+    {
         if ($request->input('id')) {
             $ticket = Ticket::where('id', $request->input('id'))
                 ->first();
@@ -43,7 +44,8 @@ class TicketController extends Controller
         ]);
     }
 
-    public function reply (Request $request) {
+    public function reply(Request $request)
+    {
         if (empty($request->input('id'))) {
             abort(500, '参数错误');
         }
@@ -75,7 +77,8 @@ class TicketController extends Controller
         ]);
     }
 
-    public function close (Request $request) {
+    public function close(Request $request)
+    {
         if (empty($request->input('id'))) {
             abort(500, '参数错误');
         }

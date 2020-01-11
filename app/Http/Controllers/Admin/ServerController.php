@@ -14,7 +14,8 @@ use Cache;
 
 class ServerController extends Controller
 {
-    public function fetch (Request $request) {
+    public function fetch(Request $request)
+    {
         $server = Server::get();
         for ($i = 0; $i < count($server); $i++) {
             if (!empty($server[$i]['tags'])) {
@@ -32,7 +33,8 @@ class ServerController extends Controller
         ]);
     }
 
-    public function save (ServerSave $request) {
+    public function save(ServerSave $request)
+    {
         $params = $request->only([
             'show',
             'group_id',
@@ -58,18 +60,18 @@ class ServerController extends Controller
             }
         }
 
-		if ($request->input('id')) {
-			$server = Server::find($request->input('id'));
-			if (!$server) {
-				abort(500, '服务器不存在');
-			}
-			if (!$server->update($params)) {
-				abort(500, '保存失败');
-			}
-			return response([
-				'data' => true
-			]);
-		}
+        if ($request->input('id')) {
+            $server = Server::find($request->input('id'));
+            if (!$server) {
+                abort(500, '服务器不存在');
+            }
+            if (!$server->update($params)) {
+                abort(500, '保存失败');
+            }
+            return response([
+                'data' => true
+            ]);
+        }
 
         if (!Server::create($params)) {
             abort(500, '创建失败');
@@ -80,7 +82,8 @@ class ServerController extends Controller
         ]);
     }
 
-    public function groupFetch (Request $request) {
+    public function groupFetch(Request $request)
+    {
         if ($request->input('group_id')) {
             return response([
                 'data' => [ServerGroup::find($request->input('group_id'))]
@@ -91,7 +94,8 @@ class ServerController extends Controller
         ]);
     }
 
-    public function groupSave (Request $request) {
+    public function groupSave(Request $request)
+    {
         if (empty($request->input('name'))) {
             abort(500, '组名不能为空');
         }
@@ -108,7 +112,8 @@ class ServerController extends Controller
         ]);
     }
 
-    public function groupDrop (Request $request) {
+    public function groupDrop(Request $request)
+    {
         if ($request->input('id')) {
             $serverGroup = ServerGroup::find($request->input('id'));
             if (!$serverGroup) {
@@ -135,7 +140,8 @@ class ServerController extends Controller
         ]);
     }
 
-    public function drop (Request $request) {
+    public function drop(Request $request)
+    {
         if ($request->input('id')) {
             $server = Server::find($request->input('id'));
             if (!$server) {
@@ -147,7 +153,8 @@ class ServerController extends Controller
         ]);
     }
 
-    public function update (ServerUpdate $request) {
+    public function update(ServerUpdate $request)
+    {
         $params = $request->only([
             'show',
         ]);

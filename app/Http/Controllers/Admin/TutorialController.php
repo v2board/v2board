@@ -9,13 +9,15 @@ use App\Models\Tutorial;
 
 class TutorialController extends Controller
 {
-    public function fetch (Request $request) {
+    public function fetch(Request $request)
+    {
         return response([
             'data' => Tutorial::all()
         ]);
     }
 
-    public function save (TutorialSave $request) {
+    public function save(TutorialSave $request)
+    {
         $params = $request->only([
             'title',
             'description',
@@ -23,22 +25,23 @@ class TutorialController extends Controller
             'icon'
         ]);
 
-		if (!$request->input('id')) {
-	        if (!Tutorial::create($params)) {
-	            abort(500, '创建失败');
-	        }
-		} else {
-			if (!Tutorial::find($request->input('id'))->update($params)) {
-				abort(500, '保存失败');
-			}
-		}
+        if (!$request->input('id')) {
+            if (!Tutorial::create($params)) {
+                abort(500, '创建失败');
+            }
+        } else {
+            if (!Tutorial::find($request->input('id'))->update($params)) {
+                abort(500, '保存失败');
+            }
+        }
 
         return response([
             'data' => true
         ]);
     }
 
-    public function show (Request $request) {
+    public function show(Request $request)
+    {
         if (empty($request->input('id'))) {
             abort(500, '参数有误');
         }
@@ -56,7 +59,8 @@ class TutorialController extends Controller
         ]);
     }
 
-    public function drop (Request $request) {
+    public function drop(Request $request)
+    {
         if (empty($request->input('id'))) {
             abort(500, '参数有误');
         }

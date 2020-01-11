@@ -49,5 +49,5 @@ class CheckExpire extends Command
             $user->save();
         }
     }
-    
+
 }

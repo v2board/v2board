@@ -10,13 +10,15 @@ use App\Utils\Helper;
 
 class CouponController extends Controller
 {
-    public function fetch (Request $request) {
+    public function fetch(Request $request)
+    {
         return response([
             'data' => Coupon::all()
         ]);
     }
 
-    public function save (CouponSave $request) {
+    public function save(CouponSave $request)
+    {
         $params = $request->only([
             'name',
             'type',
@@ -26,23 +28,24 @@ class CouponController extends Controller
             'limit_use'
         ]);
 
-		if (!$request->input('id')) {
-	        $params['code'] = Helper::randomChar(8);
-	        if (!Coupon::create($params)) {
-	            abort(500, '创建失败');
-	        }
-		} else {
-			if (!Coupon::find($request->input('id'))->update($params)) {
-				abort(500, '保存失败');
-			}
-		}
+        if (!$request->input('id')) {
+            $params['code'] = Helper::randomChar(8);
+            if (!Coupon::create($params)) {
+                abort(500, '创建失败');
+            }
+        } else {
+            if (!Coupon::find($request->input('id'))->update($params)) {
+                abort(500, '保存失败');
+            }
+        }
 
         return response([
             'data' => true
         ]);
     }
 
-    public function drop (Request $request) {
+    public function drop(Request $request)
+    {
         if (empty($request->input('id'))) {
             abort(500, '参数有误');
         }

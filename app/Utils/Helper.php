@@ -4,7 +4,8 @@ namespace App\Utils;
 
 class Helper
 {
-    public static function guid ($format = false) {
+    public static function guid($format = false)
+    {
         if (function_exists('com_create_guid') === true) {
             return md5(trim(com_create_guid(), '{}'));
         }
@@ -14,16 +15,18 @@ class Helper
         if ($format) {
             return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
         }
-        return md5(vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4)).'-'.time());
+        return md5(vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4)) . '-' . time());
     }
 
-    public static function exchange ($from, $to) {
+    public static function exchange($from, $to)
+    {
         $result = file_get_contents('https://api.exchangeratesapi.io/latest?symbols=' . $to . '&base=' . $from);
         $result = json_decode($result, true);
         return $result['rates'][$to];
     }
 
-    public static function randomChar($len, $special=false){
+    public static function randomChar($len, $special = false)
+    {
         $chars = array(
             "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k",
             "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v",
@@ -32,43 +35,44 @@ class Helper
             "S", "T", "U", "V", "W", "X", "Y", "Z", "0", "1", "2",
             "3", "4", "5", "6", "7", "8", "9"
         );
-    
-        if($special){
+
+        if ($special) {
             $chars = array_merge($chars, array(
                 "!", "@", "#", "$", "?", "|", "{", "/", ":", ";",
                 "%", "^", "&", "*", "(", ")", "-", "_", "[", "]",
                 "}", "<", ">", "~", "+", "=", ",", "."
             ));
         }
-    
+
         $charsLen = count($chars) - 1;
         shuffle($chars);
         $str = '';
-        for($i=0; $i<$len; $i++){
+        for ($i = 0; $i < $len; $i++) {
             $str .= $chars[mt_rand(0, $charsLen)];
         }
         return $str;
     }
 
-    public static function buildVmessLink($item, $user) {
+    public static function buildVmessLink($item, $user)
+    {
         $config = [
             "v" => "2",
-		    "ps" => $item->name,
-		    "add" => $item->host,
-		    "port" => $item->port,
-		    "id" => $user->v2ray_uuid,
-		    "aid" => "2",
-		    "net" => $item->network,
-		    "type" => "none",
-		    "host" => "",
-		    "path" => "",
-		    "tls" => $item->tls?"tls":""
+            "ps" => $item->name,
+            "add" => $item->host,
+            "port" => $item->port,
+            "id" => $user->v2ray_uuid,
+            "aid" => "2",
+            "net" => $item->network,
+            "type" => "none",
+            "host" => "",
+            "path" => "",
+            "tls" => $item->tls ? "tls" : ""
         ];
         if ($item->network == 'ws') {
             $wsSettings = json_decode($item->settings);
             if (isset($wsSettings->path)) $config['path'] = $wsSettings->path;
             if (isset($wsSettings->headers->Host)) $config['host'] = $wsSettings->headers->Host;
         }
-        return "vmess://".base64_encode(json_encode($config))."\r\n";
+        return "vmess://" . base64_encode(json_encode($config)) . "\r\n";
     }
 }

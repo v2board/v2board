@@ -11,7 +11,8 @@ use App\Models\Plan;
 
 class OrderController extends Controller
 {
-    public function fetch (Request $request) {
+    public function fetch(Request $request)
+    {
         $current = $request->input('current') ? $request->input('current') : 1;
         $pageSize = $request->input('pageSize') >= 10 ? $request->input('pageSize') : 10;
         $orderModel = Order::orderBy('created_at', 'DESC');
@@ -42,7 +43,8 @@ class OrderController extends Controller
         ]);
     }
 
-    public function update (OrderUpdate $request) {
+    public function update(OrderUpdate $request)
+    {
         $updateData = $request->only([
             'status',
             'commission_status'
@@ -63,7 +65,8 @@ class OrderController extends Controller
         ]);
     }
 
-    public function repair (Request $request) {
+    public function repair(Request $request)
+    {
         if (empty($request->input('trade_no'))) {
             abort(500, '参数错误');
         }

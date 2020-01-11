@@ -10,7 +10,8 @@ use App\Jobs\SendEmail;
 
 class MailController extends Controller
 {
-    public function send (MailSend $request) {
+    public function send(MailSend $request)
+    {
         if ($request->input('type') == 2 && empty($request->input('receiver'))) {
             abort(500, '收件人不能为空');
         }

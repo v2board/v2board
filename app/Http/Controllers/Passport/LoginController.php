@@ -11,10 +11,11 @@ use App\Utils\Helper;
 
 class LoginController extends Controller
 {
-    public function index (LoginIndex $request) {
+    public function index(LoginIndex $request)
+    {
         $email = $request->input('email');
         $password = $request->input('password');
-        
+
         $user = User::where('email', $email)->first();
         if (!$user) {
             abort(500, '用户名或密码错误');
@@ -22,7 +23,7 @@ class LoginController extends Controller
         if (!password_verify($password, $user->password)) {
             abort(500, '用户名或密码错误');
         }
-        
+
         $request->session()->put('email', $user->email);
         $request->session()->put('id', $user->id);
         if ($user->is_admin) {
@@ -36,7 +37,8 @@ class LoginController extends Controller
         ]);
     }
 
-    public function token2Login (Request $request) {
+    public function token2Login(Request $request)
+    {
         if ($request->input('token')) {
             $user = User::where('token', $request->input('token'))->first();
             if (!$user) {
@@ -46,7 +48,7 @@ class LoginController extends Controller
             $key = 'token2Login_' . $code;
             Cache::put($key, $user->id);
             Redis::expire($key, 600);
-            $redirect = '/#/login?verify='. $code .'&redirect=' . ($request->input('redirect') ? $request->input('redirect') : 'dashboard');
+            $redirect = '/#/login?verify=' . $code . '&redirect=' . ($request->input('redirect') ? $request->input('redirect') : 'dashboard');
             if (config('v2board.app_url')) {
                 $location = config('v2board.app_url') . $redirect;
             } else {
@@ -77,7 +79,8 @@ class LoginController extends Controller
         }
     }
 
-    public function check (Request $request) {
+    public function check(Request $request)
+    {
         return response([
             'data' => $request->session()->get('id') ? true : false
         ]);

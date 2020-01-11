@@ -11,14 +11,14 @@ class ServerUpdate extends FormRequest
      *
      * @return array
      */
-    
+
     public function rules()
     {
         return [
             'show' => 'in:0,1'
         ];
     }
-    
+
     public function messages()
     {
         return [

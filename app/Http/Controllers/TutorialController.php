@@ -9,7 +9,8 @@ use App\Models\Tutorial;
 
 class TutorialController extends Controller
 {
-    public function getSubscribeUrl (Request $request) {
+    public function getSubscribeUrl(Request $request)
+    {
         $user = User::find($request->session()->get('id'));
         return response([
             'data' => [
@@ -18,7 +19,8 @@ class TutorialController extends Controller
         ]);
     }
 
-    public function getAppleID (Request $request) {
+    public function getAppleID(Request $request)
+    {
         $user = User::find($request->session()->get('id'));
         if ($user->expired_at < time()) {
             return response([
@@ -34,7 +36,8 @@ class TutorialController extends Controller
         ]);
     }
 
-    public function fetch (Request $request) {
+    public function fetch(Request $request)
+    {
         if ($request->input('id')) {
             $tutorial = Tutorial::where('show', 1)
                 ->where('id', $request->input('id'))
@@ -57,14 +60,14 @@ class TutorialController extends Controller
                     'subscribe_url' => config('v2board.subscribe_url', config('v2board.app_url', env('APP_URL'))) . '/api/v1/client/subscribe?token=' . $user['token'],
                     'app_name' => config('v2board.app_name', 'V2board'),
                     'apple_id' => $user->expired_at > time() ? config('v2board.apple_id', '管理员暂无提供AppleID信息') : '账号过期或未订阅',
-                    'apple_id_password' =>  $user->expired_at > time() ? config('v2board.apple_id_password', '管理员暂无提供AppleID信息') : '账号过期或未订阅'
+                    'apple_id_password' => $user->expired_at > time() ? config('v2board.apple_id_password', '管理员暂无提供AppleID信息') : '账号过期或未订阅'
                 ]
             ]
         ];
         // fuck support shadowrocket urlsafeb64 subscribe
         $response['data']['safe_area_var']['b64_subscribe_url'] = str_replace(
-            array('+','/','='),
-            array('-','_',''),
+            array('+', '/', '='),
+            array('-', '_', ''),
             base64_encode($response['data']['safe_area_var']['subscribe_url'])
         );
         // end

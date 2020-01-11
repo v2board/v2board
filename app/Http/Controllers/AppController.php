@@ -16,7 +16,8 @@ class AppController extends Controller
     CONST SOCKS_PORT = 10010;
     CONST HTTP_PORT = 10011;
 
-    public function data (Request $request) {
+    public function data(Request $request)
+    {
         $user = $request->user;
         $nodes = [];
         if ($user->plan_id) {
@@ -49,7 +50,8 @@ class AppController extends Controller
         ]);
     }
 
-    public function config (Request $request) {
+    public function config(Request $request)
+    {
         if (empty($request->input('server_id'))) {
             abort(500, '参数错误');
         }
@@ -77,17 +79,23 @@ class AppController extends Controller
         $json->outbound->streamSettings->network = $server->network;
         if ($server->settings) {
             switch ($server->network) {
-                case 'tcp': $json->outbound->streamSettings->tcpSettings = json_decode($server->settings);
+                case 'tcp':
+                    $json->outbound->streamSettings->tcpSettings = json_decode($server->settings);
                     break;
-                case 'kcp': $json->outbound->streamSettings->kcpSettings = json_decode($server->settings);
+                case 'kcp':
+                    $json->outbound->streamSettings->kcpSettings = json_decode($server->settings);
                     break;
-                case 'ws': $json->outbound->streamSettings->wsSettings = json_decode($server->settings);
+                case 'ws':
+                    $json->outbound->streamSettings->wsSettings = json_decode($server->settings);
                     break;
-                case 'http': $json->outbound->streamSettings->httpSettings = json_decode($server->settings);
+                case 'http':
+                    $json->outbound->streamSettings->httpSettings = json_decode($server->settings);
                     break;
-                case 'domainsocket': $json->outbound->streamSettings->dsSettings = json_decode($server->settings);
+                case 'domainsocket':
+                    $json->outbound->streamSettings->dsSettings = json_decode($server->settings);
                     break;
-                case 'quic': $json->outbound->streamSettings->quicSettings = json_decode($server->settings);
+                case 'quic':
+                    $json->outbound->streamSettings->quicSettings = json_decode($server->settings);
                     break;
             }
         }

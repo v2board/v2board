@@ -12,7 +12,8 @@ use Illuminate\Support\Facades\DB;
 
 class TicketController extends Controller
 {
-    public function fetch (Request $request) {
+    public function fetch(Request $request)
+    {
         if ($request->input('id')) {
             $ticket = Ticket::where('id', $request->input('id'))
                 ->where('user_id', $request->session()->get('id'))
@@ -47,7 +48,8 @@ class TicketController extends Controller
         ]);
     }
 
-    public function save (TicketSave $request) {
+    public function save(TicketSave $request)
+    {
         DB::beginTransaction();
         $ticket = Ticket::create(array_merge($request->only([
             'subject',
@@ -75,7 +77,8 @@ class TicketController extends Controller
         ]);
     }
 
-    public function reply (Request $request) {
+    public function reply(Request $request)
+    {
         if (empty($request->input('id'))) {
             abort(500, '参数错误');
         }
@@ -112,7 +115,8 @@ class TicketController extends Controller
     }
 
 
-    public function close (Request $request) {
+    public function close(Request $request)
+    {
         if (empty($request->input('id'))) {
             abort(500, '参数错误');
         }
@@ -131,7 +135,8 @@ class TicketController extends Controller
         ]);
     }
 
-    private function getLastMessage ($ticketId) {
+    private function getLastMessage($ticketId)
+    {
         return TicketMessage::where('ticket_id', $ticketId)
             ->orderBy('id', 'DESC')
             ->first();

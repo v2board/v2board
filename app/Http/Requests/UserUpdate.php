@@ -18,7 +18,7 @@ class UserUpdate extends FormRequest
             'remind_traffic' => 'in:0,1'
         ];
     }
-    
+
     public function messages()
     {
         return [

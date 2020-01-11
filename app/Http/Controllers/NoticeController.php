@@ -9,7 +9,8 @@ use App\Utils\Helper;
 
 class NoticeController extends Controller
 {
-    public function fetch (Request $request) {
+    public function fetch(Request $request)
+    {
         return response([
             'data' => Notice::orderBy('created_at', 'DESC')->first()
         ]);

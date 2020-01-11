@@ -18,7 +18,7 @@ class OrderSave extends FormRequest
             'cycle' => 'required|in:month_price,quarter_price,half_year_price,year_price'
         ];
     }
-    
+
     public function messages()
     {
         return [

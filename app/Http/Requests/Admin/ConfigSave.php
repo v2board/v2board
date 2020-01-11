@@ -42,10 +42,12 @@ class ConfigSave extends FormRequest
         'apple_id_password' => ''
     ];
 
-    public static function filter() {
-    	// abort(500, json_encode(array_keys(self::RULES)));
+    public static function filter()
+    {
+        // abort(500, json_encode(array_keys(self::RULES)));
         return array_keys(self::RULES);
     }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -55,7 +57,7 @@ class ConfigSave extends FormRequest
     {
         return self::RULES;
     }
-    
+
     public function messages()
     {
         return [

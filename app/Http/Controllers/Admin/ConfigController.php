@@ -11,11 +11,13 @@ use App\Models\User;
 
 class ConfigController extends Controller
 {
-    public function init () {
+    public function init()
+    {
 
     }
 
-    public function fetch () {
+    public function fetch()
+    {
         return response([
             'data' => [
                 'invite' => [
@@ -61,8 +63,9 @@ class ConfigController extends Controller
             ]
         ]);
     }
-    
-    public function save (ConfigSave $request) {
+
+    public function save(ConfigSave $request)
+    {
         $data = $request->input();
         $array = \Config::get('v2board');
         foreach ($data as $k => $v) {
@@ -72,7 +75,7 @@ class ConfigController extends Controller
             $array[$k] = $v;
         }
         $data = var_export($array, 1);
-        if(!\File::put(base_path() . '/config/v2board.php', "<?php\n return $data ;")) {
+        if (!\File::put(base_path() . '/config/v2board.php', "<?php\n return $data ;")) {
             abort(500, '修改失败');
         }
         \Artisan::call('config:cache');
