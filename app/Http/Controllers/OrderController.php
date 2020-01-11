@@ -48,8 +48,8 @@ class OrderController extends Controller
         }
         $order['plan'] = Plan::find($order->plan_id);
         $order['try_out'] = [
-            'try_out_enable' => config('v2board.try_out_enable', 0),
-            'try_out_plan_id' => config('v2board.try_out_plan_id'),
+            'try_out_enable' => (int)config('v2board.try_out_enable', 0),
+            'try_out_plan_id' => (int)config('v2board.try_out_plan_id'),
             'plan_transfer_hour' => config('v2board.plan_transfer_hour', 12)
         ];
         if (!$order['plan']) {
