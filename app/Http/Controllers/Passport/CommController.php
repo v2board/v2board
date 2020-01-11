@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Mail;
+use App\Utils\Helper;
 use Cache;
 
 class CommController extends Controller
@@ -35,7 +36,7 @@ class CommController extends Controller
         if (Cache::get($cacheKey)) {
             abort(500, '验证码已发送，请过一会在请求');
         }
-        $code = rand(100000, 999999);
+        $code = Helper::randomChar(6);
         $subject = config('v2board.app_name', 'V2Board') . '邮箱验证码';
         Mail::send(
             'mail.sendEmailVerify',
