@@ -32,7 +32,7 @@ class ConfigController extends Controller
                     'app_name' => config('v2board.app_name', 'V2Board'),
                     'app_url' => config('v2board.app_url'),
                     'subscribe_url' => config('v2board.subscribe_url'),
-                    'plan_is_update' => (int)config('v2board.plan_is_update', 1),
+                    'plan_change_enable' => (int)config('v2board.plan_change_enable', 1),
                     'plan_transfer_hour' => config('v2board.plan_transfer_hour', 12),
                     'try_out_enable' => (int)config('v2board.try_out_enable', 0),
                     'try_out_plan_id' => (int)config('v2board.try_out_plan_id'),

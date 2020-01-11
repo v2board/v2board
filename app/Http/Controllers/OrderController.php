@@ -122,7 +122,7 @@ class OrderController extends Controller
         // renew and change subscribe process
         if ($user->expired_at > time() && $order->plan_id !== $user->plan_id) {
             $order->type = 3;
-            if (!(int)config('v2board.plan_is_update', 1)) abort(500, '目前不允许更改订阅，请联系管理员');
+            if (!(int)config('v2board.plan_change_enable', 1)) abort(500, '目前不允许更改订阅，请联系管理员');
         } else if ($user->expired_at > time() && $order->plan_id == $user->plan_id) {
             $order->type = 2;
         } else {

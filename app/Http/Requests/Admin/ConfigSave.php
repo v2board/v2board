@@ -17,7 +17,7 @@ class ConfigSave extends FormRequest
         'app_url' => 'url',
         'subscribe_url' => 'url',
         'plan_transfer_hour' => 'numeric',
-        'plan_is_update' => 'in:0,1',
+        'plan_change_enable' => 'in:0,1',
         'try_out_enable' => 'in:0,1',
         'try_out_plan_id' => 'integer',
         'try_out_hour' => 'numeric',
