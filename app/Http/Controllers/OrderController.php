@@ -50,7 +50,7 @@ class OrderController extends Controller
         $order['try_out'] = [
             'try_out_enable' => config('v2board.try_out_enable', 0),
             'try_out_plan_id' => config('v2board.try_out_plan_id'),
-            'plan_transfer_hour' => config('v2board.plan_transfer_hour')
+            'plan_transfer_hour' => config('v2board.plan_transfer_hour', 12)
         ];
         if (!$order['plan']) {
             abort(500, '订阅不存在');
