@@ -47,7 +47,11 @@ class OrderController extends Controller
             abort(500, '订单不存在');
         }
         $order['plan'] = Plan::find($order->plan_id);
-        $order['plan_transfer_hour'] = config('v2board.plan_transfer_hour', 12);
+        $order['try_out'] = [
+            'try_out_enable' => config('v2board.try_out_enable', 0),
+            'try_out_plan_id' => config('v2board.try_out_plan_id'),
+            'plan_transfer_hour' => config('v2board.plan_transfer_hour')
+        ];
         if (!$order['plan']) {
             abort(500, '订阅不存在');
         }
