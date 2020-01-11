@@ -373,7 +373,6 @@ class OrderController extends Controller
         if (!Cache::put($source['id'], $order->trade_no)) {
             abort(500, '订单创建失败');
         }
-        Redis::expire($source['id'], 3600);
         return $source['wechat']['qr_code_url'];
     }
 
