@@ -346,7 +346,7 @@ class OrderController extends Controller
             abort(500, '支付网关请求失败');
         }
 
-        if (!Cache::put($source['id'], $order->trade_no, 3600) {
+        if (!Cache::put($source['id'], $order->trade_no, 3600)) {
             abort(500, '订单创建失败');
         }
         return $source['redirect']['url'];
