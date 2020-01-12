@@ -18,12 +18,11 @@ class PayTaro
     public function pay($params)
     {
         ksort($params);
-        reset($params);
-        $str = stripslashes(http_build_query($params)) . $this->appSecret;
+        $str = http_build_query($params) . $this->appSecret;
         $params['sign'] = md5($str);
-        $params['sign_type'] = 'MD5';
         $curl = new Curl();
         $curl->post('http://api.paytaro.com/v1/gateway/fetch', http_build_query($params));
+        var_dump($str, $params, $curl->response);exit;
         if ($curl->error) {
             abort(500, '接口请求失败');
         }
@@ -39,10 +38,9 @@ class PayTaro
     {
         $sign = $params['sign'];
         unset($params['sign']);
-        unset($params['sign_type']);
         ksort($params);
         reset($params);
-        $str = stripslashes(http_build_query($params)) . $this->appId;
+        $str = http_build_query($params) . $this->appId;
         if ($sign !== md5($str)) {
             return false;
         }
