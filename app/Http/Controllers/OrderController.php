@@ -420,7 +420,7 @@ class OrderController extends Controller
             'out_trade_no' => $order->trade_no,
             'total_amount' => $order->total_amount,
             'notify_url' => url('/api/v1/guest/order/payTaroNotify'),
-            'return_url' => url('/api/v1/guest/order/payTaroReturn')
+            'return_url' => config('v2board.app_url', env('APP_URL')) . '/#/order'
         ]);
         return $result;
     }
