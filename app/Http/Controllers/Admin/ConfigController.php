@@ -52,7 +52,11 @@ class ConfigController extends Controller
                     'stripe_webhook_key' => config('v2board.stripe_webhook_key'),
                     // bitpayx
                     'bitpayx_enable' => config('v2board.bitpayx_enable'),
-                    'bitpayx_appsecret' => config('v2board.bitpayx_appsecret')
+                    'bitpayx_appsecret' => config('v2board.bitpayx_appsecret'),
+                    // paytaro
+                    'paytaro_enable' => config('v2board.paytaro_enable'),
+                    'paytaro_app_id' => config('v2board.paytaro_app_id'),
+                    'paytaro_app_secret' => config('v2board.paytaro_app_secret')
                 ],
                 'server' => [
                     'server_token' => config('v2board.server_token')

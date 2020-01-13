@@ -22,16 +22,15 @@ class PayTaro
         $params['sign'] = md5($str);
         $curl = new Curl();
         $curl->post('http://api.paytaro.com/v1/gateway/fetch', http_build_query($params));
-        var_dump($str, $params, $curl->response);exit;
         if ($curl->error) {
             abort(500, '接口请求失败');
         }
-        $result = json_decode($curl->response);
+        $result = $curl->response;
         $curl->close();
-        if ($result->code !== 1) {
+        if (!isset($result->data->trade_no)) {
             abort(500, '接口请求失败');
         }
-        return $result->code_url;
+        return $result->data->pay_url;
     }
 
     public function verify($params)

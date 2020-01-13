@@ -17,6 +17,7 @@ use Omnipay\Omnipay;
 use Stripe\Stripe;
 use Stripe\Source;
 use Library\BitpayX;
+use Library\PayTaro;
 
 class OrderController extends Controller
 {
@@ -220,6 +221,14 @@ class OrderController extends Controller
                     'type' => 1,
                     'data' => $this->bitpayX($order)
                 ]);
+            case 5:
+                if (!(int)config('v2board.paytaro_enable')) {
+                    abort(500, '支付方式不可用');
+                }
+                return response([
+                    'type' => 1,
+                    'data' => $this->payTaro($order)
+                ]);
             default:
                 abort(500, '支付方式不存在');
         }
@@ -272,6 +281,14 @@ class OrderController extends Controller
             $bitpayX->method = 4;
             $bitpayX->icon = 'bitcoin';
             array_push($data, $bitpayX);
+        }
+
+        if ((int)config('v2board.paytaro_enable')) {
+            $obj = new \StdClass();
+            $obj->name = '支付宝';
+            $obj->method = 5;
+            $obj->icon = 'alipay';
+            array_push($data, $obj);
         }
 
         return response([
@@ -393,5 +410,18 @@ class OrderController extends Controller
         $result = $bitpayX->mprequest($params);
         Log::info('bitpayXSubmit: ' . json_encode($result));
         return isset($result['payment_url']) ? $result['payment_url'] : false;
+    }
+
+    private function payTaro($order)
+    {
+        $payTaro = new PayTaro(config('v2board.paytaro_app_id'), config('v2board.paytaro_app_secret'));
+        $result = $payTaro->pay([
+            'app_id' => config('v2board.paytaro_app_id'),
+            'out_trade_no' => $order->trade_no,
+            'total_amount' => $order->total_amount,
+            'notify_url' => url('/api/v1/guest/order/payTaroNotify'),
+            'return_url' => url('/api/v1/guest/order/payTaroReturn')
+        ]);
+        return $result;
     }
 }

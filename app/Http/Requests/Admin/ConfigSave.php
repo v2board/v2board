@@ -37,6 +37,10 @@ class ConfigSave extends FormRequest
         // bitpayx
         'bitpayx_enable' => 'in:0,1',
         'bitpayx_appsecret' => '',
+        // paytaro
+        'paytaro_enable' => 'in:0,1',
+        'paytaro_app_id' => '',
+        'paytaro_app_secret' => '',
         // tutorial
         'apple_id' => 'email',
         'apple_id_password' => ''
