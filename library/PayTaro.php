@@ -39,7 +39,7 @@ class PayTaro
         unset($params['sign']);
         ksort($params);
         reset($params);
-        $str = http_build_query($params) . $this->appId;
+        $str = http_build_query($params) . $this->appSecret;
         if ($sign !== md5($str)) {
             return false;
         }

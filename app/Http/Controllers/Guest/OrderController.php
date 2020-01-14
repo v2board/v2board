@@ -9,6 +9,7 @@ use Omnipay\Omnipay;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 use Library\BitpayX;
+use Library\PayTaro;
 
 class OrderController extends Controller
 {
@@ -128,6 +129,20 @@ class OrderController extends Controller
         die([
             'status' => 200
         ]);
+    }
+
+    public function payTaroNotify(Request $request)
+    {
+        Log::info('payTaroNotify: ' . json_encode($request->input()));
+
+        $payTaro = new PayTaro(config('v2board.paytaro_app_id'), config('v2board.paytaro_app_secret'));
+        if (!$payTaro->verify($request->input())) {
+            abort('fail');
+        }
+        if (!$this->handle($request->input('out_trade_no'), $request->input('trade_no'))) {
+            abort('fail');
+        }
+        die('success');
     }
 
     private function handle($tradeNo, $callbackNo)
