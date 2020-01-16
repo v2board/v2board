@@ -277,7 +277,7 @@ class OrderController extends Controller
 
         if ((int)config('v2board.bitpayx_enable')) {
             $bitpayX = new \StdClass();
-            $bitpayX->name = '虚拟货币';
+            $bitpayX->name = '聚合支付';
             $bitpayX->method = 4;
             $bitpayX->icon = 'bitcoin';
             array_push($data, $bitpayX);
@@ -285,7 +285,7 @@ class OrderController extends Controller
 
         if ((int)config('v2board.paytaro_enable')) {
             $obj = new \StdClass();
-            $obj->name = '支付宝';
+            $obj->name = '聚合支付';
             $obj->method = 5;
             $obj->icon = 'alipay';
             array_push($data, $obj);

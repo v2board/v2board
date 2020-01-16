@@ -46,8 +46,7 @@ class LoginController extends Controller
             }
             $code = Helper::guid();
             $key = 'token2Login_' . $code;
-            Cache::put($key, $user->id);
-            Redis::expire($key, 600);
+            Cache::put($key, $user->id, 600);
             $redirect = '/#/login?verify=' . $code . '&redirect=' . ($request->input('redirect') ? $request->input('redirect') : 'dashboard');
             if (config('v2board.app_url')) {
                 $location = config('v2board.app_url') . $redirect;
