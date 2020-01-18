@@ -72,7 +72,7 @@
                                             <tbody>
                                             <tr>
                                                 <td style="font:14px/19px Open Sans, Arial, Verdana, sans-serif; color:#5c5c5c; font-weight:300; padding:0 0 19px;">
-                                                    感谢您使用「{{$name}}」，请在 10 分钟内填写验证码完成验证操作。<br><br>
+                                                    感谢您使用「{{$name}}」，请在 1 分钟内填写验证码完成验证操作。<br><br>
                                                     <p style="text-align:center">
                                                                                                             <span
                                                                                                                 style="font-size:48px">

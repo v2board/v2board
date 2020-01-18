@@ -137,10 +137,10 @@ class OrderController extends Controller
 
         $payTaro = new PayTaro(config('v2board.paytaro_app_id'), config('v2board.paytaro_app_secret'));
         if (!$payTaro->verify($request->input())) {
-            abort('fail');
+            abort(500, 'fail');
         }
         if (!$this->handle($request->input('out_trade_no'), $request->input('trade_no'))) {
-            abort('fail');
+            abort(500, 'fail');
         }
         die('success');
     }
@@ -152,7 +152,7 @@ class OrderController extends Controller
             abort(500, 'order is not found');
         }
         if ($order->status !== 0) {
-            abort(500, 'order is paid');
+            return true;
         }
         $order->status = 1;
         $order->callback_no = $callbackNo;
