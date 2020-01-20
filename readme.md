@@ -12,6 +12,8 @@
 
 [Demo](https://v2board.com) site provided by 👉[Moack](https://www.moack.co.kr/dedicated.php)👈
 
+## Document
+[Click](https://docs.v2board.com)
 
 ## Donation
 ETH&(USDT-ERC20): 0x84F85A89105B93F74c3b5db6410Ee8630F01063f
