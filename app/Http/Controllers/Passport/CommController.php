@@ -41,7 +41,7 @@ class CommController extends Controller
         $subject = config('v2board.app_name', 'V2Board') . '邮箱验证码';
 
         SendEmail::dispatch([
-            'email' => $user->email,
+            'email' => $email,
             'subject' => $subject,
             'template_name' => 'mail.sendEmailVerify',
             'template_value' => [
