@@ -43,28 +43,5 @@ class V2boardCache extends Command
      */
     public function handle()
     {
-        $this->setMonthIncome();
-        $this->setMonthRegisterTotal();
-    }
-
-    private function setMonthIncome()
-    {
-        Cache::put(
-            'month_income',
-            Order::where('created_at', '>=', strtotime(date('Y-m-1')))
-                ->where('created_at', '<', time())
-                ->where('status', '3')
-                ->sum('total_amount')
-        );
-    }
-
-    private function setMonthRegisterTotal()
-    {
-        Cache::put(
-            'month_register_total',
-            User::where('created_at', '>=', strtotime(date('Y-m-1')))
-                ->where('created_at', '<', time())
-                ->count()
-        );
     }
 }

@@ -9,6 +9,7 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Mail;
 use App\Utils\Helper;
 use Illuminate\Support\Facades\Cache;
+use App\Jobs\SendEmail;
 
 class CommController extends Controller
 {
@@ -38,21 +39,17 @@ class CommController extends Controller
         }
         $code = Helper::randomChar(6);
         $subject = config('v2board.app_name', 'V2Board') . '邮箱验证码';
-        Mail::send(
-            'mail.sendEmailVerify',
-            [
-                'code' => $code,
+
+        SendEmail::dispatch([
+            'email' => $user->email,
+            'subject' => $subject,
+            'template_name' => 'mail.sendEmailVerify',
+            'template_value' => [
                 'name' => config('v2board.app_name', 'V2Board'),
+                'code' => $code,
                 'url' => config('v2board.app_url')
-            ],
-            function ($message) use ($email, $subject) {
-                $message->to($email)->subject($subject);
-            }
-        );
-        if (count(Mail::failures()) >= 1) {
-            // 发送失败
-            abort(500, '发送失败');
-        }
+            ]
+        ])->onQueue('verify_mail');
 
         Cache::put($cacheKey, $code, 60);
         return response([

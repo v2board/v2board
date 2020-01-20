@@ -18,15 +18,19 @@ class StatController extends Controller
     {
         return response([
             'data' => [
-                'month_income' => Cache::get('month_income'),
-                'month_register_total' => Cache::get('month_register_total'),
+                'month_income' => Order::where('created_at', '>=', strtotime(date('Y-m-1')))
+                    ->where('created_at', '<', time())
+                    ->where('status', '3')
+                    ->sum('total_amount'),
+                'month_register_total' => User::where('created_at', '>=', strtotime(date('Y-m-1')))
+                    ->where('created_at', '<', time())
+                    ->count(),
                 'ticket_pendding_total' => Ticket::where('status', 0)
                     ->count(),
                 'commission_pendding_total' => Order::where('commission_status', 0)
                     ->where('invite_user_id', '!=', NULL)
                     ->where('status', 3)
                     ->count(),
-
             ]
         ]);
     }

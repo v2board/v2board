@@ -32,7 +32,7 @@ class MailController extends Controller
                     'url' => config('v2board.app_url'),
                     'content' => $request->input('content')
                 ]
-            ]);
+            ])->onQueue('other_mail');
         }
 
         return response([
