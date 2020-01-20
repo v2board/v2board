@@ -42,6 +42,9 @@ class ConfigSave extends FormRequest
         'paytaro_enable' => 'in:0,1',
         'paytaro_app_id' => '',
         'paytaro_app_secret' => '',
+        // frontend
+        'frontend_theme' => 'in:1,2',
+        'frontend_background_url' => 'nullable|url',
         // tutorial
         'apple_id' => 'email',
         'apple_id_password' => ''
@@ -49,7 +52,6 @@ class ConfigSave extends FormRequest
 
     public static function filter()
     {
-        // abort(500, json_encode(array_keys(self::RULES)));
         return array_keys(self::RULES);
     }
 

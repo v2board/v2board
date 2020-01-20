@@ -5,9 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Requests\Admin\ConfigSave;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Plan;
-use App\Models\Order;
-use App\Models\User;
 
 class ConfigController extends Controller
 {
@@ -57,6 +54,10 @@ class ConfigController extends Controller
                     'paytaro_enable' => config('v2board.paytaro_enable'),
                     'paytaro_app_id' => config('v2board.paytaro_app_id'),
                     'paytaro_app_secret' => config('v2board.paytaro_app_secret')
+                ],
+                'frontend' => [
+                    'theme' => config('v2board.frontend_theme', 1),
+                    'background_url' => config('v2board.frontend_background_url')
                 ],
                 'server' => [
                     'server_token' => config('v2board.server_token'),
