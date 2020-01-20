@@ -1,0 +1,5 @@
+apps:
+  - name     : 'Queue'
+    script   : 'php artisan queue:work --queue=verify_mail,other_mail'
+    instances: 4
+    out_file : './storage/logs/queue/queue.log'
