@@ -279,7 +279,7 @@ class OrderController extends Controller
             $bitpayX = new \StdClass();
             $bitpayX->name = '聚合支付';
             $bitpayX->method = 4;
-            $bitpayX->icon = 'bitcoin';
+            $bitpayX->icon = 'wallet';
             array_push($data, $bitpayX);
         }
 
@@ -287,7 +287,7 @@ class OrderController extends Controller
             $obj = new \StdClass();
             $obj->name = '聚合支付';
             $obj->method = 5;
-            $obj->icon = 'alipay';
+            $obj->icon = 'wallet';
             array_push($data, $obj);
         }
 
