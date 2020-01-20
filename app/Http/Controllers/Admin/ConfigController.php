@@ -59,7 +59,8 @@ class ConfigController extends Controller
                     'paytaro_app_secret' => config('v2board.paytaro_app_secret')
                 ],
                 'server' => [
-                    'server_token' => config('v2board.server_token')
+                    'server_token' => config('v2board.server_token'),
+                    'server_license' => config('v2board.server_license')
                 ],
                 'tutorial' => [
                     'apple_id' => config('v2board.apple_id')
