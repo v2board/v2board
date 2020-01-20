@@ -128,3 +128,6 @@ INSERT INTO `v2_tutorial` (`id`, `title`, `description`, `icon`, `steps`, `show`
 
 ALTER TABLE `v2_server_log`
 CHANGE `rate` `rate` decimal(10,2) NOT NULL AFTER `d`;
+
+ALTER TABLE `v2_order`
+DROP `method`;

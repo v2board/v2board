@@ -396,7 +396,7 @@ class OrderController extends Controller
     {
         $bitpayX = new BitpayX(config('v2board.bitpayx_appsecret'));
         $params = [
-            'merchant_order_id' => 'V2Board_' . $order->trade_no,
+            'merchant_order_id' => $order->trade_no,
             'price_amount' => $order->total_amount / 100,
             'price_currency' => 'CNY',
             'title' => '支付单号：' . $order->trade_no,

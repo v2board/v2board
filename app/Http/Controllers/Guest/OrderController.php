@@ -109,26 +109,15 @@ class OrderController extends Controller
         ];
         $strToSign = $bitpayX->prepareSignId($inputJSON['merchant_order_id']);
         if (!$bitpayX->verify($strToSign, $inputJSON['token'])) {
-            die([
-                'status' => 400,
-                'error' => 'sign error'
-            ]);
+            abort(500, 'sign error');
         }
         if ($params['status'] !== 'PAID') {
-            die([
-                'status' => 400,
-                'error' => 'order is not paid'
-            ]);
+            abort(500, 'order is not paid');
         }
         if (!$this->handle($params['merchant_order_id'], $params['order_id'])) {
-            die([
-                'status' => 400,
-                'error' => 'order process fail'
-            ]);
+            abort(500, 'order process fail');
         }
-        die([
-            'status' => 200
-        ]);
+        die('success');
     }
 
     public function payTaroNotify(Request $request)
