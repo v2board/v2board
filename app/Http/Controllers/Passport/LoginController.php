@@ -24,7 +24,7 @@ class LoginController extends Controller
             abort(500, '用户名或密码错误');
         }
 
-        if (!$user->enable) {
+        if ($user->banned) {
             abort(500, '该账户已被停止使用');
         }
 
