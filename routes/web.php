@@ -21,7 +21,8 @@ Route::get('/', function (Request $request) {
     }
     return view('app', [
         'title' => config('v2board.app_name', 'V2Board'),
-        'theme' => config('v2board.app_theme', 1),
+        'theme' => config('v2board.frontend_theme', 1),
+        'backgroun_url' => config('v2board.frontend_url'),
         'verison' => '1.0.2.3'
     ]);
 });

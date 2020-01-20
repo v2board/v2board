@@ -14,7 +14,8 @@
         window.v2board = {
             title: '{{$title}}',
             theme: '{{$theme}}',
-            verison: '{{$verison}}'
+            verison: '{{$verison}}',
+            background_url: '{{$backgroun_url}}'
         }
     </script>
 </head>
