@@ -56,8 +56,8 @@ class ConfigController extends Controller
                     'paytaro_app_secret' => config('v2board.paytaro_app_secret')
                 ],
                 'frontend' => [
-                    'theme' => config('v2board.frontend_theme', 1),
-                    'background_url' => config('v2board.frontend_background_url')
+                    'frontend_theme' => config('v2board.frontend_theme', 1),
+                    'frontend_background_url' => config('v2board.frontend_background_url')
                 ],
                 'server' => [
                     'server_token' => config('v2board.server_token'),
