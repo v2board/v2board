@@ -24,6 +24,10 @@ class LoginController extends Controller
             abort(500, '用户名或密码错误');
         }
 
+        if (!$user->enable) {
+            abort(500, '该账户已被停止使用');
+        }
+
         $request->session()->put('email', $user->email);
         $request->session()->put('id', $user->id);
         if ($user->is_admin) {
@@ -65,6 +69,9 @@ class LoginController extends Controller
             $user = User::find($userId);
             if (!$user) {
                 abort(500, '用户不存在');
+            }
+            if (!$user->enable) {
+                abort(500, '该账户已被停止使用');
             }
             $request->session()->put('email', $user->email);
             $request->session()->put('id', $user->id);
