@@ -140,4 +140,13 @@ class DeepbworkController extends Controller
 
         die(json_encode($json, JSON_UNESCAPED_UNICODE));
     }
+
+    // Get v2ray server license
+    public function serverLicense(Request $request)
+    {
+        return response([
+            'msg' => 'ok',
+            'data' => (string)config('v2board.server_license'),
+        ]);
+    }
 }
