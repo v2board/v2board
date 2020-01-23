@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Server;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Server\Controller;
+use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Plan;
 use App\Models\Server;
@@ -11,18 +11,21 @@ use App\Models\ServerLog;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 
-class DeepbworkController extends Controller
+class PoseidonController extends Controller
 {
     CONST SERVER_CONFIG = '{"api":{"services":["HandlerService","StatsService"],"tag":"api"},"stats":{},"inbound":{"port":443,"protocol":"vmess","settings":{"clients":[]},"streamSettings":{"network":"tcp"},"tag":"proxy"},"inboundDetour":[{"listen":"0.0.0.0","port":23333,"protocol":"dokodemo-door","settings":{"address":"0.0.0.0"},"tag":"api"}],"log":{"loglevel":"debug","access":"access.log","error":"error.log"},"outbound":{"protocol":"freedom","settings":{}},"routing":{"settings":{"rules":[{"inboundTag":["api"],"outboundTag":"api","type":"field"}]},"strategy":"rules"},"policy":{"levels":{"0":{"handshake":4,"connIdle":300,"uplinkOnly":5,"downlinkOnly":30,"statsUserUplink":true,"statsUserDownlink":true}}}}';
 
     // 后端获取用户
     public function user(Request $request)
     {
+        if ($r = $this->verifyToken($request)) { return $r; }
+
         $nodeId = $request->input('node_id');
         $server = Server::find($nodeId);
         if (!$server) {
-            abort(500, 'fail');
+            return $this->error("server could not be found", 404);
         }
+
         Cache::put('server_last_check_at_' . $server->id, time());
         $users = User::whereIn('group_id', json_decode($server->group_id))
             ->select([
@@ -51,22 +54,19 @@ class DeepbworkController extends Controller
             unset($user['v2ray_level']);
             array_push($result, $user);
         }
-        return response([
-            'msg' => 'ok',
-            'data' => $result,
-        ]);
+
+        return $this->success($result);
     }
 
     // 后端提交数据
     public function submit(Request $request)
     {
+        if ($r = $this->verifyToken($request)) { return $r; }
+
         Log::info('serverSubmitData:' . $request->input('node_id') . ':' . file_get_contents('php://input'));
         $server = Server::find($request->input('node_id'));
         if (!$server) {
-            return response([
-                'ret' => 1,
-                'msg' => 'ok'
-            ]);
+            return $this->error("server could not be found", 404);
         }
         $data = file_get_contents('php://input');
         $data = json_decode($data, true);
@@ -88,23 +88,22 @@ class DeepbworkController extends Controller
             $serverLog->save();
         }
 
-        return response([
-            'ret' => 1,
-            'msg' => 'ok'
-        ]);
+        return $this->success('');
     }
 
     // 后端获取配置
     public function config(Request $request)
     {
+        if ($r = $this->verifyToken($request)) { return $r; }
+
         $nodeId = $request->input('node_id');
-        $localPort = $request->input('local_port');
+        $localPort = $request->input('local_port', config('poseidon.local_api_port'));
         if (empty($nodeId) || empty($localPort)) {
-            abort(1000, '参数错误');
+            return $this->error('invalid parameters', 400);
         }
         $server = Server::find($nodeId);
         if (!$server) {
-            abort(1001, '节点不存在');
+            return $this->error("server could not be found", 404);
         }
         $json = json_decode(self::SERVER_CONFIG);
         $json->inboundDetour[0]->port = (int)$localPort;
@@ -138,6 +137,35 @@ class DeepbworkController extends Controller
             $json->inbound->streamSettings->tlsSettings->certificates[0] = $tls;
         }
 
-        die(json_encode($json, JSON_UNESCAPED_UNICODE));
+        $json->poseidon = [
+          'license_key' => (string)config('v2board.server_license'),
+          'check_rate' => (int)config('poseidon.check_rate'),
+        ];
+
+        return $this->success($json);
+    }
+
+    protected function verifyToken(Request $request)
+    {
+        $token = $request->input('token');
+        if (empty($token)) {
+            return $this->error("token must be set");
+        }
+        if ($token !== config('v2board.server_token')) {
+            return $this->error("invalid token");
+        }
+    }
+
+    protected function error($msg, int $status = 400) {
+        return response([
+            'msg' => $msg,
+        ], $status);
+    }
+
+    protected function success($data) {
+        return response([
+            'msg' => 'ok',
+            'data' => $data,
+        ]);
     }
 }

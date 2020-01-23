@@ -150,9 +150,12 @@ Route::prefix('v1')
         Route::prefix('server')
             ->group(function () {
                 // Deepbwork
-                Route::get('deepbwork/serverLicense', 'Server\\DeepbworkController@serverLicense');
                 Route::get('deepbwork/user', 'Server\\DeepbworkController@user');
                 Route::get('deepbwork/config', 'Server\\DeepbworkController@config');
                 Route::post('deepbwork/submit', 'Server\\DeepbworkController@submit');
+                // V2ray-Poseidon
+                Route::get('poseidon/user', 'Server\\PoseidonController@user');
+                Route::get('poseidon/config', 'Server\\PoseidonController@config');
+                Route::post('poseidon/submit', 'Server\\PoseidonController@submit');
             });
     });
