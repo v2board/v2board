@@ -21,7 +21,7 @@ class PayTaro
         $str = http_build_query($params) . $this->appSecret;
         $params['sign'] = md5($str);
         $curl = new Curl();
-        $curl->post('http://api.paytaro.com/v1/gateway/fetch', http_build_query($params));
+        $curl->post('https://api.paytaro.com/v1/gateway/fetch', http_build_query($params));
         if ($curl->error) {
             abort(500, '接口请求失败');
         }
