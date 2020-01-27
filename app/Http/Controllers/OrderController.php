@@ -25,7 +25,7 @@ class OrderController extends Controller
     {
         $model = Order::where('user_id', $request->session()->get('id'))
             ->orderBy('created_at', 'DESC');
-        if ($request->input('status')) {
+        if (!empty($request->input('status'))) {
             $model->where('status', $request->input('status'));
         }
         $order = $model->get();
