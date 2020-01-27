@@ -23,9 +23,12 @@ class OrderController extends Controller
 {
     public function fetch(Request $request)
     {
-        $order = Order::where('user_id', $request->session()->get('id'))
-            ->orderBy('created_at', 'DESC')
-            ->get();
+        $model = Order::where('user_id', $request->session()->get('id'))
+            ->orderBy('created_at', 'DESC');
+        if ($request->input('status')) {
+            $model->where('status', $request->input('status'));
+        }
+        $order = $model->get();
         $plan = Plan::get();
         for ($i = 0; $i < count($order); $i++) {
             for ($x = 0; $x < count($plan); $x++) {
