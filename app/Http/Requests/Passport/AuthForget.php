@@ -4,7 +4,7 @@ namespace App\Http\Requests\Passport;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class LoginIndex extends FormRequest
+class AuthForget extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -15,7 +15,8 @@ class LoginIndex extends FormRequest
     {
         return [
             'email' => 'required|email',
-            'password' => 'required|min:8'
+            'password' => 'required|min:8',
+            'email_code' => 'required'
         ];
     }
 
@@ -25,7 +26,8 @@ class LoginIndex extends FormRequest
             'email.required' => '邮箱不能为空',
             'email.email' => '邮箱格式不正确',
             'password.required' => '密码不能为空',
-            'password.min' => '密码必须大于8位数'
+            'password.min' => '密码必须大于8位数',
+            'email_code.required' => '邮箱验证码不能为空'
         ];
     }
 }

@@ -4,7 +4,7 @@ namespace App\Http\Requests\Passport;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class RegisterIndex extends FormRequest
+class AuthLogin extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
