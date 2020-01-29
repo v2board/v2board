@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Utils\Helper;
 use Illuminate\Support\Facades\Cache;
 use App\Jobs\SendEmail;
+use App\Models\InviteCode;
 
 class CommController extends Controller
 {
@@ -52,6 +53,19 @@ class CommController extends Controller
         ])->onQueue('verify_mail');
 
         Cache::put($cacheKey, $code, 60);
+        return response([
+            'data' => true
+        ]);
+    }
+
+    public function pv(Request $request)
+    {
+        $inviteCode = InviteCode::where('code', $request->input('invite_code'))->first();
+        if ($inviteCode) {
+            $inviteCode->pv = $inviteCode->pv + 1;
+            $inviteCode->save();
+        }
+
         return response([
             'data' => true
         ]);
