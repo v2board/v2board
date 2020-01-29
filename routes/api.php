@@ -48,7 +48,7 @@ Route::prefix('v1')
 				    	abort(404, 'not found');
 				    }
 				});
-                Route::get('server/log/fetch', 'ServerController@logFetch');
+                Route::get('server/log/fetch', 'User\\ServerController@logFetch');
             });
 
         // Passport
