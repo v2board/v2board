@@ -40,7 +40,7 @@ class V2boardUpdate extends Command
     {
         \Artisan::call('config:cache');
         DB::connection()->getPdo();
-        $file = \File::get(base_path() . '/update.sql');
+        $file = \File::get(base_path() . '/database/update.sql');
         if (!$file) {
             abort(500, '数据库文件不存在');
         }

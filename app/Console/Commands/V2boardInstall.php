@@ -47,7 +47,7 @@ class V2boardInstall extends Command
         sleep(2);
         \Artisan::call('config:cache');
         DB::connection()->getPdo();
-        $file = \File::get(base_path() . '/install.sql');
+        $file = \File::get(base_path() . '/database/install.sql');
         if (!$file) {
             abort(500, '数据库文件不存在');
         }
