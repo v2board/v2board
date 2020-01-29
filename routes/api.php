@@ -33,7 +33,7 @@ Route::prefix('v1')
             ->middleware('user')
             ->group(function () {
             	Route::any('/{action}', function($action) {
-				    $ctrl = \App::make("\\App\\Http\\Controllers\\UserController");
+				    $ctrl = \App::make("\\App\\Http\\Controllers\\User\\UserController");
 				    try {
 				    	return \App::call([$ctrl, $action]);
 				    } catch (\Exception $e) {
@@ -80,7 +80,7 @@ Route::prefix('v1')
             ->middleware('client')
             ->group(function () {
             	Route::any('/{action}', function($action) {
-				    $ctrl = \App::make("\\App\\Http\\Controllers\\ClientController");
+				    $ctrl = \App::make("\\App\\Http\\Controllers\\Client\\ClientController");
 				    try {
 				    	return \App::call([$ctrl, $action]);
 				    } catch (\Exception $e) {
