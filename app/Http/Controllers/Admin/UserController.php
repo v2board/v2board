@@ -36,9 +36,9 @@ class UserController extends Controller
         ]);
     }
 
-    public function id2UserInfo($id)
+    public function getUserInfoById(Request $request)
     {
-        if (empty($id)) {
+        if (empty($request->input('id'))) {
             abort(500, '参数错误');
         }
         return response([
@@ -48,7 +48,7 @@ class UserController extends Controller
                 'd',
                 'transfer_enable',
                 'expired_at'
-            ])->find($id)
+            ])->find($request->input('id'))
         ]);
     }
 
