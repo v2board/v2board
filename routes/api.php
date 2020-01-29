@@ -21,11 +21,7 @@ Route::prefix('v1')
             ->group(function () {
             	Route::any('/{class}/{action}', function($class, $action) {
 				    $ctrl = \App::make("\\App\\Http\\Controllers\\Admin\\" . ucfirst($class) . "Controller");
-				    try {
-				    	return \App::call([$ctrl, $action]);
-				    } catch (\Exception $e) {
-				    	abort(404, 'not found');
-				    }
+                    return \App::call([$ctrl, $action]);
 				});
             });
         // User
@@ -34,19 +30,11 @@ Route::prefix('v1')
             ->group(function () {
             	Route::any('/{action}', function($action) {
 				    $ctrl = \App::make("\\App\\Http\\Controllers\\User\\UserController");
-				    try {
-				    	return \App::call([$ctrl, $action]);
-				    } catch (\Exception $e) {
-				    	abort(404, 'not found');
-				    }
+				    return \App::call([$ctrl, $action]);
 				});
             	Route::any('/{class}/{action}', function($class, $action) {
 				    $ctrl = \App::make("\\App\\Http\\Controllers\\User\\" . ucfirst($class) . "Controller");
-				    try {
-				    	return \App::call([$ctrl, $action]);
-				    } catch (\Exception $e) {
-				    	abort(404, 'not found');
-				    }
+				    return \App::call([$ctrl, $action]);
 				});
                 Route::get('server/log/fetch', 'User\\ServerController@logFetch');
             });
@@ -56,11 +44,7 @@ Route::prefix('v1')
             ->group(function () {
             	Route::any('/{class}/{action}', function($class, $action) {
 				    $ctrl = \App::make("\\App\\Http\\Controllers\\Passport\\" . ucfirst($class) . "Controller");
-				    try {
-				    	return \App::call([$ctrl, $action]);
-				    } catch (\Exception $e) {
-				    	abort(404, 'not found');
-				    }
+				    return \App::call([$ctrl, $action]);
 				});
             });
         // No Auth
@@ -68,11 +52,7 @@ Route::prefix('v1')
             ->group(function () {
             	Route::any('/{class}/{action}', function($class, $action) {
 				    $ctrl = \App::make("\\App\\Http\\Controllers\\Guest\\" . ucfirst($class) . "Controller");
-				    try {
-				    	return \App::call([$ctrl, $action]);
-				    } catch (\Exception $e) {
-				    	abort(404, 'not found');
-				    }
+				    return \App::call([$ctrl, $action]);
 				});
             });
         // Client
@@ -81,19 +61,11 @@ Route::prefix('v1')
             ->group(function () {
             	Route::any('/{action}', function($action) {
 				    $ctrl = \App::make("\\App\\Http\\Controllers\\Client\\ClientController");
-				    try {
-				    	return \App::call([$ctrl, $action]);
-				    } catch (\Exception $e) {
-				    	abort(404, 'not found');
-				    }
+				    return \App::call([$ctrl, $action]);
 				});
             	Route::any('/{class}/{action}', function($class, $action) {
 				    $ctrl = \App::make("\\App\\Http\\Controllers\\Client\\" . ucfirst($class) . "Controller");
-				    try {
-				    	return \App::call([$ctrl, $action]);
-				    } catch (\Exception $e) {
-				    	abort(404, 'not found');
-				    }
+				    return \App::call([$ctrl, $action]);
 				});
             });
         // Server
@@ -101,11 +73,7 @@ Route::prefix('v1')
             ->group(function () {
             	Route::any('/{class}/{action}', function($class, $action) {
 				    $ctrl = \App::make("\\App\\Http\\Controllers\\Server\\" . ucfirst($class) . "Controller");
-				    try {
-				    	return \App::call([$ctrl, $action]);
-				    } catch (\Exception $e) {
-				    	abort(404, 'not found');
-				    }
+				    return \App::call([$ctrl, $action]);
 				});
             });
     });
