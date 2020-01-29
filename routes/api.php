@@ -20,7 +20,7 @@ Route::prefix('v1')
             ->middleware('admin')
             ->group(function () {
             	Route::any('/{class}/{action}', function($class, $action) {
-				    $ctrl = \App::make("\\App\\Http\\Controllers\\User\\" . ucfirst($class) . "Controller");
+				    $ctrl = \App::make("\\App\\Http\\Controllers\\Admin\\" . ucfirst($class) . "Controller");
 				    try {
 				    	return \App::call([$ctrl, $action]);
 				    } catch (\Exception $e) {
