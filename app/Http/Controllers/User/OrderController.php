@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\User;
 
-use App\Http\Requests\OrderSave;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\OrderSave;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
@@ -25,7 +25,7 @@ class OrderController extends Controller
     {
         $model = Order::where('user_id', $request->session()->get('id'))
             ->orderBy('created_at', 'DESC');
-        if (!empty($request->input('status'))) {
+        if ($request->input('status') !== null) {
             $model->where('status', $request->input('status'));
         }
         $order = $model->get();

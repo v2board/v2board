@@ -131,3 +131,6 @@ CHANGE `rate` `rate` decimal(10,2) NOT NULL AFTER `d`;
 
 ALTER TABLE `v2_order`
 DROP `method`;
+
+ALTER TABLE `v2_invite_code`
+ADD `pv` int(11) NOT NULL DEFAULT '0' AFTER `status`;

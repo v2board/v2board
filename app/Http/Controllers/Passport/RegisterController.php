@@ -12,11 +12,6 @@ use App\Models\InviteCode;
 
 class RegisterController extends Controller
 {
-    private function setTryOut()
-    {
-
-    }
-
     public function index(RegisterIndex $request)
     {
         if ((int)config('v2board.stop_register', 0)) {
@@ -82,6 +77,19 @@ class RegisterController extends Controller
             Cache::forget($redisKey);
         }
         return response()->json([
+            'data' => true
+        ]);
+    }
+
+    public function pv(Request $request)
+    {
+        $inviteCode = InviteCode::where('code', $request->input('invite_code'))->first();
+        if ($inviteCode) {
+            $inviteCode->pv = $inviteCode->pv + 1;
+            $inviteCode->save();
+        }
+
+        return response([
             'data' => true
         ]);
     }
