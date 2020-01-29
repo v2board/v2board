@@ -36,7 +36,6 @@ Route::prefix('v1')
 				    $ctrl = \App::make("\\App\\Http\\Controllers\\User\\" . ucfirst($class) . "Controller");
 				    return \App::call([$ctrl, $action]);
 				});
-                Route::get('server/log/fetch', 'User\\ServerController@logFetch');
             });
 
         // Passport
