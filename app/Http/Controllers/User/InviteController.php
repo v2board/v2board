@@ -64,7 +64,9 @@ class InviteController extends Controller
                 ->where('invite_user_id', $request->session()->get('id'))
                 ->sum('commission_balance'),
             //佣金比例
-            (int)$commission_rate
+            (int)$commission_rate,
+            //可用佣金
+            (int)$user->commission_balance
         ];
         return response([
             'data' => [
