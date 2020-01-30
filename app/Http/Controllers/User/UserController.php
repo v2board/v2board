@@ -110,7 +110,7 @@ class UserController extends Controller
             abort(500, '重置失败');
         }
         return response([
-            'data' => true
+            'data' => config('v2board.subscribe_url', config('v2board.app_url', env('APP_URL'))) . '/api/v1/client/subscribe?token=' . $user->token
         ]);
     }
 
