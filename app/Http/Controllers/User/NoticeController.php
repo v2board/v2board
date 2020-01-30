@@ -12,7 +12,9 @@ class NoticeController extends Controller
     public function fetch(Request $request)
     {
         return response([
-            'data' => Notice::orderBy('created_at', 'DESC')->get()
+            'data' => Notice::orderBy('created_at', 'DESC')
+                ->limit(5)
+                ->get()
         ]);
     }
 }
