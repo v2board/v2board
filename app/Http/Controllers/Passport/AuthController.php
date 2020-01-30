@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Cache;
 use App\Models\User;
+use App\Models\InviteCode;
 use App\Utils\Helper;
 
 class AuthController extends Controller
