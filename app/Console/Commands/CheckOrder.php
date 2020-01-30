@@ -76,6 +76,8 @@ class CheckOrder extends Command
         }
         $user->transfer_enable = $plan->transfer_enable * 1073741824;
         $user->enable = 1;
+        $user->u = 0;
+        $user->d = 0;
         $user->plan_id = $plan->id;
         $user->group_id = $plan->group_id;
         $user->expired_at = $this->getTime($order->cycle, $user->expired_at);
