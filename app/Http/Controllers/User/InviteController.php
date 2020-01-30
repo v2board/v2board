@@ -55,7 +55,7 @@ class InviteController extends Controller
             (int)User::where('invite_user_id', $request->session()->get('id'))->count(),
             //有效的佣金
             (int)Order::where('status', 3)
-                ->where('commission_status', 1)
+                ->where('commission_status', 2)
                 ->where('invite_user_id', $request->session()->get('id'))
                 ->sum('commission_balance'),
             //确认中的佣金
