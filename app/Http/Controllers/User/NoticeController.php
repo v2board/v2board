@@ -11,10 +11,15 @@ class NoticeController extends Controller
 {
     public function fetch(Request $request)
     {
+        $current = $request->input('current') ? $request->input('current') : 1;
+        $pageSize = 5;
+        $model = Notice::orderBy('created_at', 'DESC');
+        $total = $model->count();
+        $res = $model->forPage($current, $pageSize)
+            ->get();
         return response([
-            'data' => Notice::orderBy('created_at', 'DESC')
-                ->limit(5)
-                ->get()
+            'data' => $res,
+            'total' => $total
         ]);
     }
 }
