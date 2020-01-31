@@ -47,10 +47,7 @@ class ConfigSave extends FormRequest
         'frontend_background_url' => 'nullable|url',
         // tutorial
         'apple_id' => 'email',
-        'apple_id_password' => '',
-        // lab
-        'auth_type' => 'in:1,2',
-        'auth_salt' => ''
+        'apple_id_password' => ''
     ];
 
     public static function filter()

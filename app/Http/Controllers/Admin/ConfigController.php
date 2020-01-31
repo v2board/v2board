@@ -65,10 +65,6 @@ class ConfigController extends Controller
                 ],
                 'tutorial' => [
                     'apple_id' => config('v2board.apple_id')
-                ],
-                'lab' => [
-                    'auth_type' => (int)config('v2board.auth_type', 1),
-                    'auth_salt' => config('v2board.auth_salt')
                 ]
             ]
         ]);
