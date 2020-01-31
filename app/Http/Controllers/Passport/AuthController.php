@@ -192,7 +192,7 @@ class AuthController extends Controller
         switch($algo) {
             case 'md5': return md5($password) === $hash;
             case 'sha256': return hash('sha256', $password) === $hash;
-            default: return password_hash($password, PASSWORD_DEFAULT) === $hash;
+            default: return password_verify($password, $hash);
         }
     }
 }
