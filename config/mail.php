@@ -16,7 +16,7 @@ return [
     |
     */
 
-    'driver' => config('v2board.mail_driver', env('MAIL_DRIVER', 'smtp')),
+    'driver' => env('MAIL_DRIVER', 'smtp'),
 
     /*
     |--------------------------------------------------------------------------
@@ -29,7 +29,7 @@ return [
     |
     */
 
-    'host' => config('v2board.mail_host', env('MAIL_HOST', 'smtp.mailgun.org')),
+    'host' => env('MAIL_HOST', 'smtp.mailgun.org'),
 
     /*
     |--------------------------------------------------------------------------
@@ -42,7 +42,7 @@ return [
     |
     */
 
-    'port' => config('v2board.mail_port', env('MAIL_PORT', 587)),
+    'port' => env('MAIL_PORT', 587),
 
     /*
     |--------------------------------------------------------------------------
@@ -56,8 +56,8 @@ return [
     */
 
     'from' => [
-        'address' => config('v2board.mail_from_address', env('MAIL_FROM_ADDRESS', 'hello@example.com')),
-        'name' => config('v2board.mail_from_name', env('MAIL_FROM_NAME', 'Example')),
+        'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
+        'name' => env('MAIL_FROM_NAME', 'Example'),
     ],
 
     /*
@@ -71,7 +71,7 @@ return [
     |
     */
 
-    'encryption' => config('v2board.mail_encryption', env('MAIL_ENCRYPTION', 'tls')),
+    'encryption' => env('MAIL_ENCRYPTION', 'tls'),
 
     /*
     |--------------------------------------------------------------------------
@@ -84,9 +84,9 @@ return [
     |
     */
 
-    'username' => config('v2board.mail_username', env('MAIL_USERNAME')),
+    'username' => env('MAIL_USERNAME'),
 
-    'password' => config('v2board.mail_password', env('MAIL_PASSWORD')),
+    'password' => env('MAIL_PASSWORD'),
 
     /*
     |--------------------------------------------------------------------------
