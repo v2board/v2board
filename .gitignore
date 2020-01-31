@@ -1,5 +1,5 @@
 /node_modules
-/config/v2panel.php
+/config/v2board.php
 /public/hot
 /public/storage
 /public/env.example.js
