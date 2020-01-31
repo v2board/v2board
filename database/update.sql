@@ -134,3 +134,6 @@ DROP `method`;
 
 ALTER TABLE `v2_invite_code`
 ADD `pv` int(11) NOT NULL DEFAULT '0' AFTER `status`;
+
+ALTER TABLE `v2_user`
+ADD `password_algo` char(10) COLLATE 'utf8_general_ci' NULL AFTER `password`;

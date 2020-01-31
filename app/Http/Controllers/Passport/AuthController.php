@@ -93,7 +93,11 @@ class AuthController extends Controller
         if (!$user) {
             abort(500, '用户名或密码错误');
         }
-        if (!password_verify($password, $user->password)) {
+        if (!$this->multiPasswordVerify(
+            $user->password_algo,
+            $password,
+            $user->password)
+        ) {
             abort(500, '用户名或密码错误');
         }
 
@@ -173,6 +177,7 @@ class AuthController extends Controller
         }
         $user = User::where('email', $request->input('email'))->first();
         $user->password = password_hash($request->input('password'), PASSWORD_DEFAULT);
+        $user->password_algo = NULL;
         if (!$user->save()) {
             abort(500, '重置失败');
         }
@@ -180,5 +185,14 @@ class AuthController extends Controller
         return response([
             'data' => true
         ]);
+    }
+
+    private function multiPasswordVerify($algo, $password, $hash)
+    {
+        switch($algo) {
+            case 'md5': return md5($password) === $hash;
+            case 'sha256': return hash('sha256', $password) === $hash;
+            default: return password_hash($password, PASSWORD_DEFAULT) === $hash;
+        }
     }
 }

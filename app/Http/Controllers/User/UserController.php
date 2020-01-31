@@ -36,6 +36,7 @@ class UserController extends Controller
             abort(500, '旧密码有误');
         }
         $user->password = password_hash($request->input('new_password'), PASSWORD_DEFAULT);
+        $user->password_algo = NULL;
         if (!$user->save()) {
             abort(500, '保存失败');
         }
