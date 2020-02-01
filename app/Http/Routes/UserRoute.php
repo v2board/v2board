@@ -12,43 +12,43 @@ class UserRoute
             'middleware' => 'user'
         ], function ($router) {
             // User
-            $router->get('resetSecurity', 'UserController@resetSecurity');
-            $router->get('logout', 'UserController@logout');
-            $router->get('info', 'UserController@info');
-            $router->post('changePassword', 'UserController@changePassword');
-            $router->post('update', 'UserController@update');
-            $router->get('getSubscribe', 'UserController@getSubscribe');
-            $router->get('getStat', 'UserController@getStat');
+            $router->get('resetSecurity', 'User\\UserController@resetSecurity');
+            $router->get('logout', 'User\\UserController@logout');
+            $router->get('info', 'User\\UserController@info');
+            $router->post('changePassword', 'User\\UserController@changePassword');
+            $router->post('update', 'User\\UserController@update');
+            $router->get('getSubscribe', 'User\\UserController@getSubscribe');
+            $router->get('getStat', 'User\\UserController@getStat');
             // Order
-            $router->post('order/save', 'OrderController@save');
-            $router->post('order/checkout', 'OrderController@checkout');
-            $router->get('order/check', 'OrderController@check');
-            $router->get('order/details', 'OrderController@details');
-            $router->get('order/fetch', 'OrderController@fetch');
-            $router->get('order/getPaymentMethod', 'OrderController@getPaymentMethod');
-            $router->post('order/cancel', 'OrderController@cancel');
+            $router->post('order/save', 'User\\OrderController@save');
+            $router->post('order/checkout', 'User\\OrderController@checkout');
+            $router->get('order/check', 'User\\OrderController@check');
+            $router->get('order/details', 'User\\OrderController@details');
+            $router->get('order/fetch', 'User\\OrderController@fetch');
+            $router->get('order/getPaymentMethod', 'User\\OrderController@getPaymentMethod');
+            $router->post('order/cancel', 'User\\OrderController@cancel');
             // Plan
-            $router->get('plan/fetch', 'PlanController@fetch');
+            $router->get('plan/fetch', 'User\\PlanController@fetch');
             // Invite
-            $router->get('invite/save', 'InviteController@save');
-            $router->get('invite/fetch', 'InviteController@fetch');
-            $router->get('invite/details', 'InviteController@details');
+            $router->get('invite/save', 'User\\InviteController@save');
+            $router->get('invite/fetch', 'User\\InviteController@fetch');
+            $router->get('invite/details', 'User\\InviteController@details');
             // Tutorial
-            $router->get('tutorial/getSubscribeUrl', 'TutorialController@getSubscribeUrl');
-            $router->get('tutorial/getAppleID', 'TutorialController@getAppleID');
-            $router->get('tutorial/fetch', 'TutorialController@fetch');
+            $router->get('tutorial/getSubscribeUrl', 'User\\TutorialController@getSubscribeUrl');
+            $router->get('tutorial/getAppleID', 'User\\TutorialController@getAppleID');
+            $router->get('tutorial/fetch', 'User\\TutorialController@fetch');
             // Notice
-            $router->get('notice/fetch', 'NoticeController@fetch');
+            $router->get('notice/fetch', 'User\\NoticeController@fetch');
             // Ticket
-            $router->post('ticket/reply', 'TicketController@reply');
-            $router->post('ticket/close', 'TicketController@close');
-            $router->post('ticket/save', 'TicketController@save');
-            $router->get('ticket/fetch', 'TicketController@fetch');
+            $router->post('ticket/reply', 'User\\TicketController@reply');
+            $router->post('ticket/close', 'User\\TicketController@close');
+            $router->post('ticket/save', 'User\\TicketController@save');
+            $router->get('ticket/fetch', 'User\\TicketController@fetch');
             // Server
-            $router->get('server/fetch', 'ServerController@fetch');
-            $router->get('server/log/fetch', 'ServerController@logFetch');
+            $router->get('server/fetch', 'User\\ServerController@fetch');
+            $router->get('server/log/fetch', 'User\\ServerController@logFetch');
             // Coupon
-            $router->post('coupon/check', 'CouponController@check');
+            $router->post('coupon/check', 'User\\CouponController@check');
         });
     }
 }
