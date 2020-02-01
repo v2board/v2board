@@ -12,7 +12,7 @@ class ClientRoute
             'middleware' => 'client'
         ], function ($router) {
             // Plan
-            $router->get('/plan/fetch', 'Guest\\PlanController@fetch');
+            $router->get ('/plan/fetch', 'Guest\\PlanController@fetch');
             // Order
             $router->post('/order/alipayNotify', 'Guest\\OrderController@alipayNotify');
             $router->post('/order/stripeNotify', 'Guest\\OrderController@stripeNotify');
