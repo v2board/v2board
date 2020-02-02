@@ -11,13 +11,11 @@ class ClientRoute
             'prefix' => 'client',
             'middleware' => 'client'
         ], function ($router) {
-            // Plan
-            $router->get ('/plan/fetch', 'Guest\\PlanController@fetch');
-            // Order
-            $router->post('/order/alipayNotify', 'Guest\\OrderController@alipayNotify');
-            $router->post('/order/stripeNotify', 'Guest\\OrderController@stripeNotify');
-            $router->post('/order/bitpayXNotify', 'Guest\\OrderController@bitpayXNotify');
-            $router->post('/order/payTaroNotify', 'Guest\\OrderController@payTaroNotify');
+            // Client
+            Route::get('/subscribe', 'ClientController@subscribe');
+            // App
+            Route::get('/app/data', 'AppController@data');
+            Route::get('/app/config', 'AppController@config');
         });
     }
 }
