@@ -154,6 +154,7 @@ class ClientController extends Controller
             'Proxy Group' => $proxyGroup,
             'Rule' => $rules
         ];
+
         return Yaml::dump($config);
     }
 }
