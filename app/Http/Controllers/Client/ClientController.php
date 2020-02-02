@@ -139,7 +139,7 @@ class ClientController extends Controller
         ]);
 
         try {
-            $rules = Yaml::parseFile(base_path() . '/resources/rules/clash.rule.yaml');
+            $rules = Yaml::parseFile(base_path() . '/resources/rules/clash.rule.yaml')['Rule'];
         } catch (\Exception $e) {}
 
         $config = [
