@@ -7,7 +7,6 @@ use App\Http\Requests\Passport\AuthRegister;
 use App\Http\Requests\Passport\AuthForget;
 use App\Http\Requests\Passport\AuthLogin;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Cache;
 use App\Models\User;
 use App\Models\InviteCode;
@@ -93,7 +92,7 @@ class AuthController extends Controller
         if (!$user) {
             abort(500, '用户名或密码错误');
         }
-        if (!$this->multiPasswordVerify(
+        if (!Helper::multiPasswordVerify(
             $user->password_algo,
             $password,
             $user->password)
@@ -185,14 +184,5 @@ class AuthController extends Controller
         return response([
             'data' => true
         ]);
-    }
-
-    private function multiPasswordVerify($algo, $password, $hash)
-    {
-        switch($algo) {
-            case 'md5': return md5($password) === $hash;
-            case 'sha256': return hash('sha256', $password) === $hash;
-            default: return password_verify($password, $hash);
-        }
     }
 }

@@ -75,4 +75,13 @@ class Helper
         }
         return "vmess://" . base64_encode(json_encode($config)) . "\r\n";
     }
+
+    public static function multiPasswordVerify($algo, $password, $hash)
+    {
+        switch($algo) {
+            case 'md5': return md5($password) === $hash;
+            case 'sha256': return hash('sha256', $password) === $hash;
+            default: return password_verify($password, $hash);
+        }
+    }
 }
