@@ -12,10 +12,10 @@ class ClientRoute
             'middleware' => 'client'
         ], function ($router) {
             // Client
-            Route::get('/subscribe', 'ClientController@subscribe');
+            Route::get('/subscribe', 'Client\\ClientController@subscribe');
             // App
-            Route::get('/app/data', 'AppController@data');
-            Route::get('/app/config', 'AppController@config');
+            Route::get('/app/data', 'Client\\AppController@data');
+            Route::get('/app/config', 'Client\\AppController@config');
         });
     }
 }
