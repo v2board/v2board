@@ -8,6 +8,7 @@ use App\Http\Requests\Passport\AuthForget;
 use App\Http\Requests\Passport\AuthLogin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use app\Models\Plan;
 use App\Models\User;
 use App\Models\InviteCode;
 use App\Utils\Helper;
