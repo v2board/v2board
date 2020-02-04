@@ -91,6 +91,9 @@ class ClientController extends Controller
         $proxy = [];
         $proxyGroup = [];
         $proxies = [];
+        $defaultProxies = ['Auto'];
+        $globalMediaProxies = ['Auto', 'PROXY'];
+        $hkmtMediaProxies = ['DIRECT', 'PROXY'];
         $rules = [];
         foreach ($server as $item) {
             $array = [];
@@ -103,6 +106,7 @@ class ClientController extends Controller
             $array['cipher'] = 'auto';
             if ($item->tls) {
                 $array['tls'] = true;
+                $array['skip-cert-verify'] = true;
             }
             if ($item->network == 'ws') {
                 $array['network'] = $item->network;
@@ -116,26 +120,56 @@ class ClientController extends Controller
             }
             array_push($proxy, $array);
             array_push($proxies, $item->name);
+            array_push($defaultProxies, $item->name);
+            array_push($globalMediaProxies, $item->name);
+            array_push($hkmtMediaProxies, $item->name);
         }
 
         array_push($proxyGroup, [
-            'name' => 'auto',
+            'name' => 'PROXY',
+            'type' => 'select',
+            'proxies' => $defaultProxies
+        ]);
+        array_push($proxyGroup, [
+            'name' => 'GlobalMedia',
+            'type' => 'select',
+            'proxies' => $globalMediaProxies
+        ]);
+        array_push($proxyGroup, [
+            'name' => 'HKMTMedia',
+            'type' => 'select',
+            'proxies' => $hkmtMediaProxies
+        ]);
+        array_push($proxyGroup, [
+            'name' => 'Apple',
+            'type' => 'select',
+            'proxies' => [
+                'DIRECT',
+                'PROXY'
+            ]
+        ]);
+        array_push($proxyGroup, [
+            'name' => 'Final',
+            'type' => 'select',
+            'proxies' => [
+                'DIRECT',
+                'PROXY'
+            ]
+        ]);
+        array_push($proxyGroup, [
+            'name' => 'Hijacking',
+            'type' => 'select',
+            'proxies' => [
+                'REJECT',
+                'DIRECT'
+            ]
+        ]);
+        array_push($proxyGroup, [
+            'name' => 'Auto',
             'type' => 'url-test',
             'proxies' => $proxies,
-            'url' => 'https://www.bing.com',
+            'url' => 'http://www.gstatic.com/generate_204',
             'interval' => 300
-        ]);
-        array_push($proxyGroup, [
-            'name' => 'fallback-auto',
-            'type' => 'fallback',
-            'proxies' => $proxies,
-            'url' => 'https://www.bing.com',
-            'interval' => 300
-        ]);
-        array_push($proxyGroup, [
-            'name' => 'select',
-            'type' => 'select',
-            'proxies' => $proxies
         ]);
 
         try {
@@ -148,8 +182,7 @@ class ClientController extends Controller
             'allow-lan' => false,
             'mode' => 'Rule',
             'log-level' => 'info',
-            'external-controller' => '0.0.0.0:9090',
-            'secret' => '',
+            'external-controller' => '127.0.0.1:9090',
             'Proxy' => $proxy,
             'Proxy Group' => $proxyGroup,
             'Rule' => $rules
