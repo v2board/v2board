@@ -14,7 +14,7 @@ class ClientController extends Controller
     {
         $user = $request->user;
         $server = [];
-        if ($user->expired_at > time()) {
+        if ($user->expired_at > time() && !$user->banned) {
             $servers = Server::where('show', 1)
                 ->orderBy('name')
                 ->get();
