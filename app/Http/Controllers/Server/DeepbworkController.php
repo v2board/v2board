@@ -110,11 +110,11 @@ class DeepbworkController extends Controller
         $nodeId = $request->input('node_id');
         $localPort = $request->input('local_port');
         if (empty($nodeId) || empty($localPort)) {
-            abort(1000, '参数错误');
+            abort(500, '参数错误');
         }
         $server = Server::find($nodeId);
         if (!$server) {
-            abort(1001, '节点不存在');
+            abort(500, '节点不存在');
         }
         $json = json_decode(self::SERVER_CONFIG);
         $json->inboundDetour[0]->port = (int)$localPort;
@@ -143,8 +143,12 @@ class DeepbworkController extends Controller
             }
         }
         if ((int)$server->tls) {
-            $json->inbound->streamSettings->security = "tls";
-            $tls = (object)array("certificateFile" => "/home/v2ray.crt", "keyFile" => "/home/v2ray.key");
+            $json->inbound->streamSettings->security = 'tls';
+            $tls = (object)[
+                'certificateFile' => '/home/v2ray.crt',
+                'keyFile' => '/home/v2ray.key'
+            ];
+            $json->inbound->streamSettings->tlsSettings = new \StdClass();
             $json->inbound->streamSettings->tlsSettings->certificates[0] = $tls;
         }
 
