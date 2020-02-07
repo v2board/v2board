@@ -14,6 +14,7 @@ class ClientController extends Controller
     {
         $user = $request->user;
         $server = [];
+        // account not expired and is not banned.
         if ($user->expired_at > time() && !$user->banned) {
             $servers = Server::where('show', 1)
                 ->orderBy('name')

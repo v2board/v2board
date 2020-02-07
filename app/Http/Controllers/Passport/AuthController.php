@@ -176,6 +176,9 @@ class AuthController extends Controller
             abort(500, '邮箱验证码有误');
         }
         $user = User::where('email', $request->input('email'))->first();
+        if (!$user) {
+            abort(500, '该邮箱不存在系统中');
+        }
         $user->password = password_hash($request->input('password'), PASSWORD_DEFAULT);
         $user->password_algo = NULL;
         if (!$user->save()) {
