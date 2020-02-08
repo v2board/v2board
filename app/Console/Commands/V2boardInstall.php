@@ -41,6 +41,13 @@ class V2boardInstall extends Command
      */
     public function handle()
     {
+        $this->info("
+            __     ______  ____                      _
+            \ \   / /___ \| __ )  ___   __ _ _ __ __| |
+             \ \ / /  __) |  _ \ / _ \ / _` | '__/ _` |
+              \ V /  / __/| |_) | (_) | (_| | | | (_| |
+               \_/  |_____|____/ \___/ \__,_|_|  \__,_|
+        ");
         if (\File::exists(base_path() . '/.lock')) {
             abort(500, 'V2board 已安装，如需重新安装请删除目录下.lock文件');
         }
@@ -79,6 +86,7 @@ class V2boardInstall extends Command
             } catch (\Exception $e) {
             }
         }
+        $this->info('数据库导入完成');
         $email = '';
         while (!$email) {
             $email = $this->ask('请输入管理员邮箱?');
