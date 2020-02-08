@@ -58,7 +58,9 @@ class V2boardInstall extends Command
         ]);
         \Artisan::call('config:clear');
         \Artisan::call('config:cache');
-        if (!DB::connection()->getPdo()) {
+        try {
+            DB::connection()->getPdo();
+        } catch (\Exception $e) {
             abort(500, '数据库连接失败');
         }
         $file = \File::get(base_path() . '/database/install.sql');
