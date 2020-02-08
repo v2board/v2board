@@ -63,7 +63,7 @@ class AuthController extends Controller
         }
 
         // try out
-        if ((int)config('v2board.try_out_enable', 0)) {
+        if ((int)config('v2board.try_out_plan_id', 0)) {
             $plan = Plan::find(config('v2board.try_out_plan_id'));
             if ($plan) {
                 $user->transfer_enable = $plan->transfer_enable * 1073741824;

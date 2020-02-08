@@ -69,8 +69,8 @@ class CheckOrder extends Command
     private function buy($order, $user)
     {
         $plan = Plan::find($order->plan_id);
-        // change plan process, try out is enable and plan
-        if ((int)$order->type === 3) {
+        // change plan process
+        if ((int)$order->type === 3 && (int)config('v2board.try_out_plan_id') !== (int)$user->plan_id) {
             $transferEnableDifference = $plan->transfer_enable - ($user->transfer_enable / 1073741824);
             $user->expired_at = $user->expired_at - ($transferEnableDifference * config('v2board.plan_transfer_hour', 12) * 3600);
         }
