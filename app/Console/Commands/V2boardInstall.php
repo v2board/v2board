@@ -44,7 +44,7 @@ class V2boardInstall extends Command
             abort(500, 'V2board 已安装，如需重新安装请删除目录下.lock文件');
         }
         if (!\File::exists(base_path() . '/.env')) {
-            if (!copy('/.env.example', '.env')) {
+            if (!copy(base_path() . '/.env.example', base_path() . '/.env')) {
                 abort(500, '复制环境文件失败，请检查目录权限');
             }
         }
