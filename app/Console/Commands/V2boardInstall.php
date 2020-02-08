@@ -49,11 +49,11 @@ class V2boardInstall extends Command
                \_/  |_____|____/ \___/ \__,_|_|  \__,_|
         ");
         if (\File::exists(base_path() . '/.lock')) {
-            abort(500, 'V2board 已安装，如需重新安装请删除目录下.lock文件');
+            $this->error('V2board 已安装，如需重新安装请删除目录下.lock文件');
         }
         if (!\File::exists(base_path() . '/.env')) {
             if (!copy(base_path() . '/.env.example', base_path() . '/.env')) {
-                abort(500, '复制环境文件失败，请检查目录权限');
+                $this->error('复制环境文件失败，请检查目录权限');
             }
         }
         $this->saveToEnv([
@@ -68,16 +68,16 @@ class V2boardInstall extends Command
         try {
             DB::connection()->getPdo();
         } catch (\Exception $e) {
-            abort(500, '数据库连接失败');
+            $this->error('数据库连接失败');
         }
         $file = \File::get(base_path() . '/database/install.sql');
         if (!$file) {
-            abort(500, '数据库文件不存在');
+            $this->error('数据库文件不存在');
         }
         $sql = str_replace("\n", "", $file);
         $sql = preg_split("/;/", $sql);
         if (!is_array($sql)) {
-            abort(500, '数据库文件格式有误');
+            $this->error('数据库文件格式有误');
         }
         $this->info('正在导入数据库请稍等...');
         foreach ($sql as $item) {
@@ -96,7 +96,7 @@ class V2boardInstall extends Command
             $password = $this->ask('请输入管理员密码?');
         }
         if (!$this->registerAdmin($email, $password)) {
-            abort(500, '管理员账号注册失败，请重试');
+            $this->error('管理员账号注册失败，请重试');
         }
 
         $this->info('一切就绪');
@@ -108,7 +108,7 @@ class V2boardInstall extends Command
         $user = new User();
         $user->email = $email;
         if (strlen($password) < 8) {
-            abort(500, '管理员密码长度最小为8位字符');
+            $this->error('管理员密码长度最小为8位字符');
         }
         $user->password = password_hash($password, PASSWORD_DEFAULT);
         $user->v2ray_uuid = Helper::guid(true);
