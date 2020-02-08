@@ -49,7 +49,7 @@ class V2boardInstall extends Command
             }
         }
         $this->saveToEnv([
-            'APP_KEY' => 'base64:' . base64_encode(Encrypter::generateKey('AES-256-CBC')),
+            'APP_KEY' => 'base64:' . base64_encode(\Encrypter::generateKey('AES-256-CBC')),
             'DB_HOST' => $this->ask('请输入数据库地址（默认:localhost）', 'localhost'),
             'DB_DATABASE' => $this->ask('请输入数据库名'),
             'DB_USERNAME' => $this->ask('请输入数据库用户名'),
