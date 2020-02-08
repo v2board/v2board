@@ -43,10 +43,23 @@ class V2boardInstall extends Command
         if (\File::exists(base_path() . '/.lock')) {
             abort(500, 'V2board 已安装，如需重新安装请删除目录下.lock文件');
         }
-        \Artisan::call('key:generate');
-        sleep(2);
+        if (!\File::exists(base_path() . '/.env')) {
+            if (!copy('/.env.example', '.env')) {
+                abort(500, '复制环境文件失败，请检查目录权限');
+            }
+        }
+        $this->saveToEnv([
+            'APP_KEY' => 'base64:' . base64_encode(Encrypter::generateKey('AES-256-CBC')),
+            'DB_HOST' => $this->ask('请输入数据库地址（默认:localhost）', 'localhost'),
+            'DB_DATABASE' => $this->ask('请输入数据库名'),
+            'DB_USERNAME' => $this->ask('请输入数据库用户名'),
+            'DB_PASSWORD' => $this->ask('请输入数据库密码')
+        ]);
+        \Artisan::call('config:clear');
         \Artisan::call('config:cache');
-        DB::connection()->getPdo();
+        if (!DB::connection()->getPdo()) {
+            abort(500, '数据库连接失败');
+        }
         $file = \File::get(base_path() . '/database/install.sql');
         if (!$file) {
             abort(500, '数据库文件不存在');
@@ -91,5 +104,13 @@ class V2boardInstall extends Command
         $user->token = Helper::guid();
         $user->is_admin = 1;
         return $user->save();
+    }
+
+    private function saveToEnv($data = [])
+    {
+        foreach($data as $key => $value) {
+            set_env_var($key, $value);
+        }
+        return true;
     }
 }

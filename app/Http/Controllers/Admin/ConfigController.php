@@ -24,6 +24,7 @@ class ConfigController extends Controller
                     'invite_never_expire' => config('v2board.invite_never_expire', 0)
                 ],
                 'site' => [
+                    'save_mode' => (int)config('v2board.save_mode', 0),
                     'stop_register' => (int)config('v2board.stop_register', 0),
                     'email_verify' => (int)config('v2board.email_verify', 0),
                     'app_name' => config('v2board.app_name', 'V2Board'),
