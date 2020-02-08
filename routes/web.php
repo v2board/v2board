@@ -14,7 +14,7 @@ use Illuminate\Http\Request;
 */
 
 Route::get('/', function (Request $request) {
-    if (config('v2board.app_url')) {
+    if (config('v2board.app_url') && config('v2board.safe_mode_enable', 0)) {
         if ($request->server('HTTP_HOST') !== parse_url(config('v2board.app_url'))['host']) {
             abort(403);
         }
