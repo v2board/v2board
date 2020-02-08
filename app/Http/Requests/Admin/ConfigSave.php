@@ -22,6 +22,7 @@ class ConfigSave extends FormRequest
         'try_out_enable' => 'in:0,1',
         'try_out_plan_id' => 'integer',
         'try_out_hour' => 'numeric',
+        'email_suffix_blacklist' => '',
         // server
         'server_token' => 'nullable|min:16',
         'server_license' => 'nullable',

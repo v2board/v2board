@@ -33,7 +33,8 @@ class ConfigController extends Controller
                     'plan_change_enable' => (int)config('v2board.plan_change_enable', 1),
                     'plan_transfer_hour' => config('v2board.plan_transfer_hour', 12),
                     'try_out_plan_id' => (int)config('v2board.try_out_plan_id', 0),
-                    'try_out_hour' => (int)config('v2board.try_out_hour', 1)
+                    'try_out_hour' => (int)config('v2board.try_out_hour', 1),
+                    'email_suffix_blacklist' => config('v2board.email_suffix_blacklist')
                 ],
                 'pay' => [
                     // alipay
