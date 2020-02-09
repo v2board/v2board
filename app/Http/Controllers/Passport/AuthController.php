@@ -12,11 +12,20 @@ use App\Models\Plan;
 use App\Models\User;
 use App\Models\InviteCode;
 use App\Utils\Helper;
+use App\Utils\Dict;
 
 class AuthController extends Controller
 {
     public function register(AuthRegister $request)
     {
+        if ((int)config('v2board.email_suffix_enable', 0)) {
+            if (!Helper::emailSuffixVerify(
+                $request->input('email'),
+                config('v2board.email_suffix_whitelist', Dict::EMAIL_WHITELIST_SUFFIX_DEFAULT))
+            ) {
+                abort(500, '邮箱后缀不处于白名单中');
+            }
+        }
         if ((int)config('v2board.stop_register', 0)) {
             abort(500, '本站已关闭注册');
         }
@@ -189,4 +198,5 @@ class AuthController extends Controller
             'data' => true
         ]);
     }
+
 }

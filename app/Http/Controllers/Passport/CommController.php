@@ -11,6 +11,7 @@ use App\Utils\Helper;
 use Illuminate\Support\Facades\Cache;
 use App\Jobs\SendEmail;
 use App\Models\InviteCode;
+use App\Utils\Dict;
 
 class CommController extends Controller
 {
@@ -55,6 +56,13 @@ class CommController extends Controller
         Cache::put($cacheKey, $code, 60);
         return response([
             'data' => true
+        ]);
+    }
+
+    public function getEmailSuffix()
+    {
+        return response([
+            'data' => config('v2board.email_suffix_whitelist', Dict::EMAIL_WHITELIST_SUFFIX_DEFAULT)
         ]);
     }
 

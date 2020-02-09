@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\Admin\ConfigSave;
 use Illuminate\Http\Request;
+use App\Utils\Dict;
 use App\Http\Controllers\Controller;
 
 class ConfigController extends Controller
@@ -30,7 +31,7 @@ class ConfigController extends Controller
                     'try_out_plan_id' => (int)config('v2board.try_out_plan_id', 0),
                     'try_out_hour' => (int)config('v2board.try_out_hour', 1),
                     'email_whitelist_enable' => (int)config('v2board.email_whitelist_enable', 0),
-                    'email_whitelist_suffix' => config('v2board.email_whitelist_suffix')
+                    'email_whitelist_suffix' => config('v2board.email_whitelist_suffix', Dict::EMAIL_WHITELIST_SUFFIX_DEFAULT)
                 ],
                 'pay' => [
                     // alipay
