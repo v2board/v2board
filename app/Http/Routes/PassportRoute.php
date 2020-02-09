@@ -19,7 +19,6 @@ class PassportRoute
             // Comm
             $router->get ('/comm/config', 'Passport\\CommController@config');
             $router->post('/comm/sendEmailVerify', 'Passport\\CommController@sendEmailVerify');
-            $router->get ('/comm/getEmailSuffix', 'Passport\\CommController@getEmailSuffix');
         });
     }
 }
