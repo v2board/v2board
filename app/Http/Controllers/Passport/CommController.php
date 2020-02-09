@@ -22,7 +22,7 @@ class CommController extends Controller
                 'isEmailVerify' => (int)config('v2board.email_verify', 0) ? 1 : 0,
                 'isInviteForce' => (int)config('v2board.invite_force', 0) ? 1 : 0,
                 'emailWhitelistSuffix' => (int)config('v2board.email_whitelist_enable', 0)
-                    ? config('v2board.email_whitelist_suffix', Dict::EMAIL_WHITELIST_SUFFIX_DEFAULT)
+                    ? $this->getEmailSuffix()
                     : 0
             ]
         ]);
@@ -73,5 +73,14 @@ class CommController extends Controller
         return response([
             'data' => true
         ]);
+    }
+
+    private function getEmailSuffix()
+    {
+        $suffix = config('v2board.email_whitelist_suffix', Dict::EMAIL_WHITELIST_SUFFIX_DEFAULT);
+        if (!is_array($suffix)) {
+            return preg_split('/,/', $suffix);
+        }
+        return $suffix;
     }
 }
