@@ -20,7 +20,8 @@ class CommController extends Controller
         return response([
             'data' => [
                 'isEmailVerify' => (int)config('v2board.email_verify', 0) ? 1 : 0,
-                'isInviteForce' => (int)config('v2board.invite_force', 0) ? 1 : 0
+                'isInviteForce' => (int)config('v2board.invite_force', 0) ? 1 : 0,
+                'isEmailSuffix' => (int)config('v2board.email_suffix_enable', 0) ? 1 : 0
             ]
         ]);
     }
