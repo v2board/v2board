@@ -88,6 +88,8 @@ class AuthController extends Controller
         if ((int)config('v2board.email_verify', 0)) {
             Cache::forget($redisKey);
         }
+        $request->session()->put('email', $user->email);
+        $request->session()->put('id', $user->id);
         return response()->json([
             'data' => true
         ]);
