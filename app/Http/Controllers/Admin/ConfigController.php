@@ -8,11 +8,6 @@ use App\Http\Controllers\Controller;
 
 class ConfigController extends Controller
 {
-    public function init()
-    {
-
-    }
-
     public function fetch()
     {
         return response([
@@ -34,7 +29,8 @@ class ConfigController extends Controller
                     'plan_transfer_hour' => config('v2board.plan_transfer_hour', 12),
                     'try_out_plan_id' => (int)config('v2board.try_out_plan_id', 0),
                     'try_out_hour' => (int)config('v2board.try_out_hour', 1),
-                    'email_suffix_blacklist' => config('v2board.email_suffix_blacklist')
+                    'email_whitelist_enable' => (int)config('v2board.email_whitelist_enable', 0),
+                    'email_whitelist_suffix' => config('v2board.email_whitelist_suffix')
                 ],
                 'pay' => [
                     // alipay
