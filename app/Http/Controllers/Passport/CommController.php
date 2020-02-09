@@ -21,8 +21,8 @@ class CommController extends Controller
             'data' => [
                 'isEmailVerify' => (int)config('v2board.email_verify', 0) ? 1 : 0,
                 'isInviteForce' => (int)config('v2board.invite_force', 0) ? 1 : 0,
-                'emailSuffixWhiteList' => (int)config('v2board.email_suffix_enable', 0)
-                    ? config('v2board.email_suffix_whitelist', Dict::EMAIL_WHITELIST_SUFFIX_DEFAULT)
+                'emailWhitelistSuffix' => (int)config('v2board.email_whitelist_enable', 0)
+                    ? config('v2board.email_whitelist_suffix', Dict::EMAIL_WHITELIST_SUFFIX_DEFAULT)
                     : 0
             ]
         ]);

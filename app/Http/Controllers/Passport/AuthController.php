@@ -18,10 +18,10 @@ class AuthController extends Controller
 {
     public function register(AuthRegister $request)
     {
-        if ((int)config('v2board.email_suffix_enable', 0)) {
+        if ((int)config('v2board.email_whitelist_enable', 0)) {
             if (!Helper::emailSuffixVerify(
                 $request->input('email'),
-                config('v2board.email_suffix_whitelist', Dict::EMAIL_WHITELIST_SUFFIX_DEFAULT))
+                config('v2board.email_whitelist_suffix', Dict::EMAIL_WHITELIST_SUFFIX_DEFAULT))
             ) {
                 abort(500, '邮箱后缀不处于白名单中');
             }

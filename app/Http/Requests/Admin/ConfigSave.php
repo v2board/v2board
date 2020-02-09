@@ -23,7 +23,7 @@ class ConfigSave extends FormRequest
         'try_out_plan_id' => 'integer',
         'try_out_hour' => 'numeric',
         'email_whitelist_enable' => 'in:0,1',
-        'email_suffix_whitelist' => '',
+        'email_whitelist_suffix' => '',
         // server
         'server_token' => 'nullable|min:16',
         'server_license' => 'nullable',
