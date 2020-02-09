@@ -11,6 +11,7 @@ class ConfigController extends Controller
 {
     public function fetch()
     {
+        // TODO: default should be in Dict
         return response([
             'data' => [
                 'invite' => [
@@ -24,6 +25,7 @@ class ConfigController extends Controller
                     'stop_register' => (int)config('v2board.stop_register', 0),
                     'email_verify' => (int)config('v2board.email_verify', 0),
                     'app_name' => config('v2board.app_name', 'V2Board'),
+                    'app_description' => config('v2board.app_description', 'V2Board is best!'),
                     'app_url' => config('v2board.app_url'),
                     'subscribe_url' => config('v2board.subscribe_url'),
                     'plan_change_enable' => (int)config('v2board.plan_change_enable', 1),

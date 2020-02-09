@@ -15,6 +15,7 @@ class ConfigSave extends FormRequest
         'stop_register' => 'in:0,1',
         'email_verify' => 'in:0,1',
         'app_name' => '',
+        'app_description' => '',
         'app_url' => 'url',
         'subscribe_url' => 'url',
         'plan_transfer_hour' => 'numeric',

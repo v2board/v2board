@@ -15,13 +15,11 @@ class UserController extends Controller
     {
         $current = $request->input('current') ? $request->input('current') : 1;
         $pageSize = $request->input('pageSize') >= 10 ? $request->input('pageSize') : 10;
-        $sortType = $request->input('sort_type') ? 'ASC' : 'DESC';
-        $userModel = User::orderBy('created_at', 'DESC');
+        $sortType = in_array($request->input('sort_type'), ['ASC', 'DESC']) ? $request->input('sort_type') : 'DESC';
+        $sort = $request->input('sort') ? $request->input('sort') : 'created_at';
+        $userModel = User::orderBy($sort, $sortType);
         if ($request->input('email')) {
             $userModel->where('email', $request->input('email'));
-        }
-        if ($request->input('sort')) {
-            $userModel->orderBy($request->input('sort'), $sortType);
         }
         $total = $userModel->count();
         $res = $userModel->forPage($current, $pageSize)
