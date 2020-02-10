@@ -41,7 +41,7 @@ class ServerController extends Controller
             $params['tags'] = json_encode($params['tags']);
         }
 
-        if (isset($params['tls'])) {
+        if ((int)$params['tls']) {
             if (!isset($params['tls_pem']) || !isset($params['tls_key'])) {
                 abort(500, '开启TLS必须填写TLS证书');
             }
