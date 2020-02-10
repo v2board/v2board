@@ -142,6 +142,26 @@ class DeepbworkController extends Controller
                     break;
             }
         }
+
+        if ($server->rules) {
+            $rules = json_decode($server->rules);
+            // domain
+            $domainObj = new \StdClass();
+            $domainObj->type = 'field';
+            $domainObj->domain = $rules->domain;
+            $domainObj->outboundTag = 'block';
+            // protocol
+            $protocolObj = new \StdClass();
+            $protocolObj->type = 'field';
+            $protocolObj->protocol = $rules->protocol;
+            $protocolObj->outboundTag = 'block';
+            array_push(
+                $json->routing->settings->rules,
+                $domainObj,
+                $protocolObj
+            );
+        }
+
         if ((int)$server->tls) {
             $json->inbound->streamSettings->security = 'tls';
             $tls = (object)[
