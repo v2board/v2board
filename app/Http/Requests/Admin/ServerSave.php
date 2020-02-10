@@ -15,8 +15,6 @@ class ServerSave extends FormRequest
         'port' => 'required',
         'server_port' => 'required',
         'tls' => 'required',
-        'tls_pem' => '',
-        'tls_key' => '',
         'tags' => 'array',
         'rate' => 'required|numeric',
         'network' => 'required|in:tcp,kcp,ws,http,domainsocket,quic'
