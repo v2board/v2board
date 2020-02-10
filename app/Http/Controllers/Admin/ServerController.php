@@ -35,23 +35,16 @@ class ServerController extends Controller
 
     public function save(ServerSave $request)
     {
-        $params = $request->only([
-            'show',
-            'group_id',
-            'parent_id',
-            'name',
-            'host',
-            'port',
-            'server_port',
-            'tls',
-            'tags',
-            'rate',
-            'network',
-            'settings'
-        ]);
+        $params = $request->only(array_keys(ServerSave::RULES));
         $params['group_id'] = json_encode($params['group_id']);
         if (isset($params['tags'])) {
             $params['tags'] = json_encode($params['tags']);
+        }
+
+        if (isset($params['tls'])) {
+            if (!isset($params['tls_pem']) || !isset($params['tls_key'])) {
+                abort(500, '开启TLS必须填写TLS证书');
+            }
         }
 
         if (isset($params['settings'])) {

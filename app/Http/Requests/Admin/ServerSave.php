@@ -6,6 +6,21 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class ServerSave extends FormRequest
 {
+    CONST RULES = [
+        'show' => '',
+        'name' => 'required',
+        'group_id' => 'required|array',
+        'parent_id' => 'nullable|integer',
+        'host' => 'required',
+        'port' => 'required',
+        'server_port' => 'required',
+        'tls' => 'required',
+        'tls_pem' => '',
+        'tls_key' => '',
+        'tags' => 'array',
+        'rate' => 'required|numeric',
+        'network' => 'required|in:tcp,kcp,ws,http,domainsocket,quic'
+    ];
     /**
      * Get the validation rules that apply to the request.
      *
@@ -13,18 +28,7 @@ class ServerSave extends FormRequest
      */
     public function rules()
     {
-        return [
-            'name' => 'required',
-            'group_id' => 'required|array',
-            'parent_id' => 'nullable|integer',
-            'host' => 'required',
-            'port' => 'required',
-            'server_port' => 'required',
-            'tls' => 'required',
-            'tags' => 'array',
-            'rate' => 'required|numeric',
-            'network' => 'required|in:tcp,kcp,ws,http,domainsocket,quic'
-        ];
+        return self::RULES;
     }
 
     public function messages()
