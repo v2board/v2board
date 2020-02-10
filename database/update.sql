@@ -137,3 +137,9 @@ ADD `pv` int(11) NOT NULL DEFAULT '0' AFTER `status`;
 
 ALTER TABLE `v2_user`
 ADD `password_algo` char(10) COLLATE 'utf8_general_ci' NULL AFTER `password`;
+
+ALTER TABLE `v2_server`
+CHANGE `tls` `tls` tinyint(4) NOT NULL DEFAULT '0' AFTER `server_port`;
+
+ALTER TABLE `v2_server`
+ADD `rules` text COLLATE 'utf8_general_ci' NULL AFTER `settings`;

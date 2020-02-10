@@ -7,6 +7,7 @@ use Illuminate\Foundation\Http\FormRequest;
 class ServerSave extends FormRequest
 {
     CONST RULES = [
+        'rules' => '',
         'show' => '',
         'name' => 'required',
         'group_id' => 'required|array',

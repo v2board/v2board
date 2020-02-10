@@ -40,6 +40,11 @@ class ServerController extends Controller
         if (isset($params['tags'])) {
             $params['tags'] = json_encode($params['tags']);
         }
+        if (isset($params['rules'])) {
+            if (!is_object(json_decode($params['rules']))) {
+                abort(500, '审计规则配置格式不正确');
+            }
+        }
 
         if (isset($params['settings'])) {
             if (!is_object(json_decode($params['settings']))) {
