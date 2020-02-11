@@ -61,9 +61,9 @@ class OrderController extends Controller
         ]);
     }
 
-    private function isExistNotPayOrderByUserId($userId)
+    private function isNotCompleteOrderByUserId($userId)
     {
-        $order = Order::where('status', 0)
+        $order = Order::whereIn('status', [0, 1])
             ->where('user_id', $userId)
             ->first();
         if (!$order) {
@@ -74,7 +74,7 @@ class OrderController extends Controller
 
     public function save(OrderSave $request)
     {
-        if ($this->isExistNotPayOrderByUserId($request->session()->get('id'))) {
+        if ($this->isNotCompleteOrderByUserId($request->session()->get('id'))) {
             abort(500, '存在未付款订单，请取消后再试');
         }
 
