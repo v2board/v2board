@@ -85,7 +85,7 @@ class OrderController extends Controller
             abort(500, '该订阅不存在');
         }
 
-        if (!$plan->show && !$plan->renew) {
+        if ((!$plan->show && !$plan->renew) || (!$plan->show && $user->plan_id !== $plan->id)) {
             abort(500, '该订阅已售罄');
         }
 
