@@ -1,6 +1,8 @@
 window.v2board = {
   // 站点标题
   title: 'V2Board',
+  // 站点描述
+  description: 'V2Board is best',
   // API
   host: '',
   // 主题
