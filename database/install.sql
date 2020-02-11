@@ -110,11 +110,12 @@ CREATE TABLE `v2_server` (
   `host` varchar(255) NOT NULL,
   `port` int(11) NOT NULL,
   `server_port` int(11) NOT NULL,
-  `tls` tinyint(4) NOT NULL,
+  `tls` tinyint(4) NOT NULL DEFAULT '0',
   `tags` varchar(255) DEFAULT NULL,
   `rate` varchar(11) NOT NULL,
   `network` varchar(11) NOT NULL,
   `settings` text,
+  `rules` text,
   `show` tinyint(1) NOT NULL DEFAULT '0',
   `created_at` int(11) NOT NULL,
   `updated_at` int(11) NOT NULL,
@@ -224,4 +225,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2020-01-31 15:03:40
+-- 2020-02-11 08:22:50
