@@ -15,6 +15,13 @@ class User
      */
     public function handle($request, Closure $next)
     {
+        if ($request->input('access_token')) {
+            $user = \App\Models\User::where('token', $request->input('token'))->first();
+            if ($user) {
+                $request->session()->put('email', $user->email);
+                $request->session()->put('id', $user->id);
+            }
+        }
         if (!$request->session()->get('id')) {
             abort(403, '未登录或登陆已过期');
         }
