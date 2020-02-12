@@ -15,7 +15,8 @@
             title: '{{$title}}',
             theme: '{{$theme}}',
             verison: '{{$verison}}',
-            background_url: '{{$backgroun_url}}'
+            background_url: '{{$backgroun_url}}',
+            description: '{{$description}}'
         }
     </script>
 </head>
