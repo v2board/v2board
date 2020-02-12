@@ -24,7 +24,8 @@ class PayTaro
         $curl->post('https://api.paytaro.com/v1/gateway/fetch', http_build_query($params));
         $result = $curl->response;
         if ($curl->error) {
-            abort(500, $result->errors[array_keys($result->errors)[0]]);
+            $errors = (array)$result->errors;
+            abort(500, $errors[array_keys($errors)[0]][0]);
         }
         $curl->close();
         if (!isset($result->data->trade_no)) {
