@@ -357,6 +357,12 @@ class OrderController extends Controller
             'amount' => floor($order->total_amount * $exchange),
             'currency' => 'hkd',
             'type' => 'alipay',
+            'statement_descriptor' => $tradeorder->trade_noNo,
+            "metadata" => [
+                "user_id" => $order->user_id,
+                "invoice_id" => $order->trade_no,
+                "identifier" => ""
+            ],
             'redirect' => [
                 'return_url' => config('v2board.app_url', env('APP_URL')) . '/#/order'
             ]
@@ -382,6 +388,7 @@ class OrderController extends Controller
             'amount' => floor($order->total_amount * $exchange),
             'currency' => 'hkd',
             'type' => 'wechat',
+            'statement_descriptor' => $order->trade_no,
             'redirect' => [
                 'return_url' => config('v2board.app_url', env('APP_URL')) . '/#/order'
             ]
