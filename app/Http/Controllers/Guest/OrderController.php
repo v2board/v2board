@@ -71,6 +71,7 @@ class OrderController extends Controller
                     'amount' => $source['amount'],
                     'currency' => $source['currency'],
                     'source' => $source['id'],
+                    'description' => config('v2board.app_name')."#".$source['metadata']['invoice_id']
                 ]);
                 if ($charge['status'] == 'succeeded') {
                     $trade_no = Cache::get($source['id']);
