@@ -2,9 +2,9 @@
 <html>
 
 <head>
-    <link rel="stylesheet" href="./user/antd.chunk.css?v={{$verison}}">
-    <link rel="stylesheet" href="./user/umi.css?v={{$verison}}">
-    <link rel="stylesheet" href="./user/custom.css?v={{$verison}}">
+    <link rel="stylesheet" href="./admin/antd.chunk.css?v={{$verison}}">
+    <link rel="stylesheet" href="./admin/umi.css?v={{$verison}}">
+    <link rel="stylesheet" href="./admin/custom.css?v={{$verison}}">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
     <title>{{$title}}</title>
@@ -15,17 +15,16 @@
             title: '{{$title}}',
             theme: '{{$theme}}',
             verison: '{{$verison}}',
-            background_url: '{{$backgroun_url}}',
-            description: '{{$description}}'
+            background_url: '{{$backgroun_url}}'
         }
     </script>
 </head>
 
 <body>
 <div id="root"></div>
-<script src="./user/vendors.async.js?v={{$verison}}"></script>
-<script src="./user/antd.async.js?v={{$verison}}"></script>
-<script src="./user/umi.js?v={{$verison}}"></script>
+<script src="./admin/vendors.async.js?v={{$verison}}"></script>
+<script src="./admin/antd.async.js?v={{$verison}}"></script>
+<script src="./admin/umi.js?v={{$verison}}"></script>
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-P1E9Z5LRRK"></script>
 <script>
