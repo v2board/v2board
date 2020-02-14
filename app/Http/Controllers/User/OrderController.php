@@ -129,7 +129,8 @@ class OrderController extends Controller
         } else {
             $order->type = 1;
         }
-        // coupon process
+        // discount start
+        // coupon
         if (isset($coupon)) {
             switch ($coupon->type) {
                 case 1:
@@ -139,7 +140,6 @@ class OrderController extends Controller
                     $order->discount_amount = $order->total_amount * ($coupon->value / 100);
                     break;
             }
-            $order->total_amount = $order->total_amount - $order->discount_amount;
             if ($coupon->limit_use !== NULL) {
                 $coupon->limit_use = $coupon->limit_use - 1;
                 if (!$coupon->save()) {
@@ -148,10 +148,14 @@ class OrderController extends Controller
                 }
             }
         }
-        // user only discount
+        // user
         if ($user->discount) {
-            $order->total_amount = $order->total_amount * ($user->discount / 100);
+            $order->discount_amount = $order->discount_amount + ($order->total_amount * ($user->discount / 100));
         }
+        // discount complete
+        $order->total_amount = $order->total_amount - $order->discount_amount;
+        // discount end
+
         // free process
         if ($order->total_amount <= 0) {
             $order->total_amount = 0;
