@@ -18,6 +18,7 @@ CREATE TABLE `failed_jobs` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+
 DROP TABLE IF EXISTS `v2_coupon`;
 CREATE TABLE `v2_coupon` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -209,6 +210,7 @@ CREATE TABLE `v2_user` (
   `password` varchar(64) NOT NULL,
   `password_algo` char(10) DEFAULT NULL,
   `balance` int(11) NOT NULL DEFAULT '0',
+  `discount` int(11) DEFAULT NULL,
   `commission_rate` int(11) DEFAULT NULL,
   `commission_balance` int(11) NOT NULL DEFAULT '0',
   `t` int(11) NOT NULL DEFAULT '0',
@@ -236,4 +238,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2020-02-11 08:22:50
+-- 2020-02-14 10:22:53

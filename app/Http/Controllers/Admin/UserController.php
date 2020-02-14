@@ -64,6 +64,7 @@ class UserController extends Controller
             'banned',
             'plan_id',
             'commission_rate',
+            'discount',
             'is_admin'
         ]);
         $user = User::find($request->input('id'));
