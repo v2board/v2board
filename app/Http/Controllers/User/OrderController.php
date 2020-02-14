@@ -148,6 +148,10 @@ class OrderController extends Controller
                 }
             }
         }
+        // user only discount
+        if ($user->discount) {
+            $order->total_amount = $order->total_amount * ($user->discount / 100);
+        }
         // free process
         if ($order->total_amount <= 0) {
             $order->total_amount = 0;
