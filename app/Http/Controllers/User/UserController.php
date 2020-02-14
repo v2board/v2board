@@ -65,7 +65,9 @@ class UserController extends Controller
                 'expired_at',
                 'balance',
                 'commission_balance',
-                'plan_id'
+                'plan_id',
+                'discount',
+                'commission_rate'
             ])
             ->first();
         $user['avatar_url'] = 'https://cdn.v2ex.com/gravatar/' . md5($user->email) . '?s=64&d=identicon';
