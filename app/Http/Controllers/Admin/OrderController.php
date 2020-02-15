@@ -26,6 +26,9 @@ class OrderController extends Controller
         if ($request->input('id')) {
             $orderModel->where('id', $request->input('id'));
         }
+        if ($request->input('user_id')) {
+            $orderModel->where('user_id', $request->input('user_id'));
+        }
         $total = $orderModel->count();
         $res = $orderModel->forPage($current, $pageSize)
             ->get();
