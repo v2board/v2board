@@ -67,7 +67,9 @@ class UserController extends Controller
             'discount',
             'is_admin',
             'u',
-            'd'
+            'd',
+            'balance',
+            'commission_balance'
         ]);
         $user = User::find($request->input('id'));
         if (!$user) {
