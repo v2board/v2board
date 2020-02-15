@@ -12,14 +12,16 @@ class MailController extends Controller
 {
     public function send(MailSend $request)
     {
-        if ($request->input('type') == 2 && empty($request->input('receiver'))) {
-            abort(500, '收件人不能为空');
-        }
 
-        if ($request->input('receiver')) {
-            $users = User::whereIn('id', $request->input('receiver'))->get();
-        } else {
-            $users = User::all();
+        switch ($request->input('type')) {
+            case 1: $users = $this->getAllUser();
+            break;
+            case 2: $users = $this->getReceiver($request->input('receiver'));
+            break;
+            case 3: $users = $this->getSubscribeUser();
+            break;
+            case 4: $users = $this->getExpireUser();
+            break;
         }
 
         foreach ($users as $user) {
@@ -38,5 +40,28 @@ class MailController extends Controller
         return response([
             'data' => true
         ]);
+    }
+
+    private function getAllUser()
+    {
+        return User::all();
+    }
+
+    private function getReceiver($receiver)
+    {
+        if (empty($receiver)) {
+            abort(500, '收件人不能为空');
+        }
+        return User::whereIn('id', $receiver)->get();
+    }
+
+    private function getSubscribeUser()
+    {
+        return User::where('expired_at', '=>', time())->get();
+    }
+
+    private function getExpireUser()
+    {
+        return User::where('expired_at', '<', time())->get();
     }
 }

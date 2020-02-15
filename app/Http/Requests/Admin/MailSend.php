@@ -14,7 +14,7 @@ class MailSend extends FormRequest
     public function rules()
     {
         return [
-            'type' => 'required|in:1,2',
+            'type' => 'required|in:1,2,3,4',
             'subject' => 'required',
             'content' => 'required',
             'receiver' => 'array'
