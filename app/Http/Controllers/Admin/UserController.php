@@ -65,7 +65,9 @@ class UserController extends Controller
             'plan_id',
             'commission_rate',
             'discount',
-            'is_admin'
+            'is_admin',
+            'u',
+            'd'
         ]);
         $user = User::find($request->input('id'));
         if (!$user) {
@@ -79,7 +81,6 @@ class UserController extends Controller
         } else {
             unset($updateData['password']);
         }
-        $updateData['transfer_enable'] = $updateData['transfer_enable'] * 1073741824;
         if (isset($updateData['plan_id'])) {
             $plan = Plan::find($updateData['plan_id']);
             if (!$plan) {
