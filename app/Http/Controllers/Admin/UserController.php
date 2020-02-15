@@ -21,6 +21,9 @@ class UserController extends Controller
         if ($request->input('email')) {
             $userModel->where('email', $request->input('email'));
         }
+        if ($request->input('invite_user_id')) {
+            $userModel->where('invite_user_id', $request->input('invite_user_id'));
+        }
         $total = $userModel->count();
         $res = $userModel->forPage($current, $pageSize)
             ->get();
