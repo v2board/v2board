@@ -16,6 +16,7 @@ class AppController extends Controller
     CONST SOCKS_PORT = 10010;
     CONST HTTP_PORT = 10011;
 
+    // TODO: 1.1.1 abolish
     public function data(Request $request)
     {
         $user = $request->user;
