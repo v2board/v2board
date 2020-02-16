@@ -72,8 +72,9 @@ class OrderController extends Controller
         return true;
     }
 
-    private function getDiffPrice(User $user, Plan $plan)
+    private function getDiffPrice(User $user)
     {
+        $plan = Plan::find($user->plan_id);
         if ($plan->month_price) {
             $dayPrice = $plan->month_price / 30;
         } else if ($plan->quarter_price) {
@@ -139,7 +140,7 @@ class OrderController extends Controller
         if ($user->expired_at > time() && $order->plan_id !== $user->plan_id) {
             if (!(int)config('v2board.plan_change_enable', 1)) abort(500, '目前不允许更改订阅，请联系管理员');
             $order->type = 3;
-            $order->diff_amount = $this->getDiffPrice($user, $plan);
+            $order->diff_amount = $this->getDiffPrice($user);
             $order->total_amount = $order->total_amount + $order->diff_amount;
         } else if ($user->expired_at > time() && $order->plan_id == $user->plan_id) {
             $order->type = 2;
