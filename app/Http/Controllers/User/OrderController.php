@@ -142,7 +142,11 @@ class OrderController extends Controller
             if (!(int)config('v2board.plan_change_enable', 1)) abort(500, '目前不允许更改订阅，请联系管理员');
             $order->type = 3;
             $order->surplus_amount = $this->getSurplusValue($user);
-            $order->total_amount = $order->total_amount - $order->surplus_amount;
+            if ($order->surplus_amount >= $order->total_amount) {
+                $order->total_amount = 0;
+            } else {
+                $order->total_amount = $order->total_amount - $order->surplus_amount;
+            }
         } else if ($user->expired_at > time() && $order->plan_id == $user->plan_id) {
             $order->type = 2;
         } else {
@@ -174,12 +178,6 @@ class OrderController extends Controller
         // discount complete
         $order->total_amount = $order->total_amount - $order->discount_amount;
         // discount end
-
-        // free process
-        if ($order->total_amount <= 0) {
-            $order->total_amount = 0;
-            $order->status = 1;
-        }
         // invite process
         if ($user->invite_user_id && $order->total_amount > 0) {
             $order->invite_user_id = $user->invite_user_id;
@@ -212,6 +210,13 @@ class OrderController extends Controller
             ->first();
         if (!$order) {
             abort(500, '订单不存在或已支付');
+        }
+        // free process
+        if ($order->total_amount <= 0) {
+            $order->total_amount = 0;
+            $order->status = 1;
+            $order->save();
+            exit();
         }
         switch ($method) {
             // return type => 0: QRCode / 1: URL
