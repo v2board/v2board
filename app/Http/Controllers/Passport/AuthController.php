@@ -116,16 +116,17 @@ class AuthController extends Controller
             abort(500, '该账户已被停止使用');
         }
 
+        $data = [
+            'token' => $user->token
+        ];
         $request->session()->put('email', $user->email);
         $request->session()->put('id', $user->id);
         if ($user->is_admin) {
             $request->session()->put('is_admin', true);
+            $data['is_admin'] = true;
         }
         return response([
-            'data' => [
-                'is_admin' => $user->is_admin ? 2 : 1,
-                'token' => $user->token
-            ]
+            'data' => $data
         ]);
     }
 
@@ -175,13 +176,15 @@ class AuthController extends Controller
 
     public function check(Request $request)
     {
-        $response = [
-            'data' => $request->session()->get('id') ? true : false
+        $data = [
+            'is_login' => $request->session()->get('id') ? true : false
         ];
         if ($request->session()->get('is_admin')) {
-            $response['is_admin'] = true;
+            $data['is_admin'] = true;
         }
-        return response($response);
+        return response([
+            'data' => $data
+        ]);
     }
 
     public function forget(AuthForget $request)

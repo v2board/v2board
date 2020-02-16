@@ -146,20 +146,21 @@ class DeepbworkController extends Controller
         if ($server->rules) {
             $rules = json_decode($server->rules);
             // domain
-            $domainObj = new \StdClass();
-            $domainObj->type = 'field';
-            $domainObj->domain = $rules->domain;
-            $domainObj->outboundTag = 'block';
+            if (isset($rules->domain)) {
+                $domainObj = new \StdClass();
+                $domainObj->type = 'field';
+                $domainObj->domain = $rules->domain;
+                $domainObj->outboundTag = 'block';
+                array_push($json->routing->settings->rules, $domainObj);
+            }
             // protocol
-            $protocolObj = new \StdClass();
-            $protocolObj->type = 'field';
-            $protocolObj->protocol = $rules->protocol;
-            $protocolObj->outboundTag = 'block';
-            array_push(
-                $json->routing->settings->rules,
-                $domainObj,
-                $protocolObj
-            );
+            if (isset($rules->protocol)) {
+                $protocolObj = new \StdClass();
+                $protocolObj->type = 'field';
+                $protocolObj->protocol = $rules->protocol;
+                $protocolObj->outboundTag = 'block';
+                array_push($json->routing->settings->rules, $protocolObj);
+            }
         }
 
         if ((int)$server->tls) {
