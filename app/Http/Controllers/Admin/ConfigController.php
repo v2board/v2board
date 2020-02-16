@@ -29,7 +29,6 @@ class ConfigController extends Controller
                     'app_url' => config('v2board.app_url'),
                     'subscribe_url' => config('v2board.subscribe_url'),
                     'plan_change_enable' => (int)config('v2board.plan_change_enable', 1),
-                    'plan_transfer_hour' => config('v2board.plan_transfer_hour', 12),
                     'try_out_plan_id' => (int)config('v2board.try_out_plan_id', 0),
                     'try_out_hour' => (int)config('v2board.try_out_hour', 1),
                     'email_whitelist_enable' => (int)config('v2board.email_whitelist_enable', 0),
@@ -56,7 +55,9 @@ class ConfigController extends Controller
                     'paytaro_app_secret' => config('v2board.paytaro_app_secret')
                 ],
                 'frontend' => [
-                    'frontend_theme' => config('v2board.frontend_theme', 1),
+                    'frontend_theme_sidebar' => config('v2board.frontend_theme_sidebar', 'light'),
+                    'frontend_theme_header' => config('v2board.frontend_theme_header', 'dark'),
+                    'frontend_theme_color' => config('v2board.frontend_theme_color', 'default'),
                     'frontend_background_url' => config('v2board.frontend_background_url')
                 ],
                 'server' => [

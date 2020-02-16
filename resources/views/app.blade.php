@@ -13,7 +13,11 @@
     <script>
         window.v2board = {
             title: '{{$title}}',
-            theme: '{{$theme}}',
+            theme: {
+                sidebar: '{{$theme_sidebar}}',
+                header: '{{$theme_header}}',
+                color: '{{$theme_color}}',
+            },
             verison: '{{$verison}}',
             background_url: '{{$backgroun_url}}',
             description: '{{$description}}'
