@@ -140,7 +140,7 @@ class OrderController extends Controller
             if (!(int)config('v2board.plan_change_enable', 1)) abort(500, '目前不允许更改订阅，请联系管理员');
             $order->type = 3;
             $order->diff_amount = $this->getDiffPrice($user, $plan);
-            $order->total_amount = $order->diff_amount;
+            $order->total_amount = $order->total_amount + $order->diff_amount;
         } else if ($user->expired_at > time() && $order->plan_id == $user->plan_id) {
             $order->type = 2;
         } else {
