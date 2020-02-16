@@ -156,3 +156,6 @@ CREATE TABLE `failed_jobs` (
 
 ALTER TABLE `v2_user`
 ADD `discount` int(11) NULL AFTER `balance`;
+
+ALTER TABLE `v2_order`
+ADD `diff_amount` int(11) NULL COMMENT '差价' AFTER `discount_amount`;

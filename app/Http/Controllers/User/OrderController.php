@@ -72,6 +72,21 @@ class OrderController extends Controller
         return true;
     }
 
+    private function getDiffPrice(User $user, Plan $plan)
+    {
+        if ($plan->month_price) {
+            $dayPrice = $plan->month_price / 30;
+        } else if ($plan->quarter_price) {
+            $dayPrice = $plan->quarter_price / 62;
+        } else if ($plan->half_year_price) {
+            $dayPrice = $plan->half_year_price / 182.5;
+        } else if ($plan->year_price) {
+            $dayPrice = $plan->year_price / 365;
+        }
+        $remainingDay = ($user->expired_at - time()) / 86400;
+        return $remainingDay * $dayPrice;
+    }
+
     public function save(OrderSave $request)
     {
         if ($this->isNotCompleteOrderByUserId($request->session()->get('id'))) {
@@ -122,8 +137,10 @@ class OrderController extends Controller
         $order->total_amount = $plan[$request->input('cycle')];
         // renew and change subscribe process
         if ($user->expired_at > time() && $order->plan_id !== $user->plan_id) {
-            $order->type = 3;
             if (!(int)config('v2board.plan_change_enable', 1)) abort(500, '目前不允许更改订阅，请联系管理员');
+            $order->type = 3;
+            $order->diff_amount = $this->getDiffPrice($user, $plan);
+            $order->total_amount = $order->diff_amount;
         } else if ($user->expired_at > time() && $order->plan_id == $user->plan_id) {
             $order->type = 2;
         } else {
