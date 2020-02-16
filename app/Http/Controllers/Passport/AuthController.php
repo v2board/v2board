@@ -175,9 +175,13 @@ class AuthController extends Controller
 
     public function check(Request $request)
     {
-        return response([
+        $response = [
             'data' => $request->session()->get('id') ? true : false
-        ]);
+        ];
+        if ($request->session()->get('is_admin')) {
+            $response['is_admin'] = true;
+        }
+        return response($response);
     }
 
     public function forget(AuthForget $request)
