@@ -72,15 +72,16 @@ class OrderController extends Controller
         return true;
     }
 
-    private function getDiffPrice(User $user)
+    // surplus value
+    private function getSurplusValue(User $user)
     {
         $plan = Plan::find($user->plan_id);
         if ($plan->month_price) {
             $dayPrice = $plan->month_price / 30;
         } else if ($plan->quarter_price) {
-            $dayPrice = $plan->quarter_price / 62;
+            $dayPrice = $plan->quarter_price / 91;
         } else if ($plan->half_year_price) {
-            $dayPrice = $plan->half_year_price / 182.5;
+            $dayPrice = $plan->half_year_price / 183;
         } else if ($plan->year_price) {
             $dayPrice = $plan->year_price / 365;
         }
@@ -140,8 +141,8 @@ class OrderController extends Controller
         if ($user->expired_at > time() && $order->plan_id !== $user->plan_id) {
             if (!(int)config('v2board.plan_change_enable', 1)) abort(500, '目前不允许更改订阅，请联系管理员');
             $order->type = 3;
-            $order->diff_amount = $this->getDiffPrice($user);
-            $order->total_amount = $order->total_amount + $order->diff_amount;
+            $order->surplus_amount = $this->getSurplusValue($user);
+            $order->total_amount = $order->total_amount - $order->surplus_amount;
         } else if ($user->expired_at > time() && $order->plan_id == $user->plan_id) {
             $order->type = 2;
         } else {
