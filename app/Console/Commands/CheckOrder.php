@@ -70,8 +70,11 @@ class CheckOrder extends Command
     {
         $plan = Plan::find($order->plan_id);
         // change plan process
-        if ($order->type === 3) {
+        if ($order->type == 3) {
             $user->expired_at = time();
+        }
+        if ($order->refund_amount) {
+            $user->balance = $user->balance + $order->refund_amount;
         }
         $user->transfer_enable = $plan->transfer_enable * 1073741824;
         $user->enable = 1;

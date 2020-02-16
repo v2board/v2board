@@ -159,3 +159,6 @@ ADD `discount` int(11) NULL AFTER `balance`;
 
 ALTER TABLE `v2_order`
 ADD `surplus_amount` int(11) NULL COMMENT '剩余价值' AFTER `discount_amount`;
+
+ALTER TABLE `v2_order`
+ADD `refund_amount` int(11) NULL COMMENT '退款金额' AFTER `surplus_amount`;

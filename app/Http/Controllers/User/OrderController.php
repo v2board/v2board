@@ -143,6 +143,7 @@ class OrderController extends Controller
             $order->type = 3;
             $order->surplus_amount = $this->getSurplusValue($user);
             if ($order->surplus_amount >= $order->total_amount) {
+                $order->refund_amount = $order->surplus_amount - $order->total_amount;
                 $order->total_amount = 0;
             } else {
                 $order->total_amount = $order->total_amount - $order->surplus_amount;
