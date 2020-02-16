@@ -176,7 +176,7 @@ class AuthController extends Controller
     public function check(Request $request)
     {
         $data = [
-            'data' => $request->session()->get('id') ? true : false
+            'is_login' => $request->session()->get('id') ? true : false
         ];
         if ($request->session()->get('is_admin')) {
             $data['is_admin'] = true;
