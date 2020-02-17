@@ -40,7 +40,7 @@ class CommController extends Controller
         $email = $request->input('email');
         $cacheKey = 'sendEmailVerify:' . $email;
         if (Cache::get($cacheKey)) {
-            abort(500, '验证码已发送，请过一会在请求');
+            abort(500, '验证码已发送，请过一会再请求');
         }
         $code = Helper::randomChar(6);
         $subject = config('v2board.app_name', 'V2Board') . '邮箱验证码';
