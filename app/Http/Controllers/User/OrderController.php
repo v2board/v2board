@@ -75,6 +75,7 @@ class OrderController extends Controller
     private function getSurplusValue(User $user)
     {
         $plan = Plan::find($user->plan_id);
+        $dayPrice = 0;
         if ($plan->month_price) {
             $dayPrice = $plan->month_price / 30;
         } else if ($plan->quarter_price) {
