@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Cache;
 
 class PoseidonController extends Controller
 {
-    CONST SERVER_CONFIG = '{"api":{"services":["HandlerService","StatsService"],"tag":"api"},"stats":{},"inbound":{"port":443,"protocol":"vmess","settings":{"clients":[]},"streamSettings":{"network":"tcp"},"tag":"proxy"},"inboundDetour":[{"listen":"0.0.0.0","port":23333,"protocol":"dokodemo-door","settings":{"address":"0.0.0.0"},"tag":"api"}],"log":{"loglevel":"debug","access":"access.log","error":"error.log"},"outbound":{"protocol":"freedom","settings":{}},"routing":{"settings":{"rules":[{"inboundTag":["api"],"outboundTag":"api","type":"field"}]},"strategy":"rules"},"policy":{"levels":{"0":{"handshake":4,"connIdle":300,"uplinkOnly":5,"downlinkOnly":30,"statsUserUplink":true,"statsUserDownlink":true}}}}';
+    CONST SERVER_CONFIG = '{"api":{"services":["HandlerService","StatsService"],"tag":"api"},"stats":{},"inbound":{"port":443,"protocol":"vmess","settings":{"clients":[]},"streamSettings":{"network":"tcp"},"tag":"proxy"},"inboundDetour":[{"listen":"0.0.0.0","port":23333,"protocol":"dokodemo-door","settings":{"address":"0.0.0.0"},"tag":"api"}],"log":{"loglevel":"debug","access":"access.log","error":"error.log"},"outbound":{"protocol":"freedom","settings":{}},"outboundDetour":[{"protocol":"blackhole","settings":{},"tag":"block"}],"routing":{"settings":{"rules":[{"inboundTag":["api"],"outboundTag":"api","type":"field"}]},"strategy":"rules"},"policy":{"levels":{"0":{"handshake":4,"connIdle":300,"uplinkOnly":5,"downlinkOnly":30,"statsUserUplink":true,"statsUserDownlink":true}}}}';
 
     // 后端获取用户
     public function user(Request $request)
@@ -40,6 +40,8 @@ class PoseidonController extends Controller
                 'v2ray_alter_id',
                 'v2ray_level'
             ])
+            ->whereRaw('u + d < transfer_enable')
+            ->where('enable', 1)
             ->get();
         $result = [];
         foreach ($users as $user) {
@@ -131,9 +133,34 @@ class PoseidonController extends Controller
                     break;
             }
         }
+
+        if ($server->rules) {
+            $rules = json_decode($server->rules);
+            // domain
+            if (isset($rules->domain)) {
+                $domainObj = new \StdClass();
+                $domainObj->type = 'field';
+                $domainObj->domain = $rules->domain;
+                $domainObj->outboundTag = 'block';
+                array_push($json->routing->settings->rules, $domainObj);
+            }
+            // protocol
+            if (isset($rules->protocol)) {
+                $protocolObj = new \StdClass();
+                $protocolObj->type = 'field';
+                $protocolObj->protocol = $rules->protocol;
+                $protocolObj->outboundTag = 'block';
+                array_push($json->routing->settings->rules, $protocolObj);
+            }
+        }
+
         if ((int)$server->tls) {
-            $json->inbound->streamSettings->security = "tls";
-            $tls = (object)array("certificateFile" => "/home/v2ray.crt", "keyFile" => "/home/v2ray.key");
+            $json->inbound->streamSettings->security = 'tls';
+            $tls = (object)[
+                'certificateFile' => '/home/v2ray.crt',
+                'keyFile' => '/home/v2ray.key'
+            ];
+            $json->inbound->streamSettings->tlsSettings = new \StdClass();
             $json->inbound->streamSettings->tlsSettings->certificates[0] = $tls;
         }
 

@@ -51,7 +51,6 @@ class OrderController extends Controller
             abort(500, '订单不存在');
         }
         $order['plan'] = Plan::find($order->plan_id);
-        $order['plan_transfer_hour'] = config('v2board.plan_transfer_hour', 12);
         $order['try_out_plan_id'] = (int)config('v2board.try_out_plan_id');
         if (!$order['plan']) {
             abort(500, '订阅不存在');
@@ -70,6 +69,24 @@ class OrderController extends Controller
             return false;
         }
         return true;
+    }
+
+    // surplus value
+    private function getSurplusValue(User $user)
+    {
+        $plan = Plan::find($user->plan_id);
+        $dayPrice = 0;
+        if ($plan->month_price) {
+            $dayPrice = $plan->month_price / 30;
+        } else if ($plan->quarter_price) {
+            $dayPrice = $plan->quarter_price / 91;
+        } else if ($plan->half_year_price) {
+            $dayPrice = $plan->half_year_price / 183;
+        } else if ($plan->year_price) {
+            $dayPrice = $plan->year_price / 365;
+        }
+        $remainingDay = ($user->expired_at - time()) / 86400;
+        return $remainingDay * $dayPrice;
     }
 
     public function save(OrderSave $request)
@@ -122,8 +139,15 @@ class OrderController extends Controller
         $order->total_amount = $plan[$request->input('cycle')];
         // renew and change subscribe process
         if ($user->expired_at > time() && $order->plan_id !== $user->plan_id) {
-            $order->type = 3;
             if (!(int)config('v2board.plan_change_enable', 1)) abort(500, '目前不允许更改订阅，请联系管理员');
+            $order->type = 3;
+            $order->surplus_amount = $this->getSurplusValue($user);
+            if ($order->surplus_amount >= $order->total_amount) {
+                $order->refund_amount = $order->surplus_amount - $order->total_amount;
+                $order->total_amount = 0;
+            } else {
+                $order->total_amount = $order->total_amount - $order->surplus_amount;
+            }
         } else if ($user->expired_at > time() && $order->plan_id == $user->plan_id) {
             $order->type = 2;
         } else {
@@ -155,12 +179,6 @@ class OrderController extends Controller
         // discount complete
         $order->total_amount = $order->total_amount - $order->discount_amount;
         // discount end
-
-        // free process
-        if ($order->total_amount <= 0) {
-            $order->total_amount = 0;
-            $order->status = 1;
-        }
         // invite process
         if ($user->invite_user_id && $order->total_amount > 0) {
             $order->invite_user_id = $user->invite_user_id;
@@ -193,6 +211,13 @@ class OrderController extends Controller
             ->first();
         if (!$order) {
             abort(500, '订单不存在或已支付');
+        }
+        // free process
+        if ($order->total_amount <= 0) {
+            $order->total_amount = 0;
+            $order->status = 1;
+            $order->save();
+            exit();
         }
         switch ($method) {
             // return type => 0: QRCode / 1: URL

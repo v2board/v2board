@@ -6,7 +6,11 @@ window.v2board = {
   // API
   host: '',
   // 主题
-  theme: '1',
+  theme: {
+    sidebar: 'light',
+    header: 'dark',
+    color: 'default'
+  },
   // 背景
   background_url: ''
 }

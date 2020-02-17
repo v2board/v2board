@@ -18,7 +18,6 @@ class ConfigSave extends FormRequest
         'app_description' => '',
         'app_url' => 'url',
         'subscribe_url' => 'url',
-        'plan_transfer_hour' => 'numeric',
         'plan_change_enable' => 'in:0,1',
         'try_out_enable' => 'in:0,1',
         'try_out_plan_id' => 'integer',
@@ -47,7 +46,9 @@ class ConfigSave extends FormRequest
         'paytaro_app_id' => '',
         'paytaro_app_secret' => '',
         // frontend
-        'frontend_theme' => 'in:1,2',
+        'frontend_theme_sidebar' => 'in:dark,light',
+        'frontend_theme_header' => 'in:dark,light',
+        'frontend_theme_color' => 'in:default,darkblue,black',
         'frontend_background_url' => 'nullable|url',
         // tutorial
         'apple_id' => 'email',
