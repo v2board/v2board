@@ -28,11 +28,14 @@ class ConfigController extends Controller
                     'app_description' => config('v2board.app_description', 'V2Board is best!'),
                     'app_url' => config('v2board.app_url'),
                     'subscribe_url' => config('v2board.subscribe_url'),
-                    'plan_change_enable' => (int)config('v2board.plan_change_enable', 1),
                     'try_out_plan_id' => (int)config('v2board.try_out_plan_id', 0),
                     'try_out_hour' => (int)config('v2board.try_out_hour', 1),
                     'email_whitelist_enable' => (int)config('v2board.email_whitelist_enable', 0),
                     'email_whitelist_suffix' => config('v2board.email_whitelist_suffix', Dict::EMAIL_WHITELIST_SUFFIX_DEFAULT)
+                ],
+                'subscribe' => [
+                    'plan_change_enable' => (int)config('v2board.plan_change_enable', 1),
+                    'plan_downgrade_enable' => (int)config('v2board.plan_downgrade_enable', 1)
                 ],
                 'pay' => [
                     // alipay

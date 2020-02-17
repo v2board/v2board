@@ -18,12 +18,14 @@ class ConfigSave extends FormRequest
         'app_description' => '',
         'app_url' => 'url',
         'subscribe_url' => 'url',
-        'plan_change_enable' => 'in:0,1',
         'try_out_enable' => 'in:0,1',
         'try_out_plan_id' => 'integer',
         'try_out_hour' => 'numeric',
         'email_whitelist_enable' => 'in:0,1',
         'email_whitelist_suffix' => '',
+        // subscribe
+        'plan_change_enable' => 'in:0,1',
+        'plan_downgrade_enable' => 'in:0,1',
         // server
         'server_token' => 'nullable|min:16',
         'server_license' => 'nullable',
