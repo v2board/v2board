@@ -77,15 +77,15 @@ class OrderController extends Controller
         $plan = Plan::find($user->plan_id);
         $dayPrice = 0;
         if ($plan->month_price) {
-            $dayPrice = $plan->month_price / 30;
+            $dayPrice = $plan->month_price / 2592000;
         } else if ($plan->quarter_price) {
-            $dayPrice = $plan->quarter_price / 91;
+            $dayPrice = $plan->quarter_price / 7862400;
         } else if ($plan->half_year_price) {
-            $dayPrice = $plan->half_year_price / 183;
+            $dayPrice = $plan->half_year_price / 15811200;
         } else if ($plan->year_price) {
-            $dayPrice = $plan->year_price / 365;
+            $dayPrice = $plan->year_price / 31536000;
         }
-        $remainingDay = ($user->expired_at - time()) / 86400;
+        $remainingDay = $user->expired_at - time();
         return $remainingDay * $dayPrice;
     }
 
