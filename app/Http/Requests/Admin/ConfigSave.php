@@ -48,7 +48,7 @@ class ConfigSave extends FormRequest
         // frontend
         'frontend_theme_sidebar' => 'in:dark,light',
         'frontend_theme_header' => 'in:dark,light',
-        'frontend_theme_color' => 'in:default,bluedark,black',
+        'frontend_theme_color' => 'in:default,darkblue,black',
         'frontend_background_url' => 'nullable|url',
         // tutorial
         'apple_id' => 'email',
