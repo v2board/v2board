@@ -34,8 +34,7 @@ class ConfigController extends Controller
                     'email_whitelist_suffix' => config('v2board.email_whitelist_suffix', Dict::EMAIL_WHITELIST_SUFFIX_DEFAULT)
                 ],
                 'subscribe' => [
-                    'plan_change_enable' => (int)config('v2board.plan_change_enable', 1),
-                    'plan_downgrade_enable' => (int)config('v2board.plan_downgrade_enable', 1)
+                    'plan_change_enable' => (int)config('v2board.plan_change_enable', 1)
                 ],
                 'pay' => [
                     // alipay

@@ -143,7 +143,6 @@ class OrderController extends Controller
             $order->type = 3;
             $order->surplus_amount = $this->getSurplusValue($user);
             if ($order->surplus_amount >= $order->total_amount) {
-                if (!(int)config('v2board.plan_downgrade_enable', 1)) abort(500, '目前不允许降级订阅，请联系管理员');
                 $order->refund_amount = $order->surplus_amount - $order->total_amount;
                 $order->total_amount = 0;
             } else {
