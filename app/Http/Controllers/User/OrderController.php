@@ -137,22 +137,6 @@ class OrderController extends Controller
         $order->cycle = $request->input('cycle');
         $order->trade_no = Helper::guid();
         $order->total_amount = $plan[$request->input('cycle')];
-        // renew and change subscribe process
-        if ($user->expired_at > time() && $order->plan_id !== $user->plan_id) {
-            if (!(int)config('v2board.plan_change_enable', 1)) abort(500, '目前不允许更改订阅，请联系管理员');
-            $order->type = 3;
-            $order->surplus_amount = $this->getSurplusValue($user);
-            if ($order->surplus_amount >= $order->total_amount) {
-                $order->refund_amount = $order->surplus_amount - $order->total_amount;
-                $order->total_amount = 0;
-            } else {
-                $order->total_amount = $order->total_amount - $order->surplus_amount;
-            }
-        } else if ($user->expired_at > time() && $order->plan_id == $user->plan_id) {
-            $order->type = 2;
-        } else {
-            $order->type = 1;
-        }
         // discount start
         // coupon
         if (isset($coupon)) {
@@ -179,6 +163,22 @@ class OrderController extends Controller
         // discount complete
         $order->total_amount = $order->total_amount - $order->discount_amount;
         // discount end
+        // renew and change subscribe process
+        if ($user->expired_at > time() && $order->plan_id !== $user->plan_id) {
+            if (!(int)config('v2board.plan_change_enable', 1)) abort(500, '目前不允许更改订阅，请联系管理员');
+            $order->type = 3;
+            $order->surplus_amount = $this->getSurplusValue($user);
+            if ($order->surplus_amount >= $order->total_amount) {
+                $order->refund_amount = $order->surplus_amount - $order->total_amount;
+                $order->total_amount = 0;
+            } else {
+                $order->total_amount = $order->total_amount - $order->surplus_amount;
+            }
+        } else if ($user->expired_at > time() && $order->plan_id == $user->plan_id) {
+            $order->type = 2;
+        } else {
+            $order->type = 1;
+        }
         // invite process
         if ($user->invite_user_id && $order->total_amount > 0) {
             $order->invite_user_id = $user->invite_user_id;
