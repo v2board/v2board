@@ -83,6 +83,7 @@ class CheckOrder extends Command
         $user->plan_id = $plan->id;
         $user->group_id = $plan->group_id;
         $user->expired_at = $this->getTime($order->cycle, $user->expired_at);
+
         if ($user->save()) {
             $order->status = 3;
             $order->save();
