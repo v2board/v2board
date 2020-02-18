@@ -86,8 +86,8 @@ class OrderController extends Controller
             $dayPrice = $plan->year_price / 31536000;
         }
         // exclude discount
-        if ($user->discount) {
-            $dayPrice = $dayPrice * $user->discount / 100;
+        if ($user->discount && $dayPrice) {
+            $dayPrice = $dayPrice - ($dayPrice * $user->discount / 100);
         }
         $remainingDay = $user->expired_at - time();
         return $remainingDay * $dayPrice;
