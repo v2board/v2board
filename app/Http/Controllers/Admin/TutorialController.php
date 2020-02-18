@@ -12,7 +12,7 @@ class TutorialController extends Controller
     public function fetch(Request $request)
     {
         return response([
-            'data' => Tutorial::all()
+            'data' => Tutorial::get()->groupBy('category')
         ]);
     }
 
