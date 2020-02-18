@@ -8,7 +8,8 @@ class TutorialSave extends FormRequest
 {
     CONST RULES = [
         'title' => 'required',
-        'category' => 'required|in:windows,macos,ios,android,linux,router',
+        // 1:windows 2:macos 3:ios 4:android 5:linux 6:router
+        'category' => 'required|in:1,2,3,4,5,6',
         'description' => 'required',
         'icon' => 'required'
     ];

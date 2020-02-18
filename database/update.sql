@@ -164,4 +164,4 @@ ALTER TABLE `v2_order`
 ADD `refund_amount` int(11) NULL COMMENT '退款金额' AFTER `surplus_amount`;
 
 ALTER TABLE `v2_tutorial`
-ADD `category` varchar(255) COLLATE 'utf8_general_ci' NOT NULL AFTER `description`;
+ADD `category_id` int(11) NOT NULL AFTER `id`;
