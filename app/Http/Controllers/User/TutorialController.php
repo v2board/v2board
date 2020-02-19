@@ -49,9 +49,10 @@ class TutorialController extends Controller
                 'data' => $tutorial
             ]);
         }
-        $tutorial = Tutorial::select(['id', 'title', 'description', 'icon'])
+        $tutorial = Tutorial::select(['id', 'title', 'icon'])
             ->where('show', 1)
-            ->get();
+            ->get()
+            ->groupBy('category');
         $user = User::find($request->session()->get('id'));
         $response = [
             'data' => [
