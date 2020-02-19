@@ -165,3 +165,6 @@ ADD `refund_amount` int(11) NULL COMMENT '退款金额' AFTER `surplus_amount`;
 
 ALTER TABLE `v2_tutorial`
 ADD `category_id` int(11) NOT NULL AFTER `id`;
+
+ALTER TABLE `v2_tutorial`
+DROP `description`;
