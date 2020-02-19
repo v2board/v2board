@@ -52,7 +52,7 @@ class TutorialController extends Controller
         $tutorial = Tutorial::select(['id', 'title', 'icon'])
             ->where('show', 1)
             ->get()
-            ->groupBy('category');
+            ->groupBy('category_id');
         $user = User::find($request->session()->get('id'));
         $response = [
             'data' => [
