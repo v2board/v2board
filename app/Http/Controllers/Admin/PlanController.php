@@ -21,25 +21,24 @@ class PlanController extends Controller
 
     public function save(PlanSave $request)
     {
+        $params = $request->only(array_keys(PlanSave::RULES));
         if ($request->input('id')) {
             $plan = Plan::find($request->input('id'));
             if (!$plan) {
                 abort(500, '该订阅不存在');
             }
-        } else {
-            $plan = new Plan();
+            if (!$plan->update($params)) {
+                abort(500, '保存失败');
+            }
+            return response([
+                'data' => true
+            ]);
         }
-        $plan->name = $request->input('name');
-        $plan->content = $request->input('content');
-        $plan->transfer_enable = $request->input('transfer_enable');
-        $plan->group_id = $request->input('group_id');
-        $plan->month_price = $request->input('month_price');
-        $plan->quarter_price = $request->input('quarter_price');
-        $plan->half_year_price = $request->input('half_year_price');
-        $plan->year_price = $request->input('year_price');
-
+        if (!Plan::create($params)) {
+            abort(500, '创建失败');
+        }
         return response([
-            'data' => $plan->save()
+            'data' => true
         ]);
     }
 
