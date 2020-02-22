@@ -15,7 +15,7 @@ class OrderUpdate extends FormRequest
     {
         return [
             'status' => 'in:0,1,2,3',
-            'commission_status' => 'in:0,1'
+            'commission_status' => 'in:0,1,2'
         ];
     }
 
@@ -23,7 +23,7 @@ class OrderUpdate extends FormRequest
     {
         return [
             'status.in' => '销售状态格式不正确',
-            'commission_status.in' => '续费状态格式不正确'
+            'commission_status.in' => '佣金状态格式不正确'
         ];
     }
 }
