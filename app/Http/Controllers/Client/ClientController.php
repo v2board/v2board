@@ -33,6 +33,9 @@ class ClientController extends Controller
             if (strpos($_SERVER['HTTP_USER_AGENT'], 'Quantumult') !== false) {
                 die($this->quantumult($user, $server));
             }
+            if (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'clashforandroid') !== false) {
+                die($this->clash($user, $server));
+            }
             if (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'clash') !== false) {
                 die($this->clash($user, $server));
             }
