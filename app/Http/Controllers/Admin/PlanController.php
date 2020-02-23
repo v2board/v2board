@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Plan;
 use App\Models\Order;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class PlanController extends Controller
 {
@@ -27,9 +28,21 @@ class PlanController extends Controller
             if (!$plan) {
                 abort(500, '该订阅不存在');
             }
+            DB::beginTransaction();
+            if ($params->group_id !== $plan->group_id) {
+                if (!User::where('plan_id', $plan->id)
+                    ->get()
+                    ->update(['group_id', $plan->group_id])
+                ) {
+                    DB::rollBack();
+                    abort(500, '保存失败');
+                }
+            }
             if (!$plan->update($params)) {
+                DB::rollBack();
                 abort(500, '保存失败');
             }
+            DB::commit();
             return response([
                 'data' => true
             ]);
