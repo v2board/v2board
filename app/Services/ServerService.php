@@ -14,6 +14,7 @@ class ServerService
                 $query->where('expired_at', '>=', time())
                     ->orWhere('expired_at', 0);
             })
+            ->where('enable', 1)
             ->select([
                 'id',
                 'email',

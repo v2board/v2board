@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
+use App\Http\Middleware\User;
 use Illuminate\Http\Request;
 use App\Models\Server;
 use App\Utils\Helper;
 use Symfony\Component\Yaml\Yaml;
+use App\Services\UserService;
 
 class ClientController extends Controller
 {
@@ -15,7 +17,8 @@ class ClientController extends Controller
         $user = $request->user;
         $server = [];
         // account not expired and is not banned.
-        if ($user->expired_at > time() && !$user->banned) {
+        $userService = new UserService($user);
+        if ($userService->isAvailable()) {
             $servers = Server::where('show', 1)
                 ->orderBy('name')
                 ->get();
