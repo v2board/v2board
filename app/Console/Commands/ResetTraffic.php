@@ -4,6 +4,8 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use App\Models\Plan;
+use App\Models\User;
 
 class ResetTraffic extends Command
 {
