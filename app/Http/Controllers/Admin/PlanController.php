@@ -29,7 +29,7 @@ class PlanController extends Controller
                 abort(500, '该订阅不存在');
             }
             DB::beginTransaction();
-            if ($params->group_id !== $plan->group_id) {
+            if (isset($params->group_id) && ($params->group_id !== $plan->group_id)) {
                 if (!User::where('plan_id', $plan->id)
                     ->get()
                     ->update(['group_id', $plan->group_id])
