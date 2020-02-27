@@ -42,7 +42,7 @@ class ResetTraffic extends Command
     {
         //  get plans of cycle type
         $plans = Plan::where('type', 0)->get();
-        $users = User::whereIn('plan_id', $plans)->get();
+        $users = User::whereIn('plan_id', $plans);
         $users->update([
             'u' => 0,
             'd' => 0
