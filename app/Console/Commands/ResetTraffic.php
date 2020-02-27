@@ -38,7 +38,10 @@ class ResetTraffic extends Command
      */
     public function handle()
     {
-        DB::table('v2_user')->update([
+        //  get plans of cycle type
+        $plans = Plan::where('type', 0)->get();
+        $users = User::whereIn('plan_id', $plans)->get();
+        $users->update([
             'u' => 0,
             'd' => 0
         ]);
