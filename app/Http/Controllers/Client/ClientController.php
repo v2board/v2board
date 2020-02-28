@@ -17,8 +17,8 @@ class ClientController extends Controller
         $user = $request->user;
         $server = [];
         // account not expired and is not banned.
-        $userService = new UserService($user);
-        if ($userService->isAvailable()) {
+        $userService = new UserService();
+        if ($userService->isAvailable($user)) {
             $servers = Server::where('show', 1)
                 ->orderBy('name')
                 ->get();

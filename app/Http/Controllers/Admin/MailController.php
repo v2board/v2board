@@ -3,24 +3,27 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\Admin\MailSend;
+use App\Services\UserService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\User;
 use App\Jobs\SendEmail;
 
 class MailController extends Controller
 {
     public function send(MailSend $request)
     {
-
+        $userService = new UserService();
+        $users = [];
         switch ($request->input('type')) {
-            case 1: $users = $this->getAllUser();
+            case 1: $users = $userService->getAllUsers();
             break;
-            case 2: $users = $this->getReceiver($request->input('receiver'));
+            case 2: $users = $userService->getUsersByIds($request->input('receiver'));
             break;
-            case 3: $users = $this->getSubscribeUser();
+            // available users
+            case 3: $users = $userService->getAvailableUsers();
             break;
-            case 4: $users = $this->getExpireUser();
+            // un available users
+            case 4: $users = $userService->getUnAvailbaleUsers();
             break;
         }
 
@@ -40,28 +43,5 @@ class MailController extends Controller
         return response([
             'data' => true
         ]);
-    }
-
-    private function getAllUser()
-    {
-        return User::all();
-    }
-
-    private function getReceiver($receiver)
-    {
-        if (empty($receiver)) {
-            abort(500, '收件人不能为空');
-        }
-        return User::whereIn('id', $receiver)->get();
-    }
-
-    private function getSubscribeUser()
-    {
-        return User::where('expired_at', '=>', time())->get();
-    }
-
-    private function getExpireUser()
-    {
-        return User::where('expired_at', '<', time())->get();
     }
 }

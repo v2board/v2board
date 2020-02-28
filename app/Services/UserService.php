@@ -6,18 +6,57 @@ use App\Models\User;
 
 class UserService
 {
-    public $user;
-
-    public function __construct(User $user)
+    public function isAvailable(User $user)
     {
-        $this->user = $user;
-    }
-
-    public function isAvailable()
-    {
-        if ($this->user->enable && $this->user->transfer_enable && ($this->user->expired_at > time() || $this->user->expired_at == 0)) {
+        if ($user->enable && $user->transfer_enable && ($user->expired_at > time() || $user->expired_at == 0)) {
             return true;
         }
         return false;
+    }
+
+    public function getAvailableUsers()
+    {
+        return User::whereRaw('u + d < transfer_enable')
+            ->where(function ($query) {
+                $query->where('expired_at', '>=', time())
+                    ->orWhere('expired_at', 0);
+            })
+            ->where('enable', 1)
+            ->select([
+                'id',
+                'email',
+                't',
+                'u',
+                'd',
+                'transfer_enable',
+                'enable',
+                'v2ray_uuid',
+                'v2ray_alter_id',
+                'v2ray_level'
+            ])
+            ->get();
+    }
+
+    public function getUnAvailbaleUsers()
+    {
+        return User::where(function ($query) {
+            $query->where('expired_at', '<', time())
+                ->orWhere('expired_at', 0);
+        })
+            ->where(function ($query) {
+            $query->where('plan_id', NULL)
+                ->orWhere('transfer_enable', 0);
+        })
+            ->get();
+    }
+
+    public function getUsersByIds($ids)
+    {
+        return User::whereIn('id', $ids)->get();
+    }
+
+    public function getAllUsers()
+    {
+        return User::all();
     }
 }

@@ -18,8 +18,8 @@ class ServerController extends Controller
     {
         $user = User::find($request->session()->get('id'));
         $server = [];
-        $userService = new UserService($user);
-        if ($userService->isAvailable()) {
+        $userService = new UserService();
+        if ($userService->isAvailable($user)) {
             $servers = Server::where('show', 1)
                 ->orderBy('name')
                 ->get();
