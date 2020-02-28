@@ -59,21 +59,7 @@ class UserController extends Controller
 
     public function update(UserUpdate $request)
     {
-        $updateData = $request->only([
-            'email',
-            'password',
-            'transfer_enable',
-            'expired_at',
-            'banned',
-            'plan_id',
-            'commission_rate',
-            'discount',
-            'is_admin',
-            'u',
-            'd',
-            'balance',
-            'commission_balance'
-        ]);
+        $updateData = $request->only(array_keys(UserUpdate::RULES));
         $user = User::find($request->input('id'));
         if (!$user) {
             abort(500, '用户不存在');
@@ -92,6 +78,10 @@ class UserController extends Controller
                 abort(500, '订阅计划不存在');
             }
             $updateData['group_id'] = $plan->group_id;
+            // plan type is onetime, set expired time 0
+            if ($plan->type === 1) {
+                $user->expired_at = 0;
+            }
         }
         if (!$user->update($updateData)) {
             abort(500, '保存失败');
