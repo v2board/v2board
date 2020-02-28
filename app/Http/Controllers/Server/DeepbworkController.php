@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Server;
 
+use App\Services\ServerService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\User;
@@ -34,20 +35,8 @@ class DeepbworkController extends Controller
             abort(500, 'fail');
         }
         Cache::put('server_last_check_at_' . $server->id, time());
-        $users = User::whereIn('group_id', json_decode($server->group_id))
-            ->select([
-                'id',
-                'email',
-                't',
-                'u',
-                'd',
-                'transfer_enable',
-                'enable',
-                'v2ray_uuid',
-                'v2ray_alter_id',
-                'v2ray_level'
-            ])
-            ->get();
+        $serverService = new ServerService();
+        $users = $serverService->getAvailableUsers(json_decode($server->group_id));
         $result = [];
         foreach ($users as $user) {
             $user->v2ray_user = [
