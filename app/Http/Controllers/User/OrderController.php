@@ -187,7 +187,7 @@ class OrderController extends Controller
         $order->total_amount = $order->total_amount - $order->discount_amount;
         // discount end
         // renew and change subscribe process
-        if ($user->expired_at > time() && $order->plan_id !== $user->plan_id) {
+        if ($order->plan_id !== $user->plan_id) {
             if (!(int)config('v2board.plan_change_enable', 1)) abort(500, '目前不允许更改订阅，请联系管理员');
             $order->type = 3;
             $order->surplus_amount = $this->getSurplusValue($user);
