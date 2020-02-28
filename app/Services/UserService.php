@@ -15,7 +15,7 @@ class UserService
 
     public function isAvailable()
     {
-        if ($this->user->transfer_enable && ($this->user->expired_at > time() || $this->user->expired_at == 0)) {
+        if ($this->user->enable && $this->user->transfer_enable && ($this->user->expired_at > time() || $this->user->expired_at == 0)) {
             return true;
         }
         return false;

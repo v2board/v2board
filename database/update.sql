@@ -178,3 +178,6 @@ CHANGE `quarter_price` `quarter_price` int(11) NULL AFTER `month_price`,
 CHANGE `half_year_price` `half_year_price` int(11) NULL AFTER `quarter_price`,
 CHANGE `year_price` `year_price` int(11) NULL AFTER `half_year_price`,
 ADD `onetime_price` int(11) NULL AFTER `year_price`;
+
+ALTER TABLE `v2_user`
+DROP `banned`;
