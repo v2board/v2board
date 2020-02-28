@@ -90,7 +90,7 @@ class OrderController extends Controller
         }
         $notUsedTrafficPrice = $plan->transfer_enable - (($user->u + $user->d) / 1073741824);
         $result = $trafficUnitPrice * $notUsedTrafficPrice;
-        return $result ? $result : 0;
+        return $result > 0 ? $result : 0;
     }
 
     private function getSurplusValueByCycle(User $user, Plan $plan)
@@ -111,7 +111,7 @@ class OrderController extends Controller
         }
         $remainingDay = $user->expired_at - time();
         $result = $remainingDay * $dayPrice;
-        return $result ? $result : 0;
+        return $result > 0 ? $result : 0;
     }
 
     public function save(OrderSave $request)
