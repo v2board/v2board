@@ -75,6 +75,25 @@ class OrderController extends Controller
     private function getSurplusValue(User $user)
     {
         $plan = Plan::find($user->plan_id);
+        switch ($plan->type) {
+            case 0: return $this->getSurplusValueByCycle($user, $plan);
+            case 1: return $this->getSurplusValueByOneTime($user, $plan);
+        }
+    }
+
+    private function getSurplusValueByOneTime(User $user, Plan $plan)
+    {
+        $trafficUnitPrice = 0;
+        $trafficUnitPrice = $plan->onetime_price / $plan->transfer_enable;
+        if ($user->discount && $trafficUnitPrice) {
+            $trafficUnitPrice = $trafficUnitPrice - ($trafficUnitPrice * $user->discount / 100);
+        }
+        $notUsedTrafficPrice = $plan->transfer_enable - (($user->u + $user->d) / 1073741824);
+        return $trafficUnitPrice * $notUsedTrafficPrice;
+    }
+
+    private function getSurplusValueByCycle(User $user, Plan $plan)
+    {
         $dayPrice = 0;
         if ($plan->month_price) {
             $dayPrice = $plan->month_price / 2592000;
