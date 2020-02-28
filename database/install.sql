@@ -102,13 +102,15 @@ CREATE TABLE `v2_plan` (
   `group_id` int(11) NOT NULL,
   `transfer_enable` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
+  `type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0: 周期 1:一次性',
   `show` tinyint(1) NOT NULL DEFAULT '0',
   `renew` tinyint(1) NOT NULL DEFAULT '1',
   `content` text,
-  `month_price` int(11) DEFAULT '0',
-  `quarter_price` int(11) DEFAULT '0',
-  `half_year_price` int(11) DEFAULT '0',
-  `year_price` int(11) DEFAULT '0',
+  `month_price` int(11) DEFAULT NULL,
+  `quarter_price` int(11) DEFAULT NULL,
+  `half_year_price` int(11) DEFAULT NULL,
+  `year_price` int(11) DEFAULT NULL,
+  `onetime_price` int(11) DEFAULT NULL,
   `created_at` int(11) NOT NULL,
   `updated_at` int(11) NOT NULL,
   PRIMARY KEY (`id`)
@@ -240,4 +242,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2020-02-22 06:34:37
+-- 2020-02-28 07:06:17
