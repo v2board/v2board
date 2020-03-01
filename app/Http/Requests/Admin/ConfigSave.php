@@ -25,6 +25,7 @@ class ConfigSave extends FormRequest
         'email_whitelist_suffix' => '',
         // subscribe
         'plan_change_enable' => 'in:0,1',
+        'reset_traffic_method' => 'in:0,1',
         // server
         'server_token' => 'nullable|min:16',
         'server_license' => 'nullable',

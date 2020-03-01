@@ -3,8 +3,6 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
-use App\Models\Plan;
 use App\Models\User;
 
 class ResetTraffic extends Command
@@ -40,12 +38,25 @@ class ResetTraffic extends Command
      */
     public function handle()
     {
-        //  get plans of cycle type
-        $plans = Plan::where('type', 0)->get();
-        $users = User::whereIn('plan_id', $plans);
-        $users->update([
-            'u' => 0,
-            'd' => 0
-        ]);
+        $user = User::where('expired_at', '!=', NULL);
+        $resetTrafficMethod = config('v2board.reset_traffic_method', 0);
+        switch ($resetTrafficMethod) {
+            // 1 a month
+            case 0:
+                $user->update([
+                    'u' => 0,
+                    'd' => 0
+                ]);
+                break;
+            // expire day
+            case 1:
+                $startAt = strtotime(date('Y-m-d', time()));
+                $user->where('expired_at', '>=', $startAt)
+                    ->where('expired_at', '<', $startAt + 24 * 3600)
+                    ->update([
+                        'u' => 0,
+                        'd' => 0
+                    ]);
+        }
     }
 }

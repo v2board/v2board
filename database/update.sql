@@ -178,3 +178,6 @@ ADD `onetime_price` int(11) NULL AFTER `year_price`;
 
 ALTER TABLE `v2_user`
 DROP `banned`;
+
+ALTER TABLE `v2_user`
+CHANGE `expired_at` `expired_at` bigint(20) NULL DEFAULT '0' AFTER `token`;
