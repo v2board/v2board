@@ -58,11 +58,6 @@ class ConfigSave extends FormRequest
         'apple_id_password' => ''
     ];
 
-    public static function filter()
-    {
-        return array_keys(self::RULES);
-    }
-
     /**
      * Get the validation rules that apply to the request.
      *

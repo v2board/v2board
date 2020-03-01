@@ -80,7 +80,7 @@ class ConfigController extends Controller
         $data = $request->input();
         $array = \Config::get('v2board');
         foreach ($data as $k => $v) {
-            if (!in_array($k, ConfigSave::filter())) {
+            if (!in_array($k, array_keys(ConfigSave::RULES))) {
                 abort(500, '参数' . $k . '不在规则内，禁止修改');
             }
             $array[$k] = $v;
