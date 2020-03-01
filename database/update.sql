@@ -170,9 +170,6 @@ ALTER TABLE `v2_tutorial`
 DROP `description`;
 
 ALTER TABLE `v2_plan`
-ADD `type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0: 周期 1:一次性' AFTER `name`;
-
-ALTER TABLE `v2_plan`
 CHANGE `month_price` `month_price` int(11) NULL AFTER `content`,
 CHANGE `quarter_price` `quarter_price` int(11) NULL AFTER `month_price`,
 CHANGE `half_year_price` `half_year_price` int(11) NULL AFTER `quarter_price`,

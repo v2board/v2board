@@ -10,7 +10,6 @@ class PlanSave extends FormRequest
         'name' => 'required',
         'content' => '',
         'group_id' => 'required',
-        'type' => 'required|in:0,1',
         'transfer_enable' => 'required',
         'month_price' => 'nullable|integer',
         'quarter_price' => 'nullable|integer',

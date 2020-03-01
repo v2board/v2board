@@ -64,13 +64,10 @@ class CheckOrder extends Command
     {
         $user = User::find($order->user_id);
         $plan = Plan::find($order->plan_id);
-        switch ($plan->type) {
-            // cycle
-            case 0: return $this->buyByCycle($order, $user, $plan);
-            // onetime
-            case 1: return $this->buyByOneTime($order, $user, $plan);
+        if ($order->cycle === 'onetime_price') {
+            return $this->buyByOneTime($order, $user, $plan);
         }
-        return $this->buy($order, $user, $plan);
+        return $this->buyByCycle($order, $user, $plan);
     }
 
     private function buyByCycle(Order $order, User $user, Plan $plan)
