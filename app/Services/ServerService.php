@@ -12,7 +12,7 @@ class ServerService
             ->whereRaw('u + d < transfer_enable')
             ->where(function ($query) {
                 $query->where('expired_at', '>=', time())
-                    ->orWhere('expired_at', 0);
+                    ->orWhere('expired_at', NULL);
             })
             ->where('enable', 1)
             ->select([

@@ -8,7 +8,7 @@ class UserService
 {
     public function isAvailable(User $user)
     {
-        if ($user->enable && $user->transfer_enable && ($user->expired_at > time() || $user->expired_at == 0)) {
+        if ($user->enable && $user->transfer_enable && ($user->expired_at > time() || $user->expired_at === NULL)) {
             return true;
         }
         return false;
@@ -19,7 +19,7 @@ class UserService
         return User::whereRaw('u + d < transfer_enable')
             ->where(function ($query) {
                 $query->where('expired_at', '>=', time())
-                    ->orWhere('expired_at', 0);
+                    ->orWhere('expired_at', NULL);
             })
             ->where('enable', 1)
             ->select([

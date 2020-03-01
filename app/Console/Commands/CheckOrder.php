@@ -103,7 +103,7 @@ class CheckOrder extends Command
         $user->d = 0;
         $user->plan_id = $plan->id;
         $user->group_id = $plan->group_id;
-        $user->expired_at = 0;
+        $user->expired_at = NULL;
         if ($user->save()) {
             $order->status = 3;
             $order->save();
