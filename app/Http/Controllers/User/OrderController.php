@@ -75,18 +75,43 @@ class OrderController extends Controller
     private function getSurplusValue(User $user)
     {
         $plan = Plan::find($user->plan_id);
+        switch ($plan->type) {
+            case 0: return $this->getSurplusValueByCycle($user, $plan);
+            case 1: return $this->getSurplusValueByOneTime($user, $plan);
+        }
+    }
+
+    private function getSurplusValueByOneTime(User $user, Plan $plan)
+    {
+        $trafficUnitPrice = 0;
+        $trafficUnitPrice = $plan->onetime_price / $plan->transfer_enable;
+        if ($user->discount && $trafficUnitPrice) {
+            $trafficUnitPrice = $trafficUnitPrice - ($trafficUnitPrice * $user->discount / 100);
+        }
+        $notUsedTrafficPrice = $plan->transfer_enable - (($user->u + $user->d) / 1073741824);
+        $result = $trafficUnitPrice * $notUsedTrafficPrice;
+        return $result > 0 ? $result : 0;
+    }
+
+    private function getSurplusValueByCycle(User $user, Plan $plan)
+    {
         $dayPrice = 0;
         if ($plan->month_price) {
-            $dayPrice = $plan->month_price / 30;
+            $dayPrice = $plan->month_price / 2592000;
         } else if ($plan->quarter_price) {
-            $dayPrice = $plan->quarter_price / 91;
+            $dayPrice = $plan->quarter_price / 7862400;
         } else if ($plan->half_year_price) {
-            $dayPrice = $plan->half_year_price / 183;
+            $dayPrice = $plan->half_year_price / 15811200;
         } else if ($plan->year_price) {
-            $dayPrice = $plan->year_price / 365;
+            $dayPrice = $plan->year_price / 31536000;
         }
-        $remainingDay = ($user->expired_at - time()) / 86400;
-        return $remainingDay * $dayPrice;
+        // exclude discount
+        if ($user->discount && $dayPrice) {
+            $dayPrice = $dayPrice - ($dayPrice * $user->discount / 100);
+        }
+        $remainingDay = $user->expired_at - time();
+        $result = $remainingDay * $dayPrice;
+        return $result > 0 ? $result : 0;
     }
 
     public function save(OrderSave $request)
@@ -137,22 +162,6 @@ class OrderController extends Controller
         $order->cycle = $request->input('cycle');
         $order->trade_no = Helper::guid();
         $order->total_amount = $plan[$request->input('cycle')];
-        // renew and change subscribe process
-        if ($user->expired_at > time() && $order->plan_id !== $user->plan_id) {
-            if (!(int)config('v2board.plan_change_enable', 1)) abort(500, '目前不允许更改订阅，请联系管理员');
-            $order->type = 3;
-            $order->surplus_amount = $this->getSurplusValue($user);
-            if ($order->surplus_amount >= $order->total_amount) {
-                $order->refund_amount = $order->surplus_amount - $order->total_amount;
-                $order->total_amount = 0;
-            } else {
-                $order->total_amount = $order->total_amount - $order->surplus_amount;
-            }
-        } else if ($user->expired_at > time() && $order->plan_id == $user->plan_id) {
-            $order->type = 2;
-        } else {
-            $order->type = 1;
-        }
         // discount start
         // coupon
         if (isset($coupon)) {
@@ -179,6 +188,22 @@ class OrderController extends Controller
         // discount complete
         $order->total_amount = $order->total_amount - $order->discount_amount;
         // discount end
+        // renew and change subscribe process
+        if ($order->plan_id !== $user->plan_id) {
+            if (!(int)config('v2board.plan_change_enable', 1)) abort(500, '目前不允许更改订阅，请联系管理员');
+            $order->type = 3;
+            $order->surplus_amount = $this->getSurplusValue($user);
+            if ($order->surplus_amount >= $order->total_amount) {
+                $order->refund_amount = $order->surplus_amount - $order->total_amount;
+                $order->total_amount = 0;
+            } else {
+                $order->total_amount = $order->total_amount - $order->surplus_amount;
+            }
+        } else if ($user->expired_at > time() && $order->plan_id == $user->plan_id) {
+            $order->type = 2;
+        } else {
+            $order->type = 1;
+        }
         // invite process
         if ($user->invite_user_id && $order->total_amount > 0) {
             $order->invite_user_id = $user->invite_user_id;
@@ -390,12 +415,6 @@ class OrderController extends Controller
             'amount' => floor($order->total_amount * $exchange),
             'currency' => 'hkd',
             'type' => 'alipay',
-            'statement_descriptor' => $order->trade_no,
-            "metadata" => [
-                "user_id" => $order->user_id,
-                "invoice_id" => $order->trade_no,
-                "identifier" => ""
-            ],
             'redirect' => [
                 'return_url' => config('v2board.app_url', env('APP_URL')) . '/#/order'
             ]
@@ -421,12 +440,6 @@ class OrderController extends Controller
             'amount' => floor($order->total_amount * $exchange),
             'currency' => 'hkd',
             'type' => 'wechat',
-            'statement_descriptor' => $order->trade_no,
-            "metadata" => [
-                "user_id" => $order->user_id,
-                "invoice_id" => $order->trade_no,
-                "identifier" => ""
-            ],
             'redirect' => [
                 'return_url' => config('v2board.app_url', env('APP_URL')) . '/#/order'
             ]
