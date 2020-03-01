@@ -78,10 +78,6 @@ class UserController extends Controller
                 abort(500, '订阅计划不存在');
             }
             $params['group_id'] = $plan->group_id;
-            // plan type is onetime, set expired time 0
-            if ($plan->type === 1) {
-                $user->expired_at = 0;
-            }
         }
         if (!$user->update($params)) {
             abort(500, '保存失败');
