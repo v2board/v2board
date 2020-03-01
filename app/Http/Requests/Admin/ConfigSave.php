@@ -26,6 +26,7 @@ class ConfigSave extends FormRequest
         // subscribe
         'plan_change_enable' => 'in:0,1',
         'reset_traffic_method' => 'in:0,1',
+        'renew_reset_traffic_enable' => 'in:0,1',
         // server
         'server_token' => 'nullable|min:16',
         'server_license' => 'nullable',
@@ -74,7 +75,10 @@ class ConfigSave extends FormRequest
 
     public function messages()
     {
+        // illiteracy prompt
         return [
+            'app_url.url' => '站点URL格式不正确，必须携带http(s)://',
+            'subscribe_url.url' => '订阅URL格式不正确，必须携带http(s)://'
         ];
     }
 }

@@ -39,7 +39,7 @@ class ResetTraffic extends Command
     public function handle()
     {
         $user = User::where('expired_at', '!=', NULL);
-        $resetTrafficMethod = config('v2board.reset_traffic_method', 0);
+        $resetTrafficMethod = (int)config('v2board.reset_traffic_method', 0);
         switch ($resetTrafficMethod) {
             // 1 a month
             case 0:
