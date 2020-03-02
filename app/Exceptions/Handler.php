@@ -46,8 +46,8 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        if($exception instanceof ThrottleRequestsException) {
-            abort(500, '请求频繁，请稍后再试');
+        if($exception instanceof \Illuminate\Http\Exceptions\ThrottleRequestsException) {
+            abort(429, '请求频繁，请稍后再试');
         }
         return parent::render($request, $exception);
     }
