@@ -12,7 +12,7 @@ class UserUpdate extends FormRequest
         'transfer_enable' => 'numeric',
         'expired_at' => 'integer',
         'enable' => 'required|in:0,1',
-        'plan_id' => 'integer',
+        'plan_id' => 'nullable｜integer',
         'commission_rate' => 'nullable|integer|min:0|max:100',
         'discount' => 'nullable|integer|min:0|max:100',
         'is_admin' => 'required|in:0,1',
