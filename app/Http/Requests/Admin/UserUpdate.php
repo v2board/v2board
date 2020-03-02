@@ -10,7 +10,7 @@ class UserUpdate extends FormRequest
         'email' => 'required|email',
         'password' => 'nullable',
         'transfer_enable' => 'numeric',
-        'expired_at' => 'integer',
+        'expired_at' => 'nullable|integer',
         'banned' => 'required|in:0,1',
         'plan_id' => 'nullable|integer',
         'commission_rate' => 'nullable|integer|min:0|max:100',
