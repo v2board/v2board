@@ -39,8 +39,8 @@ class ResetTraffic extends Command
     public function handle()
     {
         $user = User::where('expired_at', '!=', NULL);
-        $resetTrafficMethod = (int)config('v2board.reset_traffic_method', 0);
-        switch ($resetTrafficMethod) {
+        $resetTrafficMethod = config('v2board.reset_traffic_method', 0);
+        switch ((int)$resetTrafficMethod) {
             // 1 a month
             case 0:
                 $this->resetByMonthFirstDay($user);
@@ -63,17 +63,17 @@ class ResetTraffic extends Command
     private function resetByExpireDay(User $user):void
     {
         $date = date('Y-m-d', time());
-        $startAt = strtotime($date);
-        $endAt = $startAt + 24 * 3600;
-        $lastDay = (string)date('d', strtotime('last day of +0 months'));
-        if ($lastDay === '29') {
-            $endAt = $startAt + 72 * 3600;
+        $startAt = strtotime((string)$date);
+        $endAt = (int)$startAt + 24 * 3600;
+        $lastDay = date('d', strtotime('last day of +0 months'));
+        if ((string)$lastDay === '29') {
+            $endAt = (int)$startAt + 72 * 3600;
         }
-        if ($lastDay === '30') {
-            $endAt = $startAt + 48 * 3600;
+        if ((string)$lastDay === '30') {
+            $endAt = (int)$startAt + 48 * 3600;
         }
-        $user->where('expired_at', '>=', $startAt)
-            ->where('expired_at', '<', $endAt)
+        $user->where('expired_at', '>=', (int)$startAt)
+            ->where('expired_at', '<', (int)$endAt)
             ->update([
                 'u' => 0,
                 'd' => 0
