@@ -43,20 +43,40 @@ class ResetTraffic extends Command
         switch ($resetTrafficMethod) {
             // 1 a month
             case 0:
-                $user->update([
-                    'u' => 0,
-                    'd' => 0
-                ]);
+                $this->resetByMonthFirstDay($user);
                 break;
             // expire day
             case 1:
-                $startAt = strtotime(date('Y-m-d', time()));
-                $user->where('expired_at', '>=', $startAt)
-                    ->where('expired_at', '<', $startAt + 24 * 3600)
-                    ->update([
-                        'u' => 0,
-                        'd' => 0
-                    ]);
+                $this->resetByExpireDay($user);
+                break;
         }
+    }
+
+    private function resetByMonthFirstDay(User $user):void
+    {
+        $user->update([
+            'u' => 0,
+            'd' => 0
+        ]);
+    }
+
+    private function resetByExpireDay(User $user):void
+    {
+        $date = date('Y-m-d', time());
+        $startAt = strtotime($date);
+        $endAt = $startAt + 24 * 3600;
+        $lastDay = (string)date('d', strtotime('last day of +0 months'));
+        if ($lastDay === '29') {
+            $endAt = $startAt + 72 * 3600;
+        }
+        if ($lastDay === '30') {
+            $endAt = $startAt + 48 * 3600;
+        }
+        $user->where('expired_at', '>=', $startAt)
+            ->where('expired_at', '<', $endAt)
+            ->update([
+                'u' => 0,
+                'd' => 0
+            ]);
     }
 }
