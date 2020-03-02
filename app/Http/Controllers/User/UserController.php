@@ -58,7 +58,7 @@ class UserController extends Controller
                 'transfer_enable',
                 'last_login_at',
                 'created_at',
-                'enable',
+                'banned',
                 'is_admin',
                 'remind_expire',
                 'remind_traffic',
