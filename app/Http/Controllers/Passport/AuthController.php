@@ -112,7 +112,7 @@ class AuthController extends Controller
             abort(500, '用户名或密码错误');
         }
 
-        if (!$user->enable) {
+        if ($user->banned) {
             abort(500, '该账户已被停止使用');
         }
 
@@ -159,7 +159,7 @@ class AuthController extends Controller
             if (!$user) {
                 abort(500, '用户不存在');
             }
-            if (!$user->enable) {
+            if ($user->banned) {
                 abort(500, '该账户已被停止使用');
             }
             $request->session()->put('email', $user->email);

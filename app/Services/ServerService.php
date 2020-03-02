@@ -14,7 +14,7 @@ class ServerService
                 $query->where('expired_at', '>=', time())
                     ->orWhere('expired_at', NULL);
             })
-            ->where('enable', 1)
+            ->where('banned', 1)
             ->select([
                 'id',
                 'email',
