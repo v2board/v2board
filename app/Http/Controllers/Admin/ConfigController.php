@@ -50,6 +50,7 @@ class ConfigController extends Controller
                     'stripe_alipay_enable' => (int)config('v2board.stripe_alipay_enable'),
                     'stripe_wepay_enable' => (int)config('v2board.stripe_wepay_enable'),
                     'stripe_webhook_key' => config('v2board.stripe_webhook_key'),
+                    'stripe_currency' => config('v2board.stripe_currency', 'hkd'),
                     // bitpayx
                     'bitpayx_enable' => config('v2board.bitpayx_enable'),
                     'bitpayx_appsecret' => config('v2board.bitpayx_appsecret'),

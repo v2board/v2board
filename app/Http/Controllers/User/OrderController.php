@@ -406,14 +406,15 @@ class OrderController extends Controller
 
     private function stripeAlipay($order)
     {
-        $exchange = Helper::exchange('CNY', 'HKD');
+        $currency = config('stripe_currency', 'hkd');
+        $exchange = Helper::exchange('CNY', strtoupper($currency));
         if (!$exchange) {
             abort(500, '货币转换超时，请稍后再试');
         }
         Stripe::setApiKey(config('v2board.stripe_sk_live'));
         $source = Source::create([
             'amount' => floor($order->total_amount * $exchange),
-            'currency' => 'hkd',
+            'currency' => $currency,
             'type' => 'alipay',
             'redirect' => [
                 'return_url' => config('v2board.app_url', env('APP_URL')) . '/#/order'
@@ -431,14 +432,15 @@ class OrderController extends Controller
 
     private function stripeWepay($order)
     {
-        $exchange = Helper::exchange('CNY', 'HKD');
+        $currency = config('stripe_currency', 'hkd');
+        $exchange = Helper::exchange('CNY', strtoupper($currency));
         if (!$exchange) {
             abort(500, '货币转换超时，请稍后再试');
         }
         Stripe::setApiKey(config('v2board.stripe_sk_live'));
         $source = Source::create([
             'amount' => floor($order->total_amount * $exchange),
-            'currency' => 'hkd',
+            'currency' => $currency,
             'type' => 'wechat',
             'redirect' => [
                 'return_url' => config('v2board.app_url', env('APP_URL')) . '/#/order'
