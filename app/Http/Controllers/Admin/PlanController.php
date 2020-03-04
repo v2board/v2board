@@ -29,14 +29,11 @@ class PlanController extends Controller
                 abort(500, '该订阅不存在');
             }
             DB::beginTransaction();
-            if (isset($params->group_id) && ($params->group_id !== $plan->group_id)) {
-                if (!User::where('plan_id', $plan->id)
-                    ->get()
-                    ->update(['group_id', $plan->group_id])
-                ) {
-                    DB::rollBack();
-                    abort(500, '保存失败');
-                }
+            if (!User::where('plan_id', $plan->id)
+                ->update(['group_id' => $plan->group_id])
+            ) {
+                DB::rollBack();
+                abort(500, '保存失败');
             }
             if (!$plan->update($params)) {
                 DB::rollBack();
