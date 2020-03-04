@@ -140,11 +140,17 @@ class ClientController extends Controller
         array_push($proxyGroup, [
             'name' => 'select',
             'type' => 'select',
-            'proxies' => $proxies
+            'proxies' => array_merge($proxies, [
+                'auto',
+                'fallback-auto'
+            ])
         ]);
 
         try {
-            $rules = Yaml::parseFile(base_path() . '/resources/rules/clash.rule.yaml')['Rule'];
+            $rules = [];
+            foreach (glob(base_path() . '/resources/rules/' . '*.rule.yaml') as $file) {
+                $rules = array_merge($rules, Yaml::parseFile($file)['Rule']);
+            }
         } catch (\Exception $e) {}
 
         $config = [
