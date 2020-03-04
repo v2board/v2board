@@ -59,41 +59,27 @@ class UserController extends Controller
 
     public function update(UserUpdate $request)
     {
-        $updateData = $request->only([
-            'email',
-            'password',
-            'transfer_enable',
-            'expired_at',
-            'banned',
-            'plan_id',
-            'commission_rate',
-            'discount',
-            'is_admin',
-            'u',
-            'd',
-            'balance',
-            'commission_balance'
-        ]);
+        $params = $request->only(array_keys(UserUpdate::RULES));
         $user = User::find($request->input('id'));
         if (!$user) {
             abort(500, '用户不存在');
         }
-        if (User::where('email', $updateData['email'])->first() && $user->email !== $updateData['email']) {
+        if (User::where('email', $params['email'])->first() && $user->email !== $params['email']) {
             abort(500, '邮箱已被使用');
         }
-        if (isset($updateData['password'])) {
-            $updateData['password'] = password_hash($updateData['password'], PASSWORD_DEFAULT);
+        if (isset($params['password'])) {
+            $params['password'] = password_hash($params['password'], PASSWORD_DEFAULT);
         } else {
-            unset($updateData['password']);
+            unset($params['password']);
         }
-        if (isset($updateData['plan_id'])) {
-            $plan = Plan::find($updateData['plan_id']);
+        if (isset($params['plan_id'])) {
+            $plan = Plan::find($params['plan_id']);
             if (!$plan) {
                 abort(500, '订阅计划不存在');
             }
-            $updateData['group_id'] = $plan->group_id;
+            $params['group_id'] = $plan->group_id;
         }
-        if (!$user->update($updateData)) {
+        if (!$user->update($params)) {
             abort(500, '保存失败');
         }
         return response([

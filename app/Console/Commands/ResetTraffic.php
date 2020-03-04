@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
+use App\Models\User;
 
 class ResetTraffic extends Command
 {
@@ -38,9 +38,45 @@ class ResetTraffic extends Command
      */
     public function handle()
     {
-        DB::table('v2_user')->update([
+        $user = User::where('expired_at', '!=', NULL);
+        $resetTrafficMethod = config('v2board.reset_traffic_method', 0);
+        switch ((int)$resetTrafficMethod) {
+            // 1 a month
+            case 0:
+                $this->resetByMonthFirstDay($user);
+                break;
+            // expire day
+            case 1:
+                $this->resetByExpireDay($user);
+                break;
+        }
+    }
+
+    private function resetByMonthFirstDay(User $user):void
+    {
+        $user->update([
             'u' => 0,
             'd' => 0
         ]);
+    }
+
+    private function resetByExpireDay(User $user):void
+    {
+        $date = date('Y-m-d', time());
+        $startAt = strtotime((string)$date);
+        $endAt = (int)$startAt + 24 * 3600;
+        $lastDay = date('d', strtotime('last day of +0 months'));
+        if ((string)$lastDay === '29') {
+            $endAt = (int)$startAt + 72 * 3600;
+        }
+        if ((string)$lastDay === '30') {
+            $endAt = (int)$startAt + 48 * 3600;
+        }
+        $user->where('expired_at', '>=', (int)$startAt)
+            ->where('expired_at', '<', (int)$endAt)
+            ->update([
+                'u' => 0,
+                'd' => 0
+            ]);
     }
 }

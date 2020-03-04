@@ -49,9 +49,10 @@ class TutorialController extends Controller
                 'data' => $tutorial
             ]);
         }
-        $tutorial = Tutorial::select(['id', 'title', 'description', 'icon'])
+        $tutorial = Tutorial::select(['id', 'category_id', 'title', 'icon'])
             ->where('show', 1)
-            ->get();
+            ->get()
+            ->groupBy('category_id');
         $user = User::find($request->session()->get('id'));
         $response = [
             'data' => [
@@ -59,8 +60,8 @@ class TutorialController extends Controller
                 'safe_area_var' => [
                     'subscribe_url' => config('v2board.subscribe_url', config('v2board.app_url', env('APP_URL'))) . '/api/v1/client/subscribe?token=' . $user['token'],
                     'app_name' => config('v2board.app_name', 'V2board'),
-                    'apple_id' => $user->expired_at > time() ? config('v2board.apple_id', '管理员暂无提供AppleID信息') : '账号过期或未订阅',
-                    'apple_id_password' => $user->expired_at > time() ? config('v2board.apple_id_password', '管理员暂无提供AppleID信息') : '账号过期或未订阅'
+                    'apple_id' => $user->expired_at > time() || $user->expired_at === NULL ? config('v2board.apple_id', '本站暂无提供AppleID信息') : '账号过期或未订阅',
+                    'apple_id_password' => $user->expired_at > time() || $user->expired_at === NULL ? config('v2board.apple_id_password', '本站暂无提供AppleID信息') : '账号过期或未订阅'
                 ]
             ]
         ];

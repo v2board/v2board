@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Server;
 
+use App\Services\ServerService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\User;
@@ -34,20 +35,8 @@ class DeepbworkController extends Controller
             abort(500, 'fail');
         }
         Cache::put('server_last_check_at_' . $server->id, time());
-        $users = User::whereIn('group_id', json_decode($server->group_id))
-            ->select([
-                'id',
-                'email',
-                't',
-                'u',
-                'd',
-                'transfer_enable',
-                'enable',
-                'v2ray_uuid',
-                'v2ray_alter_id',
-                'v2ray_level'
-            ])
-            ->get();
+        $serverService = new ServerService();
+        $users = $serverService->getAvailableUsers(json_decode($server->group_id));
         $result = [];
         foreach ($users as $user) {
             $user->v2ray_user = [
@@ -146,7 +135,7 @@ class DeepbworkController extends Controller
         if ($server->rules) {
             $rules = json_decode($server->rules);
             // domain
-            if (isset($rules->domain)) {
+            if (isset($rules->domain) && !empty($rules->domain)) {
                 $domainObj = new \StdClass();
                 $domainObj->type = 'field';
                 $domainObj->domain = $rules->domain;
@@ -154,7 +143,7 @@ class DeepbworkController extends Controller
                 array_push($json->routing->rules, $domainObj);
             }
             // protocol
-            if (isset($rules->protocol)) {
+            if (isset($rules->protocol) && !empty($rules->protocol)) {
                 $protocolObj = new \StdClass();
                 $protocolObj->type = 'field';
                 $protocolObj->protocol = $rules->protocol;

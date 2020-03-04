@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use App\Models\Server;
@@ -17,7 +18,8 @@ class ServerController extends Controller
     {
         $user = User::find($request->session()->get('id'));
         $server = [];
-        if ($user->expired_at > time()) {
+        $userService = new UserService();
+        if ($userService->isAvailable($user)) {
             $servers = Server::where('show', 1)
                 ->orderBy('name')
                 ->get();

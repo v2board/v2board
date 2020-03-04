@@ -162,3 +162,23 @@ ADD `surplus_amount` int(11) NULL COMMENT '剩余价值' AFTER `discount_amount`
 
 ALTER TABLE `v2_order`
 ADD `refund_amount` int(11) NULL COMMENT '退款金额' AFTER `surplus_amount`;
+
+ALTER TABLE `v2_tutorial`
+ADD `category_id` int(11) NOT NULL AFTER `id`;
+
+ALTER TABLE `v2_tutorial`
+DROP `description`;
+
+ALTER TABLE `v2_plan`
+CHANGE `month_price` `month_price` int(11) NULL AFTER `content`,
+CHANGE `quarter_price` `quarter_price` int(11) NULL AFTER `month_price`,
+CHANGE `half_year_price` `half_year_price` int(11) NULL AFTER `quarter_price`,
+CHANGE `year_price` `year_price` int(11) NULL AFTER `half_year_price`,
+ADD `onetime_price` int(11) NULL AFTER `year_price`;
+
+ALTER TABLE `v2_user`
+DROP `enable`,
+ADD `banned` tinyint(1) NOT NULL DEFAULT '0' AFTER `transfer_enable`;
+
+ALTER TABLE `v2_user`
+CHANGE `expired_at` `expired_at` bigint(20) NULL DEFAULT '0' AFTER `token`;

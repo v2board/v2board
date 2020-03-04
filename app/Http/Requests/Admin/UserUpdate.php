@@ -6,6 +6,21 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class UserUpdate extends FormRequest
 {
+    CONST RULES = [
+        'email' => 'required|email',
+        'password' => 'nullable',
+        'transfer_enable' => 'numeric',
+        'expired_at' => 'nullable|integer',
+        'banned' => 'required|in:0,1',
+        'plan_id' => 'nullable|integer',
+        'commission_rate' => 'nullable|integer|min:0|max:100',
+        'discount' => 'nullable|integer|min:0|max:100',
+        'is_admin' => 'required|in:0,1',
+        'u' => 'integer',
+        'd' => 'integer',
+        'balance' => 'integer',
+        'commission_balance' => 'integer'
+    ];
     /**
      * Get the validation rules that apply to the request.
      *
@@ -13,16 +28,7 @@ class UserUpdate extends FormRequest
      */
     public function rules()
     {
-        return [
-            'email' => 'required|email',
-            'transfer_enable' => 'numeric',
-            'expired_at' => 'integer',
-            'banned' => 'required|in:0,1',
-            'is_admin' => 'required|in:0,1',
-            'plan_id' => 'integer',
-            'commission_rate' => 'nullable|integer|min:0|max:100',
-            'discount' => 'nullable|integer|min:0|max:100'
-        ];
+        return self::RULES;
     }
 
     public function messages()
@@ -44,7 +50,11 @@ class UserUpdate extends FormRequest
             'discount.integer' => '专属折扣比例格式不正确',
             'discount.nullable' => '专属折扣比例格式不正确',
             'discount.min' => '专属折扣比例最小为0',
-            'discount.max' => '专属折扣比例最大为100'
+            'discount.max' => '专属折扣比例最大为100',
+            'u.integer' => '上行流量格式不正确',
+            'd.integer' => '下行流量格式不正确',
+            'balance.integer' => '余额格式不正确',
+            'commission_balance.integer' => '佣金格式不正确'
         ];
     }
 }

@@ -16,14 +16,17 @@ class ConfigSave extends FormRequest
         'email_verify' => 'in:0,1',
         'app_name' => '',
         'app_description' => '',
-        'app_url' => 'url',
-        'subscribe_url' => 'url',
-        'plan_change_enable' => 'in:0,1',
+        'app_url' => 'nullable|url',
+        'subscribe_url' => 'nullable|url',
         'try_out_enable' => 'in:0,1',
         'try_out_plan_id' => 'integer',
         'try_out_hour' => 'numeric',
         'email_whitelist_enable' => 'in:0,1',
         'email_whitelist_suffix' => '',
+        // subscribe
+        'plan_change_enable' => 'in:0,1',
+        'reset_traffic_method' => 'in:0,1',
+        'renew_reset_traffic_enable' => 'in:0,1',
         // server
         'server_token' => 'nullable|min:16',
         'server_license' => 'nullable',
@@ -38,6 +41,7 @@ class ConfigSave extends FormRequest
         'stripe_sk_live' => '',
         'stripe_pk_live' => '',
         'stripe_webhook_key' => '',
+        'stripe_currency' => 'in:hkd,usd,sgd',
         // bitpayx
         'bitpayx_enable' => 'in:0,1',
         'bitpayx_appsecret' => '',
@@ -55,11 +59,6 @@ class ConfigSave extends FormRequest
         'apple_id_password' => ''
     ];
 
-    public static function filter()
-    {
-        return array_keys(self::RULES);
-    }
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -72,7 +71,10 @@ class ConfigSave extends FormRequest
 
     public function messages()
     {
+        // illiteracy prompt
         return [
+            'app_url.url' => '站点URL格式不正确，必须携带http(s)://',
+            'subscribe_url.url' => '订阅URL格式不正确，必须携带http(s)://'
         ];
     }
 }

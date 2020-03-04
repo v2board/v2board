@@ -60,15 +60,18 @@ class CheckOrder extends Command
         }
     }
 
-    private function orderHandle($order)
+    private function orderHandle(Order $order)
     {
         $user = User::find($order->user_id);
-        return $this->buy($order, $user);
+        $plan = Plan::find($order->plan_id);
+        if ($order->cycle === 'onetime_price') {
+            return $this->buyByOneTime($order, $user, $plan);
+        }
+        return $this->buyByCycle($order, $user, $plan);
     }
 
-    private function buy($order, $user)
+    private function buyByCycle(Order $order, User $user, Plan $plan)
     {
-        $plan = Plan::find($order->plan_id);
         // change plan process
         if ($order->type == 3) {
             $user->expired_at = time();
@@ -77,12 +80,30 @@ class CheckOrder extends Command
             $user->balance = $user->balance + $order->refund_amount;
         }
         $user->transfer_enable = $plan->transfer_enable * 1073741824;
-        $user->enable = 1;
+        if ((int)config('v2board.renew_reset_traffic_enable', 1)) {
+            $user->u = 0;
+            $user->d = 0;
+        }
+        $user->plan_id = $plan->id;
+        $user->group_id = $plan->group_id;
+        $user->expired_at = $this->getTime($order->cycle, $user->expired_at);
+        if ($user->save()) {
+            $order->status = 3;
+            $order->save();
+        }
+    }
+
+    private function buyByOneTime(Order $order, User $user, Plan $plan)
+    {
+        if ($order->refund_amount) {
+            $user->balance = $user->balance + $order->refund_amount;
+        }
+        $user->transfer_enable = $plan->transfer_enable * 1073741824;
         $user->u = 0;
         $user->d = 0;
         $user->plan_id = $plan->id;
         $user->group_id = $plan->group_id;
-        $user->expired_at = $this->getTime($order->cycle, $user->expired_at);
+        $user->expired_at = NULL;
         if ($user->save()) {
             $order->status = 3;
             $order->save();

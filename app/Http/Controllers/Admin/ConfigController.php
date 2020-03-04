@@ -28,11 +28,15 @@ class ConfigController extends Controller
                     'app_description' => config('v2board.app_description', 'V2Board is best!'),
                     'app_url' => config('v2board.app_url'),
                     'subscribe_url' => config('v2board.subscribe_url'),
-                    'plan_change_enable' => (int)config('v2board.plan_change_enable', 1),
                     'try_out_plan_id' => (int)config('v2board.try_out_plan_id', 0),
                     'try_out_hour' => (int)config('v2board.try_out_hour', 1),
                     'email_whitelist_enable' => (int)config('v2board.email_whitelist_enable', 0),
                     'email_whitelist_suffix' => config('v2board.email_whitelist_suffix', Dict::EMAIL_WHITELIST_SUFFIX_DEFAULT)
+                ],
+                'subscribe' => [
+                    'plan_change_enable' => (int)config('v2board.plan_change_enable', 1),
+                    'reset_traffic_method' => (int)config('v2board.reset_traffic_method', 0),
+                    'renew_reset_traffic_enable' => (int)config('v2board.renew_reset_traffic_enable', 1)
                 ],
                 'pay' => [
                     // alipay
@@ -46,6 +50,7 @@ class ConfigController extends Controller
                     'stripe_alipay_enable' => (int)config('v2board.stripe_alipay_enable'),
                     'stripe_wepay_enable' => (int)config('v2board.stripe_wepay_enable'),
                     'stripe_webhook_key' => config('v2board.stripe_webhook_key'),
+                    'stripe_currency' => config('v2board.stripe_currency', 'hkd'),
                     // bitpayx
                     'bitpayx_enable' => config('v2board.bitpayx_enable'),
                     'bitpayx_appsecret' => config('v2board.bitpayx_appsecret'),
@@ -76,7 +81,7 @@ class ConfigController extends Controller
         $data = $request->input();
         $array = \Config::get('v2board');
         foreach ($data as $k => $v) {
-            if (!in_array($k, ConfigSave::filter())) {
+            if (!in_array($k, array_keys(ConfigSave::RULES))) {
                 abort(500, '参数' . $k . '不在规则内，禁止修改');
             }
             $array[$k] = $v;

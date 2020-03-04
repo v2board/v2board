@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
+use App\Http\Middleware\User;
 use Illuminate\Http\Request;
 use App\Models\Server;
 use App\Utils\Helper;
 use Symfony\Component\Yaml\Yaml;
+use App\Services\UserService;
 
 class ClientController extends Controller
 {
@@ -15,7 +17,8 @@ class ClientController extends Controller
         $user = $request->user;
         $server = [];
         // account not expired and is not banned.
-        if ($user->expired_at > time() && !$user->banned) {
+        $userService = new UserService();
+        if ($userService->isAvailable($user)) {
             $servers = Server::where('show', 1)
                 ->orderBy('name')
                 ->get();
@@ -137,11 +140,17 @@ class ClientController extends Controller
         array_push($proxyGroup, [
             'name' => 'select',
             'type' => 'select',
-            'proxies' => $proxies
+            'proxies' => array_merge($proxies, [
+                'auto',
+                'fallback-auto'
+            ])
         ]);
 
         try {
-            $rules = Yaml::parseFile(base_path() . '/resources/rules/clash.rule.yaml')['Rule'];
+            $rules = [];
+            foreach (glob(base_path() . '/resources/rules/' . '*.clash.yaml') as $file) {
+                $rules = array_merge($rules, Yaml::parseFile($file)['Rule']);
+            }
         } catch (\Exception $e) {}
 
         $config = [

@@ -15,7 +15,7 @@ class OrderSave extends FormRequest
     {
         return [
             'plan_id' => 'required',
-            'cycle' => 'required|in:month_price,quarter_price,half_year_price,year_price'
+            'cycle' => 'required|in:month_price,quarter_price,half_year_price,year_price,onetime_price'
         ];
     }
 

@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Plan;
 use App\Models\Order;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class PlanController extends Controller
 {
@@ -21,25 +22,36 @@ class PlanController extends Controller
 
     public function save(PlanSave $request)
     {
+        $params = $request->only(array_keys(PlanSave::RULES));
         if ($request->input('id')) {
             $plan = Plan::find($request->input('id'));
             if (!$plan) {
                 abort(500, '该订阅不存在');
             }
-        } else {
-            $plan = new Plan();
+            DB::beginTransaction();
+            if (isset($params->group_id) && ($params->group_id !== $plan->group_id)) {
+                if (!User::where('plan_id', $plan->id)
+                    ->get()
+                    ->update(['group_id', $plan->group_id])
+                ) {
+                    DB::rollBack();
+                    abort(500, '保存失败');
+                }
+            }
+            if (!$plan->update($params)) {
+                DB::rollBack();
+                abort(500, '保存失败');
+            }
+            DB::commit();
+            return response([
+                'data' => true
+            ]);
         }
-        $plan->name = $request->input('name');
-        $plan->content = $request->input('content');
-        $plan->transfer_enable = $request->input('transfer_enable');
-        $plan->group_id = $request->input('group_id');
-        $plan->month_price = $request->input('month_price');
-        $plan->quarter_price = $request->input('quarter_price');
-        $plan->half_year_price = $request->input('half_year_price');
-        $plan->year_price = $request->input('year_price');
-
+        if (!Plan::create($params)) {
+            abort(500, '创建失败');
+        }
         return response([
-            'data' => $plan->save()
+            'data' => true
         ]);
     }
 
