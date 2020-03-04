@@ -30,7 +30,6 @@ class PlanController extends Controller
             }
             DB::beginTransaction();
             if (!User::where('plan_id', $plan->id)
-                ->get()
                 ->update(['group_id' => $plan->group_id])
             ) {
                 DB::rollBack();
