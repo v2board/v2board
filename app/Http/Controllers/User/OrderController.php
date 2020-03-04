@@ -190,7 +190,7 @@ class OrderController extends Controller
         // discount end
         // renew and change subscribe process
         if ($user->plan_id !== NULL && $order->plan_id !== $user->plan_id) {
-            if (!(int)config('v2board.plan_change_enable', 1)) abort(500, '目前不允许更改订阅，请联系管理员');
+            if (!(int)config('v2board.plan_change_enable', 1)) abort(500, '目前不允许更改订阅，请联系客服或提交工单');
             $order->type = 3;
             $order->surplus_amount = $this->getSurplusValue($user);
             if ($order->surplus_amount >= $order->total_amount) {
