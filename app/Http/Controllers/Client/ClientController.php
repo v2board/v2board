@@ -148,7 +148,7 @@ class ClientController extends Controller
 
         try {
             $rules = [];
-            foreach (glob(base_path() . '/resources/rules/' . '*.rule.yaml') as $file) {
+            foreach (glob(base_path() . '/resources/rules/' . '*.clash.yaml') as $file) {
                 $rules = array_merge($rules, Yaml::parseFile($file)['Rule']);
             }
         } catch (\Exception $e) {}
