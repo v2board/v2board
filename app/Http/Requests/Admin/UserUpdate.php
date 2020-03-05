@@ -53,8 +53,8 @@ class UserUpdate extends FormRequest
             'discount.max' => '专属折扣比例最大为100',
             'u.integer' => '上行流量格式不正确',
             'd.integer' => '下行流量格式不正确',
-            'balance' => '余额格式不正确',
-            'commission_balance' => '佣金格式不正确'
+            'balance.integer' => '余额格式不正确',
+            'commission_balance.integer' => '佣金格式不正确'
         ];
     }
 }
