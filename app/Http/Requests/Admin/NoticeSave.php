@@ -16,7 +16,7 @@ class NoticeSave extends FormRequest
         return [
             'title' => 'required',
             'content' => 'required',
-            'img_url' => 'url'
+            'img_url' => 'nullable|url'
         ];
     }
 
