@@ -71,6 +71,7 @@ class OrderController extends Controller
                     'amount' => $source['amount'],
                     'currency' => $source['currency'],
                     'source' => $source['id'],
+                    'description' => config('v2board.app_name', 'V2Board') . $source['metadata']['invoice_id'],
                 ]);
                 if ($charge['status'] == 'succeeded') {
                     $trade_no = Cache::get($source['id']);
@@ -117,7 +118,9 @@ class OrderController extends Controller
         if (!$this->handle($params['merchant_order_id'], $params['order_id'])) {
             abort(500, 'order process fail');
         }
-        die('success');
+        die(json_encode([
+            'status' => 200
+        ]));
     }
 
     public function payTaroNotify(Request $request)

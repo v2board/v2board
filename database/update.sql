@@ -182,3 +182,6 @@ ADD `banned` tinyint(1) NOT NULL DEFAULT '0' AFTER `transfer_enable`;
 
 ALTER TABLE `v2_user`
 CHANGE `expired_at` `expired_at` bigint(20) NULL DEFAULT '0' AFTER `token`;
+
+ALTER TABLE `v2_tutorial`
+DROP `icon`;
