@@ -49,7 +49,7 @@ class TutorialController extends Controller
                 'data' => $tutorial
             ]);
         }
-        $tutorial = Tutorial::select(['id', 'category_id', 'title', 'icon'])
+        $tutorial = Tutorial::select(['id', 'category_id', 'title'])
             ->where('show', 1)
             ->get()
             ->groupBy('category_id');
