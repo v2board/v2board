@@ -117,7 +117,9 @@ class OrderController extends Controller
         if (!$this->handle($params['merchant_order_id'], $params['order_id'])) {
             abort(500, 'order process fail');
         }
-        die('success');
+        die(json_encode([
+            'status' => 200
+        ]));
     }
 
     public function payTaroNotify(Request $request)
