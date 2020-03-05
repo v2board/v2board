@@ -47,15 +47,15 @@ class ConfigController extends Controller
                     // stripe
                     'stripe_sk_live' => config('v2board.stripe_sk_live'),
                     'stripe_pk_live' => config('v2board.stripe_pk_live'),
-                    'stripe_alipay_enable' => (int)config('v2board.stripe_alipay_enable'),
-                    'stripe_wepay_enable' => (int)config('v2board.stripe_wepay_enable'),
+                    'stripe_alipay_enable' => (int)config('v2board.stripe_alipay_enable', 0),
+                    'stripe_wepay_enable' => (int)config('v2board.stripe_wepay_enable', 0),
                     'stripe_webhook_key' => config('v2board.stripe_webhook_key'),
                     'stripe_currency' => config('v2board.stripe_currency', 'hkd'),
                     // bitpayx
-                    'bitpayx_enable' => config('v2board.bitpayx_enable'),
+                    'bitpayx_enable' => (int)config('v2board.bitpayx_enable', 0),
                     'bitpayx_appsecret' => config('v2board.bitpayx_appsecret'),
                     // paytaro
-                    'paytaro_enable' => config('v2board.paytaro_enable'),
+                    'paytaro_enable' => (int)config('v2board.paytaro_enable', 0),
                     'paytaro_app_id' => config('v2board.paytaro_app_id'),
                     'paytaro_app_secret' => config('v2board.paytaro_app_secret')
                 ],
