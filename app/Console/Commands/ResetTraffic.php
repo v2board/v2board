@@ -54,11 +54,12 @@ class ResetTraffic extends Command
 
     private function resetByMonthFirstDay($user):void
     {
-        if ((string)date('d') !== '1') return
-        $user->update([
-            'u' => 0,
-            'd' => 0
-        ]);
+        if ((string)date('d') === '01') {
+            $user->update([
+                'u' => 0,
+                'd' => 0
+            ]);
+        }
     }
 
     private function resetByExpireDay($user):void
