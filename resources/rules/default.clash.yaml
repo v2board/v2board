@@ -1,5 +1,11 @@
 Rule:
   # Apple
+  - DOMAIN,safebrowsing.urlsec.qq.com,DIRECT # 如果您并不信任此服务提供商或防止其下载消耗过多带宽资源，可以进入 Safari 设置，关闭 Fraudulent Website Warning 功能，并使用 REJECT 策略。
+  - DOMAIN,safebrowsing.googleapis.com,DIRECT # 如果您并不信任此服务提供商或防止其下载消耗过多带宽资源，可以进入 Safari 设置，关闭 Fraudulent Website Warning 功能，并使用 REJECT 策略。
+  - DOMAIN,ocsp.apple.com,select
+  - DOMAIN-SUFFIX,digicert.com,select
+  - DOMAIN-SUFFIX,entrust.net,select
+  - DOMAIN,ocsp.verisign.net,select
   - DOMAIN-SUFFIX,apps.apple.com,select
   - DOMAIN-SUFFIX,itunes.apple.com,select
   - DOMAIN-SUFFIX,blobstore.apple.com,select
@@ -13,11 +19,11 @@ Rule:
   - DOMAIN-SUFFIX,cdn-apple.com,DIRECT
   - DOMAIN-SUFFIX,apple.com,DIRECT
   - DOMAIN-SUFFIX,apple-cloudkit.com,DIRECT
-  #- DOMAIN,e.crashlytics.com,REJECT //注释此选项有助于大多数App开发者分析崩溃信息；如果您拒绝一切崩溃数据统计、搜集，请取消 # 注释。
+  # - DOMAIN,e.crashlytics.com,REJECT //注释此选项有助于大多数App开发者分析崩溃信息；如果您拒绝一切崩溃数据统计、搜集，请取消 # 注释。
 
 
   # 自定义规则
-  ## 您可以在此处插入您补充的自定义规则
+  ## 您可以在此处插入您补充的自定义规则（请注意保持缩进）
 
   # 国内网站
   - DOMAIN-SUFFIX,cn,DIRECT
@@ -185,7 +191,6 @@ Rule:
   - DOMAIN-KEYWORD,partnerad,REJECT
   - DOMAIN-KEYWORD,pingfore,REJECT
   - DOMAIN-KEYWORD,supersonicads,REJECT
-  - DOMAIN-KEYWORD,tracking,REJECT
   - DOMAIN-KEYWORD,uedas,REJECT
   - DOMAIN-KEYWORD,umeng,REJECT
   - DOMAIN-KEYWORD,usage,REJECT
@@ -465,12 +470,15 @@ Rule:
   - DOMAIN-SUFFIX,telegra.ph,select
   - DOMAIN-SUFFIX,telegram.org,select
 
-  - IP-CIDR,91.108.56.0/22,select
-  - IP-CIDR,91.108.4.0/22,select
-  - IP-CIDR,91.108.8.0/22,select
-  - IP-CIDR,109.239.140.0/24,select
-  - IP-CIDR,149.154.160.0/20,select
-  - IP-CIDR,149.154.164.0/22,select
+  - IP-CIDR,91.108.4.0/22,select,no-resolve
+  - IP-CIDR,91.108.8.0/22,select,no-resolve
+  - IP-CIDR,91.108.12.0/22,select,no-resolve
+  - IP-CIDR,91.108.16.0/22,select,no-resolve
+  - IP-CIDR,91.108.56.0/22,select,no-resolve
+  - IP-CIDR,149.154.160.0/22,select,no-resolve
+  - IP-CIDR,149.154.164.0/22,select,no-resolve
+  - IP-CIDR,149.154.168.0/22,select,no-resolve
+  - IP-CIDR,149.154.172.0/22,select,no-resolve
 
   # LAN
   - DOMAIN-SUFFIX,local,DIRECT

@@ -452,7 +452,7 @@ class OrderController extends Controller
                 'user_id' => $order->user_id,
                 'invoice_id' => $order->trade_no,
                 'identifier' => ''
-            ],            
+            ],
             'redirect' => [
                 'return_url' => config('v2board.app_url', env('APP_URL')) . '/#/order'
             ]
@@ -482,7 +482,7 @@ class OrderController extends Controller
         $strToSign = $bitpayX->prepareSignId($params['merchant_order_id']);
         $params['token'] = $bitpayX->sign($strToSign);
         $result = $bitpayX->mprequest($params);
-        Log::info('bitpayXSubmit: ' . json_encode($result));
+        // Log::info('bitpayXSubmit: ' . json_encode($result));
         return isset($result['payment_url']) ? $result['payment_url'] : false;
     }
 
