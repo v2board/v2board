@@ -59,7 +59,7 @@ class DeepbworkController extends Controller
     // 后端提交数据
     public function submit(Request $request)
     {
-        Log::info('serverSubmitData:' . $request->input('node_id') . ':' . file_get_contents('php://input'));
+        // Log::info('serverSubmitData:' . $request->input('node_id') . ':' . file_get_contents('php://input'));
         $server = Server::find($request->input('node_id'));
         if (!$server) {
             return response([

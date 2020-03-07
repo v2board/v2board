@@ -51,7 +51,7 @@ class PoseidonController extends Controller
     {
         if ($r = $this->verifyToken($request)) { return $r; }
 
-        Log::info('serverSubmitData:' . $request->input('node_id') . ':' . file_get_contents('php://input'));
+        // Log::info('serverSubmitData:' . $request->input('node_id') . ':' . file_get_contents('php://input'));
         $server = Server::find($request->input('node_id'));
         if (!$server) {
             return $this->error("server could not be found", 404);

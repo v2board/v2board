@@ -15,7 +15,7 @@ class OrderController extends Controller
 {
     public function alipayNotify(Request $request)
     {
-        Log::info('alipayNotifyData: ' . json_encode($_POST));
+        // Log::info('alipayNotifyData: ' . json_encode($_POST));
         $gateway = Omnipay::create('Alipay_AopF2F');
         $gateway->setSignType('RSA2'); //RSA/RSA2
         $gateway->setAppId(config('v2board.alipay_appid'));
@@ -52,7 +52,7 @@ class OrderController extends Controller
 
     public function stripeNotify(Request $request)
     {
-        Log::info('stripeNotifyData: ' . json_encode($request->input()));
+        // Log::info('stripeNotifyData: ' . json_encode($request->input()));
 
         \Stripe\Stripe::setApiKey(config('v2board.stripe_sk_live'));
         try {
@@ -93,7 +93,7 @@ class OrderController extends Controller
     public function bitpayXNotify(Request $request)
     {
         $inputString = file_get_contents('php://input', 'r');
-        Log::info('bitpayXNotifyData: ' . $inputString);
+        // Log::info('bitpayXNotifyData: ' . $inputString);
         $inputStripped = str_replace(array("\r", "\n", "\t", "\v"), '', $inputString);
         $inputJSON = json_decode($inputStripped, true); //convert JSON into array
 
@@ -125,7 +125,7 @@ class OrderController extends Controller
 
     public function payTaroNotify(Request $request)
     {
-        Log::info('payTaroNotify: ' . json_encode($request->input()));
+        // Log::info('payTaroNotify: ' . json_encode($request->input()));
 
         $payTaro = new PayTaro(config('v2board.paytaro_app_id'), config('v2board.paytaro_app_secret'));
         if (!$payTaro->verify($request->input())) {
