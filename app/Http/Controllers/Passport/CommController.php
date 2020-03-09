@@ -56,7 +56,7 @@ class CommController extends Controller
             ]
         ])->onQueue('verify_mail');
 
-        Cache::put($cacheKey, $code, 60);
+        Cache::put($cacheKey, $code, 600);
         return response([
             'data' => true
         ]);
