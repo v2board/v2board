@@ -178,7 +178,7 @@ class ServerController extends Controller
         if (!$server) {
             abort(500, '服务器不存在');
         }
-        if (!Server::create($server)) {
+        if (!Server::create($server->toArray())) {
             abort(500, '复制失败');
         }
 
