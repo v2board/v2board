@@ -40,15 +40,22 @@ class ServerController extends Controller
         if (isset($params['tags'])) {
             $params['tags'] = json_encode($params['tags']);
         }
-        if (isset($params['rules'])) {
-            if (!is_object(json_decode($params['rules']))) {
+
+        if (isset($params['ruleSettings'])) {
+            if (!is_object(json_decode($params['ruleSettings']))) {
                 abort(500, '审计规则配置格式不正确');
             }
         }
 
-        if (isset($params['settings'])) {
-            if (!is_object(json_decode($params['settings']))) {
+        if (isset($params['networkSettings'])) {
+            if (!is_object(json_decode($params['networkSettings']))) {
                 abort(500, '传输协议配置格式不正确');
+            }
+        }
+
+        if (isset($params['tlsSettings'])) {
+            if (!is_object(json_decode($params['tlsSettings']))) {
+                abort(500, 'TLS配置格式不正确');
             }
         }
 
