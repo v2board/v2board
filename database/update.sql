@@ -185,3 +185,15 @@ CHANGE `expired_at` `expired_at` bigint(20) NULL DEFAULT '0' AFTER `token`;
 
 ALTER TABLE `v2_tutorial`
 DROP `icon`;
+
+ALTER TABLE `v2_server`
+CHANGE `settings` `networkSettings` text COLLATE 'utf8_general_ci' NULL AFTER `network`,
+CHANGE `rules` `ruleSettings` text COLLATE 'utf8_general_ci' NULL AFTER `networkSettings`;
+
+ALTER TABLE `v2_server`
+CHANGE `tags` `tags` varchar(255) COLLATE 'utf8_general_ci' NULL AFTER `server_port`,
+CHANGE `rate` `rate` varchar(11) COLLATE 'utf8_general_ci' NOT NULL AFTER `tags`,
+CHANGE `network` `network` varchar(11) COLLATE 'utf8_general_ci' NOT NULL AFTER `rate`,
+CHANGE `networkSettings` `networkSettings` text COLLATE 'utf8_general_ci' NULL AFTER `network`,
+CHANGE `tls` `tls` tinyint(4) NOT NULL DEFAULT '0' AFTER `networkSettings`,
+ADD `tlsSettings` text COLLATE 'utf8_general_ci' NULL AFTER `tls`;

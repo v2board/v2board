@@ -101,65 +101,11 @@ class DeepbworkController extends Controller
         if (empty($nodeId) || empty($localPort)) {
             abort(500, '参数错误');
         }
-        $server = Server::find($nodeId);
-        if (!$server) {
-            abort(500, '节点不存在');
-        }
-        $json = json_decode(self::SERVER_CONFIG);
-        $json->inboundDetour[0]->port = (int)$localPort;
-        $json->inbound->port = (int)$server->server_port;
-        $json->inbound->streamSettings->network = $server->network;
-        if ($server->settings) {
-            switch ($server->network) {
-                case 'tcp':
-                    $json->inbound->streamSettings->tcpSettings = json_decode($server->settings);
-                    break;
-                case 'kcp':
-                    $json->inbound->streamSettings->kcpSettings = json_decode($server->settings);
-                    break;
-                case 'ws':
-                    $json->inbound->streamSettings->wsSettings = json_decode($server->settings);
-                    break;
-                case 'http':
-                    $json->inbound->streamSettings->httpSettings = json_decode($server->settings);
-                    break;
-                case 'domainsocket':
-                    $json->inbound->streamSettings->dsSettings = json_decode($server->settings);
-                    break;
-                case 'quic':
-                    $json->inbound->streamSettings->quicSettings = json_decode($server->settings);
-                    break;
-            }
-        }
-
-        if ($server->rules) {
-            $rules = json_decode($server->rules);
-            // domain
-            if (isset($rules->domain) && !empty($rules->domain)) {
-                $domainObj = new \StdClass();
-                $domainObj->type = 'field';
-                $domainObj->domain = $rules->domain;
-                $domainObj->outboundTag = 'block';
-                array_push($json->routing->rules, $domainObj);
-            }
-            // protocol
-            if (isset($rules->protocol) && !empty($rules->protocol)) {
-                $protocolObj = new \StdClass();
-                $protocolObj->type = 'field';
-                $protocolObj->protocol = $rules->protocol;
-                $protocolObj->outboundTag = 'block';
-                array_push($json->routing->rules, $protocolObj);
-            }
-        }
-
-        if ((int)$server->tls) {
-            $json->inbound->streamSettings->security = 'tls';
-            $tls = (object)[
-                'certificateFile' => '/home/v2ray.crt',
-                'keyFile' => '/home/v2ray.key'
-            ];
-            $json->inbound->streamSettings->tlsSettings = new \StdClass();
-            $json->inbound->streamSettings->tlsSettings->certificates[0] = $tls;
+        $serverService = new ServerService();
+        try {
+            $json = $serverService->getConfig($nodeId, $localPort);
+        } catch (\Exception $e) {
+            abort(500, $e->getMessage());
         }
 
         die(json_encode($json, JSON_UNESCAPED_UNICODE));
