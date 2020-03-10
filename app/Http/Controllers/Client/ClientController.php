@@ -50,8 +50,8 @@ class ClientController extends Controller
             $uri .= "vmess=" . $item->host . ":" . $item->port . ", method=none, password=" . $user->v2ray_uuid . ", fast-open=false, udp-relay=false, tag=" . $item->name;
             if ($item->network == 'ws') {
                 $uri .= ', obfs=ws';
-                if ($item->settings) {
-                    $wsSettings = json_decode($item->settings);
+                if ($item->networkSettings) {
+                    $wsSettings = json_decode($item->networkSettings);
                     if (isset($wsSettings->path)) $uri .= ', obfs-uri=' . $wsSettings->path;
                     if (isset($wsSettings->headers->Host)) $uri .= ', obfs-host=' . $wsSettings->headers->Host;
                 }
@@ -70,8 +70,8 @@ class ClientController extends Controller
             $str .= $item->name . '= vmess, ' . $item->host . ', ' . $item->port . ', chacha20-ietf-poly1305, "' . $user->v2ray_uuid . '", over-tls=' . ($item->tls ? "true" : "false") . ', certificate=0, group=' . config('v2board.app_name', 'V2Board');
             if ($item->network === 'ws') {
                 $str .= ', obfs=ws';
-                if ($item->settings) {
-                    $wsSettings = json_decode($item->settings);
+                if ($item->networkSettings) {
+                    $wsSettings = json_decode($item->networkSettings);
                     if (isset($wsSettings->path)) $str .= ', obfs-path="' . $wsSettings->path . '"';
                     if (isset($wsSettings->headers->Host)) $str .= ', obfs-header="Host:' . $wsSettings->headers->Host . '"';
                 }
@@ -111,8 +111,8 @@ class ClientController extends Controller
             }
             if ($item->network == 'ws') {
                 $array['network'] = $item->network;
-                if ($item->settings) {
-                    $wsSettings = json_decode($item->settings);
+                if ($item->networkSettings) {
+                    $wsSettings = json_decode($item->networkSettings);
                     if (isset($wsSettings->path)) $array['ws-path'] = $wsSettings->path;
                     if (isset($wsSettings->headers->Host)) $array['ws-headers'] = [
                         'Host' => $wsSettings->headers->Host
