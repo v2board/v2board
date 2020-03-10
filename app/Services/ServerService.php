@@ -87,12 +87,19 @@ class ServerService
         }
 
         if ((int)$server->tls) {
+            $tlsSettings = json_decode($server->tlsSettings);
             $json->inbound->streamSettings->security = 'tls';
             $tls = (object)[
                 'certificateFile' => '/home/v2ray.crt',
                 'keyFile' => '/home/v2ray.key'
             ];
             $json->inbound->streamSettings->tlsSettings = new \StdClass();
+            if (isset($tlsSettings->serverName)) {
+                $json->inbound->streamSettings->tlsSettings->serverName = (string)$tlsSettings->serverName;
+            }
+            if (isset($tlsSettings->allowInsecure)) {
+                $json->inbound->streamSettings->tlsSettings->allowInsecure = (int)$tlsSettings->allowInsecure ? true : false;
+            }
             $json->inbound->streamSettings->tlsSettings->certificates[0] = $tls;
         }
 
