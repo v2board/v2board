@@ -2,6 +2,9 @@
 
 namespace App\Utils;
 
+use App\Models\Server;
+use App\Models\User;
+
 class Helper
 {
     public static function guid($format = false)
@@ -53,23 +56,23 @@ class Helper
         return $str;
     }
 
-    public static function buildVmessLink($item, $user)
+    public static function buildVmessLink(Server $server, User $user)
     {
         $config = [
             "v" => "2",
-            "ps" => $item->name,
-            "add" => $item->host,
-            "port" => $item->port,
+            "ps" => $server->name,
+            "add" => $server->host,
+            "port" => $server->port,
             "id" => $user->v2ray_uuid,
             "aid" => "2",
-            "net" => $item->network,
+            "net" => $server->network,
             "type" => "none",
             "host" => "",
             "path" => "",
-            "tls" => $item->tls ? "tls" : ""
+            "tls" => $server->tls ? "tls" : ""
         ];
-        if ($item->network == 'ws') {
-            $wsSettings = json_decode($item->settings);
+        if ((string)$server->network === 'ws') {
+            $wsSettings = json_decode($server->networkSettings);
             if (isset($wsSettings->path)) $config['path'] = $wsSettings->path;
             if (isset($wsSettings->headers->Host)) $config['host'] = $wsSettings->headers->Host;
         }
