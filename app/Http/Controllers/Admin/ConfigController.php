@@ -18,7 +18,8 @@ class ConfigController extends Controller
                     'invite_force' => (int)config('v2board.invite_force', 0),
                     'invite_commission' => config('v2board.invite_commission', 10),
                     'invite_gen_limit' => config('v2board.invite_gen_limit', 5),
-                    'invite_never_expire' => config('v2board.invite_never_expire', 0)
+                    'invite_never_expire' => config('v2board.invite_never_expire', 0),
+                    'commission_first_time_enable' => config('v2board.commission_first_time_enable', 1)
                 ],
                 'site' => [
                     'safe_mode_enable' => (int)config('v2board.safe_mode_enable', 0),
