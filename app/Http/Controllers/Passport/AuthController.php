@@ -64,7 +64,7 @@ class AuthController extends Controller
                 }
             } else {
                 $user->invite_user_id = $inviteCode->user_id ? $inviteCode->user_id : null;
-                if (!(int)config('v2board.invite_never_expire', env('V2BOARD_INVITE_NEVER_EXPIRE'))) {
+                if (!(int)config('v2board.invite_never_expire', 0)) {
                     $inviteCode->status = 1;
                     $inviteCode->save();
                 }
