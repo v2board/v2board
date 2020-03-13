@@ -13,6 +13,7 @@ use App\Models\User;
 use App\Models\InviteCode;
 use App\Utils\Helper;
 use App\Utils\Dict;
+use App\Utils\CacheKey;
 
 class AuthController extends Controller
 {
@@ -35,11 +36,10 @@ class AuthController extends Controller
             }
         }
         if ((int)config('v2board.email_verify', 0)) {
-            $redisKey = 'sendEmailVerify:' . $request->input('email');
             if (empty($request->input('email_code'))) {
                 abort(500, '邮箱验证码不能为空');
             }
-            if (Cache::get($redisKey) !== $request->input('email_code')) {
+            if (Cache::get(CacheKey::get('EMAIL_VERIFY_CODE', $request->input('email'))) !== $request->input('email_code')) {
                 abort(500, '邮箱验证码有误');
             }
         }
@@ -86,7 +86,7 @@ class AuthController extends Controller
             abort(500, '注册失败');
         }
         if ((int)config('v2board.email_verify', 0)) {
-            Cache::forget($redisKey);
+            Cache::forget(CacheKey::get('EMAIL_VERIFY_CODE', $request->input('email')));
         }
         $request->session()->put('email', $user->email);
         $request->session()->put('id', $user->id);
@@ -189,8 +189,7 @@ class AuthController extends Controller
 
     public function forget(AuthForget $request)
     {
-        $redisKey = 'sendEmailVerify:' . $request->input('email');
-        if (Cache::get($redisKey) !== $request->input('email_code')) {
+        if (Cache::get(CacheKey::get('EMAIL_VERIFY_CODE', $request->input('email'))) !== $request->input('email_code')) {
             abort(500, '邮箱验证码有误');
         }
         $user = User::where('email', $request->input('email'))->first();
@@ -202,7 +201,7 @@ class AuthController extends Controller
         if (!$user->save()) {
             abort(500, '重置失败');
         }
-        Cache::forget($redisKey);
+        Cache::forget(CacheKey::get('EMAIL_VERIFY_CODE', $request->input('email')));
         return response([
             'data' => true
         ]);

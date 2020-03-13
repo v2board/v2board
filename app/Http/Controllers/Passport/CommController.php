@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Cache;
 use App\Jobs\SendEmail;
 use App\Models\InviteCode;
 use App\Utils\Dict;
+use App\Utils\CacheKey;
 
 class CommController extends Controller
 {
@@ -38,11 +39,10 @@ class CommController extends Controller
     public function sendEmailVerify(CommSendEmailVerify $request)
     {
         $email = $request->input('email');
-        $cacheKey = 'sendEmailVerify:' . $email;
-        if (Cache::get($cacheKey)) {
+        if (Cache::get(CacheKey::get('LAST_SEND_EMAIL_VERIFY_TIMESTAMP', $email))) {
             abort(500, '验证码已发送，请过一会再请求');
         }
-        $code = Helper::randomChar(6);
+        $code = rand(100000, 999999);
         $subject = config('v2board.app_name', 'V2Board') . '邮箱验证码';
 
         SendEmail::dispatch([
@@ -56,7 +56,8 @@ class CommController extends Controller
             ]
         ])->onQueue('verify_mail');
 
-        Cache::put($cacheKey, $code, 60);
+        Cache::put(CacheKey::get('EMAIL_VERIFY_CODE', $email), $code, 300);
+        Cache::put(CacheKey::get('LAST_SEND_EMAIL_VERIFY_TIMESTAMP', $email), time(), 60);
         return response([
             'data' => true
         ]);
