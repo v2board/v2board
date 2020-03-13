@@ -206,7 +206,7 @@ class OrderController extends Controller
         }
         // invite process
         if ($user->invite_user_id && $order->total_amount > 0) {
-            if (!((int)config('v2board.commission_first_time', 1) && Order::where('user_id', $user->id)->first())) {
+            if (!((int)config('v2board.commission_first_time', 1) && Order::where('user_id', $user->id)->where('status', 3)->first())) {
                 $order->invite_user_id = $user->invite_user_id;
                 $inviter = User::find($user->invite_user_id);
                 if ($inviter && $inviter->commission_rate) {
