@@ -48,7 +48,7 @@ class ClientController extends Controller
         foreach ($server as $item) {
             $uri .= "vmess=" . $item->host . ":" . $item->port . ", method=none, password=" . $user->v2ray_uuid . ", fast-open=false, udp-relay=false, tag=" . $item->name;
             if ($item->network == 'ws') {
-                $uri .= ', obfs=ws';
+                $uri .= ', obfs=' . $item->tls ? 'wss' : 'ws';
                 if ($item->networkSettings) {
                     $wsSettings = json_decode($item->networkSettings);
                     if (isset($wsSettings->path)) $uri .= ', obfs-uri=' . $wsSettings->path;
