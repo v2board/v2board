@@ -66,13 +66,16 @@ class ResetTraffic extends Command
     private function resetByExpireDay($user):void
     {
         $lastDay = date('d', strtotime('last day of +0 months'));
+        $users = [];
         foreach ($user->get() as $item) {
             $expireDay = date('d', $item->expired_at);
             if ($expireDay === date('d') || (string)$lastDay === '29' || (string)$lastDay === '30') {
-                $item->u = 0;
-                $item->d = 0;
-                $item->save();
+                array_push($users, $item->id);
             }
         }
+        $user->whereIn('id', $users)->update([
+            'u' => 0,
+            'd' => 0
+        ]);
     }
 }
