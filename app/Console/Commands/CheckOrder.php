@@ -73,16 +73,19 @@ class CheckOrder extends Command
     private function buyByCycle(Order $order, User $user, Plan $plan)
     {
         // change plan process
-        if ($order->type == 3) {
+        if ((int)$order->type === 3) {
             $user->expired_at = time();
         }
         if ($order->refund_amount) {
             $user->balance = $user->balance + $order->refund_amount;
         }
         $user->transfer_enable = $plan->transfer_enable * 1073741824;
-        if ((int)config('v2board.renew_reset_traffic_enable', 1)) {
-            $user->u = 0;
-            $user->d = 0;
+        // change plan not reset traffic
+        if (!(int)$order->type === 3) {
+            if ((int)config('v2board.renew_reset_traffic_enable', 1)) {
+                $user->u = 0;
+                $user->d = 0;
+            }
         }
         $user->plan_id = $plan->id;
         $user->group_id = $plan->group_id;
