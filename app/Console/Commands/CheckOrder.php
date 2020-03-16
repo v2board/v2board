@@ -64,7 +64,7 @@ class CheckOrder extends Command
     {
         $user = User::find($order->user_id);
         $plan = Plan::find($order->plan_id);
-        if ($order->cycle === 'onetime_price') {
+        if ((string)$order->cycle === 'onetime_price') {
             return $this->buyByOneTime($order, $user, $plan);
         }
         return $this->buyByCycle($order, $user, $plan);
@@ -80,12 +80,9 @@ class CheckOrder extends Command
             $user->balance = $user->balance + $order->refund_amount;
         }
         $user->transfer_enable = $plan->transfer_enable * 1073741824;
-        // change plan not reset traffic
-        if (!(int)$order->type === 3) {
-            if ((int)config('v2board.renew_reset_traffic_enable', 1)) {
-                $user->u = 0;
-                $user->d = 0;
-            }
+        if ((int)config('v2board.renew_reset_traffic_enable', 1)) {
+            $user->u = 0;
+            $user->d = 0;
         }
         $user->plan_id = $plan->id;
         $user->group_id = $plan->group_id;
