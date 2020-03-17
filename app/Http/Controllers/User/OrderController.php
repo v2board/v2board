@@ -222,14 +222,14 @@ class OrderController extends Controller
             $remainingBalance = $user->balance - $order->total_amount;
             $userService = new UserService();
             if ($remainingBalance > 0) {
-                if (!$userService->addBalance($order->user_id, $order->total_amount)) {
+                if (!$userService->addBalance($order->user_id, - $order->total_amount)) {
                     DB::rollBack();
                     abort(500, '余额不足');
                 }
                 $order->balance_amount = $order->total_amount;
                 $order->total_amount = 0;
             } else {
-                if (!$userService->addBalance($order->user_id, $user->balance)) {
+                if (!$userService->addBalance($order->user_id, - $user->balance)) {
                     DB::rollBack();
                     abort(500, '余额不足');
                 }
