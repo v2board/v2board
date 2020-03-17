@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\OrderSave;
+use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
@@ -162,8 +163,7 @@ class OrderController extends Controller
         $order->cycle = $request->input('cycle');
         $order->trade_no = Helper::guid();
         $order->total_amount = $plan[$request->input('cycle')];
-        // discount start
-        // coupon
+        // coupon start
         if (isset($coupon)) {
             switch ($coupon->type) {
                 case 1:
@@ -181,13 +181,13 @@ class OrderController extends Controller
                 }
             }
         }
-        // user
+        // coupon complete
+        // discount start
         if ($user->discount) {
             $order->discount_amount = $order->discount_amount + ($order->total_amount * ($user->discount / 100));
         }
-        // discount complete
-        $order->total_amount = $order->total_amount - $order->discount_amount;
         // discount end
+        $order->total_amount = $order->total_amount - $order->discount_amount;
         // renew and change subscribe process
         if ($user->plan_id !== NULL && $order->plan_id !== $user->plan_id) {
             if (!(int)config('v2board.plan_change_enable', 1)) abort(500, '目前不允许更改订阅，请联系客服或提交工单');
@@ -217,6 +217,27 @@ class OrderController extends Controller
                 }
             }
         }
+        // use balance
+        if ($user->balance && $order->total_amount > 0) {
+            $remainingBalance = $user->balance - $order->total_amount;
+            $userService = new UserService();
+            if ($remainingBalance > 0) {
+                if (!$userService->addBalance($order->user_id, $order->total_amount)) {
+                    DB::rollBack();
+                    abort(500, '余额不足');
+                }
+                $order->balance_amount = $order->total_amount;
+                $order->total_amount = 0;
+            } else {
+                if (!$userService->addBalance($order->user_id, $user->balance)) {
+                    DB::rollBack();
+                    abort(500, '余额不足');
+                }
+                $order->balance_amount = $user->balance;
+                $order->total_amount = $order->total_amount - $user->balance;
+            }
+        }
+
         if (!$order->save()) {
             DB::rollback();
             abort(500, '订单创建失败');

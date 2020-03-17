@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Services\OrderService;
 use Illuminate\Console\Command;
 use App\Models\Order;
 use App\Models\User;
@@ -42,14 +43,14 @@ class CheckOrder extends Command
      */
     public function handle()
     {
-        $order = Order::get();
-        foreach ($order as $item) {
+        $orders = Order::get();
+        foreach ($orders as $item) {
             switch ($item->status) {
                 // cancel
                 case 0:
                     if (strtotime($item->created_at) <= (time() - 1800)) {
-                        $item->status = 2;
-                        $item->save();
+                        $orderService = new OrderService($item);
+                        $orderService->cancel();
                     }
                     break;
                 case 1:
