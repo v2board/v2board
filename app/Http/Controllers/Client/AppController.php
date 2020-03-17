@@ -57,7 +57,7 @@ class AppController extends Controller
             abort(500, '参数错误');
         }
         $user = $request->user;
-        if ($user->expired_at < time() || $user->expired_at !== NULL) {
+        if ($user->expired_at < time() && $user->expired_at !== NULL) {
             abort(500, '订阅计划已过期');
         }
         $server = Server::where('show', 1)
