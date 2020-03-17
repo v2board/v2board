@@ -34,7 +34,9 @@ class CouponController extends Controller
                 abort(500, '创建失败');
             }
         } else {
-            if (!Coupon::find($request->input('id'))->update($params)) {
+            try {
+                Coupon::find($request->input('id'))->update($params);
+            } catch (\Exception $e) {
                 abort(500, '保存失败');
             }
         }

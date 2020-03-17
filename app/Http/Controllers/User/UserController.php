@@ -132,7 +132,9 @@ class UserController extends Controller
         if (!$user) {
             abort(500, '该用户不存在');
         }
-        if (!$user->update($updateData)) {
+        try {
+            $user->update($updateData);
+        } catch (\Exception $e) {
             abort(500, '保存失败');
         }
 

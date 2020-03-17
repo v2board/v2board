@@ -79,7 +79,10 @@ class UserController extends Controller
             }
             $params['group_id'] = $plan->group_id;
         }
-        if (!$user->update($params)) {
+
+        try {
+            $user->update($params);
+        } catch (\Exception $e) {
             abort(500, '保存失败');
         }
         return response([

@@ -64,7 +64,9 @@ class ServerController extends Controller
             if (!$server) {
                 abort(500, '服务器不存在');
             }
-            if (!$server->update($params)) {
+            try {
+                $server->update($params);
+            } catch (\Exception $e) {
                 abort(500, '保存失败');
             }
             return response([
@@ -163,7 +165,9 @@ class ServerController extends Controller
         if (!$server) {
             abort(500, '该服务器不存在');
         }
-        if (!$server->update($params)) {
+        try {
+            $server->update($params);
+        } catch (\Exception $e) {
             abort(500, '保存失败');
         }
 

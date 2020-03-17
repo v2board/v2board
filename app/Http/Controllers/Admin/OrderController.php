@@ -59,7 +59,9 @@ class OrderController extends Controller
             abort(500, '订单不存在');
         }
 
-        if (!$order->update($updateData)) {
+        try {
+            $order->update($updateData);
+        } catch (\Exception $e) {
             abort(500, '更新失败');
         }
 

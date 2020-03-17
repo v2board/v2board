@@ -30,9 +30,10 @@ class PlanController extends Controller
             }
             DB::beginTransaction();
             // update user group id
-            User::where('plan_id', $plan->id)
-                ->update(['group_id' => $plan->group_id]);
-            if (!$plan->update($params)) {
+            try {
+                User::where('plan_id', $plan->id)->update(['group_id' => $plan->group_id]);
+                $plan->update($params);
+            } catch (\Exception $e) {
                 DB::rollBack();
                 abort(500, '保存失败');
             }
@@ -79,7 +80,10 @@ class PlanController extends Controller
         if (!$plan) {
             abort(500, '该订阅不存在');
         }
-        if (!$plan->update($updateData)) {
+
+        try {
+            $plan->update($updateData);
+        } catch (\Exception $e) {
             abort(500, '保存失败');
         }
 
