@@ -197,3 +197,6 @@ CHANGE `network` `network` varchar(11) COLLATE 'utf8_general_ci' NOT NULL AFTER 
 CHANGE `networkSettings` `networkSettings` text COLLATE 'utf8_general_ci' NULL AFTER `network`,
 CHANGE `tls` `tls` tinyint(4) NOT NULL DEFAULT '0' AFTER `networkSettings`,
 ADD `tlsSettings` text COLLATE 'utf8_general_ci' NULL AFTER `tls`;
+
+ALTER TABLE `v2_order`
+ADD `balance_amount` int(11) NULL COMMENT '使用余额' AFTER `refund_amount`;
