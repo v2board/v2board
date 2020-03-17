@@ -14,20 +14,23 @@ class OrderService
         $this->order = $order;
     }
 
-    public function cancel():void
+    public function cancel():bool
     {
         $order = $this->order;
         DB::beginTransaction();
         $order->status = 2;
         if (!$order->save()) {
             DB::rollBack();
+            return false;
         }
         if ($order->balance_amount) {
             $userService = new UserService();
             if (!$userService->addBalance($order->user_id, $order->balance_amount)) {
                 DB::rollBack();
+                return false;
             }
         }
         DB::commit();
+        return true;
     }
 }

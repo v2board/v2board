@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\OrderSave;
+use App\Services\OrderService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -395,8 +396,8 @@ class OrderController extends Controller
         if ($order->status !== 0) {
             abort(500, '只可以取消待支付订单');
         }
-        $order->status = 2;
-        if (!$order->save()) {
+        $orderService = new OrderService($order);
+        if (!$orderService->cancel()) {
             abort(500, '取消失败');
         }
         return response([
