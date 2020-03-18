@@ -11,12 +11,12 @@ class ConfigController extends Controller
 {
     public function getEmailTemplate()
     {
-        $dirs = [];
-        foreach (glob(resource_path('views/mail')) as $file) {
-            array_push($dirs, $file);
-        }
+        $path = resource_path('views/mail/');
+        $files = array_map(function ($item) use ($path) {
+            return str_replace($path, '', $item);
+        }, glob($path . '*'));
         return response([
-            'data' => $dirs
+            'data' => $files
         ]);
     }
 
@@ -83,6 +83,9 @@ class ConfigController extends Controller
                 ],
                 'tutorial' => [
                     'apple_id' => config('v2board.apple_id')
+                ],
+                'email' => [
+                    'email_template' => config('v2board.email_template', 'default')
                 ]
             ]
         ]);

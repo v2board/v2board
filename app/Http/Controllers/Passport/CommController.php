@@ -9,7 +9,7 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Mail;
 use App\Utils\Helper;
 use Illuminate\Support\Facades\Cache;
-use App\Jobs\SendEmail;
+use App\Jobs\SendEmailJob;
 use App\Models\InviteCode;
 use App\Utils\Dict;
 use App\Utils\CacheKey;
@@ -45,10 +45,10 @@ class CommController extends Controller
         $code = rand(100000, 999999);
         $subject = config('v2board.app_name', 'V2Board') . '邮箱验证码';
 
-        SendEmail::dispatch([
+        SendEmailJob::dispatch([
             'email' => $email,
             'subject' => $subject,
-            'template_name' => 'mail.sendEmailVerify',
+            'template_name' => 'verify',
             'template_value' => [
                 'name' => config('v2board.app_name', 'V2Board'),
                 'code' => $code,

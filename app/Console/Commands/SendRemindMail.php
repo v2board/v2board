@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Models\User;
 use App\Models\MailLog;
-use App\Jobs\SendEmail;
+use App\Jobs\SendEmailJob;
 
 class SendRemindMail extends Command
 {
@@ -50,10 +50,10 @@ class SendRemindMail extends Command
     private function remindExpire($user)
     {
         if (($user->expired_at - 86400) < time() && $user->expired_at > time()) {
-            SendEmail::dispatch([
+            SendEmailJob::dispatch([
                 'email' => $user->email,
                 'subject' => '在' . config('v2board.app_name', 'V2board') . '的服务即将到期',
-                'template_name' => 'mail.sendRemindExpire',
+                'template_name' => 'remindExpire',
                 'template_value' => [
                     'name' => config('v2board.app_name', 'V2Board'),
                     'url' => config('v2board.app_url')
@@ -69,10 +69,10 @@ class SendRemindMail extends Command
                 ->where('template_name', 'mail.sendRemindTraffic')
                 ->count();
             if ($sendCount > 0) return;
-            SendEmail::dispatch([
+            SendEmailJob::dispatch([
                 'email' => $user->email,
                 'subject' => '在' . config('v2board.app_name', 'V2board') . '的流量使用已达到80%',
-                'template_name' => 'mail.sendRemindTraffic',
+                'template_name' => 'remindTraffic',
                 'template_value' => [
                     'name' => config('v2board.app_name', 'V2Board'),
                     'url' => config('v2board.app_url')
