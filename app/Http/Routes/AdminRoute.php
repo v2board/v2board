@@ -14,6 +14,7 @@ class AdminRoute
             // Config
             $router->get ('/config/fetch', 'Admin\\ConfigController@fetch');
             $router->post('/config/save', 'Admin\\ConfigController@save');
+            $router->get ('/config/getEmailTemplate', 'Admin\\ConfigController@getEmailTemplate');
             // Plan
             $router->get ('/plan/fetch', 'Admin\\PlanController@fetch');
             $router->post('/plan/save', 'Admin\\PlanController@save');

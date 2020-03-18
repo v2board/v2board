@@ -9,6 +9,17 @@ use App\Http\Controllers\Controller;
 
 class ConfigController extends Controller
 {
+    public function getEmailTemplate()
+    {
+        $dirs = [];
+        foreach (glob(resource_path('views/mail')) as $file) {
+            array_push($dirs, $file);
+        }
+        return response([
+            'data' => $dirs
+        ]);
+    }
+
     public function fetch()
     {
         // TODO: default should be in Dict
