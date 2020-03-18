@@ -54,7 +54,7 @@ class CommController extends Controller
                 'code' => $code,
                 'url' => config('v2board.app_url')
             ]
-        ])->onQueue('verify_mail');
+        ]);
 
         Cache::put(CacheKey::get('EMAIL_VERIFY_CODE', $email), $code, 300);
         Cache::put(CacheKey::get('LAST_SEND_EMAIL_VERIFY_TIMESTAMP', $email), time(), 60);
