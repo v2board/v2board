@@ -60,7 +60,7 @@ class OrderController extends Controller
             abort(500, '订单不存在');
         }
 
-        if ((int)$params['status'] === 2) {
+        if (isset($params['status']) && (int)$params['status'] === 2) {
             $orderService = new OrderService($order);
             if (!$orderService->cancel()) {
                 abort(500, '更新失败');
