@@ -8,20 +8,23 @@ class CORS
 {
     public function handle($request, Closure $next)
     {
-        $origin = $request->header('origin');
-        if (empty($origin)) {
-            $referer = $request->header('referer');
-            if (!empty($referer) && preg_match("/^((https|http):\/\/)?([^\/]+)/i", $referer, $matches)) {
-                $origin = $matches[0];
-            }
+        $domains = explode(',', config('cors.domain'));
+        if(!config('app.debug')){ #remove localhost when not debug
+            $domains = array_filter($domains,function ($domain){
+                if(!strpos($domain,"localhost")) {
+                    return ($domain);
+                }
+            });
         }
-        $response = $next($request);
-        $response->header('Access-Control-Allow-Origin', trim($origin, '/'));
-        $response->header('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
-        $response->header('Access-Control-Allow-Headers', 'Content-Type,X-Requested-With');
-        $response->header('Access-Control-Allow-Credentials', 'true');
-        $response->header('Access-Control-Max-Age', 10080);
 
-        return $response;
+        $origin = $request->header('origin');
+        if (in_array($origin, $domains)) {
+            header('Access-Control-Allow-Origin:'. $origin);
+            header('Access-Control-Allow-Methods:'. 'GET,POST,OPTIONS');
+            header('Access-Control-Allow-Headers:'. 'Content-Type,X-Requested-With');
+            header('Access-Control-Allow-Credentials:'. 'true');
+            header('Access-Control-Max-Age:'. 10080);
+        }
+        return $next($request);
     }
 }
