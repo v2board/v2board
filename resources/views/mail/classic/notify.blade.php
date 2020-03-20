@@ -125,7 +125,7 @@
                                         <td class="content-block"
                                             style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 16px; color: #4a4a4a; vertical-align: top; margin: 0; padding: 0 10px 20px;"
                                             valign="top">
-                                            {{$content}}
+                                            {!! nl2br($content) !!}
                                         </td>
                                     </tr>
                                     <tr
