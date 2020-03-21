@@ -125,7 +125,7 @@
                                         <td class="content-block"
                                             style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 16px; color: #4a4a4a; vertical-align: top; margin: 0; padding: 0 0 20px;"
                                             valign="top">
-                                            请填写以下验证码完成邮箱验证 (1分钟内有效)
+                                            请填写以下验证码完成邮箱验证 (5分钟内有效)
                                         </td>
                                     </tr>
                                     <tr
