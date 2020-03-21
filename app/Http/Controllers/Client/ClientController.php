@@ -68,7 +68,7 @@ class ClientController extends Controller
             $str = '';
             $str .= $item->name . '= vmess, ' . $item->host . ', ' . $item->port . ', chacha20-ietf-poly1305, "' . $user->v2ray_uuid . '", over-tls=' . ($item->tls ? "true" : "false") . ', certificate=0, group=' . config('v2board.app_name', 'V2Board');
             if ($item->network === 'ws') {
-                $str .= ', obfs=' . ($item->tls ? 'wss' : 'ws');
+                $str .= ', obfs=ws';
                 if ($item->networkSettings) {
                     $wsSettings = json_decode($item->networkSettings);
                     if (isset($wsSettings->path)) $str .= ', obfs-path="' . $wsSettings->path . '"';
