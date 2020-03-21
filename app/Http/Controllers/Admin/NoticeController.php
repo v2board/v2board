@@ -29,7 +29,9 @@ class NoticeController extends Controller
                 abort(500, '保存失败');
             }
         } else {
-            if (!Notice::find($request->input('id'))->update($data)) {
+            try {
+                Notice::find($request->input('id'))->update($data);
+            } catch (\Exception $e) {
                 abort(500, '保存失败');
             }
         }

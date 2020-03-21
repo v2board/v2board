@@ -25,7 +25,9 @@ class TutorialController extends Controller
                 abort(500, '创建失败');
             }
         } else {
-            if (!Tutorial::find($request->input('id'))->update($params)) {
+            try {
+                Tutorial::find($request->input('id'))->update($params);
+            } catch (\Exception $e) {
                 abort(500, '保存失败');
             }
         }

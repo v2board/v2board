@@ -10,7 +10,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Mail;
 use App\Models\MailLog;
 
-class SendEmail implements ShouldQueue
+class SendEmailJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
     protected $params;
@@ -22,6 +22,7 @@ class SendEmail implements ShouldQueue
      */
     public function __construct($params)
     {
+        $this->onQueue('send_email');
         $this->params = $params;
     }
 
@@ -35,6 +36,7 @@ class SendEmail implements ShouldQueue
         $params = $this->params;
         $email = $params['email'];
         $subject = $params['subject'];
+        $params['template_name'] = 'mail.' . config('v2board.email_template', 'default') . '.' . $params['template_name'];
         try {
             Mail::send(
                 $params['template_name'],

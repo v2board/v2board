@@ -45,7 +45,7 @@ class InviteController extends Controller
         $codes = InviteCode::where('user_id', $request->session()->get('id'))
             ->where('status', 0)
             ->get();
-        $commission_rate = config('v2board.invite_commission');
+        $commission_rate = config('v2board.invite_commission', 10);
         $user = User::find($request->session()->get('id'));
         if ($user->commission_rate) {
             $commission_rate = $user->commission_rate;

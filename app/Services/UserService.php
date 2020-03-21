@@ -47,4 +47,20 @@ class UserService
     {
         return User::all();
     }
+
+    public function addBalance(int $userId, int $balance):bool
+    {
+        $user = User::find($userId);
+        if (!$user) {
+            return false;
+        }
+        $user->balance = $user->balance + $balance;
+        if ($user->balance < 0) {
+            return false;
+        }
+        if (!$user->save()) {
+            return false;
+        }
+        return true;
+    }
 }

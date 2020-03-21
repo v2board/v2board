@@ -57,7 +57,7 @@ class AppController extends Controller
             abort(500, '参数错误');
         }
         $user = $request->user;
-        if ($user->expired_at < time()) {
+        if ($user->expired_at < time() && $user->expired_at !== NULL) {
             abort(500, '订阅计划已过期');
         }
         $server = Server::where('show', 1)
@@ -78,25 +78,25 @@ class AppController extends Controller
         $json->outbound->settings->vnext[0]->users[0]->alterId = (int)$user->v2ray_alter_id;
         $json->outbound->settings->vnext[0]->remark = (string)$server->name;
         $json->outbound->streamSettings->network = $server->network;
-        if ($server->settings) {
+        if ($server->networkSettings) {
             switch ($server->network) {
                 case 'tcp':
-                    $json->outbound->streamSettings->tcpSettings = json_decode($server->settings);
+                    $json->outbound->streamSettings->tcpSettings = json_decode($server->networkSettings);
                     break;
                 case 'kcp':
-                    $json->outbound->streamSettings->kcpSettings = json_decode($server->settings);
+                    $json->outbound->streamSettings->kcpSettings = json_decode($server->networkSettings);
                     break;
                 case 'ws':
-                    $json->outbound->streamSettings->wsSettings = json_decode($server->settings);
+                    $json->outbound->streamSettings->wsSettings = json_decode($server->networkSettings);
                     break;
                 case 'http':
-                    $json->outbound->streamSettings->httpSettings = json_decode($server->settings);
+                    $json->outbound->streamSettings->httpSettings = json_decode($server->networkSettings);
                     break;
                 case 'domainsocket':
-                    $json->outbound->streamSettings->dsSettings = json_decode($server->settings);
+                    $json->outbound->streamSettings->dsSettings = json_decode($server->networkSettings);
                     break;
                 case 'quic':
-                    $json->outbound->streamSettings->quicSettings = json_decode($server->settings);
+                    $json->outbound->streamSettings->quicSettings = json_decode($server->networkSettings);
                     break;
             }
         }

@@ -7,7 +7,6 @@ use Illuminate\Foundation\Http\FormRequest;
 class ServerSave extends FormRequest
 {
     CONST RULES = [
-        'rules' => '',
         'show' => '',
         'name' => 'required',
         'group_id' => 'required|array',
@@ -19,7 +18,9 @@ class ServerSave extends FormRequest
         'tags' => 'nullable|array',
         'rate' => 'required|numeric',
         'network' => 'required|in:tcp,kcp,ws,http,domainsocket,quic',
-        'settings' => ''
+        'networkSettings' => '',
+        'ruleSettings' => '',
+        'tlsSettings' => ''
     ];
     /**
      * Get the validation rules that apply to the request.

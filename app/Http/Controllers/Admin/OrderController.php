@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\Admin\OrderUpdate;
+use App\Services\OrderService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
@@ -48,7 +49,7 @@ class OrderController extends Controller
 
     public function update(OrderUpdate $request)
     {
-        $updateData = $request->only([
+        $params = $request->only([
             'status',
             'commission_status'
         ]);
@@ -59,7 +60,19 @@ class OrderController extends Controller
             abort(500, '订单不存在');
         }
 
-        if (!$order->update($updateData)) {
+        if (isset($params['status']) && (int)$params['status'] === 2) {
+            $orderService = new OrderService($order);
+            if (!$orderService->cancel()) {
+                abort(500, '更新失败');
+            }
+            return response([
+                'data' => true
+            ]);
+        }
+
+        try {
+            $order->update($params);
+        } catch (\Exception $e) {
             abort(500, '更新失败');
         }
 

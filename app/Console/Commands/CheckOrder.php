@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Services\OrderService;
 use Illuminate\Console\Command;
 use App\Models\Order;
 use App\Models\User;
@@ -42,14 +43,14 @@ class CheckOrder extends Command
      */
     public function handle()
     {
-        $order = Order::get();
-        foreach ($order as $item) {
+        $orders = Order::get();
+        foreach ($orders as $item) {
             switch ($item->status) {
                 // cancel
                 case 0:
                     if (strtotime($item->created_at) <= (time() - 1800)) {
-                        $item->status = 2;
-                        $item->save();
+                        $orderService = new OrderService($item);
+                        $orderService->cancel();
                     }
                     break;
                 case 1:
@@ -64,7 +65,7 @@ class CheckOrder extends Command
     {
         $user = User::find($order->user_id);
         $plan = Plan::find($order->plan_id);
-        if ($order->cycle === 'onetime_price') {
+        if ((string)$order->cycle === 'onetime_price') {
             return $this->buyByOneTime($order, $user, $plan);
         }
         return $this->buyByCycle($order, $user, $plan);
@@ -73,7 +74,7 @@ class CheckOrder extends Command
     private function buyByCycle(Order $order, User $user, Plan $plan)
     {
         // change plan process
-        if ($order->type == 3) {
+        if ((int)$order->type === 3) {
             $user->expired_at = time();
         }
         if ($order->refund_amount) {

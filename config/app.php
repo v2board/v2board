@@ -67,7 +67,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => 'Asia/Shanghai',
 
     /*
     |--------------------------------------------------------------------------
@@ -236,5 +236,5 @@ return [
     | The only modification by laravel config
     |
     */
-    'version' => '1.2.2'
+    'version' => '1.2.3'
 ];

@@ -6,7 +6,7 @@ use App\Http\Requests\Admin\MailSend;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Jobs\SendEmail;
+use App\Jobs\SendEmailJob;
 
 class MailController extends Controller
 {
@@ -28,16 +28,16 @@ class MailController extends Controller
         }
 
         foreach ($users as $user) {
-            SendEmail::dispatch([
+            SendEmailJob::dispatch([
                 'email' => $user->email,
                 'subject' => $request->input('subject'),
-                'template_name' => 'mail.sendEmailCustom',
+                'template_name' => 'notify',
                 'template_value' => [
                     'name' => config('v2board.app_name', 'V2Board'),
                     'url' => config('v2board.app_url'),
                     'content' => $request->input('content')
                 ]
-            ])->onQueue('other_mail');
+            ]);
         }
 
         return response([

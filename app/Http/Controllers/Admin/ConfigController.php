@@ -9,6 +9,17 @@ use App\Http\Controllers\Controller;
 
 class ConfigController extends Controller
 {
+    public function getEmailTemplate()
+    {
+        $path = resource_path('views/mail/');
+        $files = array_map(function ($item) use ($path) {
+            return str_replace($path, '', $item);
+        }, glob($path . '*'));
+        return response([
+            'data' => $files
+        ]);
+    }
+
     public function fetch()
     {
         // TODO: default should be in Dict
@@ -18,7 +29,8 @@ class ConfigController extends Controller
                     'invite_force' => (int)config('v2board.invite_force', 0),
                     'invite_commission' => config('v2board.invite_commission', 10),
                     'invite_gen_limit' => config('v2board.invite_gen_limit', 5),
-                    'invite_never_expire' => config('v2board.invite_never_expire', 0)
+                    'invite_never_expire' => config('v2board.invite_never_expire', 0),
+                    'commission_first_time_enable' => config('v2board.commission_first_time_enable', 1)
                 ],
                 'site' => [
                     'safe_mode_enable' => (int)config('v2board.safe_mode_enable', 0),
@@ -71,6 +83,9 @@ class ConfigController extends Controller
                 ],
                 'tutorial' => [
                     'apple_id' => config('v2board.apple_id')
+                ],
+                'email' => [
+                    'email_template' => config('v2board.email_template', 'default')
                 ]
             ]
         ]);

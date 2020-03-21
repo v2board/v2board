@@ -14,6 +14,7 @@ class AdminRoute
             // Config
             $router->get ('/config/fetch', 'Admin\\ConfigController@fetch');
             $router->post('/config/save', 'Admin\\ConfigController@save');
+            $router->get ('/config/getEmailTemplate', 'Admin\\ConfigController@getEmailTemplate');
             // Plan
             $router->get ('/plan/fetch', 'Admin\\PlanController@fetch');
             $router->post('/plan/save', 'Admin\\PlanController@save');
@@ -27,6 +28,7 @@ class AdminRoute
             $router->post('/server/group/drop', 'Admin\\ServerController@groupDrop');
             $router->post('/server/drop', 'Admin\\ServerController@drop');
             $router->post('/server/update', 'Admin\\ServerController@update');
+            $router->post('/server/copy', 'Admin\\ServerController@copy');
             // Order
             $router->get ('/order/fetch', 'Admin\\OrderController@fetch');
             $router->post('/order/repair', 'Admin\\OrderController@repair');
