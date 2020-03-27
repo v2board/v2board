@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 use Library\BitpayX;
 use Library\PayTaro;
+use Library\MaterialPay;
 
 class OrderController extends Controller
 {
@@ -132,6 +133,28 @@ class OrderController extends Controller
             abort(500, 'fail');
         }
         if (!$this->handle($request->input('out_trade_no'), $request->input('trade_no'))) {
+            abort(500, 'fail');
+        }
+        die('success');
+    }
+
+    public function materialpayNotify(Request $request)
+    {
+        Log::info('materialpayNotify: ' . json_encode($request->input()));
+        $materialpay = new MaterialPay(config('v2board.materialpay_secret'));
+
+    	$data['outTradeNo'] = $request->input('outTradeNo');
+    	$data['payAmount'] = number_format($request->input('payAmount'),2);
+    	$data['payType'] = $request->input('payType');
+    	$data['tradeNo'] = $request->input('tradeNo');
+        $data['tradeStatus'] = $request->input('tradeStatus');
+        $str_to_sign = $materialpay->prepareSign($data);
+
+        if(!$materialpay->verify($str_to_sign, $request->input('sign'))) {
+        	abort(500, 'fail');
+        }
+
+        if (!$this->handle($data['outTradeNo'], $request->input('tradeNo'))) {
             abort(500, 'fail');
         }
         die('success');
