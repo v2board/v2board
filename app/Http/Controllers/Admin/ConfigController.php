@@ -69,7 +69,12 @@ class ConfigController extends Controller
                     // paytaro
                     'paytaro_enable' => (int)config('v2board.paytaro_enable', 0),
                     'paytaro_app_id' => config('v2board.paytaro_app_id'),
-                    'paytaro_app_secret' => config('v2board.paytaro_app_secret')
+                    'paytaro_app_secret' => config('v2board.paytaro_app_secret'),
+                    // materialpay
+                    'materialpay_alipay_enable' => (int)config('v2board.materialpay_alipay_enable', 0),
+                    'materialpay_wxpay_enable' => (int)config('v2board.materialpay_wxpay_enable', 0),
+                    'materialpay_appId' => config('v2board.materialpay_appId'),
+                    'materialpay_secret' => config('v2board.materialpay_secret')
                 ],
                 'frontend' => [
                     'frontend_theme_sidebar' => config('v2board.frontend_theme_sidebar', 'light'),

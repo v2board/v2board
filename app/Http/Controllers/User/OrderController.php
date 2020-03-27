@@ -20,6 +20,7 @@ use Stripe\Stripe;
 use Stripe\Source;
 use Library\BitpayX;
 use Library\PayTaro;
+use Library\MaterialPay;
 
 class OrderController extends Controller
 {
@@ -315,6 +316,24 @@ class OrderController extends Controller
                     'type' => 1,
                     'data' => $this->payTaro($order)
                 ]);
+            case 6:
+                // materialpay Alipay
+                if (!(int)config('v2board.materialpay_alipay_enable')) {
+                    abort(500, '支付方式不可用');
+                }
+                return response([
+                    'type' => 1,
+                    'data' => $this->materialAlipay($order)
+                ]);
+            case 7:
+                // materialpay Wxpay
+                if (!(int)config('v2board.materialpay_wxpay_enable')) {
+                    abort(500, '支付方式不可用');
+                }
+                return response([
+                    'type' => 0,
+                    'data' => $this->materialWxpay($order)
+                ]);
             default:
                 abort(500, '支付方式不存在');
         }
@@ -374,6 +393,22 @@ class OrderController extends Controller
             $obj->name = '聚合支付';
             $obj->method = 5;
             $obj->icon = 'wallet';
+            array_push($data, $obj);
+        }
+
+        if ((int)config('v2board.materialpay_alipay_enable')) {
+            $obj = new \StdClass();
+            $obj->name = '支付宝';
+            $obj->method = 6;
+            $obj->icon = 'alipay';
+            array_push($data, $obj);
+        }
+
+        if ((int)config('v2board.materialpay_wxpay_enable')) {
+            $obj = new \StdClass();
+            $obj->name = '微信';
+            $obj->method = 7;
+            $obj->icon = 'wechat';
             array_push($data, $obj);
         }
 
@@ -522,5 +557,57 @@ class OrderController extends Controller
             'return_url' => config('v2board.app_url', env('APP_URL')) . '/#/order'
         ]);
         return $result;
+    }
+
+    private function materialAlipay($order)
+    {
+        $materialpay = new MaterialPay(config('v2board.materialpay_secret'));
+        $params['appId'] = config('v2board.materialpay_appId');
+        $params['outTradeNo'] = $order->trade_no;
+        $params['payAmount'] = number_format($order->total_amount/100,2);
+        if ($this->isMobile()){
+    		$params['payType'] = "ALIPAY_WAP";
+    	} else {
+    		$params['payType'] = "ALIPAY_WEB";
+    	}
+        $str_to_sign = $materialpay->prepareSign($params);
+        $params['sign'] = $materialpay->sign($str_to_sign);
+        $params['returnUrl'] = config('v2board.app_url', env('APP_URL')) . '/#/order';
+
+        $result = $materialpay->create($params);
+        return $result;
+    }
+
+    private function materialWxpay($order)
+    {
+        $materialpay = new MaterialPay(config('v2board.materialpay_secret'));
+        $params['appId'] = config('v2board.materialpay_appId');
+        $params['outTradeNo'] = $order->trade_no;
+        $params['payAmount'] = number_format($order->total_amount/100,2);
+        $params['payType'] = "WXPAY";
+        $str_to_sign = $materialpay->prepareSign($params);
+        $params['sign'] = $materialpay->sign($str_to_sign);
+
+        $result = $materialpay->create($params);
+        return $result;
+    }
+
+    function isMobile(){
+        if (isset ($_SERVER['HTTP_X_WAP_PROFILE'])){
+            return TRUE;
+        }
+        if (isset ($_SERVER['HTTP_USER_AGENT'])) {
+            $clientkeywords = array ('mobile','nokia','sony','ericsson','mot','samsung','htc','sgh','lg','sharp','sie-','philips','panasonic','alcatel','lenovo','iphone','ipod','blackberry','meizu','android','netfront','symbian','ucweb','windowsce','palm','operamini','operamobi','openwave','nexusone','cldc','midp','wap'
+                );
+            if (preg_match("/(" . implode('|', $clientkeywords) . ")/i", strtolower($_SERVER['HTTP_USER_AGENT']))){
+                return TRUE;
+            }
+        }
+        if (isset ($_SERVER['HTTP_ACCEPT'])){
+            if ((strpos($_SERVER['HTTP_ACCEPT'], 'vnd.wap.wml') !== FALSE) && (strpos($_SERVER['HTTP_ACCEPT'], 'text/html') === FALSE || (strpos($_SERVER['HTTP_ACCEPT'], 'vnd.wap.wml') < strpos($_SERVER['HTTP_ACCEPT'], 'text/html')))){
+                return TRUE;
+            }
+        }
+        return FALSE;
     }
 }

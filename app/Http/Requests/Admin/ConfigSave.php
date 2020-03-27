@@ -52,6 +52,11 @@ class ConfigSave extends FormRequest
         'paytaro_enable' => 'in:0,1',
         'paytaro_app_id' => '',
         'paytaro_app_secret' => '',
+        // materialpay
+        'materialpay_alipay_enable' => 'in:0,1',
+        'materialpay_wxpay_enable' => 'in:0,1',
+        'materialpay_appId' => '',
+        'materialpay_secret' => '',
         // frontend
         'frontend_theme_sidebar' => 'in:dark,light',
         'frontend_theme_header' => 'in:dark,light',

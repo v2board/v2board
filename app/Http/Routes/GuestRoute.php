@@ -17,6 +17,7 @@ class GuestRoute
             $router->post('/order/stripeNotify', 'Guest\\OrderController@stripeNotify');
             $router->post('/order/bitpayXNotify', 'Guest\\OrderController@bitpayXNotify');
             $router->post('/order/payTaroNotify', 'Guest\\OrderController@payTaroNotify');
+            $router->post('/order/materialpayNotify', 'Guest\\OrderController@materialpayNotify');
         });
     }
 }
