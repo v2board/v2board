@@ -100,6 +100,9 @@ class OrderController extends Controller
     {
         $dayPrice = 0;
         $day = ($user->expired_at - time()) / 86400;
+        if ($day <= 0) {
+            return 0;
+        }
         if ($plan->month_price) {
             $dayPrice = $plan->month_price / $day;
         } else if ($plan->quarter_price) {
