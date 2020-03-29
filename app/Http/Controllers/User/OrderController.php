@@ -98,21 +98,21 @@ class OrderController extends Controller
     private function getSurplusValueByCycle(User $user, Plan $plan)
     {
         $dayPrice = 0;
+        $day = ($user->expired_at - time()) / 86400;
         if ($plan->month_price) {
-            $dayPrice = $plan->month_price / 2592000;
+            $dayPrice = $plan->month_price / $day;
         } else if ($plan->quarter_price) {
-            $dayPrice = $plan->quarter_price / 7862400;
+            $dayPrice = $plan->quarter_price / $day;
         } else if ($plan->half_year_price) {
-            $dayPrice = $plan->half_year_price / 15811200;
+            $dayPrice = $plan->half_year_price / $day;
         } else if ($plan->year_price) {
-            $dayPrice = $plan->year_price / 31536000;
+            $dayPrice = $plan->year_price / $day;
         }
         // exclude discount
         if ($user->discount && $dayPrice) {
             $dayPrice = $dayPrice - ($dayPrice * $user->discount / 100);
         }
-        $remainingDay = $user->expired_at - time();
-        $result = $remainingDay * $dayPrice;
+        $result = $day * $dayPrice;
         return $result > 0 ? $result : 0;
     }
 
