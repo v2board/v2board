@@ -77,9 +77,10 @@ class OrderController extends Controller
     private function getSurplusValue(User $user)
     {
         $plan = Plan::find($user->plan_id);
-        switch ($plan->type) {
-            case 0: return $this->getSurplusValueByCycle($user, $plan);
-            case 1: return $this->getSurplusValueByOneTime($user, $plan);
+        if ($user->expired_at === NULL) {
+            return $this->getSurplusValueByOneTime($user, $plan);
+        } else {
+            return $this->getSurplusValueByCycle($user, $plan);
         }
     }
 
