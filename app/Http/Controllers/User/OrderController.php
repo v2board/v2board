@@ -98,10 +98,6 @@ class OrderController extends Controller
     private function getSurplusValueByCycle(User $user, Plan $plan)
     {
         $price = 0;
-        $sec = 31536000;
-        if (!((int)date('Y') % 4)) {
-            $sec = 31622400;
-        }
         if ($plan->month_price) {
             $price = $plan->month_price / (31536000 / 12);
         } else if ($plan->quarter_price) {
