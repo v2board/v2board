@@ -86,7 +86,6 @@ class OrderController extends Controller
 
     private function getSurplusValueByOneTime(User $user, Plan $plan)
     {
-        $trafficUnitPrice = 0;
         $trafficUnitPrice = $plan->onetime_price / $plan->transfer_enable;
         if ($user->discount && $trafficUnitPrice) {
             $trafficUnitPrice = $trafficUnitPrice - ($trafficUnitPrice * $user->discount / 100);
@@ -98,25 +97,26 @@ class OrderController extends Controller
 
     private function getSurplusValueByCycle(User $user, Plan $plan)
     {
-        $dayPrice = 0;
-        $day = ($user->expired_at - time()) / 86400;
-        if ($day <= 0) {
-            return 0;
+        $price = 0;
+        $sec = 31536000;
+        if (!((int)date('Y') % 4)) {
+            $sec = 31622400;
         }
         if ($plan->month_price) {
-            $dayPrice = $plan->month_price / $day;
+            $price = $plan->month_price / (31536000 / 12);
         } else if ($plan->quarter_price) {
-            $dayPrice = $plan->quarter_price / $day;
+            $price = $plan->quarter_price / (31536000 / 4);
         } else if ($plan->half_year_price) {
-            $dayPrice = $plan->half_year_price / $day;
+            $price = $plan->half_year_price / (31536000 / 2);
         } else if ($plan->year_price) {
-            $dayPrice = $plan->year_price / $day;
+            $price = $plan->year_price / 31536000;
         }
         // exclude discount
-        if ($user->discount && $dayPrice) {
-            $dayPrice = $dayPrice - ($dayPrice * $user->discount / 100);
+        if ($user->discount && $price) {
+            $price = $price - ($price * $user->discount / 100);
         }
-        $result = $day * $dayPrice;
+        $remainingDay = $user->expired_at - time();
+        $result = $remainingDay * $price;
         return $result > 0 ? $result : 0;
     }
 
