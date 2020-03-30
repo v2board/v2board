@@ -42,6 +42,12 @@ class ServerController extends Controller
             $params['tags'] = json_encode($params['tags']);
         }
 
+        if (isset($params['dnsSettings'])) {
+            if (!is_object(json_decode($params['dnsSettings']))) {
+                abort(500, 'DNS规则配置格式不正确');
+            }
+        }
+
         if (isset($params['ruleSettings'])) {
             if (!is_object(json_decode($params['ruleSettings']))) {
                 abort(500, '审计规则配置格式不正确');
