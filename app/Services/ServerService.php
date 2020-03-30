@@ -43,6 +43,22 @@ class ServerService
         $json->inboundDetour[0]->port = (int)$localPort;
         $json->inbound->port = (int)$server->server_port;
         $json->inbound->streamSettings->network = $server->network;
+        $json = $this->setNetwork($server, $json);
+        $json = $this->setRule($server, $json);
+        $json = $this->setTls($server, $json);
+
+        return $json;
+    }
+
+    private function setDns(Server $server, object $json)
+    {
+        if ($server->dnsSettings) {
+
+        }
+    }
+
+    private function setNetwork(Server $server, object $json)
+    {
         if ($server->networkSettings) {
             switch ($server->network) {
                 case 'tcp':
@@ -64,8 +80,12 @@ class ServerService
                     $json->inbound->streamSettings->quicSettings = json_decode($server->networkSettings);
                     break;
             }
+            return $json;
         }
+    }
 
+    private function setRule(Server $server, object  $json)
+    {
         if ($server->ruleSettings) {
             $rules = json_decode($server->ruleSettings);
             // domain
@@ -84,8 +104,12 @@ class ServerService
                 $protocolObj->outboundTag = 'block';
                 array_push($json->routing->rules, $protocolObj);
             }
+            return $json;
         }
+    }
 
+    private function setTls(Server $server, object $json)
+    {
         if ((int)$server->tls) {
             $tlsSettings = json_decode($server->tlsSettings);
             $json->inbound->streamSettings->security = 'tls';
@@ -101,8 +125,7 @@ class ServerService
                 $json->inbound->streamSettings->tlsSettings->allowInsecure = (int)$tlsSettings->allowInsecure ? true : false;
             }
             $json->inbound->streamSettings->tlsSettings->certificates[0] = $tls;
+            return $json;
         }
-
-        return $json;
     }
 }

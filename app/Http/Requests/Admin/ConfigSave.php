@@ -44,7 +44,7 @@ class ConfigSave extends FormRequest
         'stripe_sk_live' => '',
         'stripe_pk_live' => '',
         'stripe_webhook_key' => '',
-        'stripe_currency' => 'in:hkd,usd,sgd',
+        'stripe_currency' => 'in:hkd,usd,sgd,eur',
         // bitpayx
         'bitpayx_enable' => 'in:0,1',
         'bitpayx_appsecret' => '',
