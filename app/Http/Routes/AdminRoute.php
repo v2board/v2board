@@ -29,6 +29,7 @@ class AdminRoute
             $router->post('/server/drop', 'Admin\\ServerController@drop');
             $router->post('/server/update', 'Admin\\ServerController@update');
             $router->post('/server/copy', 'Admin\\ServerController@copy');
+            $router->post('/server/viewConfig', 'Admin\\ServerController@viewConfig');
             // Order
             $router->get ('/order/fetch', 'Admin\\OrderController@fetch');
             $router->post('/order/repair', 'Admin\\OrderController@repair');

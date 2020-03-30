@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\Admin\ServerSave;
 use App\Http\Requests\Admin\ServerUpdate;
+use App\Services\ServerService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\ServerGroup;
@@ -189,5 +190,12 @@ class ServerController extends Controller
         return response([
             'data' => true
         ]);
+    }
+
+    public function viewConfig(Request $request)
+    {
+        $serverService = new ServerService();
+        $config = $serverService->getConfig($request->input('node_id'), 23333);
+        die(json_encode($config, JSON_UNESCAPED_UNICODE));
     }
 }
