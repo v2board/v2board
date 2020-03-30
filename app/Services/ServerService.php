@@ -43,9 +43,9 @@ class ServerService
         $json->inboundDetour[0]->port = (int)$localPort;
         $json->inbound->port = (int)$server->server_port;
         $json->inbound->streamSettings->network = $server->network;
-        $json = $this->setNetwork($server, $json);
-        $json = $this->setRule($server, $json);
-        $json = $this->setTls($server, $json);
+        $this->setNetwork($server, $json);
+        $this->setRule($server, $json);
+        $this->setTls($server, $json);
 
         return $json;
     }
@@ -81,7 +81,6 @@ class ServerService
                     break;
             }
         }
-        return $json;
     }
 
     private function setRule(Server $server, object $json)
@@ -105,7 +104,6 @@ class ServerService
                 array_push($json->routing->rules, $protocolObj);
             }
         }
-        return $json;
     }
 
     private function setTls(Server $server, object $json)
@@ -126,6 +124,5 @@ class ServerService
             }
             $json->inbound->streamSettings->tlsSettings->certificates[0] = $tls;
         }
-        return $json;
     }
 }
