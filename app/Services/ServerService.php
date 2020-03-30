@@ -80,11 +80,11 @@ class ServerService
                     $json->inbound->streamSettings->quicSettings = json_decode($server->networkSettings);
                     break;
             }
-            return $json;
         }
+        return $json;
     }
 
-    private function setRule(Server $server, object  $json)
+    private function setRule(Server $server, object $json)
     {
         if ($server->ruleSettings) {
             $rules = json_decode($server->ruleSettings);
@@ -104,8 +104,8 @@ class ServerService
                 $protocolObj->outboundTag = 'block';
                 array_push($json->routing->rules, $protocolObj);
             }
-            return $json;
         }
+        return $json;
     }
 
     private function setTls(Server $server, object $json)
@@ -125,7 +125,7 @@ class ServerService
                 $json->inbound->streamSettings->tlsSettings->allowInsecure = (int)$tlsSettings->allowInsecure ? true : false;
             }
             $json->inbound->streamSettings->tlsSettings->certificates[0] = $tls;
-            return $json;
         }
+        return $json;
     }
 }
