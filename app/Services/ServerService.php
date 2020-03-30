@@ -43,6 +43,7 @@ class ServerService
         $json->inboundDetour[0]->port = (int)$localPort;
         $json->inbound->port = (int)$server->server_port;
         $json->inbound->streamSettings->network = $server->network;
+        $this->setDns($server, $json);
         $this->setNetwork($server, $json);
         $this->setRule($server, $json);
         $this->setTls($server, $json);
@@ -54,7 +55,7 @@ class ServerService
     {
         if ($server->dnsSettings) {
             $dns = json_decode($server->dnsSettings);
-
+            $json->dns = $dns;
         }
     }
 
