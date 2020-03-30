@@ -196,6 +196,8 @@ class ServerController extends Controller
     {
         $serverService = new ServerService();
         $config = $serverService->getConfig($request->input('node_id'), 23333);
-        die(json_encode($config, JSON_UNESCAPED_UNICODE));
+        return response([
+            'data' => $config
+        ]);
     }
 }
