@@ -69,11 +69,16 @@ class ResetTraffic extends Command
         $users = [];
         foreach ($user->get() as $item) {
             $expireDay = date('d', $item->expired_at);
-            if ($expireDay === date('d') || (string)$lastDay === '29' || (string)$lastDay === '30') {
+            $today = date('d');
+            if ($expireDay === $today) {
+                array_push($users, $item->id);
+            }
+
+            if (($today === $lastDay) && in_array($expireDay, ['29', '30', '31'])) {
                 array_push($users, $item->id);
             }
         }
-        $user->whereIn('id', $users)->update([
+        User::whereIn('id', $users)->update([
             'u' => 0,
             'd' => 0
         ]);
