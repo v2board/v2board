@@ -74,7 +74,7 @@ class ResetTraffic extends Command
                 array_push($users, $item->id);
             }
 
-            if (($today === $lastDay) && in_array($expireDay, ['29', '30', '31'])) {
+            if (($today === $lastDay) && $expireDay >= $lastDay) {
                 array_push($users, $item->id);
             }
         }
