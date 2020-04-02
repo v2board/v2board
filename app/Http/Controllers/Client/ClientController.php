@@ -110,7 +110,7 @@ class ClientController extends Controller
                     if (isset($wsSettings->headers->Host)) $proxies .= ', ws-headers=' . $wsSettings->headers->Host;
                 }
             }
-            $proxies .= '\r\n';
+            $proxies .= "\r\n";
             // [Proxy Group]
             $proxyGroup .= $item->name . ', ';
         }
