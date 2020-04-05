@@ -49,7 +49,7 @@ class SendRemindMail extends Command
 
     private function remindExpire($user)
     {
-        if (($user->expired_at - 86400) < time() && $user->expired_at > time()) {
+        if ($user->expired_at !== NULL && ($user->expired_at - 86400) < time() && $user->expired_at > time()) {
             SendEmailJob::dispatch([
                 'email' => $user->email,
                 'subject' => '在' . config('v2board.app_name', 'V2board') . '的服务即将到期',
