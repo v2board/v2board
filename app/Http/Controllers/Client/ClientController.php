@@ -124,7 +124,7 @@ class ClientController extends Controller
 
         // Subscription link
         $subsURL = 'http';
-        if ($_SERVER['HTTPS'] == 'on') {
+        if (isset( $_SERVER['HTTPS'] ) && strtolower( $_SERVER['HTTPS'] ) == 'on') {
             $subsURL .= 's';
         }
         $subsURL .= '://';
