@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\UserUpdate;
+use App\Http\Requests\User\UserChangePassword;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Plan;
@@ -23,14 +24,8 @@ class UserController extends Controller
         ]);
     }
 
-    public function changePassword(Request $request)
+    public function changePassword(UserChangePassword $request)
     {
-        if (empty($request->input('old_password'))) {
-            abort(500, '旧密码不能为空');
-        }
-        if (empty($request->input('new_password'))) {
-            abort(500, '新密码不能为空');
-        }
         $user = User::find($request->session()->get('id'));
         if (!Helper::multiPasswordVerify(
             $user->password_algo,
