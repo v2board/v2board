@@ -77,15 +77,15 @@ class OrderController extends Controller
     private function getSurplusValue(User $user)
     {
         $plan = Plan::find($user->plan_id);
-        switch ($plan->type) {
-            case 0: return $this->getSurplusValueByCycle($user, $plan);
-            case 1: return $this->getSurplusValueByOneTime($user, $plan);
+        if ($user->expired_at === NULL) {
+            return $this->getSurplusValueByOneTime($user, $plan);
+        } else {
+            return $this->getSurplusValueByCycle($user, $plan);
         }
     }
 
     private function getSurplusValueByOneTime(User $user, Plan $plan)
     {
-        $trafficUnitPrice = 0;
         $trafficUnitPrice = $plan->onetime_price / $plan->transfer_enable;
         if ($user->discount && $trafficUnitPrice) {
             $trafficUnitPrice = $trafficUnitPrice - ($trafficUnitPrice * $user->discount / 100);
@@ -97,22 +97,22 @@ class OrderController extends Controller
 
     private function getSurplusValueByCycle(User $user, Plan $plan)
     {
-        $dayPrice = 0;
+        $price = 0;
         if ($plan->month_price) {
-            $dayPrice = $plan->month_price / 2592000;
+            $price = $plan->month_price / (31536000 / 12);
         } else if ($plan->quarter_price) {
-            $dayPrice = $plan->quarter_price / 7862400;
+            $price = $plan->quarter_price / (31536000 / 4);
         } else if ($plan->half_year_price) {
-            $dayPrice = $plan->half_year_price / 15811200;
+            $price = $plan->half_year_price / (31536000 / 2);
         } else if ($plan->year_price) {
-            $dayPrice = $plan->year_price / 31536000;
+            $price = $plan->year_price / 31536000;
         }
         // exclude discount
-        if ($user->discount && $dayPrice) {
-            $dayPrice = $dayPrice - ($dayPrice * $user->discount / 100);
+        if ($user->discount && $price) {
+            $price = $price - ($price * $user->discount / 100);
         }
         $remainingDay = $user->expired_at - time();
-        $result = $remainingDay * $dayPrice;
+        $result = $remainingDay * $price;
         return $result > 0 ? $result : 0;
     }
 
@@ -431,7 +431,7 @@ class OrderController extends Controller
 
     private function stripeAlipay($order)
     {
-        $currency = config('stripe_currency', 'hkd');
+        $currency = config('v2board.stripe_currency', 'hkd');
         $exchange = Helper::exchange('CNY', strtoupper($currency));
         if (!$exchange) {
             abort(500, '货币转换超时，请稍后再试');
@@ -463,7 +463,7 @@ class OrderController extends Controller
 
     private function stripeWepay($order)
     {
-        $currency = config('stripe_currency', 'hkd');
+        $currency = config('v2board.stripe_currency', 'hkd');
         $exchange = Helper::exchange('CNY', strtoupper($currency));
         if (!$exchange) {
             abort(500, '货币转换超时，请稍后再试');

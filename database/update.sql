@@ -200,3 +200,7 @@ ADD `tlsSettings` text COLLATE 'utf8_general_ci' NULL AFTER `tls`;
 
 ALTER TABLE `v2_order`
 ADD `balance_amount` int(11) NULL COMMENT '使用余额' AFTER `refund_amount`;
+
+ALTER TABLE `v2_server`
+CHANGE `network` `network` text COLLATE 'utf8_general_ci' NOT NULL AFTER `rate`,
+ADD `dnsSettings` text COLLATE 'utf8_general_ci' NULL AFTER `ruleSettings`;

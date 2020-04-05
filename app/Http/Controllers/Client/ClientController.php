@@ -38,6 +38,12 @@ class ClientController extends Controller
             if (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'clash') !== false) {
                 die($this->clash($user, $server));
             }
+            if (strpos($_SERVER['HTTP_USER_AGENT'], 'Surfboard') !== false) {
+                die($this->surge($user, $server));
+            }
+            if (strpos($_SERVER['HTTP_USER_AGENT'], 'Surge') !== false) {
+                die($this->surge($user, $server));
+            }
         }
         die($this->origin($user, $server));
     }
@@ -87,6 +93,51 @@ class ClientController extends Controller
             $uri .= Helper::buildVmessLink($item, $user);
         }
         return base64_encode($uri);
+    }
+
+    private function surge($user, $server)
+    {
+        $proxies = '';
+        $proxyGroup = '';
+        foreach ($server as $item) {
+            // [Proxy]
+            $proxies .= $item->name . ' = vmess, ' . $item->host . ', ' . $item->port . ', username=' . $user->v2ray_uuid . ', tls=' . ($item->tls ? "true" : "false");
+            if ($item->network == 'ws') {
+                $proxies .= ', ws=true';
+                if ($item->networkSettings) {
+                    $wsSettings = json_decode($item->networkSettings);
+                    if (isset($wsSettings->path)) $proxies .= ', ws-path=' . $wsSettings->path;
+                    if (isset($wsSettings->headers->Host)) $proxies .= ', ws-headers=' . $wsSettings->headers->Host;
+                }
+            }
+            $proxies .= "\r\n";
+            // [Proxy Group]
+            $proxyGroup .= $item->name . ', ';
+        }
+
+        try {
+            $rules = '';
+            foreach (glob(base_path() . '/resources/rules/' . '*.surge.conf') as $file) {
+                $rules = file_get_contents("$file");
+            }
+        } catch (\Exception $e) {}
+
+        // Subscription link
+        $subsURL = 'http';
+        if (isset( $_SERVER['HTTPS'] ) && strtolower( $_SERVER['HTTPS'] ) == 'on') {
+            $subsURL .= 's';
+        }
+        $subsURL .= '://';
+        if ($_SERVER['SERVER_PORT'] != ('80' || '443')) {
+            $subsURL .= $_SERVER['SERVER_NAME'] . ':' . $_SERVER['SERVER_PORT'] . $_SERVER['REQUEST_URI'];
+        } else {
+            $subsURL .= $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
+        }
+
+        $rules = str_replace('{subs_link}',$subsURL,$rules);
+        $rules = str_replace('{proxies}',$proxies,$rules);
+        $rules = str_replace('{proxy_group}',rtrim($proxyGroup, ', '),$rules);
+        return $rules;
     }
 
     private function clash($user, $server)

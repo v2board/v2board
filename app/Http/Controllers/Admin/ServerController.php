@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\Admin\ServerSave;
 use App\Http\Requests\Admin\ServerUpdate;
+use App\Services\ServerService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\ServerGroup;
@@ -39,6 +40,12 @@ class ServerController extends Controller
         $params['group_id'] = json_encode($params['group_id']);
         if (isset($params['tags'])) {
             $params['tags'] = json_encode($params['tags']);
+        }
+
+        if (isset($params['dnsSettings'])) {
+            if (!is_object(json_decode($params['dnsSettings']))) {
+                abort(500, 'DNS规则配置格式不正确');
+            }
         }
 
         if (isset($params['ruleSettings'])) {
@@ -188,6 +195,15 @@ class ServerController extends Controller
 
         return response([
             'data' => true
+        ]);
+    }
+
+    public function viewConfig(Request $request)
+    {
+        $serverService = new ServerService();
+        $config = $serverService->getConfig($request->input('node_id'), 23333);
+        return response([
+            'data' => $config
         ]);
     }
 }

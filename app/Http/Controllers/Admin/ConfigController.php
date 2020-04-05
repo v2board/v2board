@@ -106,6 +106,9 @@ class ConfigController extends Controller
             abort(500, '修改失败');
         }
         \Artisan::call('config:cache');
+        if (function_exists('opcache')) {
+            opcache_reset();
+        }
         return response([
             'data' => true
         ]);

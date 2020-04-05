@@ -20,7 +20,8 @@ class ServerSave extends FormRequest
         'network' => 'required|in:tcp,kcp,ws,http,domainsocket,quic',
         'networkSettings' => '',
         'ruleSettings' => '',
-        'tlsSettings' => ''
+        'tlsSettings' => '',
+        'dnsSettings' => ''
     ];
     /**
      * Get the validation rules that apply to the request.

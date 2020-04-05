@@ -8,7 +8,7 @@ use App\Models\Server;
 class ServerService
 {
 
-    CONST SERVER_CONFIG = '{"api":{"services":["HandlerService","StatsService"],"tag":"api"},"stats":{},"inbound":{"port":443,"protocol":"vmess","settings":{"clients":[]},"sniffing":{"enabled": true,"destOverride": ["http","tls"]},"streamSettings":{"network":"tcp"},"tag":"proxy"},"inboundDetour":[{"listen":"0.0.0.0","port":23333,"protocol":"dokodemo-door","settings":{"address":"0.0.0.0"},"tag":"api"}],"log":{"loglevel":"debug","access":"access.log","error":"error.log"},"outbound":{"protocol":"freedom","settings":{}},"outboundDetour":[{"protocol":"blackhole","settings":{},"tag":"block"}],"routing":{"rules":[{"inboundTag":"api","outboundTag":"api","type":"field"}]},"policy":{"levels":{"0":{"handshake":4,"connIdle":300,"uplinkOnly":5,"downlinkOnly":30,"statsUserUplink":true,"statsUserDownlink":true}}}}';
+    CONST SERVER_CONFIG = '{"api":{"services":["HandlerService","StatsService"],"tag":"api"},"dns":{},"stats":{},"inbound":{"port":443,"protocol":"vmess","settings":{"clients":[]},"sniffing":{"enabled":true,"destOverride":["http","tls"]},"streamSettings":{"network":"tcp"},"tag":"proxy"},"inboundDetour":[{"listen":"0.0.0.0","port":23333,"protocol":"dokodemo-door","settings":{"address":"0.0.0.0"},"tag":"api"}],"log":{"loglevel":"debug","access":"access.log","error":"error.log"},"outbound":{"protocol":"freedom","settings":{}},"outboundDetour":[{"protocol":"blackhole","settings":{},"tag":"block"}],"routing":{"rules":[{"inboundTag":"api","outboundTag":"api","type":"field"}]},"policy":{"levels":{"0":{"handshake":4,"connIdle":300,"uplinkOnly":5,"downlinkOnly":30,"statsUserUplink":true,"statsUserDownlink":true}}}}';
 
     public function getAvailableUsers($groupId)
     {
@@ -43,6 +43,24 @@ class ServerService
         $json->inboundDetour[0]->port = (int)$localPort;
         $json->inbound->port = (int)$server->server_port;
         $json->inbound->streamSettings->network = $server->network;
+        $this->setDns($server, $json);
+        $this->setNetwork($server, $json);
+        $this->setRule($server, $json);
+        $this->setTls($server, $json);
+
+        return $json;
+    }
+
+    private function setDns(Server $server, object $json)
+    {
+        if ($server->dnsSettings) {
+            $dns = json_decode($server->dnsSettings);
+            $json->dns = $dns;
+        }
+    }
+
+    private function setNetwork(Server $server, object $json)
+    {
         if ($server->networkSettings) {
             switch ($server->network) {
                 case 'tcp':
@@ -65,7 +83,10 @@ class ServerService
                     break;
             }
         }
+    }
 
+    private function setRule(Server $server, object $json)
+    {
         if ($server->ruleSettings) {
             $rules = json_decode($server->ruleSettings);
             // domain
@@ -85,7 +106,10 @@ class ServerService
                 array_push($json->routing->rules, $protocolObj);
             }
         }
+    }
 
+    private function setTls(Server $server, object $json)
+    {
         if ((int)$server->tls) {
             $tlsSettings = json_decode($server->tlsSettings);
             $json->inbound->streamSettings->security = 'tls';
@@ -102,7 +126,5 @@ class ServerService
             }
             $json->inbound->streamSettings->tlsSettings->certificates[0] = $tls;
         }
-
-        return $json;
     }
 }
