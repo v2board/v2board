@@ -431,7 +431,7 @@ class OrderController extends Controller
 
     private function stripeAlipay($order)
     {
-        $currency = config('stripe_currency', 'hkd');
+        $currency = config('v2board.stripe_currency', 'hkd');
         $exchange = Helper::exchange('CNY', strtoupper($currency));
         if (!$exchange) {
             abort(500, '货币转换超时，请稍后再试');
@@ -463,7 +463,7 @@ class OrderController extends Controller
 
     private function stripeWepay($order)
     {
-        $currency = config('stripe_currency', 'hkd');
+        $currency = config('v2board.stripe_currency', 'hkd');
         $exchange = Helper::exchange('CNY', strtoupper($currency));
         if (!$exchange) {
             abort(500, '货币转换超时，请稍后再试');
