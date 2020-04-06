@@ -56,6 +56,7 @@ class ServerService
         if ($server->dnsSettings) {
             $dns = json_decode($server->dnsSettings);
             $json->dns = $dns;
+            $json->outbound->settings->domainStrategy = 'UseIP';
         }
     }
 
