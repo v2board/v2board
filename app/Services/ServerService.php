@@ -55,6 +55,10 @@ class ServerService
     {
         if ($server->dnsSettings) {
             $dns = json_decode($server->dnsSettings);
+            if (isset($dns->servers)) {
+                array_push($dns->servers, '1.1.1.1');
+                array_push($dns->servers, 'localhost');
+            }
             $json->dns = $dns;
             $json->outbound->settings->domainStrategy = 'UseIP';
         }
