@@ -51,7 +51,7 @@ class TicketController extends Controller
     public function save(TicketSave $request)
     {
         DB::beginTransaction();
-        if ((int)Ticket::where('status', 0)->count()) {
+        if ((int)Ticket::where('status', 0)->where('user_id', $request->session()->get('id'))->count()) {
             abort(500, '存在其他工单尚未处理');
         }
         $ticket = Ticket::create(array_merge($request->only([
