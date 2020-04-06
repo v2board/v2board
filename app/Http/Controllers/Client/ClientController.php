@@ -101,13 +101,20 @@ class ClientController extends Controller
         $proxyGroup = '';
         foreach ($server as $item) {
             // [Proxy]
-            $proxies .= $item->name . ' = vmess, ' . $item->host . ', ' . $item->port . ', username=' . $user->v2ray_uuid . ', tls=' . ($item->tls ? "true" : "false");
+            $proxies .= $item->name . ' = vmess, ' . $item->host . ', ' . $item->port . ', username=' . $user->v2ray_uuid;
+            if ($item->tls) {
+                $tlsSettings = json_decode($item->tlsSettings);
+                $proxies .= ', tls=' . ($item->tls ? "true" : "false");
+                if (isset($tlsSettings->allowInsecure)) {
+                  $proxies .= ', skip-cert-verify=true';
+                }
+            }
             if ($item->network == 'ws') {
                 $proxies .= ', ws=true';
                 if ($item->networkSettings) {
                     $wsSettings = json_decode($item->networkSettings);
                     if (isset($wsSettings->path)) $proxies .= ', ws-path=' . $wsSettings->path;
-                    if (isset($wsSettings->headers->Host)) $proxies .= ', ws-headers=' . $wsSettings->headers->Host;
+                    if (isset($wsSettings->headers->Host)) $proxies .= ', ws-headers=host:' . $wsSettings->headers->Host;
                 }
             }
             $proxies .= "\r\n";
