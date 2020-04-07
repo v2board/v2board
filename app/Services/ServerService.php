@@ -59,6 +59,12 @@ class ServerService
                 array_push($dns->servers, '1.1.1.1');
                 array_push($dns->servers, 'localhost');
             }
+            $dns->servers = array_map(function ($v) {
+               if (is_object($v)) {
+                   $v->port = (int)$v->port;
+               }
+               return $v;
+            }, $dns->servers);
             $json->dns = $dns;
             $json->outbound->settings->domainStrategy = 'UseIP';
         }
