@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\OrderSave;
+use App\Services\CouponService;
 use App\Services\OrderService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
@@ -74,14 +75,15 @@ class OrderController extends Controller
     }
 
     // surplus value
-    private function getSurplusValue(User $user)
+    private function getSurplusValue(User $user, Order $order)
     {
-        $plan = Plan::find($user->plan_id);
-        if ($user->expired_at === NULL) {
-            return $this->getSurplusValueByOneTime($user, $plan);
-        } else {
-            return $this->getSurplusValueByCycle($user, $plan);
-        }
+//        $plan = Plan::find($user->plan_id);
+//        if ($user->expired_at === NULL) {
+//            $this->getSurplusValueByOneTime($user, $plan);
+//        } else {
+//            $this->getSurplusValueByCycle($user, $order);
+//        }
+        $this->getSurplusValueByCycle($user, $order);
     }
 
     private function getSurplusValueByOneTime(User $user, Plan $plan)
@@ -95,25 +97,29 @@ class OrderController extends Controller
         return $result > 0 ? $result : 0;
     }
 
-    private function getSurplusValueByCycle(User $user, Plan $plan)
+    private function getSurplusValueByCycle(User $user, Order $order)
     {
-        $price = 0;
-        if ($plan->month_price) {
-            $price = $plan->month_price / (31536000 / 12);
-        } else if ($plan->quarter_price) {
-            $price = $plan->quarter_price / (31536000 / 4);
-        } else if ($plan->half_year_price) {
-            $price = $plan->half_year_price / (31536000 / 2);
-        } else if ($plan->year_price) {
-            $price = $plan->year_price / 31536000;
+        $strToMonth = [
+            'month_price' => 1,
+            'quarter_price' => 3,
+            'half_year_price' => 6,
+            'year_price' => 12
+        ];
+        $orderModel = Order::where('user_id', $user->id)->where('status', 3);
+
+        $totalValue = $orderModel->sum('total_amount') + $orderModel->sum('balance_amount');
+        info('剩余价值' . $totalValue);
+        $totalMonth = 0;
+        foreach ($orderModel->get() as $item) {
+            $totalMonth = $totalMonth + $strToMonth[$item->cycle];
         }
-        // exclude discount
-        if ($user->discount && $price) {
-            $price = $price - ($price * $user->discount / 100);
-        }
-        $remainingDay = $user->expired_at - time();
-        $result = $remainingDay * $price;
-        return $result > 0 ? $result : 0;
+        info('剩余月份' . $totalMonth);
+        $unitPrice = $totalValue / $totalMonth;
+        info('单价' . $unitPrice);
+        $remainingMonth = ($user->expired_at - time()) / 2678400;
+        $result = $unitPrice * $remainingMonth;
+        $order->surplus_amount = $result > 0 ? $result : 0;
+        $order->surplus_order_ids = json_encode(array_map(function ($v) { return $v['id'];}, $orderModel->get()->toArray()));
     }
 
     public function save(OrderSave $request)
@@ -141,21 +147,6 @@ class OrderController extends Controller
             abort(500, '该订阅周期无法进行购买，请选择其他周期');
         }
 
-        if ($request->input('coupon_code')) {
-            $coupon = Coupon::where('code', $request->input('coupon_code'))->first();
-            if (!$coupon) {
-                abort(500, '优惠券无效');
-            }
-            if ($coupon->limit_use <= 0 && $coupon->limit_use !== NULL) {
-                abort(500, '优惠券已无可用次数');
-            }
-            if (time() < $coupon->started_at) {
-                abort(500, '优惠券还未到可用时间');
-            }
-            if (time() > $coupon->ended_at) {
-                abort(500, '优惠券已过期');
-            }
-        }
 
         DB::beginTransaction();
         $order = new Order();
@@ -165,21 +156,11 @@ class OrderController extends Controller
         $order->trade_no = Helper::guid();
         $order->total_amount = $plan[$request->input('cycle')];
         // coupon start
-        if (isset($coupon)) {
-            switch ($coupon->type) {
-                case 1:
-                    $order->discount_amount = $coupon->value;
-                    break;
-                case 2:
-                    $order->discount_amount = $order->total_amount * ($coupon->value / 100);
-                    break;
-            }
-            if ($coupon->limit_use !== NULL) {
-                $coupon->limit_use = $coupon->limit_use - 1;
-                if (!$coupon->save()) {
-                    DB::rollback();
-                    abort(500, '优惠券使用失败');
-                }
+        if ($request->input('coupon_code')) {
+            $couponService = new CouponService($request->input('coupon_code'));
+            if (!$couponService->use($order)) {
+                DB::rollBack();
+                abort(500, '优惠券使用失败');
             }
         }
         // coupon complete
@@ -193,7 +174,7 @@ class OrderController extends Controller
         if ($user->plan_id !== NULL && $order->plan_id !== $user->plan_id) {
             if (!(int)config('v2board.plan_change_enable', 1)) abort(500, '目前不允许更改订阅，请联系客服或提交工单');
             $order->type = 3;
-            $order->surplus_amount = $this->getSurplusValue($user);
+            $this->getSurplusValue($user, $order);
             if ($order->surplus_amount >= $order->total_amount) {
                 $order->refund_amount = $order->surplus_amount - $order->total_amount;
                 $order->total_amount = 0;
