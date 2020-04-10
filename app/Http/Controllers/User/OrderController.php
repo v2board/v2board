@@ -15,6 +15,7 @@ use App\Models\Plan;
 use App\Models\User;
 use App\Models\Coupon;
 use App\Utils\Helper;
+use Library\iDTPay;
 use Omnipay\Omnipay;
 use Stripe\Stripe;
 use Stripe\Source;
@@ -315,6 +316,19 @@ class OrderController extends Controller
                     'type' => 1,
                     'data' => $this->payTaro($order)
                 ]);
+            case 6:
+                // TODO 二次开发
+                return response([
+                    'type' => 1,
+                    'data' => url('/api/v1/user/order/idtPay?type=alipay&tradeNo='.$tradeNo)
+                ]);
+            case 7:
+                // TODO 二次开发
+                return response([
+                    'type' => 1,
+                    'data' => url('/api/v1/user/order/idtPay?type=wxpay&tradeNo='.$tradeNo)
+                ]);
+
             default:
                 abort(500, '支付方式不存在');
         }
@@ -373,6 +387,28 @@ class OrderController extends Controller
             $obj = new \StdClass();
             $obj->name = '聚合支付';
             $obj->method = 5;
+            $obj->icon = 'wallet';
+            array_push($data, $obj);
+        }
+        // TODO 二次开发
+        if ((int)config('v2board.idtpay_alipay_enable')) {
+            $obj = new \StdClass();
+            $obj->name = '支付宝';
+            $obj->method = 6;
+            $obj->icon = 'alipay';
+            array_push($data, $obj);
+        }
+        if ((int)config('v2board.idtpay_wepay_enable')) {
+            $obj = new \StdClass();
+            $obj->name = '微信';
+            $obj->method = 7;
+            $obj->icon = 'wechat';
+            array_push($data, $obj);
+        }
+        if ((int)config('v2board.idtpay_qqpay_enable')) {
+            $obj = new \StdClass();
+            $obj->name = 'QQ钱包';
+            $obj->method = 8;
             $obj->icon = 'wallet';
             array_push($data, $obj);
         }
@@ -523,4 +559,42 @@ class OrderController extends Controller
         ]);
         return $result;
     }
+
+    // TODO 二次开发
+    public function idtPay(Request $request)
+    {
+        $tradeNo = $request->input('tradeNo');
+        $type = $request->input('type');
+        if($type !='alipay' && $type !='wxpay'){
+            abort(500, '不支持该通道');
+        }
+        $order = Order::where('trade_no', $tradeNo)
+            ->where('user_id', $request->session()->get('id'))
+            ->where('status', 0)
+            ->first();
+        if (!$order) {
+            abort(500, '订单不存在或已支付');
+        }
+        // free process
+        if ($order->total_amount <= 0) {
+            $order->total_amount = 0;
+            $order->status = 1;
+            $order->save();
+            exit();
+        }
+        $parameter = [
+            'pid' => config('v2board.idtpay_app_id'),
+            'name' => config('v2board.app_name', 'V2Board') . ' - 订阅',
+            'type' => $type,
+            'out_trade_no' => $order->trade_no,
+            'money' => $order->total_amount / 100,
+            'sitename' => config('v2board.app_name'),
+            'notify_url' => url('/api/v1/guest/order/idtNotify'),
+            'return_url' => url('/#/order'),
+        ];
+        $idtSubmit = new iDTPay(config('v2board.idtpay_app_id'), config('v2board.idtpay_app_secret'));
+        $htmlText = $idtSubmit->buildRequestForm($parameter);
+        echo $htmlText;
+    }
+
 }

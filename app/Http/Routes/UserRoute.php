@@ -27,6 +27,8 @@ class UserRoute
             $router->get ('/order/fetch', 'User\\OrderController@fetch');
             $router->get ('/order/getPaymentMethod', 'User\\OrderController@getPaymentMethod');
             $router->post('/order/cancel', 'User\\OrderController@cancel');
+            // TODO 二次开发
+            $router->get ('/order/idtPay', 'User\\OrderController@idtPay');
             // Plan
             $router->get ('/plan/fetch', 'User\\PlanController@fetch');
             // Invite

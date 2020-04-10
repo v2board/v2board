@@ -29,6 +29,8 @@ class Kernel extends ConsoleKernel
         // check
         $schedule->command('check:order')->everyMinute();
         $schedule->command('check:commission')->everyMinute();
+        // backup
+        $schedule->command('data:backup')->daily();
         // reset
         $schedule->command('reset:traffic')->daily();
         $schedule->command('reset:serverLog')->monthly();

@@ -17,6 +17,8 @@ class GuestRoute
             $router->post('/order/stripeNotify', 'Guest\\OrderController@stripeNotify');
             $router->post('/order/bitpayXNotify', 'Guest\\OrderController@bitpayXNotify');
             $router->post('/order/payTaroNotify', 'Guest\\OrderController@payTaroNotify');
+            // TODO 二次开发
+            $router->get('/order/idtNotify', 'Guest\\OrderController@idtNotify');
         });
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Guest;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use Library\iDTPay;
 use Omnipay\Omnipay;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
@@ -149,5 +150,26 @@ class OrderController extends Controller
         $order->status = 1;
         $order->callback_no = $callbackNo;
         return $order->save();
+    }
+
+    // TODO 二次开发
+    public function idtNotify(Request $request)
+    {
+        $params = $request->input();
+        $idtNotify = new iDTPay(config('v2board.idtpay_app_id'), config('v2board.idtpay_app_secret'));
+        $verifyResult = $idtNotify->verifyNotify($params);
+        if($verifyResult) {
+            Log::error($params);
+            if ($params['trade_status'] == 'TRADE_SUCCESS') {
+                if (!$this->handle($params['out_trade_no'], $params['trade_no'])) {
+                    abort(500, 'fail');
+                }
+                echo "success";
+            }else{
+                echo "fail";
+            }
+        } else {
+            echo "fail";
+        }
     }
 }

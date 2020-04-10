@@ -34,7 +34,9 @@ return [
     */
 
     'connections' => [
-
+        'db_backup_email' => env('DB_BACKUP_EMAIL'),
+        'db_backup_password' => env('DB_BACKUP_PASSWORD'),
+        'db_backup_path' => env('DB_BACKUP_PATH'),
         'sqlite' => [
             'driver' => 'sqlite',
             'url' => env('DATABASE_URL'),

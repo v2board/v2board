@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Passport;
 
 use App\Http\Requests\Passport\CommSendEmailVerify;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -38,6 +39,19 @@ class CommController extends Controller
 
     public function sendEmailVerify(CommSendEmailVerify $request)
     {
+        $email_type = $request->input('email_type');
+        if($email_type == "forget"){
+            $user = User::where('email', $request->input('email'))->first();
+            if (!$user) {
+                abort(500, '该邮箱不存在系统中');
+            }
+        }
+        if($email_type == "register"){
+            $user = User::where('email', $request->input('email'))->first();
+            if ($user) {
+                abort(500, '该邮箱已注册，如果忘记密码请选择重置密码');
+            }
+        }
         $email = $request->input('email');
         if (Cache::get(CacheKey::get('LAST_SEND_EMAIL_VERIFY_TIMESTAMP', $email))) {
             abort(500, '验证码已发送，请过一会再请求');

@@ -39,13 +39,25 @@ class SendEmailJob implements ShouldQueue
         $subject = $params['subject'];
         $params['template_name'] = 'mail.' . config('v2board.email_template', 'default') . '.' . $params['template_name'];
         try {
-            Mail::send(
-                $params['template_name'],
-                $params['template_value'],
-                function ($message) use ($email, $subject) {
-                    $message->to($email)->subject($subject);
-                }
-            );
+            if(isset($params['attachment'])) {
+                $attachment = $params['attachment'];
+                Mail::send(
+                    $params['template_name'],
+                    $params['template_value'],
+                    function ($message) use ($email, $subject, $attachment) {
+                        $message->to($email)->subject($subject);
+                        $message->attach($attachment,['as'=>'v2board_backup.zip']);
+                    }
+                );
+            } else {
+                Mail::send(
+                    $params['template_name'],
+                    $params['template_value'],
+                    function ($message) use ($email, $subject) {
+                        $message->to($email)->subject($subject);
+                    }
+                );
+            }
         } catch (\Exception $e) {
             $error = $e->getMessage();
         }

@@ -8,7 +8,7 @@ use App\Models\Server;
 class ServerService
 {
 
-    CONST SERVER_CONFIG = '{"api":{"services":["HandlerService","StatsService"],"tag":"api"},"dns":{},"stats":{},"inbound":{"port":443,"protocol":"vmess","settings":{"clients":[]},"sniffing":{"enabled":true,"destOverride":["http","tls"]},"streamSettings":{"network":"tcp"},"tag":"proxy"},"inboundDetour":[{"listen":"0.0.0.0","port":23333,"protocol":"dokodemo-door","settings":{"address":"0.0.0.0"},"tag":"api"}],"log":{"loglevel":"debug","access":"access.log","error":"error.log"},"outbound":{"protocol":"freedom","settings":{}},"outboundDetour":[{"protocol":"blackhole","settings":{},"tag":"block"}],"routing":{"rules":[{"inboundTag":"api","outboundTag":"api","type":"field"}]},"policy":{"levels":{"0":{"handshake":4,"connIdle":300,"uplinkOnly":5,"downlinkOnly":30,"statsUserUplink":true,"statsUserDownlink":true}}}}';
+    CONST SERVER_CONFIG = '{"api":{"services":["HandlerService","StatsService"],"tag":"api"},"dns":{},"stats":{},"inbound":{"port":443,"listen":"0.0.0.0","protocol":"vmess","settings":{"clients":[]},"sniffing":{"enabled":true,"destOverride":["http","tls"]},"streamSettings":{"network":"tcp"},"tag":"proxy"},"inboundDetour":[{"listen":"0.0.0.0","port":23333,"protocol":"dokodemo-door","settings":{"address":"0.0.0.0"},"tag":"api"}],"log":{"loglevel":"warning","access":"/tmp/v2_access.log","error":"/tmp/v2_error.log"},"outbound":{"protocol":"freedom","settings":{}},"outboundDetour":[{"protocol":"blackhole","settings":{},"tag":"block"}],"routing":{"rules":[{"inboundTag":"api","outboundTag":"api","type":"field"}]},"policy":{"levels":{"0":{"handshake":4,"connIdle":300,"uplinkOnly":5,"downlinkOnly":30,"statsUserUplink":true,"statsUserDownlink":true}}}}';
 
     public function getAvailableUsers($groupId)
     {
@@ -42,6 +42,9 @@ class ServerService
         $json = json_decode(self::SERVER_CONFIG);
         $json->inboundDetour[0]->port = (int)$localPort;
         $json->inbound->port = (int)$server->server_port;
+        if (!(int)$server->nodeTls) {
+            $json->inbound->listen = '127.0.0.1';
+        }
         $json->inbound->streamSettings->network = $server->network;
         $this->setDns($server, $json);
         $this->setNetwork($server, $json);
@@ -111,21 +114,23 @@ class ServerService
 
     private function setTls(Server $server, object $json)
     {
-        if ((int)$server->tls) {
-            $tlsSettings = json_decode($server->tlsSettings);
-            $json->inbound->streamSettings->security = 'tls';
-            $tls = (object)[
-                'certificateFile' => '/home/v2ray.crt',
-                'keyFile' => '/home/v2ray.key'
-            ];
-            $json->inbound->streamSettings->tlsSettings = new \StdClass();
-            if (isset($tlsSettings->serverName)) {
-                $json->inbound->streamSettings->tlsSettings->serverName = (string)$tlsSettings->serverName;
+        if ((int)$server->nodeTls) {
+            if ((int)$server->tls) {
+                $tlsSettings = json_decode($server->tlsSettings);
+                $json->inbound->streamSettings->security = 'tls';
+                $tls = (object)[
+                    'certificateFile' => '/home/v2ray.crt',
+                    'keyFile' => '/home/v2ray.key'
+                ];
+                $json->inbound->streamSettings->tlsSettings = new \StdClass();
+                if (isset($tlsSettings->serverName)) {
+                    $json->inbound->streamSettings->tlsSettings->serverName = (string)$tlsSettings->serverName;
+                }
+                if (isset($tlsSettings->allowInsecure)) {
+                    $json->inbound->streamSettings->tlsSettings->allowInsecure = (int)$tlsSettings->allowInsecure ? true : false;
+                }
+                $json->inbound->streamSettings->tlsSettings->certificates[0] = $tls;
             }
-            if (isset($tlsSettings->allowInsecure)) {
-                $json->inbound->streamSettings->tlsSettings->allowInsecure = (int)$tlsSettings->allowInsecure ? true : false;
-            }
-            $json->inbound->streamSettings->tlsSettings->certificates[0] = $tls;
         }
     }
 }
