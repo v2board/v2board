@@ -96,6 +96,7 @@ class ServerService
             $rules = json_decode($server->ruleSettings);
             // domain
             if (isset($rules->domain) && !empty($rules->domain)) {
+                $rules->domain = array_filter($rules->domain);
                 $domainObj = new \StdClass();
                 $domainObj->type = 'field';
                 $domainObj->domain = $rules->domain;
@@ -104,6 +105,7 @@ class ServerService
             }
             // protocol
             if (isset($rules->protocol) && !empty($rules->protocol)) {
+                $rules->protocol = array_filter($rules->protocol);
                 $protocolObj = new \StdClass();
                 $protocolObj->type = 'field';
                 $protocolObj->protocol = $rules->protocol;
