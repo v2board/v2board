@@ -210,3 +210,15 @@ ADD `surplus_order_ids` varchar(255) NULL COMMENT '折抵订单' AFTER `balance_
 
 ALTER TABLE `v2_order`
 CHANGE `status` `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0待支付1开通中2已取消3已完成4已折抵' AFTER `surplus_order_ids`;
+
+CREATE TABLE `v2_server_stat` (
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `server_id` int(11) NOT NULL,
+  `u` varchar(255) NOT NULL,
+  `d` varchar(25) NOT NULL,
+  `created_at` int(11) NOT NULL,
+  `updated_at` int(11) NOT NULL
+);
+
+ALTER TABLE `v2_tutorial`
+ADD `sort` int(11) NULL AFTER `show`;

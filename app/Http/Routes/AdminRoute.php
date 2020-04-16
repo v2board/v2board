@@ -60,6 +60,7 @@ class AdminRoute
             $router->post('/tutorial/save', 'Admin\\TutorialController@save');
             $router->post('/tutorial/show', 'Admin\\TutorialController@show');
             $router->post('/tutorial/drop', 'Admin\\TutorialController@drop');
+            $router->post('/tutorial/sort', 'Admin\\TutorialController@sort');
         });
     }
 }

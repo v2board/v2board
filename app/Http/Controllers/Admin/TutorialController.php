@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\Admin\TutorialSave;
+use App\Http\Requests\Admin\TutorialSort;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Tutorial;
+use Illuminate\Support\Facades\DB;
 
 class TutorialController extends Controller
 {
@@ -51,6 +53,33 @@ class TutorialController extends Controller
             abort(500, '保存失败');
         }
 
+        return response([
+            'data' => true
+        ]);
+    }
+
+    public function sort(TutorialSort $request)
+    {
+        $sort = $request->input('sort');
+        $tutorial = Tutorial::find($request->input('id'))->first();
+        if (!$tutorial) {
+            abort(500, '教程不存在');
+        }
+        DB::beginTransaction();
+        $tutorial->sort = $sort;
+        if (!$tutorial->save()) {
+            DB::rollBack();
+            abort(500, '保存失败');
+        }
+
+        $tutorials = Tutorial::where('sort', '>', $sort)->get();
+        foreach ($tutorials as $tutorial) {
+            $sort++;
+            if (!$tutorial->save(['sort' => $sort])) {
+                abort(500, '保存失败');
+            }
+        }
+        DB::commit();
         return response([
             'data' => true
         ]);
