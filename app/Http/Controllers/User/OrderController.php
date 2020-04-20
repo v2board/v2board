@@ -78,13 +78,13 @@ class OrderController extends Controller
     private function getSurplusValue(User $user, Order $order)
     {
         if ($user->expired_at === NULL) {
-            $this->getSurplusValueByOneTime($user);
+            $this->getSurplusValueByOneTime($user, $order);
         } else {
             $this->getSurplusValueByCycle($user, $order);
         }
     }
 
-    private function getSurplusValueByOneTime(User $user)
+    private function getSurplusValueByOneTime(User $user, Order $order)
     {
         $plan = Plan::find($user->plan_id);
         $trafficUnitPrice = $plan->onetime_price / $plan->transfer_enable;
@@ -93,7 +93,9 @@ class OrderController extends Controller
         }
         $notUsedTrafficPrice = $plan->transfer_enable - (($user->u + $user->d) / 1073741824);
         $result = $trafficUnitPrice * $notUsedTrafficPrice;
-        return $result > 0 ? $result : 0;
+        $orderModel = Order::where('user_id', $user->id)->where('status', 3);
+        $order->surplus_amount = $result > 0 ? $result : 0;
+        $order->surplus_order_ids = json_encode(array_map(function ($v) { return $v['id'];}, $orderModel->get()->toArray()));
     }
 
     private function getSurplusValueByCycle(User $user, Order $order)
