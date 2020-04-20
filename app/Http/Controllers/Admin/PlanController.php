@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\Admin\PlanSave;
+use App\Http\Requests\Admin\PlanSort;
 use App\Http\Requests\Admin\PlanUpdate;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -16,7 +17,7 @@ class PlanController extends Controller
     public function fetch(Request $request)
     {
         return response([
-            'data' => Plan::get()
+            'data' => Plan::orderBy('sort', 'ASC')->get()
         ]);
     }
 
@@ -87,6 +88,21 @@ class PlanController extends Controller
             abort(500, '保存失败');
         }
 
+        return response([
+            'data' => true
+        ]);
+    }
+
+    public function sort(PlanSort $request)
+    {
+        DB::beginTransaction();
+        foreach ($request->input('plan_ids') as $k => $v) {
+            if (!Plan::find($v)->update(['sort' => $k + 1])) {
+                DB::rollBack();
+                abort(500, '保存失败');
+            }
+        }
+        DB::commit();
         return response([
             'data' => true
         ]);

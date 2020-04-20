@@ -20,6 +20,7 @@ class AdminRoute
             $router->post('/plan/save', 'Admin\\PlanController@save');
             $router->post('/plan/drop', 'Admin\\PlanController@drop');
             $router->post('/plan/update', 'Admin\\PlanController@update');
+            $router->post('/plan/sort', 'Admin\\PlanController@sort');
             // Server
             $router->get ('/server/fetch', 'Admin\\ServerController@fetch');
             $router->post('/server/save', 'Admin\\ServerController@save');
@@ -30,6 +31,7 @@ class AdminRoute
             $router->post('/server/update', 'Admin\\ServerController@update');
             $router->post('/server/copy', 'Admin\\ServerController@copy');
             $router->post('/server/viewConfig', 'Admin\\ServerController@viewConfig');
+            $router->post('/server/sort', 'Admin\\ServerController@sort');
             // Order
             $router->get ('/order/fetch', 'Admin\\OrderController@fetch');
             $router->post('/order/repair', 'Admin\\OrderController@repair');

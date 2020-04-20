@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\Admin\ServerSave;
+use App\Http\Requests\Admin\ServerSort;
 use App\Http\Requests\Admin\ServerUpdate;
 use App\Services\ServerService;
 use Illuminate\Http\Request;
@@ -12,12 +13,13 @@ use App\Models\Server;
 use App\Models\Plan;
 use App\Models\User;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 class ServerController extends Controller
 {
     public function fetch(Request $request)
     {
-        $server = Server::get();
+        $server = Server::orderBy('sort', 'ASC')->get();
         for ($i = 0; $i < count($server); $i++) {
             if (!empty($server[$i]['tags'])) {
                 $server[$i]['tags'] = json_decode($server[$i]['tags']);
@@ -204,6 +206,21 @@ class ServerController extends Controller
         $config = $serverService->getConfig($request->input('node_id'), 23333);
         return response([
             'data' => $config
+        ]);
+    }
+
+    public function sort(ServerSort $request)
+    {
+        DB::beginTransaction();
+        foreach ($request->input('server_ids') as $k => $v) {
+            if (!Server::find($v)->update(['sort' => $k + 1])) {
+                DB::rollBack();
+                abort(500, '保存失败');
+            }
+        }
+        DB::commit();
+        return response([
+            'data' => true
         ]);
     }
 }

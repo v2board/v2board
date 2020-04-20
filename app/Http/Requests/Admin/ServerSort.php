@@ -4,7 +4,7 @@ namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class TutorialSort extends FormRequest
+class ServerSort extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -14,15 +14,15 @@ class TutorialSort extends FormRequest
     public function rules()
     {
         return [
-            'tutorial_ids' => 'required|array'
+            'server_ids' => 'required|array'
         ];
     }
 
     public function messages()
     {
         return [
-            'tutorial_ids.required' => '教程ID不能为空',
-            'tutorial_ids.array' => '教程ID格式有误'
+            'server_ids.required' => '服务器ID不能为空',
+            'server_ids.array' => '服务器ID格式有误'
         ];
     }
 }

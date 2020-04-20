@@ -14,7 +14,7 @@ class TutorialController extends Controller
     public function fetch(Request $request)
     {
         return response([
-            'data' => Tutorial::get()
+            'data' => Tutorial::orderBy('sort', 'ASC')->get()
         ]);
     }
 
@@ -60,22 +60,10 @@ class TutorialController extends Controller
 
     public function sort(TutorialSort $request)
     {
-        $sort = $request->input('sort');
-        $tutorial = Tutorial::find($request->input('id'))->first();
-        if (!$tutorial) {
-            abort(500, '教程不存在');
-        }
         DB::beginTransaction();
-        $tutorial->sort = $sort;
-        if (!$tutorial->save()) {
-            DB::rollBack();
-            abort(500, '保存失败');
-        }
-
-        $tutorials = Tutorial::where('sort', '>', $sort)->get();
-        foreach ($tutorials as $tutorial) {
-            $sort++;
-            if (!$tutorial->save(['sort' => $sort])) {
+        foreach ($request->input('tutorial_ids') as $k => $v) {
+            if (!Tutorial::find($v)->update(['sort' => $k + 1])) {
+                DB::rollBack();
                 abort(500, '保存失败');
             }
         }

@@ -206,7 +206,7 @@ CHANGE `network` `network` text COLLATE 'utf8_general_ci' NOT NULL AFTER `rate`,
 ADD `dnsSettings` text COLLATE 'utf8_general_ci' NULL AFTER `ruleSettings`;
 -- 1.3
 ALTER TABLE `v2_order`
-ADD `surplus_order_ids` varchar(255) NULL COMMENT '折抵订单' AFTER `balance_amount`;
+ADD `surplus_order_ids` text NULL COMMENT '折抵订单' AFTER `balance_amount`;
 
 ALTER TABLE `v2_order`
 CHANGE `status` `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0待支付1开通中2已取消3已完成4已折抵' AFTER `surplus_order_ids`;
@@ -221,4 +221,10 @@ CREATE TABLE `v2_server_stat` (
 );
 
 ALTER TABLE `v2_tutorial`
+ADD `sort` int(11) NULL AFTER `show`;
+
+ALTER TABLE `v2_server`
+ADD `sort` int(11) NULL AFTER `show`;
+
+ALTER TABLE `v2_plan`
 ADD `sort` int(11) NULL AFTER `show`;

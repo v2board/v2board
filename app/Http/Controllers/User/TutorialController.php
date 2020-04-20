@@ -52,6 +52,7 @@ class TutorialController extends Controller
         }
         $tutorial = Tutorial::select(['id', 'category_id', 'title'])
             ->where('show', 1)
+            ->orderBy('sort', 'ASC')
             ->get()
             ->groupBy('category_id');
         $user = User::find($request->session()->get('id'));

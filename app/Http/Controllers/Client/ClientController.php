@@ -19,7 +19,7 @@ class ClientController extends Controller
         $userService = new UserService();
         if ($userService->isAvailable($user)) {
             $servers = Server::where('show', 1)
-                ->orderBy('name')
+                ->orderBy('sort', 'ASC')
                 ->get();
             foreach ($servers as $item) {
                 $groupId = json_decode($item['group_id']);
