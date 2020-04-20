@@ -77,17 +77,16 @@ class OrderController extends Controller
     // surplus value
     private function getSurplusValue(User $user, Order $order)
     {
-//        $plan = Plan::find($user->plan_id);
-//        if ($user->expired_at === NULL) {
-//            $this->getSurplusValueByOneTime($user, $plan);
-//        } else {
-//            $this->getSurplusValueByCycle($user, $order);
-//        }
-        $this->getSurplusValueByCycle($user, $order);
+        if ($user->expired_at === NULL) {
+            $this->getSurplusValueByOneTime($user);
+        } else {
+            $this->getSurplusValueByCycle($user, $order);
+        }
     }
 
-    private function getSurplusValueByOneTime(User $user, Plan $plan)
+    private function getSurplusValueByOneTime(User $user)
     {
+        $plan = Plan::find($user->plan_id);
         $trafficUnitPrice = $plan->onetime_price / $plan->transfer_enable;
         if ($user->discount && $trafficUnitPrice) {
             $trafficUnitPrice = $trafficUnitPrice - ($trafficUnitPrice * $user->discount / 100);
@@ -108,14 +107,14 @@ class OrderController extends Controller
         $orderModel = Order::where('user_id', $user->id)->where('status', 3);
 
         $totalValue = $orderModel->sum('total_amount') + $orderModel->sum('balance_amount');
-        info('剩余价值' . $totalValue);
+        if ($totalValue <= 0) {
+            return;
+        }
         $totalMonth = 0;
         foreach ($orderModel->get() as $item) {
             $totalMonth = $totalMonth + $strToMonth[$item->cycle];
         }
-        info('剩余月份' . $totalMonth);
         $unitPrice = $totalValue / $totalMonth;
-        info('单价' . $unitPrice);
         $remainingMonth = ($user->expired_at - time()) / 2678400;
         $result = $unitPrice * $remainingMonth;
         $order->surplus_amount = $result > 0 ? $result : 0;
