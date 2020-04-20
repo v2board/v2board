@@ -21,6 +21,7 @@ class PlanController extends Controller
             ]);
         }
         $plan = Plan::where('show', 1)
+            ->orderBy('sort', 'ASC')
             ->get();
         return response([
             'data' => $plan
