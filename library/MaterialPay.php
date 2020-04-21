@@ -59,10 +59,10 @@ class MaterialPay
     {
         $result = $this->post($params);
 
-        if (!isset($result['data']['tradeNo'])) {
+        if (!isset($result['result']['tradeNo'])) {
             abort(500, '接口请求失败');
         }
-        return $result['data']['url'];
+        return $result['result']['url'];
     }
 
 }
