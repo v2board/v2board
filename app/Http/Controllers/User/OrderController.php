@@ -63,69 +63,10 @@ class OrderController extends Controller
         ]);
     }
 
-    private function isNotCompleteOrderByUserId($userId)
-    {
-        $order = Order::whereIn('status', [0, 1])
-            ->where('user_id', $userId)
-            ->first();
-        if (!$order) {
-            return false;
-        }
-        return true;
-    }
-
-    // surplus value
-    private function getSurplusValue(User $user, Order $order)
-    {
-        if ($user->expired_at === NULL) {
-            $this->getSurplusValueByOneTime($user, $order);
-        } else {
-            $this->getSurplusValueByCycle($user, $order);
-        }
-    }
-
-    private function getSurplusValueByOneTime(User $user, Order $order)
-    {
-        $plan = Plan::find($user->plan_id);
-        $trafficUnitPrice = $plan->onetime_price / $plan->transfer_enable;
-        if ($user->discount && $trafficUnitPrice) {
-            $trafficUnitPrice = $trafficUnitPrice - ($trafficUnitPrice * $user->discount / 100);
-        }
-        $notUsedTrafficPrice = $plan->transfer_enable - (($user->u + $user->d) / 1073741824);
-        $result = $trafficUnitPrice * $notUsedTrafficPrice;
-        $orderModel = Order::where('user_id', $user->id)->where('status', 3);
-        $order->surplus_amount = $result > 0 ? $result : 0;
-        $order->surplus_order_ids = json_encode(array_map(function ($v) { return $v['id'];}, $orderModel->get()->toArray()));
-    }
-
-    private function getSurplusValueByCycle(User $user, Order $order)
-    {
-        $strToMonth = [
-            'month_price' => 1,
-            'quarter_price' => 3,
-            'half_year_price' => 6,
-            'year_price' => 12
-        ];
-        $orderModel = Order::where('user_id', $user->id)->where('status', 3);
-
-        $totalValue = $orderModel->sum('total_amount') + $orderModel->sum('balance_amount');
-        if ($totalValue <= 0) {
-            return;
-        }
-        $totalMonth = 0;
-        foreach ($orderModel->get() as $item) {
-            $totalMonth = $totalMonth + $strToMonth[$item->cycle];
-        }
-        $unitPrice = $totalValue / $totalMonth;
-        $remainingMonth = ($user->expired_at - time()) / 2678400;
-        $result = $unitPrice * $remainingMonth;
-        $order->surplus_amount = $result > 0 ? $result : 0;
-        $order->surplus_order_ids = json_encode(array_map(function ($v) { return $v['id'];}, $orderModel->get()->toArray()));
-    }
-
     public function save(OrderSave $request)
     {
-        if ($this->isNotCompleteOrderByUserId($request->session()->get('id'))) {
+        $userService = new UserService();
+        if ($userService->isNotCompleteOrderByUserId($request->session()->get('id'))) {
             abort(500, '存在未付款订单，请取消后再试');
         }
 
@@ -148,15 +89,15 @@ class OrderController extends Controller
             abort(500, '该订阅周期无法进行购买，请选择其他周期');
         }
 
-
         DB::beginTransaction();
         $order = new Order();
+        $orderService = new OrderService($order);
         $order->user_id = $request->session()->get('id');
         $order->plan_id = $plan->id;
         $order->cycle = $request->input('cycle');
         $order->trade_no = Helper::guid();
         $order->total_amount = $plan[$request->input('cycle')];
-        // coupon start
+
         if ($request->input('coupon_code')) {
             $couponService = new CouponService($request->input('coupon_code'));
             if (!$couponService->use($order)) {
@@ -164,43 +105,11 @@ class OrderController extends Controller
                 abort(500, '优惠券使用失败');
             }
         }
-        // coupon complete
-        // discount start
-        if ($user->discount) {
-            $order->discount_amount = $order->discount_amount + ($order->total_amount * ($user->discount / 100));
-        }
-        // discount end
-        $order->total_amount = $order->total_amount - $order->discount_amount;
-        // renew and change subscribe process
-        if ($user->plan_id !== NULL && $order->plan_id !== $user->plan_id) {
-            if (!(int)config('v2board.plan_change_enable', 1)) abort(500, '目前不允许更改订阅，请联系客服或提交工单');
-            $order->type = 3;
-            $this->getSurplusValue($user, $order);
-            if ($order->surplus_amount >= $order->total_amount) {
-                $order->refund_amount = $order->surplus_amount - $order->total_amount;
-                $order->total_amount = 0;
-            } else {
-                $order->total_amount = $order->total_amount - $order->surplus_amount;
-            }
-        } else if ($user->expired_at > time() && $order->plan_id == $user->plan_id) {
-            $order->type = 2;
-        } else {
-            $order->type = 1;
-        }
-        // invite process
-        if ($user->invite_user_id && $order->total_amount > 0) {
-            $order->invite_user_id = $user->invite_user_id;
-            $commissionFirstTime = (int)config('v2board.commission_first_time_enable', 1);
-            if (!$commissionFirstTime || ($commissionFirstTime && !Order::where('user_id', $user->id)->where('status', 3)->first())) {
-                $inviter = User::find($user->invite_user_id);
-                if ($inviter && $inviter->commission_rate) {
-                    $order->commission_balance = $order->total_amount * ($inviter->commission_rate / 100);
-                } else {
-                    $order->commission_balance = $order->total_amount * (config('v2board.invite_commission', 10) / 100);
-                }
-            }
-        }
-        // use balance
+
+        $orderService->setVipDiscount($user);
+        $orderService->setOrderType($user);
+        $orderService->setInvite($user);
+
         if ($user->balance && $order->total_amount > 0) {
             $remainingBalance = $user->balance - $order->total_amount;
             $userService = new UserService();

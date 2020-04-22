@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Order;
 use App\Models\User;
 
 class UserService
@@ -59,6 +60,17 @@ class UserService
             return false;
         }
         if (!$user->save()) {
+            return false;
+        }
+        return true;
+    }
+
+    public function isNotCompleteOrderByUserId(int $userId):bool
+    {
+        $order = Order::whereIn('status', [0, 1])
+            ->where('user_id', $userId)
+            ->first();
+        if (!$order) {
             return false;
         }
         return true;
