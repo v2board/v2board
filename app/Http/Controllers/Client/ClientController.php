@@ -53,6 +53,17 @@ class ClientController extends Controller
         $uri = '';
         foreach ($server as $item) {
             $uri .= "vmess=" . $item->host . ":" . $item->port . ", method=none, password=" . $user->v2ray_uuid . ", fast-open=false, udp-relay=false, tag=" . $item->name;
+            if ($item->tls) {
+                $tlsSettings = json_decode($item->tlsSettings);
+                $uri .= ', obfs=over-tls';
+                if (isset($tlsSettings->allowInsecure)) {
+                    // Default: tls-verification=true
+                    $uri .= ', tls-verification=' . ($tlsSettings->allowInsecure ? "false" : "true");
+                }
+                if (isset($tlsSettings->serverName)) {
+                    $uri .= ', obfs-host=' . $tlsSettings->serverName;
+                }
+            }
             if ($item->network == 'ws') {
                 $uri .= ', obfs=' . ($item->tls ? 'wss' : 'ws');
                 if ($item->networkSettings) {
@@ -106,7 +117,7 @@ class ClientController extends Controller
                 $tlsSettings = json_decode($item->tlsSettings);
                 $proxies .= ', tls=' . ($item->tls ? "true" : "false");
                 if (isset($tlsSettings->allowInsecure)) {
-                  $proxies .= ', skip-cert-verify=true';
+                  $proxies .= ', skip-cert-verify=' . ($tlsSettings->allowInsecure ? "true" : "false");
                 }
             }
             if ($item->network == 'ws') {
@@ -163,8 +174,9 @@ class ClientController extends Controller
             $array['alterId'] = $user->v2ray_alter_id;
             $array['cipher'] = 'auto';
             if ($item->tls) {
+                $tlsSettings = json_decode($item->tlsSettings);
                 $array['tls'] = true;
-                $array['skip-cert-verify'] = true;
+                if (isset($tlsSettings->allowInsecure)) $array['skip-cert-verify'] = ($tlsSettings->allowInsecure ? true : false );
             }
             if ($item->network == 'ws') {
                 $array['network'] = $item->network;
