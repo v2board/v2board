@@ -141,7 +141,7 @@ class ServerService
         $serverLog = ServerLog::where('user_id', $userId)
             ->where('server_id', $serverId)
             ->where('created_at', '>=', strtotime(date('Y-m-d h:00:00')))
-            ->orderBy('DESC', 'created_at')
+            ->orderBy('created_at', 'DESC')
             ->first();
         if ($serverLog) {
             $serverLog->u = $serverLog->u + $u;
