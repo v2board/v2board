@@ -89,6 +89,10 @@ class OrderController extends Controller
             abort(500, '该订阅周期无法进行购买，请选择其他周期');
         }
 
+        if ($request->input('cycle') === 'reset_price' && !$user->plan_id) {
+            abort(500, '必须存在订阅才可以购买流量重置包');
+        }
+
         DB::beginTransaction();
         $order = new Order();
         $orderService = new OrderService($order);

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\ServerLog;
 use App\Models\User;
 use App\Models\Server;
 
@@ -132,6 +133,28 @@ class ServerService
                 $json->inbound->streamSettings->tlsSettings->allowInsecure = (int)$tlsSettings->allowInsecure ? true : false;
             }
             $json->inbound->streamSettings->tlsSettings->certificates[0] = $tls;
+        }
+    }
+
+    public function log(int $userId, int $serverId, int $u, int $d, float $rate)
+    {
+        $serverLog = ServerLog::where('user_id', $userId)
+            ->where('server_id', $serverId)
+            ->where('created_at', '>=', strtotime(date('Y-m-d h:00:00')))
+            ->orderBy('DESC', 'created_at')
+            ->first();
+        if ($serverLog) {
+            $serverLog->u = $serverLog->u + $u;
+            $serverLog->d = $serverLog->d + $d;
+            $serverLog->save();
+        } else {
+            $serverLog = new ServerLog();
+            $serverLog->user_id = $userId;
+            $serverLog->server_id = $serverId;
+            $serverLog->u = $u;
+            $serverLog->d = $d;
+            $serverLog->rate = $rate;
+            $serverLog->save();
         }
     }
 }

@@ -44,8 +44,11 @@ class OrderService
     public function setOrderType(User $user)
     {
         $order = $this->order;
+        if ($order->cycle === 'reset_price') {
+            $order->type = 4;
+        }
         if ($user->plan_id !== NULL && $order->plan_id !== $user->plan_id) {
-            if (!(int)config('v2board.plan_change_enable', 1)) abort(500, '目前不允许更改订阅，请联系客服或提交工单');
+            if (!(int)config('v2board.plan_change_enable', 1)) abort(500, '目前不允许更改订阅，请联系客服或提交工单操作');
             $order->type = 3;
             $this->getSurplusValue($user, $order);
             if ($order->surplus_amount >= $order->total_amount) {
@@ -106,7 +109,7 @@ class OrderService
         }
         $notUsedTrafficPrice = $plan->transfer_enable - (($user->u + $user->d) / 1073741824);
         $result = $trafficUnitPrice * $notUsedTrafficPrice;
-        $orderModel = Order::where('user_id', $user->id)->where('status', 3);
+        $orderModel = Order::where('user_id', $user->id)->where('cycle', '!=', 'reset_price')->where('status', 3);
         $order->surplus_amount = $result > 0 ? $result : 0;
         $order->surplus_order_ids = json_encode(array_map(function ($v) { return $v['id'];}, $orderModel->get()->toArray()));
     }
@@ -119,7 +122,7 @@ class OrderService
             'half_year_price' => 6,
             'year_price' => 12
         ];
-        $orderModel = Order::where('user_id', $user->id)->where('status', 3);
+        $orderModel = Order::where('user_id', $user->id)->where('cycle', '!=', 'reset_price')->where('status', 3);
 
         $totalValue = $orderModel->sum('total_amount') + $orderModel->sum('balance_amount');
         if ($totalValue <= 0) {

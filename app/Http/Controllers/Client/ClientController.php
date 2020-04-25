@@ -150,7 +150,6 @@ class ClientController extends Controller
     private function clash($user, $server)
     {
         $proxy = [];
-        $proxyGroup = [];
         $proxies = [];
         $rules = [];
         foreach ($server as $item) {
@@ -180,28 +179,80 @@ class ClientController extends Controller
             array_push($proxies, $item->name);
         }
 
-        array_push($proxyGroup, [
-            'name' => 'auto',
-            'type' => 'url-test',
-            'proxies' => $proxies,
-            'url' => 'https://www.bing.com',
-            'interval' => 300
-        ]);
-        array_push($proxyGroup, [
-            'name' => 'fallback-auto',
-            'type' => 'fallback',
-            'proxies' => $proxies,
-            'url' => 'https://www.bing.com',
-            'interval' => 300
-        ]);
-        array_push($proxyGroup, [
-            'name' => 'select',
-            'type' => 'select',
-            'proxies' => array_merge($proxies, [
-                'auto',
-                'fallback-auto'
-            ])
-        ]);
+        $proxyGroup = [
+            [
+                'name' => '🔰 节点选择',
+                'type' => 'select',
+                'proxies' => array_merge([
+                    '♻️ 自动选择',
+                    '🎯 全球直连'
+                ], $proxies)
+            ], [
+                'name' => '♻️ 自动选择',
+                'type' => 'url-test',
+                'url' => 'http://www.gstatic.com/generate_204',
+                'interval' => 300,
+                'proxies' => $proxies
+            ], [
+                'name' => '🌍 国外媒体',
+                'type' => 'select',
+                'proxies' => array_merge([
+                    '🔰 节点选择',
+                    '♻️ 自动选择',
+                    '🎯 全球直连'
+                ], $proxies)
+            ], [
+                'name' => '🌏 国内媒体',
+                'type' => 'select',
+                'proxies' => array_merge([
+                    '🎯 全球直连',
+                    '🔰 节点选择'
+                ], $proxies)
+            ], [
+                'name' => 'Ⓜ️ 微软服务',
+                'type' => 'select',
+                'proxies' => array_merge([
+                    '🎯 全球直连',
+                    '🔰 节点选择'
+                ], $proxies)
+            ], [
+                'name' => '📲 电报信息',
+                'type' => 'select',
+                'proxies' => array_merge([
+                    '🎯 全球直连',
+                    '🔰 节点选择'
+                ], $proxies)
+            ], [
+                'name' => '🍎 苹果服务',
+                'type' => 'select',
+                'proxies' => array_merge([
+                    '🔰 节点选择',
+                    '♻️ 自动选择',
+                    '🎯 全球直连'
+                ], $proxies)
+            ], [
+                'name' => '🎯 全球直连',
+                'type' => 'select',
+                'proxies' => [
+                    'DIRECT'
+                ]
+            ], [
+                'name' => '🛑 全球拦截',
+                'type' => 'select',
+                'proxies' => [
+                    'REJECT',
+                    'DIRECT'
+                ]
+            ], [
+                'name' => '🐟 漏网之鱼',
+                'type' => 'select',
+                'proxies' => array_merge([
+                    '🔰 节点选择',
+                    '♻️ 自动选择',
+                    '🎯 全球直连'
+                ], $proxies)
+            ]
+        ];
 
         try {
             $rules = [];

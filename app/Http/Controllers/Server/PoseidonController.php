@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Server;
 
 use App\Services\ServerService;
+use App\Services\UserService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\User;
@@ -58,22 +59,25 @@ class PoseidonController extends Controller
         }
         $data = file_get_contents('php://input');
         $data = json_decode($data, true);
+        $serverService = new ServerService();
+        $userService = new UserService();
         foreach ($data as $item) {
             $u = $item['u'] * $server->rate;
             $d = $item['d'] * $server->rate;
-            $user = User::find($item['user_id']);
-            $user->t = time();
-            $user->u = $user->u + $u;
-            $user->d = $user->d + $d;
-            $user->save();
+            if (!$userService->trafficFetch($u, $d, $item['user_id'])) {
+                return response([
+                    'ret' => 0,
+                    'msg' => 'user fetch fail'
+                ]);
+            }
 
-            $serverLog = new ServerLog();
-            $serverLog->user_id = $item['user_id'];
-            $serverLog->server_id = $request->input('node_id');
-            $serverLog->u = $item['u'];
-            $serverLog->d = $item['d'];
-            $serverLog->rate = $server->rate;
-            $serverLog->save();
+            $serverService->log(
+                $item['user_id'],
+                $request->input('node_id'),
+                $u,
+                $d,
+                $server->rate
+            );
         }
 
         return $this->success('');

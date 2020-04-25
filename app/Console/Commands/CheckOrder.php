@@ -81,10 +81,15 @@ class CheckOrder extends Command
                 abort(500, '开通失败');
             }
         }
-        if ((string)$order->cycle === 'onetime_price') {
-            $this->buyByOneTime($order, $user, $plan);
-        } else {
-            $this->buyByCycle($order, $user, $plan);
+        switch ((string)$order->cycle) {
+            case 'onetime_price':
+                $this->buyByOneTime($order, $user, $plan);
+                break;
+            case 'reset_price':
+                $this->buyReset($user);
+                break;
+            default:
+                $this->buyByCycle($order, $user, $plan);
         }
         if (!$user->save()) {
             DB::rollBack();
@@ -97,6 +102,12 @@ class CheckOrder extends Command
         }
 
         DB::commit();
+    }
+
+    private function buyReset(User $user)
+    {
+        $user->u = 0;
+        $user->d = 0;
     }
 
     private function buyByCycle(Order $order, User $user, Plan $plan)

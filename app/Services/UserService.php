@@ -75,4 +75,19 @@ class UserService
         }
         return true;
     }
+
+    public function trafficFetch(int $u, int $d, int $userId)
+    {
+        $user = User::find($userId);
+        if (!$user) {
+            return false;
+        }
+        $user->t = time();
+        $user->u = $user->u + $u;
+        $user->d = $user->d + $d;
+        if (!$user->save()) {
+            return false;
+        }
+        return true;
+    }
 }
