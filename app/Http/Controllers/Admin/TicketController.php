@@ -33,6 +33,9 @@ class TicketController extends Controller
         $current = $request->input('current') ? $request->input('current') : 1;
         $pageSize = $request->input('pageSize') >= 10 ? $request->input('pageSize') : 10;
         $model = Ticket::orderBy('created_at', 'DESC');
+        if ($request->input('status') !== NULL) {
+            $model->where('status', $request->input('status'));
+        }
         $total = $model->count();
         $res = $model->forPage($current, $pageSize)
             ->get();
