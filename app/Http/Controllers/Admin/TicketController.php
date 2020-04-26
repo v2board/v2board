@@ -30,17 +30,22 @@ class TicketController extends Controller
                 'data' => $ticket
             ]);
         }
-        $ticket = Ticket::orderBy('created_at', 'DESC')
+        $current = $request->input('current') ? $request->input('current') : 1;
+        $pageSize = $request->input('pageSize') >= 10 ? $request->input('pageSize') : 10;
+        $model = Ticket::orderBy('created_at', 'DESC');
+        $total = $model->count();
+        $res = $model->forPage($current, $pageSize)
             ->get();
-        for ($i = 0; $i < count($ticket); $i++) {
-            if ($ticket[$i]['last_reply_user_id'] == $request->session()->get('id')) {
-                $ticket[$i]['reply_status'] = 0;
+        for ($i = 0; $i < count($res); $i++) {
+            if ($res[$i]['last_reply_user_id'] == $request->session()->get('id')) {
+                $res[$i]['reply_status'] = 0;
             } else {
-                $ticket[$i]['reply_status'] = 1;
+                $res[$i]['reply_status'] = 1;
             }
         }
         return response([
-            'data' => $ticket
+            'data' => $res,
+            'total' => $total
         ]);
     }
 

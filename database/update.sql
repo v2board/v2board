@@ -235,3 +235,6 @@ CHANGE `quarter_price` `quarter_price` int(11) NULL AFTER `month_price`,
 CHANGE `half_year_price` `half_year_price` int(11) NULL AFTER `quarter_price`,
 CHANGE `year_price` `year_price` int(11) NULL AFTER `half_year_price`,
 ADD `reset_price` int(11) NULL AFTER `onetime_price`;
+
+ALTER TABLE `v2_server_log`
+ADD `id` bigint NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST;
