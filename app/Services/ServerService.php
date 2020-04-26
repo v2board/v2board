@@ -138,23 +138,12 @@ class ServerService
 
     public function log(int $userId, int $serverId, int $u, int $d, float $rate)
     {
-        $serverLog = ServerLog::where('user_id', $userId)
-            ->where('server_id', $serverId)
-            ->where('created_at', '>=', strtotime(date('Y-m-d h:00:00')))
-            ->orderBy('created_at', 'DESC')
-            ->first();
-        if ($serverLog) {
-            $serverLog->u = $serverLog->u + $u;
-            $serverLog->d = $serverLog->d + $d;
-            $serverLog->save();
-        } else {
-            $serverLog = new ServerLog();
-            $serverLog->user_id = $userId;
-            $serverLog->server_id = $serverId;
-            $serverLog->u = $u;
-            $serverLog->d = $d;
-            $serverLog->rate = $rate;
-            $serverLog->save();
-        }
+        $serverLog = new ServerLog();
+        $serverLog->user_id = $userId;
+        $serverLog->server_id = $serverId;
+        $serverLog->u = $u;
+        $serverLog->d = $d;
+        $serverLog->rate = $rate;
+        $serverLog->save();
     }
 }
