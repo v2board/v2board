@@ -86,8 +86,8 @@ class DeepbworkController extends Controller
             $serverService->log(
                 $item['user_id'],
                 $request->input('node_id'),
-                $u,
-                $d,
+                $item['u'],
+                $item['d'],
                 $server->rate
             );
         }

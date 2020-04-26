@@ -60,17 +60,12 @@ class ServerController extends Controller
             case 2:
                 $serverLogModel->where('created_at', '>=', strtotime(date('Y-m-1')));
         }
-        $sum = [
-            'u' => $serverLogModel->sum('u'),
-            'd' => $serverLogModel->sum('d')
-        ];
         $total = $serverLogModel->count();
         $res = $serverLogModel->forPage($current, $pageSize)
             ->get();
         return response([
             'data' => $res,
-            'total' => $total,
-            'sum' => $sum
+            'total' => $total
         ]);
     }
 }
