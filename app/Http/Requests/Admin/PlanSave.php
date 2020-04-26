@@ -16,7 +16,7 @@ class PlanSave extends FormRequest
         'half_year_price' => 'nullable|integer',
         'year_price' => 'nullable|integer',
         'onetime_price' => 'nullable|integer',
-        'reset_price' => 'nullable|reset_price'
+        'reset_price' => 'nullable|integer'
     ];
     /**
      * Get the validation rules that apply to the request.
