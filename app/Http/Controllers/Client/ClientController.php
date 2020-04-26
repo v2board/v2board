@@ -219,16 +219,16 @@ class ClientController extends Controller
                 'name' => '📲 电报信息',
                 'type' => 'select',
                 'proxies' => array_merge([
-                    '🎯 全球直连',
-                    '🔰 节点选择'
+                    '🔰 节点选择',
+                    '🎯 全球直连'
                 ], $proxies)
             ], [
                 'name' => '🍎 苹果服务',
                 'type' => 'select',
                 'proxies' => array_merge([
+                    '🎯 全球直连',
                     '🔰 节点选择',
-                    '♻️ 自动选择',
-                    '🎯 全球直连'
+                    '♻️ 自动选择'
                 ], $proxies)
             ], [
                 'name' => '🎯 全球直连',
