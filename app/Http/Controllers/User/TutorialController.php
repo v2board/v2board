@@ -73,7 +73,10 @@ class TutorialController extends Controller
             array('-', '_', ''),
             base64_encode($response['data']['safe_area_var']['subscribe_url'])
         );
-        // end
+	// end
+	// fuck support surge urlencode subscribe
+	$response['data']['safe_area_var']['ue_subscribe_url'] = urlencode($response['data']['safe_area_var']['subscribe_url']);
+	// end
         return response($response);
     }
 }
