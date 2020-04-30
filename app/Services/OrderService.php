@@ -120,9 +120,12 @@ class OrderService
             'month_price' => 1,
             'quarter_price' => 3,
             'half_year_price' => 6,
-            'year_price' => 12
+            'year_price' => 12,
+            'onetime_price' => 0
         ];
-        $orderModel = Order::where('user_id', $user->id)->where('cycle', '!=', 'reset_price')->where('status', 3);
+        $orderModel = Order::where('user_id', $user->id)
+            ->where('cycle', '!=', 'reset_price')
+            ->where('status', 3);
 
         $totalValue = $orderModel->sum('total_amount') + $orderModel->sum('balance_amount');
         if ($totalValue <= 0) {
