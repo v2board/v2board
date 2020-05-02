@@ -128,12 +128,12 @@ class OrderService
             ->where('status', 3);
 
         $totalValue = $orderModel->sum('total_amount') + $orderModel->sum('balance_amount');
-        if ($totalValue <= 0) {
-            return;
-        }
         $totalMonth = 0;
         foreach ($orderModel->get() as $item) {
             $totalMonth = $totalMonth + $strToMonth[$item->cycle];
+        }
+        if (!$totalValue || !$totalMonth) {
+            return;
         }
         $unitPrice = $totalValue / $totalMonth;
         $remainingMonth = ($user->expired_at - time()) / 2678400;
