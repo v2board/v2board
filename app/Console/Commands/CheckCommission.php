@@ -39,6 +39,25 @@ class CheckCommission extends Command
      */
     public function handle()
     {
+        $this->autoCheck();
+        $this->autoPayCommission();
+    }
+
+    public function autoCheck()
+    {
+        if ((int)config('v2board.commission_auto_check_enable')) {
+            Order::where('commission_status', 0)
+                ->where('status', 3)
+                ->where('commission_balance', '>', 0)
+                ->where('updated_at', '>=', strtotime('+3 day', time()))
+                ->update([
+                    'commission_status' => 1
+                ]);
+        }
+    }
+
+    public function autoPayCommission()
+    {
         $order = Order::where('commission_status', 1)
             ->where('status', 3)
             ->get();

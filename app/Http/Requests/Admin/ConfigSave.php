@@ -14,6 +14,7 @@ class ConfigSave extends FormRequest
         'invite_gen_limit' => 'integer',
         'invite_never_expire' => 'in:0,1',
         'commission_first_time_enable' => 'in:0,1',
+        'commission_auto_check_enable' => 'in:0,1',
         // site
         'stop_register' => 'in:0,1',
         'email_verify' => 'in:0,1',
