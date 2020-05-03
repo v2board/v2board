@@ -78,7 +78,9 @@ class OrderController extends Controller
         }
 
         if ((!$plan->show && !$plan->renew) || (!$plan->show && $user->plan_id !== $plan->id)) {
-            abort(500, '该订阅已售罄');
+            if ($request->input('cycle') !== 'reset_price') {
+                abort(500, '该订阅已售罄');
+            }
         }
 
         if (!$plan->renew && $user->plan_id == $plan->id) {
