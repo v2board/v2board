@@ -126,25 +126,18 @@ class OrderService
         $orderModel = Order::where('user_id', $user->id)
             ->where('cycle', '!=', 'reset_price')
             ->where('status', 3);
-
-        $totalValue = $orderModel->sum('total_amount') + $orderModel->sum('balance_amount');
-        $totalValue = 0;
-        $totalMonth = 0;
+        $surplusAmount = 0;
         foreach ($orderModel->get() as $item) {
             $surplusMonth = strtotime("+ {$strToMonth[$item->cycle]}month", $item->updated_at->format('U'));
-            $surplusMonth = ($surplusMonth - time()) / 2678400;
-            if ($surplusMonth) {
-                $totalMonth = $totalMonth + $surplusMonth;
-                $totalValue = ($item['total_amount'] + $item['balance_amount']) * $surplusMonth;
+            $surplusMonth = ($surplusMonth - time()) / 2678400 / $strToMonth[$item->cycle];
+            if ($surplusMonth > 0) {
+                $surplusAmount = $surplusAmount + ($item['total_amount'] + $item['balance_amount']) * $surplusMonth;
             }
         }
-        if (!$totalValue || !$totalMonth) {
+        if (!$surplusAmount) {
             return;
         }
-        $unitPrice = $totalValue / $totalMonth;
-        $remainingMonth = ($user->expired_at - time()) / 2678400;
-        $result = $unitPrice * $remainingMonth;
-        $order->surplus_amount = $result > 0 ? $result : 0;
+        $order->surplus_amount = $surplusAmount > 0 ? $surplusAmount : 0;
         $order->surplus_order_ids = json_encode(array_map(function ($v) { return $v['id'];}, $orderModel->get()->toArray()));
     }
 }
