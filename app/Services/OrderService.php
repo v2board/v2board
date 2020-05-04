@@ -128,11 +128,15 @@ class OrderService
             ->where('status', 3);
 
         $totalValue = $orderModel->sum('total_amount') + $orderModel->sum('balance_amount');
+        $totalValue = 0;
         $totalMonth = 0;
         foreach ($orderModel->get() as $item) {
-            $surplusMonth = strtotime("+ {$strToMonth[$item->cycle]}month", $item->updated_at);
+            $surplusMonth = strtotime("+ {$strToMonth[$item->cycle]}month", $item['updated_at']);
             $surplusMonth = ($surplusMonth - time()) / 2678400;
-            $totalMonth = $totalMonth + $surplusMonth;
+            if ($surplusMonth) {
+                $totalMonth = $totalMonth + $surplusMonth;
+                $totalValue = ($item['total_amount'] + $item['balance_amount']) * $surplusMonth;
+            }
         }
         if (!$totalValue || !$totalMonth) {
             return;
