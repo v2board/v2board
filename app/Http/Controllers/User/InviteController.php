@@ -28,6 +28,7 @@ class InviteController extends Controller
     {
         return response([
             'data' => Order::where('invite_user_id', $request->session()->get('id'))
+                ->where('commission_balance', '>', 0)
                 ->where('status', 3)
                 ->select([
                     'id',
