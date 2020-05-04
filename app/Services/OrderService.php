@@ -131,7 +131,7 @@ class OrderService
         $totalValue = 0;
         $totalMonth = 0;
         foreach ($orderModel->get() as $item) {
-            $surplusMonth = strtotime("+ {$strToMonth[$item->cycle]}month", $item['updated_at']);
+            $surplusMonth = strtotime("+ {$strToMonth[$item->cycle]}month", $item->updated_at->format('U'));
             $surplusMonth = ($surplusMonth - time()) / 2678400;
             if ($surplusMonth) {
                 $totalMonth = $totalMonth + $surplusMonth;
