@@ -49,7 +49,7 @@ class CheckCommission extends Command
             Order::where('commission_status', 0)
                 ->where('status', 3)
                 ->where('commission_balance', '>', 0)
-                ->where('updated_at', '>=', strtotime('+3 day', time()))
+                ->where('updated_at', '<=', strtotime('-3 day', time()))
                 ->update([
                     'commission_status' => 1
                 ]);
