@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Jobs\SendEmailJob;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Ticket;
 use App\Models\TicketMessage;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class TicketController extends Controller
@@ -80,6 +82,7 @@ class TicketController extends Controller
             abort(500, '工单回复失败');
         }
         DB::commit();
+        $this->sendEmailNotify($ticket, $ticketMessage);
         return response([
             'data' => true
         ]);
@@ -102,5 +105,25 @@ class TicketController extends Controller
         return response([
             'data' => true
         ]);
+    }
+
+    // 半小时内不再重复通知
+    private function sendEmailNotify(Ticket $ticket, TicketMessage $ticketMessage)
+    {
+        $user = User::find($ticket->user_id);
+        $cacheKey = 'ticket_sendEmailNotify';
+        if (!Cache::get($cacheKey)) {
+            Cache::put($cacheKey, 1, 1800);
+            SendEmailJob::dispatch([
+                'email' => $user->email,
+                'subject' => '您在' . config('v2board.app_name', 'V2Board') . '的工单得到了回复',
+                'template_name' => 'notify',
+                'template_value' => [
+                    'name' => config('v2board.app_name', 'V2Board'),
+                    'url' => config('v2board.app_url'),
+                    'content' => "主题：{$ticket->subject}\r\n回复内容：{$ticketMessage->message}"
+                ]
+            ]);
+        }
     }
 }
