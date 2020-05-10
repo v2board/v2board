@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Requests\Admin\OrderAssign;
 use App\Http\Requests\Admin\OrderUpdate;
 use App\Services\OrderService;
+use App\Utils\Helper;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\User;
 use App\Models\Plan;
+use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
@@ -98,6 +101,43 @@ class OrderController extends Controller
         }
         return response([
             'data' => true
+        ]);
+    }
+
+    public function assign(OrderAssign $request)
+    {
+        $plan = Plan::find($request->input('plan_id'));
+        $user = User::where('email', $request->input('email'));
+
+        if (!$user) {
+            abort(500, '该用户不存在');
+        }
+
+        if (!$plan) {
+            abort(500, '该订阅不存在');
+        }
+
+        DB::beginTransaction();
+        $order = new Order();
+        $orderService = new OrderService($order);
+        $order->user_id = $user->id;
+        $order->plan_id = $plan->id;
+        $order->cycle = $request->input('cycle');
+        $order->trade_no = Helper::guid();
+        $order->total_amount = $request->input('total_amount');
+
+        $orderService->setOrderType($user);
+        $orderService->setInvite($user);
+
+        if (!$order->save()) {
+            DB::rollback();
+            abort(500, '订单创建失败');
+        }
+
+        DB::commit();
+
+        return response([
+            'data' => $order->trade_no
         ]);
     }
 }
