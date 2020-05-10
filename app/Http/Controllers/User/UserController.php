@@ -137,4 +137,26 @@ class UserController extends Controller
             'data' => true
         ]);
     }
+
+    public function transfer(Request $request)
+    {
+        $user = User::find($request->session()->get('id'));
+        if (!$user) {
+            abort(500, '该用户不存在');
+        }
+        if ($request->input('transfer_amount') <= 0) {
+            abort(500, '参数错误');
+        }
+        if ($request->input('transfer_amount') > $user->commission_balance) {
+            abort(500, '推广佣金余额不足');
+        }
+        $user->commission_balance = $user->commission_balance - $request->input('transfer_amount');
+        $user->balance = $user->balance + $request->input('transfer_amount');
+        if (!$user->save()) {
+            abort(500, '划转失败');
+        }
+        return response([
+            'data' => true
+        ]);
+    }
 }
