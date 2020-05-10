@@ -20,7 +20,7 @@ class StatController extends Controller
             'data' => [
                 'month_income' => Order::where('created_at', '>=', strtotime(date('Y-m-1')))
                     ->where('created_at', '<', time())
-                    ->where('status', '3')
+                    ->where('status', 3)
                     ->sum('total_amount'),
                 'month_register_total' => User::where('created_at', '>=', strtotime(date('Y-m-1')))
                     ->where('created_at', '<', time())
@@ -31,6 +31,14 @@ class StatController extends Controller
                     ->where('invite_user_id', '!=', NULL)
                     ->where('status', 3)
                     ->count(),
+                'day_income' => Order::where('created_at', '>=', strtotime(date('Y-m-d')))
+                    ->where('created_at', '<', time())
+                    ->where('status', 3)
+                    ->sum('total_amount'),
+                'last_month_income' => Order::where('created_at', '>=', strtotime('-1 month', strtotime(date('Y-m-1'))))
+                    ->where('created_at', '<', strtotime(date('Y-m-1')))
+                    ->where('status', 3)
+                    ->sum('total_amount')
             ]
         ]);
     }
