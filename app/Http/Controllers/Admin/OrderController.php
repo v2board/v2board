@@ -126,7 +126,17 @@ class OrderController extends Controller
         $order->trade_no = Helper::guid();
         $order->total_amount = $request->input('total_amount');
 
-        $orderService->setOrderType($user);
+        $order = $this->order;
+        if ($order->cycle === 'reset_price') {
+            $order->type = 4;
+        } else if ($user->plan_id !== NULL && $order->plan_id !== $user->plan_id) {
+            $order->type = 3;
+        } else if ($user->expired_at > time() && $order->plan_id == $user->plan_id) {
+            $order->type = 2;
+        } else {
+            $order->type = 1;
+        }
+
         $orderService->setInvite($user);
 
         if (!$order->save()) {
