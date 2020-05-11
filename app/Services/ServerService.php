@@ -148,7 +148,7 @@ class ServerService
             ->first();
         if ($serverLog) {
             $serverLog->u = $serverLog->u + $u;
-            $serverLog->d = $serverLog->d + $u;
+            $serverLog->d = $serverLog->d + $d;
             $serverLog->save();
         } else {
             $serverLog = new ServerLog();
