@@ -107,7 +107,7 @@ class OrderController extends Controller
     public function assign(OrderAssign $request)
     {
         $plan = Plan::find($request->input('plan_id'));
-        $user = User::where('email', $request->input('email'));
+        $user = User::where('email', $request->input('email'))->first();
 
         if (!$user) {
             abort(500, '该用户不存在');
