@@ -138,12 +138,27 @@ class ServerService
 
     public function log(int $userId, int $serverId, int $u, int $d, float $rate)
     {
-        $serverLog = new ServerLog();
-        $serverLog->user_id = $userId;
-        $serverLog->server_id = $serverId;
-        $serverLog->u = $u;
-        $serverLog->d = $d;
-        $serverLog->rate = $rate;
-        $serverLog->save();
+        if (($u + $d) <= 10240) return;
+        $timestamp = strtotime(date('Y-m-d H:0'));
+        $serverLog = ServerLog::where('log_at', '>=', $timestamp)
+            ->where('log_at', '<', $timestamp + 3600)
+            ->where('server_id', $serverId)
+            ->where('user_id', $userId)
+            ->where('rate', $rate)
+            ->first();
+        if ($serverLog) {
+            $serverLog->u = $serverLog->u + $u;
+            $serverLog->d = $serverLog->d + $u;
+            $serverLog->save();
+        } else {
+            $serverLog = new ServerLog();
+            $serverLog->user_id = $userId;
+            $serverLog->server_id = $serverId;
+            $serverLog->u = $u;
+            $serverLog->d = $d;
+            $serverLog->rate = $rate;
+            $serverLog->log_at = $timestamp;
+            $serverLog->save();
+        }
     }
 }

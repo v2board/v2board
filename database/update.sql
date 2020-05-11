@@ -238,3 +238,6 @@ ADD `reset_price` int(11) NULL AFTER `onetime_price`;
 
 ALTER TABLE `v2_server_log`
 ADD `id` bigint NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST;
+
+ALTER TABLE `v2_server_log`
+ADD `log_at` int(11) NOT NULL AFTER `rate`;

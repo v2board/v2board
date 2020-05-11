@@ -165,6 +165,7 @@ CREATE TABLE `v2_server_log` (
   `u` varchar(255) NOT NULL,
   `d` varchar(255) NOT NULL,
   `rate` decimal(10,2) NOT NULL,
+  `log_at` int(11) NOT NULL,
   `created_at` int(11) NOT NULL,
   `updated_at` int(11) NOT NULL,
   PRIMARY KEY (`id`)
