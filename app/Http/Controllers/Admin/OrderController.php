@@ -126,7 +126,6 @@ class OrderController extends Controller
         $order->trade_no = Helper::guid();
         $order->total_amount = $request->input('total_amount');
 
-        $order = $this->order;
         if ($order->cycle === 'reset_price') {
             $order->type = 4;
         } else if ($user->plan_id !== NULL && $order->plan_id !== $user->plan_id) {
