@@ -168,7 +168,8 @@ CREATE TABLE `v2_server_log` (
   `log_at` int(11) NOT NULL,
   `created_at` int(11) NOT NULL,
   `updated_at` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `log_at` (`log_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -181,7 +182,7 @@ CREATE TABLE `v2_server_stat` (
   `created_at` int(11) NOT NULL,
   `updated_at` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
 DROP TABLE IF EXISTS `v2_ticket`;
@@ -228,6 +229,7 @@ DROP TABLE IF EXISTS `v2_user`;
 CREATE TABLE `v2_user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `invite_user_id` int(11) DEFAULT NULL,
+  `telegram_id` bigint(20) DEFAULT NULL,
   `email` varchar(64) NOT NULL,
   `password` varchar(64) NOT NULL,
   `password_algo` char(10) DEFAULT NULL,
@@ -259,4 +261,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2020-05-12 05:24:10
+-- 2020-05-12 12:31:04

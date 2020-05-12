@@ -253,3 +253,6 @@ CHANGE `year_price` `year_price` int(11) NULL AFTER `half_year_price`;
 
 ALTER TABLE v2_server_log
 ADD INDEX log_at (`log_at`);
+
+ALTER TABLE `v2_user`
+ADD `telegram_id` bigint NULL AFTER `invite_user_id`;
