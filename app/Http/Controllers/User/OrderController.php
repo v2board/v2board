@@ -167,7 +167,10 @@ class OrderController extends Controller
             $order->total_amount = 0;
             $order->status = 1;
             $order->save();
-            exit();
+            return response([
+                'type' => -1,
+                'data' => true
+            ]);
         }
         switch ($method) {
             // return type => 0: QRCode / 1: URL
