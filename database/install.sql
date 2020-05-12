@@ -1,4 +1,4 @@
--- Adminer 4.7.3 MySQL dump
+-- Adminer 4.7.6 MySQL dump
 
 SET NAMES utf8;
 SET time_zone = '+00:00';
@@ -54,7 +54,7 @@ CREATE TABLE `v2_mail_log` (
   `email` varchar(64) NOT NULL,
   `subject` varchar(255) NOT NULL,
   `template_name` varchar(255) NOT NULL,
-  `error` varchar(255) DEFAULT NULL,
+  `error` text,
   `created_at` int(11) NOT NULL,
   `updated_at` int(11) NOT NULL,
   PRIMARY KEY (`id`)
@@ -259,4 +259,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2020-04-25 12:00:52
+-- 2020-05-12 05:24:10

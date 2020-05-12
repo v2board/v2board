@@ -181,4 +181,9 @@ class TicketController extends Controller
             'data' => true
         ]);
     }
+
+    private function sendNotify(Ticket $ticket, TicketMessage $ticketMessage)
+    {
+
+    }
 }

@@ -47,9 +47,11 @@ class ConfigSave extends FormRequest
         'stripe_webhook_key' => '',
         'stripe_currency' => 'in:hkd,usd,sgd,eur,gbp',
         // bitpayx
+        'bitpayx_name' => '',
         'bitpayx_enable' => 'in:0,1',
         'bitpayx_appsecret' => '',
         // paytaro
+        'paytaro_name' => '',
         'paytaro_enable' => 'in:0,1',
         'paytaro_app_id' => '',
         'paytaro_app_secret' => '',
@@ -65,7 +67,9 @@ class ConfigSave extends FormRequest
         'email_template' => '',
         // telegram
         'telegram_bot_enable' => 'in:0,1',
-        'telegram_bot_token' => ''
+        'telegram_bot_token' => '',
+        'telegram_discuss_id' => '',
+        'telegram_channel_id' => ''
     ];
 
     /**

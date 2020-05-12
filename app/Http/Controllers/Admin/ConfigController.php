@@ -65,9 +65,11 @@ class ConfigController extends Controller
                     'stripe_webhook_key' => config('v2board.stripe_webhook_key'),
                     'stripe_currency' => config('v2board.stripe_currency', 'hkd'),
                     // bitpayx
+                    'bitpayx_name' => config('v2board.bitpayx_name', '聚合支付'),
                     'bitpayx_enable' => (int)config('v2board.bitpayx_enable', 0),
                     'bitpayx_appsecret' => config('v2board.bitpayx_appsecret'),
                     // paytaro
+                    'paytaro_name' => config('v2board.paytaro_name', '聚合支付'),
                     'paytaro_enable' => (int)config('v2board.paytaro_enable', 0),
                     'paytaro_app_id' => config('v2board.paytaro_app_id'),
                     'paytaro_app_secret' => config('v2board.paytaro_app_secret')

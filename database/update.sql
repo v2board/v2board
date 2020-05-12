@@ -241,3 +241,15 @@ ADD `id` bigint NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST;
 
 ALTER TABLE `v2_server_log`
 ADD `log_at` int(11) NOT NULL AFTER `rate`;
+
+ALTER TABLE `v2_mail_log`
+CHANGE `error` `error` text COLLATE 'utf8_general_ci' NULL AFTER `template_name`;
+
+ALTER TABLE `v2_plan`
+CHANGE `month_price` `month_price` int(11) NULL AFTER `content`,
+CHANGE `quarter_price` `quarter_price` int(11) NULL AFTER `month_price`,
+CHANGE `half_year_price` `half_year_price` int(11) NULL AFTER `quarter_price`,
+CHANGE `year_price` `year_price` int(11) NULL AFTER `half_year_price`;
+
+ALTER TABLE v2_server_log
+ADD INDEX log_at (`log_at`);
