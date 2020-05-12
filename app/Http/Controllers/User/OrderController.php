@@ -67,7 +67,7 @@ class OrderController extends Controller
     {
         $userService = new UserService();
         if ($userService->isNotCompleteOrderByUserId($request->session()->get('id'))) {
-            abort(500, '存在未付款订单，请取消后再试');
+            abort(500, '您有未付款或开通中的订单，请稍后或取消再试');
         }
 
         $plan = Plan::find($request->input('plan_id'));
