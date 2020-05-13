@@ -48,7 +48,6 @@ class CheckCommission extends Command
         if ((int)config('v2board.commission_auto_check_enable', 1)) {
             Order::where('commission_status', 0)
                 ->where('status', 3)
-                ->where('commission_balance', '>', 0)
                 ->where('updated_at', '<=', strtotime('-3 day', time()))
                 ->update([
                     'commission_status' => 1
