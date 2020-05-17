@@ -6,9 +6,9 @@ use \Curl\Curl;
 class TelegramService {
     protected $api;
 
-    public function __construct()
+    public function __construct(string $token = '')
     {
-        $this->api = 'https://api.telegram.org/bot' . config('v2board.telegram_bot_token') . '/';
+        $this->api = 'https://api.telegram.org/bot' . config('v2board.telegram_bot_token', $token) . '/';
     }
 
     public function sendMessage(int $chatId, string $text, string $parseMode = '')
