@@ -1,9 +1,9 @@
 <?php
-namespace Library;
+namespace App\Services;
 
 use \Curl\Curl;
 
-class Telegram {
+class TelegramService {
     protected $api;
 
     public function __construct()
@@ -22,10 +22,25 @@ class Telegram {
 
     public function getMe()
     {
-        dd($this->request('getMe'));
+        $response = $this->request('getMe');
+        if (!$response->ok) {
+            return false;
+        }
+        return $response;
     }
 
-    private function request(string $method, array $params)
+    public function setWebhook(string $url)
+    {
+        $response = $this->request('setWebhook', [
+            'url' => $url
+        ]);
+        if (!$response->ok) {
+            return false;
+        }
+        return $response;
+    }
+
+    private function request(string $method, array $params = [])
     {
         $curl = new Curl();
         $curl->get($this->api . $method, http_build_query($params));

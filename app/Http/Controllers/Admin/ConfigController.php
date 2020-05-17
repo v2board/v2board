@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\Admin\ConfigSave;
+use App\Services\TelegramService;
 use Illuminate\Http\Request;
 use App\Utils\Dict;
 use App\Http\Controllers\Controller;
@@ -17,6 +18,20 @@ class ConfigController extends Controller
         }, glob($path . '*'));
         return response([
             'data' => $files
+        ]);
+    }
+
+    public function setTelegramWebhook()
+    {
+        $telegramService = new TelegramService();
+        if (!$telegramService->getMe()) {
+            abort(500, '机器人Token有误');
+        }
+        if (!$telegramService->setWebhook(config('v2board.app_url') . '/api/v1/guest/telegram/webhook?access_token=' . md5(config('v2board.telegram_bot_token')))) {
+            abort(500, 'Webhook设置失败');
+        }
+        return response([
+            'data' => true
         ]);
     }
 
