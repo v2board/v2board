@@ -53,6 +53,8 @@ class UserRoute
             $router->post('/coupon/check', 'User\\CouponController@check');
             // Telegram
             $router->get ('/telegram/getBotInfo', 'User\\TelegramController@getBotInfo');
+            // Comm
+            $router->get ('/comm/config', 'User\\CommController@config');
         });
     }
 }
