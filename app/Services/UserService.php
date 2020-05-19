@@ -76,7 +76,7 @@ class UserService
         return true;
     }
 
-    public function trafficFetch(int $u, int $d, int $userId)
+    public function trafficFetch(int $u, int $d, int $userId):bool
     {
         $user = User::find($userId);
         if (!$user) {
@@ -85,6 +85,32 @@ class UserService
         $user->t = time();
         $user->u = $user->u + $u;
         $user->d = $user->d + $d;
+        if (!$user->save()) {
+            return false;
+        }
+        return true;
+    }
+
+    public function setTelegramId(int $userId, int $telegramId):bool
+    {
+        $user = User::find($userId);
+        if (!$user) {
+            return false;
+        }
+        $user->telegram_id = $telegramId;
+        if (!$user->save()) {
+            return false;
+        }
+        return true;
+    }
+
+    public function delTelegramId(int $userId):bool
+    {
+        $user = User::find($userId);
+        if (!$user) {
+            return false;
+        }
+        $user->telegram_id = NULL;
         if (!$user->save()) {
             return false;
         }
