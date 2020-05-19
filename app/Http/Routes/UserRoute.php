@@ -51,6 +51,8 @@ class UserRoute
             $router->get ('/server/log/fetch', 'User\\ServerController@logFetch');
             // Coupon
             $router->post('/coupon/check', 'User\\CouponController@check');
+            // Telegram
+            $router->get ('/telegram/getBotInfo', 'User\\TelegramController@getBotInfo');
         });
     }
 }

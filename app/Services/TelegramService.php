@@ -6,9 +6,9 @@ use \Curl\Curl;
 class TelegramService {
     protected $api;
 
-    public function __construct(string $token = '')
+    public function __construct($token = '')
     {
-        $this->api = 'https://api.telegram.org/bot' . config('v2board.telegram_bot_token', $token) . '/';
+        $this->api = 'http://dev.v2board.com/bot' . config('v2board.telegram_bot_token', $token) . '/';
     }
 
     public function sendMessage(int $chatId, string $text, string $parseMode = '')
@@ -22,29 +22,25 @@ class TelegramService {
 
     public function getMe()
     {
-        $response = $this->request('getMe');
-        if (!$response->ok) {
-            return false;
-        }
-        return $response;
+        return $this->request('getMe');
     }
 
     public function setWebhook(string $url)
     {
-        $response = $this->request('setWebhook', [
+        return $this->request('setWebhook', [
             'url' => $url
         ]);
-        if (!$response->ok) {
-            return false;
-        }
-        return $response;
     }
 
     private function request(string $method, array $params = [])
     {
         $curl = new Curl();
-        $curl->get($this->api . $method, http_build_query($params));
+        $curl->get($this->api . $method . '?' . http_build_query($params));
+        $response = $curl->response;
         $curl->close();
-        return $curl->response;
+        if (!$response->ok) {
+            abort(500, '来自TG的错误：' . $response->description);
+        }
+        return $response;
     }
 }
