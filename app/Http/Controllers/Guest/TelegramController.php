@@ -75,6 +75,10 @@ class TelegramController extends Controller
         $msg = $this->msg;
         if (!$msg->is_private) return;
         $telegramService = new TelegramService();
-        $telegramService->sendMessage($msg->chat_id, "你可以使用以下命令进行操作：\n\n/bind 订阅地址 - 绑定你的账号", 'markdown');
+        $commands = [
+            '/bind 订阅地址 - 绑定你的' . config('v2board.app_name', 'V2Board') . '账号'
+        ];
+        $text = implode(PHP_EOL, $commands);
+        $telegramService->sendMessage($msg->chat_id, "你可以使用以下命令进行操作：\n\n$text", 'markdown');
     }
 }
