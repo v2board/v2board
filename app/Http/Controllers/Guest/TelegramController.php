@@ -37,9 +37,10 @@ class TelegramController extends Controller
         $obj = new \StdClass();
         $obj->is_private = $data['message']['chat']['type'] === 'private' ? true : false;
         $text = explode(' ', $data['message']['text']);
-        $obj->command = $text[0] || '';
-        $obj->args = array_slice($text, 1) || [];
-        $obj->chat_id = $data['message']['chat']['id'] || '';
+        $obj->command = $text[0];
+        $obj->args = array_slice($text, 1);
+        $obj->chat_id = $data['message']['chat']['id'];
+        $obj->message_id = $data['message']['message_id'];
         return $obj;
     }
 
@@ -60,5 +61,7 @@ class TelegramController extends Controller
         if (!$user->save()) {
             abort(500, '设置失败');
         }
+        $telegramService = new TelegramService();
+        $telegramService->sendMessage($msg->chat_id, '绑定成功');
     }
 }
