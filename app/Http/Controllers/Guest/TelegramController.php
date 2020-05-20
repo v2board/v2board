@@ -49,7 +49,8 @@ class TelegramController extends Controller
         if (!$msg->is_private) return;
         $subscribeUrl = $msg->args[0];
         $subscribeUrl = parse_url($subscribeUrl);
-        $token = parse_str($subscribeUrl['query'])['token'];
+        parse_str($subscribeUrl['query'], $query);
+        $token = $query['token'];
         if (!$token) {
             abort(500, '订阅地址无效');
         }
