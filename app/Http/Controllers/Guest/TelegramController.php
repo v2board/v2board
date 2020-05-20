@@ -51,6 +51,9 @@ class TelegramController extends Controller
     {
         $msg = $this->msg;
         if (!$msg->is_private) return;
+        if (!isset($msg->args[0])) {
+            abort(500, '参数有误，请携带订阅地址发送');
+        }
         $subscribeUrl = $msg->args[0];
         $subscribeUrl = parse_url($subscribeUrl);
         parse_str($subscribeUrl['query'], $query);
