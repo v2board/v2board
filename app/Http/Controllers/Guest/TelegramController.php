@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Guest;
 
 use App\Services\TelegramService;
-use App\Services\UserService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\User;
 
 class TelegramController extends Controller
 {
