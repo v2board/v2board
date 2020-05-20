@@ -128,6 +128,7 @@ class OrderService
         $surplusAmount = 0;
         foreach ($orderModel->get() as $item) {
             $surplusMonth = strtotime("+ {$strToMonth[$item->cycle]}month", $item->updated_at->format('U'));
+            if (!$surplusMonth) continue;
             $surplusMonth = ($surplusMonth - time()) / 2678400 / $strToMonth[$item->cycle];
             if ($surplusMonth > 0) {
                 $surplusAmount = $surplusAmount + ($item['total_amount'] + $item['balance_amount']) * $surplusMonth;
