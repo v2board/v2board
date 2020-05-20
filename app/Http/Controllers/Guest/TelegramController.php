@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Guest;
 
+use App\Services\TelegramService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -19,9 +20,14 @@ class TelegramController extends Controller
     {
         $msg = $this->getMessage($request->input());
         if (!$msg) return;
-        switch($msg->command) {
-            case '/bind': $this->bind($msg);
-            break;
+        try {
+            switch($msg->command) {
+                case '/bind': $this->bind($msg);
+                    break;
+            }
+        } catch (\Exception $e) {
+            $telegramService = new TelegramService();
+            $telegramService->sendMessage($msg->chat_id, $e->getMessage());
         }
     }
 
@@ -40,9 +46,19 @@ class TelegramController extends Controller
     private function bind(object $msg)
     {
         if (!$msg->is_private) return;
-        $userService = new UserService();
         $subscribeUrl = $msg->args[0];
         $subscribeUrl = parse_url($subscribeUrl);
-        info($subscribeUrl);
+        $token = parse_str($subscribeUrl['query'])['token'];
+        if (!$token) {
+            abort(500, '订阅地址无效');
+        }
+        $user = User::where('token', $token)->first();
+        if (!$user) {
+            abort(500, '用户不存在');
+        }
+        $user->telegram_id = $msg->chat_id;
+        if (!$user->save()) {
+            abort(500, '设置失败');
+        }
     }
 }

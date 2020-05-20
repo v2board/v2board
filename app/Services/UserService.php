@@ -90,30 +90,4 @@ class UserService
         }
         return true;
     }
-
-    public function setTelegramId(int $userId, int $telegramId):bool
-    {
-        $user = User::find($userId);
-        if (!$user) {
-            return false;
-        }
-        $user->telegram_id = $telegramId;
-        if (!$user->save()) {
-            return false;
-        }
-        return true;
-    }
-
-    public function delTelegramId(int $userId):bool
-    {
-        $user = User::find($userId);
-        if (!$user) {
-            return false;
-        }
-        $user->telegram_id = NULL;
-        if (!$user->save()) {
-            return false;
-        }
-        return true;
-    }
 }
