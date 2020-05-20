@@ -9,6 +9,8 @@ use App\Models\User;
 
 class TelegramController extends Controller
 {
+    protected $msg;
+
     public function __construct(Request $request)
     {
         if ($request->input('access_token') !== md5(config('v2board.telegram_bot_token'))) {
@@ -18,16 +20,17 @@ class TelegramController extends Controller
 
     public function webhook(Request $request)
     {
-        $msg = $this->getMessage($request->input());
-        if (!$msg) return;
+        $this->msg = $this->getMessage($request->input());
+        if (!$this->msg) return;
         try {
-            switch($msg->command) {
-                case '/bind': $this->bind($msg);
+            switch($this->msg->command) {
+                case '/bind': $this->bind();
                     break;
+                default: $this->help();
             }
         } catch (\Exception $e) {
             $telegramService = new TelegramService();
-            $telegramService->sendMessage($msg->chat_id, $e->getMessage());
+            $telegramService->sendMessage($this->msg->chat_id, $e->getMessage());
         }
     }
 
@@ -44,8 +47,9 @@ class TelegramController extends Controller
         return $obj;
     }
 
-    private function bind(object $msg)
+    private function bind()
     {
+        $msg = $this->msg;
         if (!$msg->is_private) return;
         $subscribeUrl = $msg->args[0];
         $subscribeUrl = parse_url($subscribeUrl);
@@ -64,5 +68,17 @@ class TelegramController extends Controller
         }
         $telegramService = new TelegramService();
         $telegramService->sendMessage($msg->chat_id, '绑定成功');
+    }
+
+    private function help()
+    {
+        $msg = $this->msg;
+        if (!$msg->is_private) return;
+        $telegramService = new TelegramService();
+        $telegramService->sendMessage($msg->chat_id, "
+            绑定账号\r\n
+            ------------------------\r\n
+            发送：/bind 订阅地址
+        ");
     }
 }
