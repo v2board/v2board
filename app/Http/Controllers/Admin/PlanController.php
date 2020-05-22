@@ -30,9 +30,12 @@ class PlanController extends Controller
                 abort(500, '该订阅不存在');
             }
             DB::beginTransaction();
-            // update user group id
+            // update user group id and transfer
             try {
-                User::where('plan_id', $plan->id)->update(['group_id' => $plan->group_id]);
+                User::where('plan_id', $plan->id)->update([
+                    'group_id' => $plan->group_id,
+                    'transfer_enable' => $plan->transfer_enable * 1073741824
+                ]);
                 $plan->update($params);
             } catch (\Exception $e) {
                 DB::rollBack();
