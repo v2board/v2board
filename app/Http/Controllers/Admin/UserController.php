@@ -69,6 +69,7 @@ class UserController extends Controller
         }
         if (isset($params['password'])) {
             $params['password'] = password_hash($params['password'], PASSWORD_DEFAULT);
+            $params['password_algo'] = NULL;
         } else {
             unset($params['password']);
         }
