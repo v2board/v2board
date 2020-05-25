@@ -188,6 +188,7 @@ class TicketController extends Controller
 
     private function sendNotify(Ticket $ticket, TicketMessage $ticketMessage)
     {
+        if (!config('v2board.telegram_bot_enable', 0)) return;
         $users = User::where('is_admin', 1)
             ->where('telegram_id', '!=', NULL)
             ->get();
