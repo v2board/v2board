@@ -194,7 +194,7 @@ class TicketController extends Controller
             ->where('telegram_id', '!=', NULL)
             ->get();
         foreach ($users as $user) {
-            $text = "📮工单提醒\r\n主题：\r\n`{$ticket->subject}`\r\n内容：\r\n`{$ticketMessage->message}`";
+            $text = "📮工单提醒\n———————————————\n主题：\n`{$ticket->subject}`\n内容：\n`{$ticketMessage->message}`";
             SendTelegramJob::dispatch($user->telegram_id, $text);
         }
     }
