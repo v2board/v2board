@@ -6,6 +6,7 @@ use App\Services\TelegramService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Utils\Helper;
 
 class TelegramController extends Controller
 {
@@ -25,6 +26,8 @@ class TelegramController extends Controller
         try {
             switch($this->msg->command) {
                 case '/bind': $this->bind();
+                    break;
+                case '/traffic': $this->traffic();
                     break;
                 default: $this->help();
             }
@@ -83,5 +86,23 @@ class TelegramController extends Controller
         ];
         $text = implode(PHP_EOL, $commands);
         $telegramService->sendMessage($msg->chat_id, "你可以使用以下命令进行操作：\n\n$text", 'markdown');
+    }
+
+    private function traffic()
+    {
+        $msg = $this->msg;
+        if (!$msg->is_private) return;
+        $user = User::where('telegram_id', $msg->chat_id)->first();
+        if (!$user) {
+            $this->help();
+            return;
+        }
+        $transferEnable = Helper::trafficConvert($user->transfer_enable);
+        $up = Helper::trafficConvert($user->u);
+        $down = Helper::trafficConvert($user->d);
+        $remaining = Helper::trafficConvert($user->transfer_enable - ($user->u + $user->d));
+        $text = "🚥流量查询———————————————\n总流量：`{$transferEnable}`\n已用上行：`{$up}`\n已用下行：`{$down}`\n剩余流量：`{$remaining}`";
+        $telegramService = new TelegramService();
+        $telegramService->sendMessage($msg->chat_id, $text, 'markdown');
     }
 }

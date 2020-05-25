@@ -98,4 +98,22 @@ class Helper
         if (!in_array($suffix, $suffixs)) return false;
         return true;
     }
+
+    public static function trafficConvert(int $byte)
+    {
+        $kb = 1024;
+        $mb = 1048576;
+        $gb = 1073741824;
+        if ($byte > $gb) {
+            return round($byte / $gb, 2) . ' GB';
+        } else if ($byte > $mb) {
+            return round($byte / $mb, 2) . ' MB';
+        } else if ($byte > $kb) {
+            return round($byte / $kb, 2) . ' KB';
+        } else if ($byte < 0) {
+            return 0;
+        } else {
+            return round($byte, 2) . ' B';
+        }
+    }
 }

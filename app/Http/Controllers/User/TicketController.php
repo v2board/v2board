@@ -10,7 +10,6 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Ticket;
 use App\Models\TicketMessage;
-use App\Utils\Helper;
 use Illuminate\Support\Facades\DB;
 
 class TicketController extends Controller
@@ -194,7 +193,7 @@ class TicketController extends Controller
             ->where('telegram_id', '!=', NULL)
             ->get();
         foreach ($users as $user) {
-            $text = "📮工单提醒\n———————————————\n主题：\n`{$ticket->subject}`\n内容：\n`{$ticketMessage->message}`";
+            $text = "📮工单提醒 #{$ticket->id}\n———————————————\n主题：\n`{$ticket->subject}`\n内容：\n`{$ticketMessage->message}`";
             SendTelegramJob::dispatch($user->telegram_id, $text);
         }
     }
