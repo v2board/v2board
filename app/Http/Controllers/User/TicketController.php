@@ -5,6 +5,8 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\TicketSave;
 use App\Http\Requests\User\TicketWithdraw;
+use App\Jobs\SendTelegramJob;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Ticket;
 use App\Models\TicketMessage;
@@ -76,6 +78,7 @@ class TicketController extends Controller
             abort(500, '工单创建失败');
         }
         DB::commit();
+        $this->sendNotify($ticket, $ticketMessage);
         return response([
             'data' => true
         ]);
@@ -113,6 +116,7 @@ class TicketController extends Controller
             abort(500, '工单回复失败');
         }
         DB::commit();
+        $this->sendNotify($ticket, $ticketMessage);
         return response([
             'data' => true
         ]);
@@ -184,6 +188,12 @@ class TicketController extends Controller
 
     private function sendNotify(Ticket $ticket, TicketMessage $ticketMessage)
     {
-
+        $users = User::where('is_admin', 1)
+            ->where('telegram_id', '!=', NULL)
+            ->get();
+        foreach ($users as $user) {
+            $text = "📮[工单]{$ticket->subject}\r\n\r\n$ticketMessage->message";
+            SendTelegramJob::dispatch($user->telegram_id, $text);
+        }
     }
 }
