@@ -27,6 +27,7 @@ class ConfigSave extends FormRequest
         'try_out_hour' => 'numeric',
         'email_whitelist_enable' => 'in:0,1',
         'email_whitelist_suffix' => '',
+        'email_gmail_limit_enable' => 'in:0,1',
         // subscribe
         'plan_change_enable' => 'in:0,1',
         'reset_traffic_method' => 'in:0,1',

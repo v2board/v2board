@@ -27,6 +27,12 @@ class AuthController extends Controller
                 abort(500, '邮箱后缀不处于白名单中');
             }
         }
+        if ((int)config('v2board.email_gmail_limit_enable', 0)) {
+            $prefix = explode('@', $request->input('email'))[0];
+            if (strpos($prefix, '.') !== false || strpos($prefix, '+') !== false) {
+                abort(500, '不支持Gmail别名邮箱');
+            }
+        }
         if ((int)config('v2board.stop_register', 0)) {
             abort(500, '本站已关闭注册');
         }
