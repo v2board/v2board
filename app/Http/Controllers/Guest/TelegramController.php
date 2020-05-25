@@ -82,7 +82,8 @@ class TelegramController extends Controller
         if (!$msg->is_private) return;
         $telegramService = new TelegramService();
         $commands = [
-            '/bind 订阅地址 - 绑定你的' . config('v2board.app_name', 'V2Board') . '账号'
+            '/bind 订阅地址 - 绑定你的' . config('v2board.app_name', 'V2Board') . '账号',
+            '/traffic 查询流量'
         ];
         $text = implode(PHP_EOL, $commands);
         $telegramService->sendMessage($msg->chat_id, "你可以使用以下命令进行操作：\n\n$text", 'markdown');
@@ -101,7 +102,7 @@ class TelegramController extends Controller
         $up = Helper::trafficConvert($user->u);
         $down = Helper::trafficConvert($user->d);
         $remaining = Helper::trafficConvert($user->transfer_enable - ($user->u + $user->d));
-        $text = "🚥流量查询———————————————\n总流量：`{$transferEnable}`\n已用上行：`{$up}`\n已用下行：`{$down}`\n剩余流量：`{$remaining}`";
+        $text = "🚥流量查询\n———————————————\n计划流量：`{$transferEnable}`\n已用上行：`{$up}`\n已用下行：`{$down}`\n剩余流量：`{$remaining}`";
         $telegramService = new TelegramService();
         $telegramService->sendMessage($msg->chat_id, $text, 'markdown');
     }
