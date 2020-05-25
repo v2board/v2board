@@ -83,7 +83,7 @@ class TelegramController extends Controller
         $telegramService = new TelegramService();
         $commands = [
             '/bind 订阅地址 - 绑定你的' . config('v2board.app_name', 'V2Board') . '账号',
-            '/traffic 查询流量'
+            '/traffic - 查询流量信息'
         ];
         $text = implode(PHP_EOL, $commands);
         $telegramService->sendMessage($msg->chat_id, "你可以使用以下命令进行操作：\n\n$text", 'markdown');

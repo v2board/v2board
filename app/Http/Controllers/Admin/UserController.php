@@ -47,13 +47,7 @@ class UserController extends Controller
             abort(500, '参数错误');
         }
         return response([
-            'data' => User::select([
-                'email',
-                'u',
-                'd',
-                'transfer_enable',
-                'expired_at'
-            ])->find($request->input('id'))
+            'data' => User::find($request->input('id'))
         ]);
     }
 
