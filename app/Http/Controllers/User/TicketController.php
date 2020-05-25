@@ -181,6 +181,7 @@ class TicketController extends Controller
             abort(500, '工单创建失败');
         }
         DB::commit();
+        $this->sendNotify($ticket, $ticketMessage);
         return response([
             'data' => true
         ]);
@@ -193,7 +194,7 @@ class TicketController extends Controller
             ->where('telegram_id', '!=', NULL)
             ->get();
         foreach ($users as $user) {
-            $text = "📮[工单]{$ticket->subject}\r\n\r\n$ticketMessage->message";
+            $text = "📮工单提醒\r\n主题：{$ticket->subject}\r\n内容：{$ticketMessage->message}";
             SendTelegramJob::dispatch($user->telegram_id, $text);
         }
     }
