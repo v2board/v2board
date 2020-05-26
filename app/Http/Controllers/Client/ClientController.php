@@ -39,7 +39,7 @@ class ClientController extends Controller
                 die($this->clash($user, $server));
             }
             if (strpos($_SERVER['HTTP_USER_AGENT'], 'Surfboard') !== false) {
-                die($this->surge($user, $server));
+                die($this->surge2($user, $server));
             }
             if (strpos($_SERVER['HTTP_USER_AGENT'], 'Surge') !== false) {
                 die($this->surge($user, $server));
@@ -112,7 +112,7 @@ class ClientController extends Controller
         $proxyGroup = '';
         foreach ($server as $item) {
             // [Proxy]
-            $proxies .= $item->name . ' = vmess, ' . $item->host . ', ' . $item->port . ', username=' . $user->v2ray_uuid;
+            $proxies .= $item->name . ' = vmess, ' . $item->host . ', ' . $item->port . ', username=' . $user->v2ray_uuid . ', tfo=true';
             if ($item->tls) {
                 $tlsSettings = json_decode($item->tlsSettings);
                 $proxies .= ', tls=' . ($item->tls ? "true" : "false");
@@ -136,6 +136,58 @@ class ClientController extends Controller
         try {
             $rules = '';
             foreach (glob(base_path() . '/resources/rules/' . '*.surge.conf') as $file) {
+                $rules = file_get_contents("$file");
+            }
+        } catch (\Exception $e) {}
+
+        // Subscription link
+        $subsURL = 'http';
+        if (isset( $_SERVER['HTTPS'] ) && strtolower( $_SERVER['HTTPS'] ) == 'on') {
+            $subsURL .= 's';
+        }
+        $subsURL .= '://';
+        if ($_SERVER['SERVER_PORT'] != ('80' || '443')) {
+            $subsURL .= $_SERVER['SERVER_NAME'] . ':' . $_SERVER['SERVER_PORT'] . $_SERVER['REQUEST_URI'];
+        } else {
+            $subsURL .= $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
+        }
+
+        $rules = str_replace('{subs_link}',$subsURL,$rules);
+        $rules = str_replace('{proxies}',$proxies,$rules);
+        $rules = str_replace('{proxy_group}',rtrim($proxyGroup, ', '),$rules);
+        return $rules;
+    }
+
+    private function surge2($user, $server)
+    {
+        $proxies = '';
+        $proxyGroup = '';
+        foreach ($server as $item) {
+            // [Proxy]
+            $proxies .= $item->name . ' = vmess, ' . $item->host . ', ' . $item->port . ', username=' . $user->v2ray_uuid;
+            if ($item->tls) {
+                $tlsSettings = json_decode($item->tlsSettings);
+                $proxies .= ', tls=' . ($item->tls ? "true" : "false");
+                if (isset($tlsSettings->allowInsecure)) {
+                  $proxies .= ', skip-cert-verify=' . ($tlsSettings->allowInsecure ? "true" : "false");
+                }
+            }
+            if ($item->network == 'ws') {
+                $proxies .= ', ws=true';
+                if ($item->networkSettings) {
+                    $wsSettings = json_decode($item->networkSettings);
+                    if (isset($wsSettings->path)) $proxies .= ', ws-path=' . $wsSettings->path;
+                    if (isset($wsSettings->headers->Host)) $proxies .= ', ws-headers=host:' . $wsSettings->headers->Host;
+                }
+            }
+            $proxies .= "\r\n";
+            // [Proxy Group]
+            $proxyGroup .= $item->name . ', ';
+        }
+
+        try {
+            $rules = '';
+            foreach (glob(base_path() . '/resources/rules/' . '*.surge2.conf') as $file) {
                 $rules = file_get_contents("$file");
             }
         } catch (\Exception $e) {}
