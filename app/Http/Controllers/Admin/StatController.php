@@ -30,6 +30,7 @@ class StatController extends Controller
                 'commission_pendding_total' => Order::where('commission_status', 0)
                     ->where('invite_user_id', '!=', NULL)
                     ->where('status', 3)
+                    ->where('commission_balance', '>', 0)
                     ->count(),
                 'day_income' => Order::where('created_at', '>=', strtotime(date('Y-m-d')))
                     ->where('created_at', '<', time())
