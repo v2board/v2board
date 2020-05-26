@@ -160,9 +160,15 @@ class ClientController extends Controller
 
     private function clash($user, $server)
     {
+        $defaultConfig = base_path() . '/resources/rules/default.clash.yaml';
+        $customConfig = base_path() . '/resources/rules/custom.clash.yaml';
+        if (\File::exists($customConfig)) {
+            $config = Yaml::parseFile($customConfig);
+        } else {
+            $config = Yaml::parseFile($defaultConfig);
+        }
         $proxy = [];
         $proxies = [];
-        $rules = [];
         foreach ($server as $item) {
             $array = [];
             $array['name'] = $item->name;
@@ -191,101 +197,12 @@ class ClientController extends Controller
             array_push($proxies, $item->name);
         }
 
-        $proxyGroup = [
-            [
-                'name' => '🔰 节点选择',
-                'type' => 'select',
-                'proxies' => array_merge([
-                    '♻️ 自动选择',
-                    '🎯 全球直连'
-                ], $proxies)
-            ], [
-                'name' => '♻️ 自动选择',
-                'type' => 'url-test',
-                'url' => 'http://www.gstatic.com/generate_204',
-                'interval' => 300,
-                'proxies' => $proxies
-            ], [
-                'name' => '🌍 国外媒体',
-                'type' => 'select',
-                'proxies' => array_merge([
-                    '🔰 节点选择',
-                    '♻️ 自动选择',
-                    '🎯 全球直连'
-                ], $proxies)
-            ], [
-                'name' => '🌏 国内媒体',
-                'type' => 'select',
-                'proxies' => array_merge([
-                    '🎯 全球直连',
-                    '🔰 节点选择'
-                ], $proxies)
-            ], [
-                'name' => 'Ⓜ️ 微软服务',
-                'type' => 'select',
-                'proxies' => array_merge([
-                    '🎯 全球直连',
-                    '🔰 节点选择'
-                ], $proxies)
-            ], [
-                'name' => '📲 电报信息',
-                'type' => 'select',
-                'proxies' => array_merge([
-                    '🔰 节点选择',
-                    '🎯 全球直连'
-                ], $proxies)
-            ], [
-                'name' => '🍎 苹果服务',
-                'type' => 'select',
-                'proxies' => array_merge([
-                    '🎯 全球直连',
-                    '🔰 节点选择',
-                    '♻️ 自动选择'
-                ], $proxies)
-            ], [
-                'name' => '🎯 全球直连',
-                'type' => 'select',
-                'proxies' => [
-                    'DIRECT'
-                ]
-            ], [
-                'name' => '🛑 全球拦截',
-                'type' => 'select',
-                'proxies' => [
-                    'REJECT',
-                    'DIRECT'
-                ]
-            ], [
-                'name' => '🐟 漏网之鱼',
-                'type' => 'select',
-                'proxies' => array_merge([
-                    '🔰 节点选择',
-                    '♻️ 自动选择',
-                    '🎯 全球直连'
-                ], $proxies)
-            ]
-        ];
-
-        try {
-            $rules = [];
-            foreach (glob(base_path() . '/resources/rules/' . '*.clash.yaml') as $file) {
-                $rules = array_merge($rules, Yaml::parseFile($file)['Rule']);
-            }
-        } catch (\Exception $e) {}
-
-        $config = [
-            'port' => 7890,
-            'socks-port' => 7891,
-            'allow-lan' => false,
-            'mode' => 'Rule',
-            'log-level' => 'info',
-            'external-controller' => '0.0.0.0:9090',
-            'secret' => '',
-            'Proxy' => $proxy,
-            'Proxy Group' => $proxyGroup,
-            'Rule' => $rules
-        ];
-
-        return Yaml::dump($config);
+        $config['Proxy'] = array_merge($config['Proxy'] ? $config['Proxy'] : [], $proxy);
+        foreach ($config['Proxy Group'] as $k => $v) {
+            $config['Proxy Group'][$k]['proxies'] = array_merge($config['Proxy Group'][$k]['proxies'], $proxies);
+        }
+        $yaml = Yaml::dump($config);
+        $yaml = str_replace('$app_name', config('v2board.app_name', 'V2Board'), $yaml);
+        return $yaml;
     }
 }
