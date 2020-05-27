@@ -39,7 +39,7 @@ class ClientController extends Controller
                 die($this->clash($user, $server));
             }
             if (strpos($_SERVER['HTTP_USER_AGENT'], 'Surfboard') !== false) {
-                die($this->surge2($user, $server));
+                die($this->surfboard($user, $server));
             }
             if (strpos($_SERVER['HTTP_USER_AGENT'], 'Surge') !== false) {
                 die($this->surge($user, $server));
@@ -133,12 +133,13 @@ class ClientController extends Controller
             $proxyGroup .= $item->name . ', ';
         }
 
-        try {
-            $rules = '';
-            foreach (glob(base_path() . '/resources/rules/' . '*.surge.conf') as $file) {
-                $rules = file_get_contents("$file");
-            }
-        } catch (\Exception $e) {}
+        $defaultConfig = base_path() . '/resources/rules/default.surge.conf';
+        $customConfig = base_path() . '/resources/rules/custom.surge.conf';
+        if (\File::exists($customConfig)) {
+            $config = file_get_contents("$customConfig");
+        } else {
+            $config = file_get_contents("$defaultConfig");
+        }
 
         // Subscription link
         $subsURL = 'http';
@@ -152,13 +153,13 @@ class ClientController extends Controller
             $subsURL .= $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
         }
 
-        $rules = str_replace('{subs_link}',$subsURL,$rules);
-        $rules = str_replace('{proxies}',$proxies,$rules);
-        $rules = str_replace('{proxy_group}',rtrim($proxyGroup, ', '),$rules);
-        return $rules;
+        $config = str_replace('$subs_link',$subsURL,$config);
+        $config = str_replace('$proxies',$proxies,$config);
+        $config = str_replace('$proxy_group',rtrim($proxyGroup, ', '),$config);
+        return $config;
     }
 
-    private function surge2($user, $server)
+    private function surfboard($user, $server)
     {
         $proxies = '';
         $proxyGroup = '';
@@ -185,12 +186,13 @@ class ClientController extends Controller
             $proxyGroup .= $item->name . ', ';
         }
 
-        try {
-            $rules = '';
-            foreach (glob(base_path() . '/resources/rules/' . '*.surge2.conf') as $file) {
-                $rules = file_get_contents("$file");
-            }
-        } catch (\Exception $e) {}
+        $defaultConfig = base_path() . '/resources/rules/default.surfboard.conf';
+        $customConfig = base_path() . '/resources/rules/custom.surfboard.conf';
+        if (\File::exists($customConfig)) {
+            $config = file_get_contents("$customConfig");
+        } else {
+            $config = file_get_contents("$defaultConfig");
+        }
 
         // Subscription link
         $subsURL = 'http';
@@ -204,10 +206,10 @@ class ClientController extends Controller
             $subsURL .= $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
         }
 
-        $rules = str_replace('{subs_link}',$subsURL,$rules);
-        $rules = str_replace('{proxies}',$proxies,$rules);
-        $rules = str_replace('{proxy_group}',rtrim($proxyGroup, ', '),$rules);
-        return $rules;
+        $config = str_replace('$subs_link',$subsURL,$config);
+        $config = str_replace('$proxies',$proxies,$config);
+        $config = str_replace('$proxy_group',rtrim($proxyGroup, ', '),$config);
+        return $config;
     }
 
     private function clash($user, $server)
