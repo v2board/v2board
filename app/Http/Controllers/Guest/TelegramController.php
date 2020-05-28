@@ -39,7 +39,7 @@ class TelegramController extends Controller
 
     private function getMessage(array $data)
     {
-        if (!isset($data['message'])) return false;
+        if (!isset($data['message']['text'])) return false;
         $obj = new \StdClass();
         $obj->is_private = $data['message']['chat']['type'] === 'private' ? true : false;
         $text = explode(' ', $data['message']['text']);
