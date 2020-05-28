@@ -127,7 +127,7 @@ class OrderService
             ->where('status', 3);
         $surplusAmount = 0;
         foreach ($orderModel->get() as $item) {
-            $surplusMonth = strtotime("+ {$strToMonth[$item->cycle]}month", $item->updated_at->format('U'));
+            $surplusMonth = strtotime("+ {$strToMonth[$item->cycle]}month", $item->created_at->format('U'));
             if (!$surplusMonth) continue;
             $surplusMonth = ($surplusMonth - time()) / 2678400 / $strToMonth[$item->cycle];
             if ($surplusMonth > 0) {
