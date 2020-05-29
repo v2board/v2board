@@ -95,8 +95,10 @@ class TelegramController extends Controller
         $msg = $this->msg;
         if (!$msg->is_private) return;
         $user = User::where('telegram_id', $msg->chat_id)->first();
+        $telegramService = new TelegramService();
         if (!$user) {
             $this->help();
+            $telegramService->sendMessage($msg->chat_id, '没有查询到您的用户信息，请先绑定账号', 'markdown');
             return;
         }
         $transferEnable = Helper::trafficConvert($user->transfer_enable);
@@ -104,7 +106,6 @@ class TelegramController extends Controller
         $down = Helper::trafficConvert($user->d);
         $remaining = Helper::trafficConvert($user->transfer_enable - ($user->u + $user->d));
         $text = "🚥流量查询\n———————————————\n计划流量：`{$transferEnable}`\n已用上行：`{$up}`\n已用下行：`{$down}`\n剩余流量：`{$remaining}`";
-        $telegramService = new TelegramService();
         $telegramService->sendMessage($msg->chat_id, $text, 'markdown');
     }
 }

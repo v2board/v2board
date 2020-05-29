@@ -72,17 +72,14 @@ class PoseidonController extends Controller
             $u = $item['u'] * $server->rate;
             $d = $item['d'] * $server->rate;
             if (!$userService->trafficFetch($u, $d, $item['user_id'])) {
-                return response([
-                    'ret' => 0,
-                    'msg' => 'user fetch fail'
-                ]);
+                return $this->error("user fetch fail", 500);
             }
 
             $serverService->log(
                 $item['user_id'],
                 $request->input('node_id'),
-                $u,
-                $d,
+                $item['u'],
+                $item['d'],
                 $server->rate
             );
         }
