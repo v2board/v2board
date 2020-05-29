@@ -20,6 +20,11 @@ return [
         'endpoint' => env('MAILGUN_ENDPOINT', 'api.mailgun.net'),
     ],
 
+    'sendgrid' => [
+        'api_key' => env('SENDGRID_API_KEY'),
+        'endpoint' => 'https://api.sendgrid.com/v3/mail/send',
+    ],
+
     'postmark' => [
         'token' => env('POSTMARK_TOKEN'),
     ],

@@ -15,6 +15,7 @@
         "laravel/tinker": "^1.0",
         "lokielse/omnipay-alipay": "3.0.6",
         "php-curl-class/php-curl-class": "^8.6",
+        "s-ichikawa/laravel-sendgrid-driver": "~2.0",
         "stripe/stripe-php": "^7.5",
         "symfony/yaml": "^4.3"
     },
