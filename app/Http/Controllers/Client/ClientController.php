@@ -53,24 +53,23 @@ class ClientController extends Controller
         $uri = '';
         foreach ($server as $item) {
             $uri .= "vmess=" . $item->host . ":" . $item->port . ", method=none, password=" . $user->v2ray_uuid . ", fast-open=false, udp-relay=false, tag=" . $item->name;
-            if ($item->network == 'ws') {
+            if ($item->tls) {
+                $tlsSettings = json_decode($item->tlsSettings);
+                if ($item->network === 'tcp') $uri .= ', obfs=over-tls';
+                if (isset($tlsSettings->allowInsecure)) {
+                    // Default: tls-verification=true
+                    $uri .= ', tls-verification=' . ($tlsSettings->allowInsecure ? "false" : "true");
+                }
+                if (isset($tlsSettings->serverName)) {
+                    $uri .= ', obfs-host=' . $tlsSettings->serverName;
+                }
+            }
+            if ($item->network === 'ws') {
                 $uri .= ', obfs=' . ($item->tls ? 'wss' : 'ws');
                 if ($item->networkSettings) {
                     $wsSettings = json_decode($item->networkSettings);
                     if (isset($wsSettings->path)) $uri .= ', obfs-uri=' . $wsSettings->path;
                     if (isset($wsSettings->headers->Host)) $uri .= ', obfs-host=' . $wsSettings->headers->Host;
-                }
-            } else {
-                if ($item->tls) {
-                    $tlsSettings = json_decode($item->tlsSettings);
-                    $uri .= ', obfs=over-tls';
-                    if (isset($tlsSettings->allowInsecure)) {
-                        // Default: tls-verification=true
-                        $uri .= ', tls-verification=' . ($tlsSettings->allowInsecure ? "false" : "true");
-                    }
-                    if (isset($tlsSettings->serverName)) {
-                        $uri .= ', obfs-host=' . $tlsSettings->serverName;
-                    }
                 }
             }
             $uri .= "\r\n";
