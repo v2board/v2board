@@ -41,6 +41,7 @@ class ServerService
             abort(500, '节点不存在');
         }
         $json = json_decode(self::SERVER_CONFIG);
+        $json->log->loglevel = config('v2board.server_log_level', 'none');
         $json->inboundDetour[0]->port = (int)$localPort;
         $json->inbound->port = (int)$server->server_port;
         $json->inbound->streamSettings->network = $server->network;

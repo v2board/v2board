@@ -98,7 +98,8 @@ class ConfigController extends Controller
                 ],
                 'server' => [
                     'server_token' => config('v2board.server_token'),
-                    'server_license' => config('v2board.server_license')
+                    'server_license' => config('v2board.server_license'),
+                    'server_log_level' => config('v2board.server_log_level', 'none')
                 ],
                 'tutorial' => [
                     'apple_id' => config('v2board.apple_id')
