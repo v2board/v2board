@@ -26,9 +26,9 @@ class ConfigController extends Controller
         $telegramService = new TelegramService($request->input('telegram_bot_token'));
         $telegramService->getMe();
         $telegramService->setWebhook(
-            config('v2board.app_url')
-            . '/api/v1/guest/telegram/webhook?access_token='
-            . md5(config('v2board.telegram_bot_token', $request->input('telegram_bot_token')))
+            url(
+                '/api/v1/guest/telegram/webhook?access_token=' . md5(config('v2board.telegram_bot_token', $request->input('telegram_bot_token')))
+            )
         );
         return response([
             'data' => true
