@@ -20,7 +20,7 @@ class StatController extends Controller
             'data' => [
                 'month_income' => Order::where('created_at', '>=', strtotime(date('Y-m-1')))
                     ->where('created_at', '<', time())
-                    ->where('status', 3)
+                    ->whereIn('status', [3, 4])
                     ->sum('total_amount'),
                 'month_register_total' => User::where('created_at', '>=', strtotime(date('Y-m-1')))
                     ->where('created_at', '<', time())
