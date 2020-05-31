@@ -79,6 +79,7 @@ class ConfigController extends Controller
                     'stripe_sk_live' => config('v2board.stripe_sk_live'),
                     'stripe_pk_live' => config('v2board.stripe_pk_live'),
                     'stripe_webhook_key' => config('v2board.stripe_webhook_key'),
+                    'stripe_identifier' => config('v2board.stripe_identifier'),
                     'stripe_currency' => config('v2board.stripe_currency', 'hkd'),
                     // bitpayx
                     'bitpayx_name' => config('v2board.bitpayx_name', '聚合支付'),

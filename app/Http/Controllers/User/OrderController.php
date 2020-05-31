@@ -348,7 +348,7 @@ class OrderController extends Controller
             'metadata' => [
                 'user_id' => $order->user_id,
                 'invoice_id' => $order->trade_no,
-                'identifier' => ''
+                'identifier' => config('v2board.stripe_identifier')
             ],
             'redirect' => [
                 'return_url' => config('v2board.app_url', env('APP_URL')) . '/#/order'
@@ -379,7 +379,7 @@ class OrderController extends Controller
             'metadata' => [
                 'user_id' => $order->user_id,
                 'invoice_id' => $order->trade_no,
-                'identifier' => ''
+                'identifier' => config('v2board.stripe_identifier')
             ],
             'redirect' => [
                 'return_url' => config('v2board.app_url', env('APP_URL')) . '/#/order'
