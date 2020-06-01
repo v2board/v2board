@@ -117,7 +117,8 @@ class CheckOrder extends Command
             $user->expired_at = time();
         }
         $user->transfer_enable = $plan->transfer_enable * 1073741824;
-        if ((int)config('v2board.renew_reset_traffic_enable', 1)) {
+        // 当续费清空流量或用户先前是一次性订阅
+        if ((int)config('v2board.renew_reset_traffic_enable', 1) || $user->expired_at === NULL) {
             $user->u = 0;
             $user->d = 0;
         }
