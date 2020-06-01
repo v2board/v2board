@@ -21,7 +21,7 @@ class ServerController extends Controller
         $userService = new UserService();
         if ($userService->isAvailable($user)) {
             $servers = Server::where('show', 1)
-                ->orderBy('name')
+                ->orderBy('sort', 'ASC')
                 ->get();
             foreach ($servers as $item) {
                 $groupId = json_decode($item['group_id']);
@@ -60,17 +60,12 @@ class ServerController extends Controller
             case 2:
                 $serverLogModel->where('created_at', '>=', strtotime(date('Y-m-1')));
         }
-        $sum = [
-            'u' => $serverLogModel->sum('u'),
-            'd' => $serverLogModel->sum('d')
-        ];
         $total = $serverLogModel->count();
         $res = $serverLogModel->forPage($current, $pageSize)
             ->get();
         return response([
             'data' => $res,
-            'total' => $total,
-            'sum' => $sum
+            'total' => $total
         ]);
     }
 }

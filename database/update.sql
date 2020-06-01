@@ -204,3 +204,55 @@ ADD `balance_amount` int(11) NULL COMMENT '使用余额' AFTER `refund_amount`;
 ALTER TABLE `v2_server`
 CHANGE `network` `network` text COLLATE 'utf8_general_ci' NOT NULL AFTER `rate`,
 ADD `dnsSettings` text COLLATE 'utf8_general_ci' NULL AFTER `ruleSettings`;
+
+ALTER TABLE `v2_order`
+ADD `surplus_order_ids` text NULL COMMENT '折抵订单' AFTER `balance_amount`;
+
+ALTER TABLE `v2_order`
+CHANGE `status` `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0待支付1开通中2已取消3已完成4已折抵' AFTER `surplus_order_ids`;
+
+CREATE TABLE `v2_server_stat` (
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `server_id` int(11) NOT NULL,
+  `u` varchar(255) NOT NULL,
+  `d` varchar(25) NOT NULL,
+  `created_at` int(11) NOT NULL,
+  `updated_at` int(11) NOT NULL
+);
+
+ALTER TABLE `v2_tutorial`
+ADD `sort` int(11) NULL AFTER `show`;
+
+ALTER TABLE `v2_server`
+ADD `sort` int(11) NULL AFTER `show`;
+
+ALTER TABLE `v2_plan`
+ADD `sort` int(11) NULL AFTER `show`;
+
+ALTER TABLE `v2_plan`
+CHANGE `month_price` `month_price` int(11) NULL AFTER `content`,
+CHANGE `quarter_price` `quarter_price` int(11) NULL AFTER `month_price`,
+CHANGE `half_year_price` `half_year_price` int(11) NULL AFTER `quarter_price`,
+CHANGE `year_price` `year_price` int(11) NULL AFTER `half_year_price`,
+ADD `reset_price` int(11) NULL AFTER `onetime_price`;
+
+ALTER TABLE `v2_server_log`
+ADD `id` bigint NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST;
+
+ALTER TABLE `v2_server_log`
+ADD `log_at` int(11) NOT NULL AFTER `rate`;
+
+ALTER TABLE `v2_mail_log`
+CHANGE `error` `error` text COLLATE 'utf8_general_ci' NULL AFTER `template_name`;
+
+ALTER TABLE `v2_plan`
+CHANGE `month_price` `month_price` int(11) NULL AFTER `content`,
+CHANGE `quarter_price` `quarter_price` int(11) NULL AFTER `month_price`,
+CHANGE `half_year_price` `half_year_price` int(11) NULL AFTER `quarter_price`,
+CHANGE `year_price` `year_price` int(11) NULL AFTER `half_year_price`;
+
+ALTER TABLE `v2_server_log`
+ADD INDEX log_at (`log_at`);
+
+ALTER TABLE `v2_user`
+ADD `telegram_id` bigint NULL AFTER `invite_user_id`;

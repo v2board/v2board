@@ -1,4 +1,4 @@
-window.v2board = {
+window.settings = {
   // 站点标题
   title: 'V2Board',
   // API

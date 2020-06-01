@@ -14,6 +14,7 @@ class ConfigSave extends FormRequest
         'invite_gen_limit' => 'integer',
         'invite_never_expire' => 'in:0,1',
         'commission_first_time_enable' => 'in:0,1',
+        'commission_auto_check_enable' => 'in:0,1',
         // site
         'stop_register' => 'in:0,1',
         'email_verify' => 'in:0,1',
@@ -26,6 +27,7 @@ class ConfigSave extends FormRequest
         'try_out_hour' => 'numeric',
         'email_whitelist_enable' => 'in:0,1',
         'email_whitelist_suffix' => '',
+        'email_gmail_limit_enable' => 'in:0,1',
         // subscribe
         'plan_change_enable' => 'in:0,1',
         'reset_traffic_method' => 'in:0,1',
@@ -33,6 +35,7 @@ class ConfigSave extends FormRequest
         // server
         'server_token' => 'nullable|min:16',
         'server_license' => 'nullable',
+        'server_log_level' => 'nullable|in:debug,info,warning,error,none',
         // alipay
         'alipay_enable' => 'in:0,1',
         'alipay_appid' => 'nullable|integer|min:16',
@@ -46,9 +49,11 @@ class ConfigSave extends FormRequest
         'stripe_webhook_key' => '',
         'stripe_currency' => 'in:hkd,usd,sgd,eur,gbp',
         // bitpayx
+        'bitpayx_name' => '',
         'bitpayx_enable' => 'in:0,1',
         'bitpayx_appsecret' => '',
         // paytaro
+        'paytaro_name' => '',
         'paytaro_enable' => 'in:0,1',
         'paytaro_app_id' => '',
         'paytaro_app_secret' => '',
@@ -61,7 +66,12 @@ class ConfigSave extends FormRequest
         'apple_id' => 'email',
         'apple_id_password' => '',
         // email
-        'email_template' => ''
+        'email_template' => '',
+        // telegram
+        'telegram_bot_enable' => 'in:0,1',
+        'telegram_bot_token' => '',
+        'telegram_discuss_id' => '',
+        'telegram_channel_id' => ''
     ];
 
     /**

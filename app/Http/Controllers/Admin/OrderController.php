@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Requests\Admin\OrderAssign;
 use App\Http\Requests\Admin\OrderUpdate;
 use App\Services\OrderService;
+use App\Utils\Helper;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\User;
 use App\Models\Plan;
+use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
@@ -23,6 +26,7 @@ class OrderController extends Controller
         if ($request->input('is_commission')) {
             $orderModel->where('invite_user_id', '!=', NULL);
             $orderModel->where('status', 3);
+            $orderModel->where('commission_balance', '>', 0);
         }
         if ($request->input('id')) {
             $orderModel->where('id', $request->input('id'));
@@ -98,6 +102,52 @@ class OrderController extends Controller
         }
         return response([
             'data' => true
+        ]);
+    }
+
+    public function assign(OrderAssign $request)
+    {
+        $plan = Plan::find($request->input('plan_id'));
+        $user = User::where('email', $request->input('email'))->first();
+
+        if (!$user) {
+            abort(500, '该用户不存在');
+        }
+
+        if (!$plan) {
+            abort(500, '该订阅不存在');
+        }
+
+        DB::beginTransaction();
+        $order = new Order();
+        $orderService = new OrderService($order);
+        $order->user_id = $user->id;
+        $order->plan_id = $plan->id;
+        $order->cycle = $request->input('cycle');
+        $order->trade_no = Helper::guid();
+        $order->total_amount = $request->input('total_amount');
+
+        if ($order->cycle === 'reset_price') {
+            $order->type = 4;
+        } else if ($user->plan_id !== NULL && $order->plan_id !== $user->plan_id) {
+            $order->type = 3;
+        } else if ($user->expired_at > time() && $order->plan_id == $user->plan_id) {
+            $order->type = 2;
+        } else {
+            $order->type = 1;
+        }
+
+        $orderService->setInvite($user);
+
+        if (!$order->save()) {
+            DB::rollback();
+            abort(500, '订单创建失败');
+        }
+
+        DB::commit();
+
+        return response([
+            'data' => $order->trade_no
         ]);
     }
 }

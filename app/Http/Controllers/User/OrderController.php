@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\OrderSave;
+use App\Services\CouponService;
 use App\Services\OrderService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
@@ -62,64 +63,11 @@ class OrderController extends Controller
         ]);
     }
 
-    private function isNotCompleteOrderByUserId($userId)
-    {
-        $order = Order::whereIn('status', [0, 1])
-            ->where('user_id', $userId)
-            ->first();
-        if (!$order) {
-            return false;
-        }
-        return true;
-    }
-
-    // surplus value
-    private function getSurplusValue(User $user)
-    {
-        $plan = Plan::find($user->plan_id);
-        if ($user->expired_at === NULL) {
-            return $this->getSurplusValueByOneTime($user, $plan);
-        } else {
-            return $this->getSurplusValueByCycle($user, $plan);
-        }
-    }
-
-    private function getSurplusValueByOneTime(User $user, Plan $plan)
-    {
-        $trafficUnitPrice = $plan->onetime_price / $plan->transfer_enable;
-        if ($user->discount && $trafficUnitPrice) {
-            $trafficUnitPrice = $trafficUnitPrice - ($trafficUnitPrice * $user->discount / 100);
-        }
-        $notUsedTrafficPrice = $plan->transfer_enable - (($user->u + $user->d) / 1073741824);
-        $result = $trafficUnitPrice * $notUsedTrafficPrice;
-        return $result > 0 ? $result : 0;
-    }
-
-    private function getSurplusValueByCycle(User $user, Plan $plan)
-    {
-        $price = 0;
-        if ($plan->month_price) {
-            $price = $plan->month_price / (31536000 / 12);
-        } else if ($plan->quarter_price) {
-            $price = $plan->quarter_price / (31536000 / 4);
-        } else if ($plan->half_year_price) {
-            $price = $plan->half_year_price / (31536000 / 2);
-        } else if ($plan->year_price) {
-            $price = $plan->year_price / 31536000;
-        }
-        // exclude discount
-        if ($user->discount && $price) {
-            $price = $price - ($price * $user->discount / 100);
-        }
-        $remainingDay = $user->expired_at - time();
-        $result = $remainingDay * $price;
-        return $result > 0 ? $result : 0;
-    }
-
     public function save(OrderSave $request)
     {
-        if ($this->isNotCompleteOrderByUserId($request->session()->get('id'))) {
-            abort(500, '存在未付款订单，请取消后再试');
+        $userService = new UserService();
+        if ($userService->isNotCompleteOrderByUserId($request->session()->get('id'))) {
+            abort(500, '您有未付款或开通中的订单，请稍后或取消再试');
         }
 
         $plan = Plan::find($request->input('plan_id'));
@@ -130,7 +78,9 @@ class OrderController extends Controller
         }
 
         if ((!$plan->show && !$plan->renew) || (!$plan->show && $user->plan_id !== $plan->id)) {
-            abort(500, '该订阅已售罄');
+            if ($request->input('cycle') !== 'reset_price') {
+                abort(500, '该订阅已售罄');
+            }
         }
 
         if (!$plan->renew && $user->plan_id == $plan->id) {
@@ -138,87 +88,37 @@ class OrderController extends Controller
         }
 
         if ($plan[$request->input('cycle')] === NULL) {
+            if ($request->input('cycle') === 'reset_price') {
+                abort(500, '该订阅当前不支持重置流量');
+            }
             abort(500, '该订阅周期无法进行购买，请选择其他周期');
         }
 
-        if ($request->input('coupon_code')) {
-            $coupon = Coupon::where('code', $request->input('coupon_code'))->first();
-            if (!$coupon) {
-                abort(500, '优惠券无效');
-            }
-            if ($coupon->limit_use <= 0 && $coupon->limit_use !== NULL) {
-                abort(500, '优惠券已无可用次数');
-            }
-            if (time() < $coupon->started_at) {
-                abort(500, '优惠券还未到可用时间');
-            }
-            if (time() > $coupon->ended_at) {
-                abort(500, '优惠券已过期');
-            }
+        if ($request->input('cycle') === 'reset_price' && !$user->plan_id) {
+            abort(500, '必须存在订阅才可以购买流量重置包');
         }
 
         DB::beginTransaction();
         $order = new Order();
+        $orderService = new OrderService($order);
         $order->user_id = $request->session()->get('id');
         $order->plan_id = $plan->id;
         $order->cycle = $request->input('cycle');
         $order->trade_no = Helper::guid();
         $order->total_amount = $plan[$request->input('cycle')];
-        // coupon start
-        if (isset($coupon)) {
-            switch ($coupon->type) {
-                case 1:
-                    $order->discount_amount = $coupon->value;
-                    break;
-                case 2:
-                    $order->discount_amount = $order->total_amount * ($coupon->value / 100);
-                    break;
-            }
-            if ($coupon->limit_use !== NULL) {
-                $coupon->limit_use = $coupon->limit_use - 1;
-                if (!$coupon->save()) {
-                    DB::rollback();
-                    abort(500, '优惠券使用失败');
-                }
+
+        if ($request->input('coupon_code')) {
+            $couponService = new CouponService($request->input('coupon_code'));
+            if (!$couponService->use($order)) {
+                DB::rollBack();
+                abort(500, '优惠券使用失败');
             }
         }
-        // coupon complete
-        // discount start
-        if ($user->discount) {
-            $order->discount_amount = $order->discount_amount + ($order->total_amount * ($user->discount / 100));
-        }
-        // discount end
-        $order->total_amount = $order->total_amount - $order->discount_amount;
-        // renew and change subscribe process
-        if ($user->plan_id !== NULL && $order->plan_id !== $user->plan_id) {
-            if (!(int)config('v2board.plan_change_enable', 1)) abort(500, '目前不允许更改订阅，请联系客服或提交工单');
-            $order->type = 3;
-            $order->surplus_amount = $this->getSurplusValue($user);
-            if ($order->surplus_amount >= $order->total_amount) {
-                $order->refund_amount = $order->surplus_amount - $order->total_amount;
-                $order->total_amount = 0;
-            } else {
-                $order->total_amount = $order->total_amount - $order->surplus_amount;
-            }
-        } else if ($user->expired_at > time() && $order->plan_id == $user->plan_id) {
-            $order->type = 2;
-        } else {
-            $order->type = 1;
-        }
-        // invite process
-        if ($user->invite_user_id && $order->total_amount > 0) {
-            $order->invite_user_id = $user->invite_user_id;
-            $commissionFirstTime = (int)config('v2board.commission_first_time_enable', 1);
-            if (!$commissionFirstTime || ($commissionFirstTime && !Order::where('user_id', $user->id)->where('status', 3)->first())) {
-                $inviter = User::find($user->invite_user_id);
-                if ($inviter && $inviter->commission_rate) {
-                    $order->commission_balance = $order->total_amount * ($inviter->commission_rate / 100);
-                } else {
-                    $order->commission_balance = $order->total_amount * (config('v2board.invite_commission', 10) / 100);
-                }
-            }
-        }
-        // use balance
+
+        $orderService->setVipDiscount($user);
+        $orderService->setOrderType($user);
+        $orderService->setInvite($user);
+
         if ($user->balance && $order->total_amount > 0) {
             $remainingBalance = $user->balance - $order->total_amount;
             $userService = new UserService();
@@ -267,7 +167,10 @@ class OrderController extends Controller
             $order->total_amount = 0;
             $order->status = 1;
             $order->save();
-            exit();
+            return response([
+                'type' => -1,
+                'data' => true
+            ]);
         }
         switch ($method) {
             // return type => 0: QRCode / 1: URL
@@ -363,7 +266,7 @@ class OrderController extends Controller
 
         if ((int)config('v2board.bitpayx_enable')) {
             $bitpayX = new \StdClass();
-            $bitpayX->name = '聚合支付';
+            $bitpayX->name = config('v2board.bitpayx_name', '聚合支付');
             $bitpayX->method = 4;
             $bitpayX->icon = 'wallet';
             array_push($data, $bitpayX);
@@ -371,7 +274,7 @@ class OrderController extends Controller
 
         if ((int)config('v2board.paytaro_enable')) {
             $obj = new \StdClass();
-            $obj->name = '聚合支付';
+            $obj->name = config('v2board.paytaro_name', '聚合支付');
             $obj->method = 5;
             $obj->icon = 'wallet';
             array_push($data, $obj);

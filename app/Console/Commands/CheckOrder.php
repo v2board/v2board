@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\Plan;
 use App\Utils\Helper;
 use App\Models\Coupon;
+use Illuminate\Support\Facades\DB;
 
 class CheckOrder extends Command
 {
@@ -65,10 +66,48 @@ class CheckOrder extends Command
     {
         $user = User::find($order->user_id);
         $plan = Plan::find($order->plan_id);
-        if ((string)$order->cycle === 'onetime_price') {
-            return $this->buyByOneTime($order, $user, $plan);
+
+        if ($order->refund_amount) {
+            $user->balance = $user->balance + $order->refund_amount;
         }
-        return $this->buyByCycle($order, $user, $plan);
+        DB::beginTransaction();
+        if ($order->surplus_order_ids) {
+            try {
+                Order::whereIn('id', json_decode($order->surplus_order_ids))->update([
+                    'status' => 4
+                ]);
+            } catch (\Exception $e) {
+                DB::rollback();
+                abort(500, '开通失败');
+            }
+        }
+        switch ((string)$order->cycle) {
+            case 'onetime_price':
+                $this->buyByOneTime($order, $user, $plan);
+                break;
+            case 'reset_price':
+                $this->buyReset($user);
+                break;
+            default:
+                $this->buyByCycle($order, $user, $plan);
+        }
+        if (!$user->save()) {
+            DB::rollBack();
+            abort(500, '开通失败');
+        }
+        $order->status = 3;
+        if (!$order->save()) {
+            DB::rollBack();
+            abort(500, '开通失败');
+        }
+
+        DB::commit();
+    }
+
+    private function buyReset(User $user)
+    {
+        $user->u = 0;
+        $user->d = 0;
     }
 
     private function buyByCycle(Order $order, User $user, Plan $plan)
@@ -76,9 +115,6 @@ class CheckOrder extends Command
         // change plan process
         if ((int)$order->type === 3) {
             $user->expired_at = time();
-        }
-        if ($order->refund_amount) {
-            $user->balance = $user->balance + $order->refund_amount;
         }
         $user->transfer_enable = $plan->transfer_enable * 1073741824;
         if ((int)config('v2board.renew_reset_traffic_enable', 1)) {
@@ -88,27 +124,16 @@ class CheckOrder extends Command
         $user->plan_id = $plan->id;
         $user->group_id = $plan->group_id;
         $user->expired_at = $this->getTime($order->cycle, $user->expired_at);
-        if ($user->save()) {
-            $order->status = 3;
-            $order->save();
-        }
     }
 
     private function buyByOneTime(Order $order, User $user, Plan $plan)
     {
-        if ($order->refund_amount) {
-            $user->balance = $user->balance + $order->refund_amount;
-        }
         $user->transfer_enable = $plan->transfer_enable * 1073741824;
         $user->u = 0;
         $user->d = 0;
         $user->plan_id = $plan->id;
         $user->group_id = $plan->group_id;
         $user->expired_at = NULL;
-        if ($user->save()) {
-            $order->status = 3;
-            $order->save();
-        }
     }
 
     private function getTime($str, $timestamp)

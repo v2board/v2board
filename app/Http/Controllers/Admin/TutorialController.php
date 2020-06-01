@@ -3,16 +3,18 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\Admin\TutorialSave;
+use App\Http\Requests\Admin\TutorialSort;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Tutorial;
+use Illuminate\Support\Facades\DB;
 
 class TutorialController extends Controller
 {
     public function fetch(Request $request)
     {
         return response([
-            'data' => Tutorial::get()
+            'data' => Tutorial::orderBy('sort', 'ASC')->get()
         ]);
     }
 
@@ -51,6 +53,21 @@ class TutorialController extends Controller
             abort(500, '保存失败');
         }
 
+        return response([
+            'data' => true
+        ]);
+    }
+
+    public function sort(TutorialSort $request)
+    {
+        DB::beginTransaction();
+        foreach ($request->input('tutorial_ids') as $k => $v) {
+            if (!Tutorial::find($v)->update(['sort' => $k + 1])) {
+                DB::rollBack();
+                abort(500, '保存失败');
+            }
+        }
+        DB::commit();
         return response([
             'data' => true
         ]);

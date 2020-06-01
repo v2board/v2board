@@ -15,11 +15,13 @@ class AdminRoute
             $router->get ('/config/fetch', 'Admin\\ConfigController@fetch');
             $router->post('/config/save', 'Admin\\ConfigController@save');
             $router->get ('/config/getEmailTemplate', 'Admin\\ConfigController@getEmailTemplate');
+            $router->post('/config/setTelegramWebhook', 'Admin\\ConfigController@setTelegramWebhook');
             // Plan
             $router->get ('/plan/fetch', 'Admin\\PlanController@fetch');
             $router->post('/plan/save', 'Admin\\PlanController@save');
             $router->post('/plan/drop', 'Admin\\PlanController@drop');
             $router->post('/plan/update', 'Admin\\PlanController@update');
+            $router->post('/plan/sort', 'Admin\\PlanController@sort');
             // Server
             $router->get ('/server/fetch', 'Admin\\ServerController@fetch');
             $router->post('/server/save', 'Admin\\ServerController@save');
@@ -30,10 +32,12 @@ class AdminRoute
             $router->post('/server/update', 'Admin\\ServerController@update');
             $router->post('/server/copy', 'Admin\\ServerController@copy');
             $router->post('/server/viewConfig', 'Admin\\ServerController@viewConfig');
+            $router->post('/server/sort', 'Admin\\ServerController@sort');
             // Order
             $router->get ('/order/fetch', 'Admin\\OrderController@fetch');
             $router->post('/order/repair', 'Admin\\OrderController@repair');
             $router->post('/order/update', 'Admin\\OrderController@update');
+            $router->post('/order/assign', 'Admin\\OrderController@assign');
             // User
             $router->get ('/user/fetch', 'Admin\\UserController@fetch');
             $router->post('/user/update', 'Admin\\UserController@update');
@@ -60,6 +64,7 @@ class AdminRoute
             $router->post('/tutorial/save', 'Admin\\TutorialController@save');
             $router->post('/tutorial/show', 'Admin\\TutorialController@show');
             $router->post('/tutorial/drop', 'Admin\\TutorialController@drop');
+            $router->post('/tutorial/sort', 'Admin\\TutorialController@sort');
         });
     }
 }

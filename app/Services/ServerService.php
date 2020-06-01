@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\ServerLog;
 use App\Models\User;
 use App\Models\Server;
 
@@ -40,6 +41,7 @@ class ServerService
             abort(500, '节点不存在');
         }
         $json = json_decode(self::SERVER_CONFIG);
+        $json->log->loglevel = config('v2board.server_log_level', 'none');
         $json->inboundDetour[0]->port = (int)$localPort;
         $json->inbound->port = (int)$server->server_port;
         $json->inbound->streamSettings->network = $server->network;
@@ -55,6 +57,10 @@ class ServerService
     {
         if ($server->dnsSettings) {
             $dns = json_decode($server->dnsSettings);
+            if (isset($dns->servers)) {
+                array_push($dns->servers, '1.1.1.1');
+                array_push($dns->servers, 'localhost');
+            }
             $json->dns = $dns;
             $json->outbound->settings->domainStrategy = 'UseIP';
         }
@@ -92,6 +98,7 @@ class ServerService
             $rules = json_decode($server->ruleSettings);
             // domain
             if (isset($rules->domain) && !empty($rules->domain)) {
+                $rules->domain = array_filter($rules->domain);
                 $domainObj = new \StdClass();
                 $domainObj->type = 'field';
                 $domainObj->domain = $rules->domain;
@@ -100,6 +107,7 @@ class ServerService
             }
             // protocol
             if (isset($rules->protocol) && !empty($rules->protocol)) {
+                $rules->protocol = array_filter($rules->protocol);
                 $protocolObj = new \StdClass();
                 $protocolObj->type = 'field';
                 $protocolObj->protocol = $rules->protocol;
@@ -126,6 +134,32 @@ class ServerService
                 $json->inbound->streamSettings->tlsSettings->allowInsecure = (int)$tlsSettings->allowInsecure ? true : false;
             }
             $json->inbound->streamSettings->tlsSettings->certificates[0] = $tls;
+        }
+    }
+
+    public function log(int $userId, int $serverId, int $u, int $d, float $rate)
+    {
+        if (($u + $d) <= 10240) return;
+        $timestamp = strtotime(date('Y-m-d H:0'));
+        $serverLog = ServerLog::where('log_at', '>=', $timestamp)
+            ->where('log_at', '<', $timestamp + 3600)
+            ->where('server_id', $serverId)
+            ->where('user_id', $userId)
+            ->where('rate', $rate)
+            ->first();
+        if ($serverLog) {
+            $serverLog->u = $serverLog->u + $u;
+            $serverLog->d = $serverLog->d + $d;
+            $serverLog->save();
+        } else {
+            $serverLog = new ServerLog();
+            $serverLog->user_id = $userId;
+            $serverLog->server_id = $serverId;
+            $serverLog->u = $u;
+            $serverLog->d = $d;
+            $serverLog->rate = $rate;
+            $serverLog->log_at = $timestamp;
+            $serverLog->save();
         }
     }
 }

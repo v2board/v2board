@@ -15,7 +15,8 @@ class PlanSave extends FormRequest
         'quarter_price' => 'nullable|integer',
         'half_year_price' => 'nullable|integer',
         'year_price' => 'nullable|integer',
-        'onetime_price' => 'nullable|integer'
+        'onetime_price' => 'nullable|integer',
+        'reset_price' => 'nullable|integer'
     ];
     /**
      * Get the validation rules that apply to the request.
@@ -39,7 +40,8 @@ class PlanSave extends FormRequest
             'quarter_price.integer' => '季付金额格式有误',
             'half_year_price.integer' => '半年付金额格式有误',
             'year_price.integer' => '年付金额格式有误',
-            'onetime_price.integer' => '一次性金额有误'
+            'onetime_price.integer' => '一次性金额有误',
+            'reset_price.integer' => '流量重置包金额有误'
         ];
     }
 }

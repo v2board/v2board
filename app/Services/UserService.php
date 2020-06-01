@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Order;
 use App\Models\User;
 
 class UserService
@@ -58,6 +59,32 @@ class UserService
         if ($user->balance < 0) {
             return false;
         }
+        if (!$user->save()) {
+            return false;
+        }
+        return true;
+    }
+
+    public function isNotCompleteOrderByUserId(int $userId):bool
+    {
+        $order = Order::whereIn('status', [0, 1])
+            ->where('user_id', $userId)
+            ->first();
+        if (!$order) {
+            return false;
+        }
+        return true;
+    }
+
+    public function trafficFetch(int $u, int $d, int $userId):bool
+    {
+        $user = User::find($userId);
+        if (!$user) {
+            return false;
+        }
+        $user->t = time();
+        $user->u = $user->u + $u;
+        $user->d = $user->d + $d;
         if (!$user->save()) {
             return false;
         }

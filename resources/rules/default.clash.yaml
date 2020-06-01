@@ -1,15 +1,42 @@
+port: 7890
+socks-port: 7891
+allow-lan: false
+mode: Rule
+log-level: info
+external-controller: 127.0.0.1:9090
+experimental:
+  ignore-resolve-fail: true
+dns:
+  enable: true
+  ipv6: false
+  enhanced-mode: redir-host
+  nameserver:
+    - 1.2.4.8
+    - 223.5.5.5
+  fallback:
+    - tls://1.0.0.1:853
+    - tls://dns.google:853
+Proxy:
+
+Proxy Group:
+  - { name: "$app_name", type: select, proxies: ["自动选择", "故障转移"] }
+  - { name: "自动选择", type: url-test, proxies: [], url: "http://www.gstatic.com/generate_204", interval: 86400 }
+  - { name: "故障转移", type: fallback, proxies: [], url: "http://www.gstatic.com/generate_204", interval: 7200 }
+
 Rule:
   # Apple
   - DOMAIN,safebrowsing.urlsec.qq.com,DIRECT # 如果您并不信任此服务提供商或防止其下载消耗过多带宽资源，可以进入 Safari 设置，关闭 Fraudulent Website Warning 功能，并使用 REJECT 策略。
   - DOMAIN,safebrowsing.googleapis.com,DIRECT # 如果您并不信任此服务提供商或防止其下载消耗过多带宽资源，可以进入 Safari 设置，关闭 Fraudulent Website Warning 功能，并使用 REJECT 策略。
-  - DOMAIN,ocsp.apple.com,select
-  - DOMAIN-SUFFIX,digicert.com,select
-  - DOMAIN-SUFFIX,entrust.net,select
-  - DOMAIN,ocsp.verisign.net,select
-  - DOMAIN-SUFFIX,apps.apple.com,select
-  - DOMAIN-SUFFIX,itunes.apple.com,select
-  - DOMAIN-SUFFIX,blobstore.apple.com,select
+  - DOMAIN,ocsp.apple.com,$app_name
+  - DOMAIN-SUFFIX,digicert.com,$app_name
+  - DOMAIN-SUFFIX,entrust.net,$app_name
+  - DOMAIN,ocsp.verisign.net,$app_name
+  - DOMAIN-SUFFIX,apps.apple.com,$app_name
+  - DOMAIN,itunes.apple.com,$app_name
+  - DOMAIN-SUFFIX,blobstore.apple.com,$app_name
   - DOMAIN-SUFFIX,music.apple.com,DIRECT
+  - DOMAIN-SUFFIX,mzstatic.com,DIRECT
+  - DOMAIN-SUFFIX,itunes.apple.com,DIRECT
   - DOMAIN-SUFFIX,icloud.com,DIRECT
   - DOMAIN-SUFFIX,icloud-content.com,DIRECT
   - DOMAIN-SUFFIX,me.com,DIRECT
@@ -48,6 +75,7 @@ Rule:
   - DOMAIN-SUFFIX,bdimg.com,DIRECT
   - DOMAIN-SUFFIX,bdstatic.com,DIRECT
   - DOMAIN-SUFFIX,bilibili.com,DIRECT
+  - DOMAIN-SUFFIX,bilivideo.com,DIRECT
   - DOMAIN-SUFFIX,caiyunapp.com,DIRECT
   - DOMAIN-SUFFIX,clouddn.com,DIRECT
   - DOMAIN-SUFFIX,cnbeta.com,DIRECT
@@ -69,6 +97,7 @@ Rule:
   - DOMAIN-SUFFIX,godic.net,DIRECT
   - DOMAIN-SUFFIX,gtimg.com,DIRECT
   - DOMAIN,cdn.hockeyapp.net,DIRECT
+  - DOMAIN-SUFFIX,hdslb.com,DIRECT
   - DOMAIN-SUFFIX,hongxiu.com,DIRECT
   - DOMAIN-SUFFIX,hxcdn.net,DIRECT
   - DOMAIN-SUFFIX,iciba.com,DIRECT
@@ -157,20 +186,20 @@ Rule:
   - DOMAIN-SUFFIX,zoho.com,DIRECT
 
   # 抗 DNS 污染
-  - DOMAIN-KEYWORD,amazon,select
-  - DOMAIN-KEYWORD,google,select
-  - DOMAIN-KEYWORD,gmail,select
-  - DOMAIN-KEYWORD,youtube,select
-  - DOMAIN-KEYWORD,facebook,select
-  - DOMAIN-SUFFIX,fb.me,select
-  - DOMAIN-SUFFIX,fbcdn.net,select
-  - DOMAIN-KEYWORD,twitter,select
-  - DOMAIN-KEYWORD,instagram,select
-  - DOMAIN-KEYWORD,dropbox,select
-  - DOMAIN-SUFFIX,twimg.com,select
-  - DOMAIN-KEYWORD,blogspot,select
-  - DOMAIN-SUFFIX,youtu.be,select
-  - DOMAIN-KEYWORD,whatsapp,select
+  - DOMAIN-KEYWORD,amazon,$app_name
+  - DOMAIN-KEYWORD,google,$app_name
+  - DOMAIN-KEYWORD,gmail,$app_name
+  - DOMAIN-KEYWORD,youtube,$app_name
+  - DOMAIN-KEYWORD,facebook,$app_name
+  - DOMAIN-SUFFIX,fb.me,$app_name
+  - DOMAIN-SUFFIX,fbcdn.net,$app_name
+  - DOMAIN-KEYWORD,twitter,$app_name
+  - DOMAIN-KEYWORD,instagram,$app_name
+  - DOMAIN-KEYWORD,dropbox,$app_name
+  - DOMAIN-SUFFIX,twimg.com,$app_name
+  - DOMAIN-KEYWORD,blogspot,$app_name
+  - DOMAIN-SUFFIX,youtu.be,$app_name
+  - DOMAIN-KEYWORD,whatsapp,$app_name
 
   # 常见广告域名屏蔽
   - DOMAIN-KEYWORD,admarvel,REJECT
@@ -191,6 +220,7 @@ Rule:
   - DOMAIN-KEYWORD,partnerad,REJECT
   - DOMAIN-KEYWORD,pingfore,REJECT
   - DOMAIN-KEYWORD,supersonicads,REJECT
+  - DOMAIN-KEYWORD,tracking,REJECT
   - DOMAIN-KEYWORD,uedas,REJECT
   - DOMAIN-KEYWORD,umeng,REJECT
   - DOMAIN-KEYWORD,usage,REJECT
@@ -198,287 +228,287 @@ Rule:
   - DOMAIN-KEYWORD,zjtoolbar,REJECT
 
   # 国外网站
-  - DOMAIN-SUFFIX,9to5mac.com,select
-  - DOMAIN-SUFFIX,abpchina.org,select
-  - DOMAIN-SUFFIX,adblockplus.org,select
-  - DOMAIN-SUFFIX,adobe.com,select
-  - DOMAIN-SUFFIX,alfredapp.com,select
-  - DOMAIN-SUFFIX,amplitude.com,select
-  - DOMAIN-SUFFIX,ampproject.org,select
-  - DOMAIN-SUFFIX,android.com,select
-  - DOMAIN-SUFFIX,angularjs.org,select
-  - DOMAIN-SUFFIX,aolcdn.com,select
-  - DOMAIN-SUFFIX,apkpure.com,select
-  - DOMAIN-SUFFIX,appledaily.com,select
-  - DOMAIN-SUFFIX,appshopper.com,select
-  - DOMAIN-SUFFIX,appspot.com,select
-  - DOMAIN-SUFFIX,arcgis.com,select
-  - DOMAIN-SUFFIX,archive.org,select
-  - DOMAIN-SUFFIX,armorgames.com,select
-  - DOMAIN-SUFFIX,aspnetcdn.com,select
-  - DOMAIN-SUFFIX,att.com,select
-  - DOMAIN-SUFFIX,awsstatic.com,select
-  - DOMAIN-SUFFIX,azureedge.net,select
-  - DOMAIN-SUFFIX,azurewebsites.net,select
-  - DOMAIN-SUFFIX,bing.com,select
-  - DOMAIN-SUFFIX,bintray.com,select
-  - DOMAIN-SUFFIX,bit.com,select
-  - DOMAIN-SUFFIX,bit.ly,select
-  - DOMAIN-SUFFIX,bitbucket.org,select
-  - DOMAIN-SUFFIX,bjango.com,select
-  - DOMAIN-SUFFIX,bkrtx.com,select
-  - DOMAIN-SUFFIX,blog.com,select
-  - DOMAIN-SUFFIX,blogcdn.com,select
-  - DOMAIN-SUFFIX,blogger.com,select
-  - DOMAIN-SUFFIX,blogsmithmedia.com,select
-  - DOMAIN-SUFFIX,blogspot.com,select
-  - DOMAIN-SUFFIX,blogspot.hk,select
-  - DOMAIN-SUFFIX,bloomberg.com,select
-  - DOMAIN-SUFFIX,box.com,select
-  - DOMAIN-SUFFIX,box.net,select
-  - DOMAIN-SUFFIX,cachefly.net,select
-  - DOMAIN-SUFFIX,chromium.org,select
-  - DOMAIN-SUFFIX,cl.ly,select
-  - DOMAIN-SUFFIX,cloudflare.com,select
-  - DOMAIN-SUFFIX,cloudfront.net,select
-  - DOMAIN-SUFFIX,cloudmagic.com,select
-  - DOMAIN-SUFFIX,cmail19.com,select
-  - DOMAIN-SUFFIX,cnet.com,select
-  - DOMAIN-SUFFIX,cocoapods.org,select
-  - DOMAIN-SUFFIX,comodoca.com,select
-  - DOMAIN-SUFFIX,crashlytics.com,select
-  - DOMAIN-SUFFIX,culturedcode.com,select
-  - DOMAIN-SUFFIX,d.pr,select
-  - DOMAIN-SUFFIX,danilo.to,select
-  - DOMAIN-SUFFIX,dayone.me,select
-  - DOMAIN-SUFFIX,db.tt,select
-  - DOMAIN-SUFFIX,deskconnect.com,select
-  - DOMAIN-SUFFIX,disq.us,select
-  - DOMAIN-SUFFIX,disqus.com,select
-  - DOMAIN-SUFFIX,disquscdn.com,select
-  - DOMAIN-SUFFIX,dnsimple.com,select
-  - DOMAIN-SUFFIX,docker.com,select
-  - DOMAIN-SUFFIX,dribbble.com,select
-  - DOMAIN-SUFFIX,droplr.com,select
-  - DOMAIN-SUFFIX,duckduckgo.com,select
-  - DOMAIN-SUFFIX,dueapp.com,select
-  - DOMAIN-SUFFIX,dytt8.net,select
-  - DOMAIN-SUFFIX,edgecastcdn.net,select
-  - DOMAIN-SUFFIX,edgekey.net,select
-  - DOMAIN-SUFFIX,edgesuite.net,select
-  - DOMAIN-SUFFIX,engadget.com,select
-  - DOMAIN-SUFFIX,entrust.net,select
-  - DOMAIN-SUFFIX,eurekavpt.com,select
-  - DOMAIN-SUFFIX,evernote.com,select
-  - DOMAIN-SUFFIX,fabric.io,select
-  - DOMAIN-SUFFIX,fast.com,select
-  - DOMAIN-SUFFIX,fastly.net,select
-  - DOMAIN-SUFFIX,fc2.com,select
-  - DOMAIN-SUFFIX,feedburner.com,select
-  - DOMAIN-SUFFIX,feedly.com,select
-  - DOMAIN-SUFFIX,feedsportal.com,select
-  - DOMAIN-SUFFIX,fiftythree.com,select
-  - DOMAIN-SUFFIX,firebaseio.com,select
-  - DOMAIN-SUFFIX,flexibits.com,select
-  - DOMAIN-SUFFIX,flickr.com,select
-  - DOMAIN-SUFFIX,flipboard.com,select
-  - DOMAIN-SUFFIX,g.co,select
-  - DOMAIN-SUFFIX,gabia.net,select
-  - DOMAIN-SUFFIX,geni.us,select
-  - DOMAIN-SUFFIX,gfx.ms,select
-  - DOMAIN-SUFFIX,ggpht.com,select
-  - DOMAIN-SUFFIX,ghostnoteapp.com,select
-  - DOMAIN-SUFFIX,git.io,select
-  - DOMAIN-KEYWORD,github,select
-  - DOMAIN-SUFFIX,globalsign.com,select
-  - DOMAIN-SUFFIX,gmodules.com,select
-  - DOMAIN-SUFFIX,godaddy.com,select
-  - DOMAIN-SUFFIX,golang.org,select
-  - DOMAIN-SUFFIX,gongm.in,select
-  - DOMAIN-SUFFIX,goo.gl,select
-  - DOMAIN-SUFFIX,goodreaders.com,select
-  - DOMAIN-SUFFIX,goodreads.com,select
-  - DOMAIN-SUFFIX,gravatar.com,select
-  - DOMAIN-SUFFIX,gstatic.com,select
-  - DOMAIN-SUFFIX,gvt0.com,select
-  - DOMAIN-SUFFIX,hockeyapp.net,select
-  - DOMAIN-SUFFIX,hotmail.com,select
-  - DOMAIN-SUFFIX,icons8.com,select
-  - DOMAIN-SUFFIX,ifixit.com,select
-  - DOMAIN-SUFFIX,ift.tt,select
-  - DOMAIN-SUFFIX,ifttt.com,select
-  - DOMAIN-SUFFIX,iherb.com,select
-  - DOMAIN-SUFFIX,imageshack.us,select
-  - DOMAIN-SUFFIX,img.ly,select
-  - DOMAIN-SUFFIX,imgur.com,select
-  - DOMAIN-SUFFIX,imore.com,select
-  - DOMAIN-SUFFIX,instapaper.com,select
-  - DOMAIN-SUFFIX,ipn.li,select
-  - DOMAIN-SUFFIX,is.gd,select
-  - DOMAIN-SUFFIX,issuu.com,select
-  - DOMAIN-SUFFIX,itgonglun.com,select
-  - DOMAIN-SUFFIX,itun.es,select
-  - DOMAIN-SUFFIX,ixquick.com,select
-  - DOMAIN-SUFFIX,j.mp,select
-  - DOMAIN-SUFFIX,js.revsci.net,select
-  - DOMAIN-SUFFIX,jshint.com,select
-  - DOMAIN-SUFFIX,jtvnw.net,select
-  - DOMAIN-SUFFIX,justgetflux.com,select
-  - DOMAIN-SUFFIX,kat.cr,select
-  - DOMAIN-SUFFIX,klip.me,select
-  - DOMAIN-SUFFIX,libsyn.com,select
-  - DOMAIN-SUFFIX,linode.com,select
-  - DOMAIN-SUFFIX,lithium.com,select
-  - DOMAIN-SUFFIX,littlehj.com,select
-  - DOMAIN-SUFFIX,live.com,select
-  - DOMAIN-SUFFIX,live.net,select
-  - DOMAIN-SUFFIX,livefilestore.com,select
-  - DOMAIN-SUFFIX,llnwd.net,select
-  - DOMAIN-SUFFIX,macid.co,select
-  - DOMAIN-SUFFIX,macromedia.com,select
-  - DOMAIN-SUFFIX,macrumors.com,select
-  - DOMAIN-SUFFIX,mashable.com,select
-  - DOMAIN-SUFFIX,mathjax.org,select
-  - DOMAIN-SUFFIX,medium.com,select
-  - DOMAIN-SUFFIX,mega.co.nz,select
-  - DOMAIN-SUFFIX,mega.nz,select
-  - DOMAIN-SUFFIX,megaupload.com,select
-  - DOMAIN-SUFFIX,microsofttranslator.com,select
-  - DOMAIN-SUFFIX,mindnode.com,select
-  - DOMAIN-SUFFIX,mobile01.com,select
-  - DOMAIN-SUFFIX,modmyi.com,select
-  - DOMAIN-SUFFIX,msedge.net,select
-  - DOMAIN-SUFFIX,myfontastic.com,select
-  - DOMAIN-SUFFIX,name.com,select
-  - DOMAIN-SUFFIX,nextmedia.com,select
-  - DOMAIN-SUFFIX,nsstatic.net,select
-  - DOMAIN-SUFFIX,nssurge.com,select
-  - DOMAIN-SUFFIX,nyt.com,select
-  - DOMAIN-SUFFIX,nytimes.com,select
-  - DOMAIN-SUFFIX,omnigroup.com,select
-  - DOMAIN-SUFFIX,onedrive.com,select
-  - DOMAIN-SUFFIX,onenote.com,select
-  - DOMAIN-SUFFIX,ooyala.com,select
-  - DOMAIN-SUFFIX,openvpn.net,select
-  - DOMAIN-SUFFIX,openwrt.org,select
-  - DOMAIN-SUFFIX,orkut.com,select
-  - DOMAIN-SUFFIX,osxdaily.com,select
-  - DOMAIN-SUFFIX,outlook.com,select
-  - DOMAIN-SUFFIX,ow.ly,select
-  - DOMAIN-SUFFIX,paddleapi.com,select
-  - DOMAIN-SUFFIX,parallels.com,select
-  - DOMAIN-SUFFIX,parse.com,select
-  - DOMAIN-SUFFIX,pdfexpert.com,select
-  - DOMAIN-SUFFIX,periscope.tv,select
-  - DOMAIN-SUFFIX,pinboard.in,select
-  - DOMAIN-SUFFIX,pinterest.com,select
-  - DOMAIN-SUFFIX,pixelmator.com,select
-  - DOMAIN-SUFFIX,pixiv.net,select
-  - DOMAIN-SUFFIX,playpcesor.com,select
-  - DOMAIN-SUFFIX,playstation.com,select
-  - DOMAIN-SUFFIX,playstation.com.hk,select
-  - DOMAIN-SUFFIX,playstation.net,select
-  - DOMAIN-SUFFIX,playstationnetwork.com,select
-  - DOMAIN-SUFFIX,pushwoosh.com,select
-  - DOMAIN-SUFFIX,rime.im,select
-  - DOMAIN-SUFFIX,servebom.com,select
-  - DOMAIN-SUFFIX,sfx.ms,select
-  - DOMAIN-SUFFIX,shadowsocks.org,select
-  - DOMAIN-SUFFIX,sharethis.com,select
-  - DOMAIN-SUFFIX,shazam.com,select
-  - DOMAIN-SUFFIX,skype.com,select
-  - DOMAIN-SUFFIX,smartdnsselect.com,select
-  - DOMAIN-SUFFIX,smartmailcloud.com,select
-  - DOMAIN-SUFFIX,sndcdn.com,select
-  - DOMAIN-SUFFIX,sony.com,select
-  - DOMAIN-SUFFIX,soundcloud.com,select
-  - DOMAIN-SUFFIX,sourceforge.net,select
-  - DOMAIN-SUFFIX,spotify.com,select
-  - DOMAIN-SUFFIX,squarespace.com,select
-  - DOMAIN-SUFFIX,sstatic.net,select
-  - DOMAIN-SUFFIX,st.luluku.pw,select
-  - DOMAIN-SUFFIX,stackoverflow.com,select
-  - DOMAIN-SUFFIX,startpage.com,select
-  - DOMAIN-SUFFIX,staticflickr.com,select
-  - DOMAIN-SUFFIX,steamcommunity.com,select
-  - DOMAIN-SUFFIX,symauth.com,select
-  - DOMAIN-SUFFIX,symcb.com,select
-  - DOMAIN-SUFFIX,symcd.com,select
-  - DOMAIN-SUFFIX,tapbots.com,select
-  - DOMAIN-SUFFIX,tapbots.net,select
-  - DOMAIN-SUFFIX,tdesktop.com,select
-  - DOMAIN-SUFFIX,techcrunch.com,select
-  - DOMAIN-SUFFIX,techsmith.com,select
-  - DOMAIN-SUFFIX,thepiratebay.org,select
-  - DOMAIN-SUFFIX,theverge.com,select
-  - DOMAIN-SUFFIX,time.com,select
-  - DOMAIN-SUFFIX,timeinc.net,select
-  - DOMAIN-SUFFIX,tiny.cc,select
-  - DOMAIN-SUFFIX,tinypic.com,select
-  - DOMAIN-SUFFIX,tmblr.co,select
-  - DOMAIN-SUFFIX,todoist.com,select
-  - DOMAIN-SUFFIX,trello.com,select
-  - DOMAIN-SUFFIX,trustasiassl.com,select
-  - DOMAIN-SUFFIX,tumblr.co,select
-  - DOMAIN-SUFFIX,tumblr.com,select
-  - DOMAIN-SUFFIX,tweetdeck.com,select
-  - DOMAIN-SUFFIX,tweetmarker.net,select
-  - DOMAIN-SUFFIX,twitch.tv,select
-  - DOMAIN-SUFFIX,txmblr.com,select
-  - DOMAIN-SUFFIX,typekit.net,select
-  - DOMAIN-SUFFIX,ubertags.com,select
-  - DOMAIN-SUFFIX,ublock.org,select
-  - DOMAIN-SUFFIX,ubnt.com,select
-  - DOMAIN-SUFFIX,ulyssesapp.com,select
-  - DOMAIN-SUFFIX,urchin.com,select
-  - DOMAIN-SUFFIX,usertrust.com,select
-  - DOMAIN-SUFFIX,v.gd,select
-  - DOMAIN-SUFFIX,v2ex.com,select
-  - DOMAIN-SUFFIX,vimeo.com,select
-  - DOMAIN-SUFFIX,vimeocdn.com,select
-  - DOMAIN-SUFFIX,vine.co,select
-  - DOMAIN-SUFFIX,vivaldi.com,select
-  - DOMAIN-SUFFIX,vox-cdn.com,select
-  - DOMAIN-SUFFIX,vsco.co,select
-  - DOMAIN-SUFFIX,vultr.com,select
-  - DOMAIN-SUFFIX,w.org,select
-  - DOMAIN-SUFFIX,w3schools.com,select
-  - DOMAIN-SUFFIX,webtype.com,select
-  - DOMAIN-SUFFIX,wikiwand.com,select
-  - DOMAIN-SUFFIX,wikileaks.org,select
-  - DOMAIN-SUFFIX,wikimedia.org,select
-  - DOMAIN-SUFFIX,wikipedia.com,select
-  - DOMAIN-SUFFIX,wikipedia.org,select
-  - DOMAIN-SUFFIX,windows.com,select
-  - DOMAIN-SUFFIX,windows.net,select
-  - DOMAIN-SUFFIX,wire.com,select
-  - DOMAIN-SUFFIX,wordpress.com,select
-  - DOMAIN-SUFFIX,workflowy.com,select
-  - DOMAIN-SUFFIX,wp.com,select
-  - DOMAIN-SUFFIX,wsj.com,select
-  - DOMAIN-SUFFIX,wsj.net,select
-  - DOMAIN-SUFFIX,xda-developers.com,select
-  - DOMAIN-SUFFIX,xeeno.com,select
-  - DOMAIN-SUFFIX,xiti.com,select
-  - DOMAIN-SUFFIX,yahoo.com,select
-  - DOMAIN-SUFFIX,yimg.com,select
-  - DOMAIN-SUFFIX,ying.com,select
-  - DOMAIN-SUFFIX,yoyo.org,select
-  - DOMAIN-SUFFIX,ytimg.com,select
+  - DOMAIN-SUFFIX,9to5mac.com,$app_name
+  - DOMAIN-SUFFIX,abpchina.org,$app_name
+  - DOMAIN-SUFFIX,adblockplus.org,$app_name
+  - DOMAIN-SUFFIX,adobe.com,$app_name
+  - DOMAIN-SUFFIX,alfredapp.com,$app_name
+  - DOMAIN-SUFFIX,amplitude.com,$app_name
+  - DOMAIN-SUFFIX,ampproject.org,$app_name
+  - DOMAIN-SUFFIX,android.com,$app_name
+  - DOMAIN-SUFFIX,angularjs.org,$app_name
+  - DOMAIN-SUFFIX,aolcdn.com,$app_name
+  - DOMAIN-SUFFIX,apkpure.com,$app_name
+  - DOMAIN-SUFFIX,appledaily.com,$app_name
+  - DOMAIN-SUFFIX,appshopper.com,$app_name
+  - DOMAIN-SUFFIX,appspot.com,$app_name
+  - DOMAIN-SUFFIX,arcgis.com,$app_name
+  - DOMAIN-SUFFIX,archive.org,$app_name
+  - DOMAIN-SUFFIX,armorgames.com,$app_name
+  - DOMAIN-SUFFIX,aspnetcdn.com,$app_name
+  - DOMAIN-SUFFIX,att.com,$app_name
+  - DOMAIN-SUFFIX,awsstatic.com,$app_name
+  - DOMAIN-SUFFIX,azureedge.net,$app_name
+  - DOMAIN-SUFFIX,azurewebsites.net,$app_name
+  - DOMAIN-SUFFIX,bing.com,$app_name
+  - DOMAIN-SUFFIX,bintray.com,$app_name
+  - DOMAIN-SUFFIX,bit.com,$app_name
+  - DOMAIN-SUFFIX,bit.ly,$app_name
+  - DOMAIN-SUFFIX,bitbucket.org,$app_name
+  - DOMAIN-SUFFIX,bjango.com,$app_name
+  - DOMAIN-SUFFIX,bkrtx.com,$app_name
+  - DOMAIN-SUFFIX,blog.com,$app_name
+  - DOMAIN-SUFFIX,blogcdn.com,$app_name
+  - DOMAIN-SUFFIX,blogger.com,$app_name
+  - DOMAIN-SUFFIX,blogsmithmedia.com,$app_name
+  - DOMAIN-SUFFIX,blogspot.com,$app_name
+  - DOMAIN-SUFFIX,blogspot.hk,$app_name
+  - DOMAIN-SUFFIX,bloomberg.com,$app_name
+  - DOMAIN-SUFFIX,box.com,$app_name
+  - DOMAIN-SUFFIX,box.net,$app_name
+  - DOMAIN-SUFFIX,cachefly.net,$app_name
+  - DOMAIN-SUFFIX,chromium.org,$app_name
+  - DOMAIN-SUFFIX,cl.ly,$app_name
+  - DOMAIN-SUFFIX,cloudflare.com,$app_name
+  - DOMAIN-SUFFIX,cloudfront.net,$app_name
+  - DOMAIN-SUFFIX,cloudmagic.com,$app_name
+  - DOMAIN-SUFFIX,cmail19.com,$app_name
+  - DOMAIN-SUFFIX,cnet.com,$app_name
+  - DOMAIN-SUFFIX,cocoapods.org,$app_name
+  - DOMAIN-SUFFIX,comodoca.com,$app_name
+  - DOMAIN-SUFFIX,crashlytics.com,$app_name
+  - DOMAIN-SUFFIX,culturedcode.com,$app_name
+  - DOMAIN-SUFFIX,d.pr,$app_name
+  - DOMAIN-SUFFIX,danilo.to,$app_name
+  - DOMAIN-SUFFIX,dayone.me,$app_name
+  - DOMAIN-SUFFIX,db.tt,$app_name
+  - DOMAIN-SUFFIX,deskconnect.com,$app_name
+  - DOMAIN-SUFFIX,disq.us,$app_name
+  - DOMAIN-SUFFIX,disqus.com,$app_name
+  - DOMAIN-SUFFIX,disquscdn.com,$app_name
+  - DOMAIN-SUFFIX,dnsimple.com,$app_name
+  - DOMAIN-SUFFIX,docker.com,$app_name
+  - DOMAIN-SUFFIX,dribbble.com,$app_name
+  - DOMAIN-SUFFIX,droplr.com,$app_name
+  - DOMAIN-SUFFIX,duckduckgo.com,$app_name
+  - DOMAIN-SUFFIX,dueapp.com,$app_name
+  - DOMAIN-SUFFIX,dytt8.net,$app_name
+  - DOMAIN-SUFFIX,edgecastcdn.net,$app_name
+  - DOMAIN-SUFFIX,edgekey.net,$app_name
+  - DOMAIN-SUFFIX,edgesuite.net,$app_name
+  - DOMAIN-SUFFIX,engadget.com,$app_name
+  - DOMAIN-SUFFIX,entrust.net,$app_name
+  - DOMAIN-SUFFIX,eurekavpt.com,$app_name
+  - DOMAIN-SUFFIX,evernote.com,$app_name
+  - DOMAIN-SUFFIX,fabric.io,$app_name
+  - DOMAIN-SUFFIX,fast.com,$app_name
+  - DOMAIN-SUFFIX,fastly.net,$app_name
+  - DOMAIN-SUFFIX,fc2.com,$app_name
+  - DOMAIN-SUFFIX,feedburner.com,$app_name
+  - DOMAIN-SUFFIX,feedly.com,$app_name
+  - DOMAIN-SUFFIX,feedsportal.com,$app_name
+  - DOMAIN-SUFFIX,fiftythree.com,$app_name
+  - DOMAIN-SUFFIX,firebaseio.com,$app_name
+  - DOMAIN-SUFFIX,flexibits.com,$app_name
+  - DOMAIN-SUFFIX,flickr.com,$app_name
+  - DOMAIN-SUFFIX,flipboard.com,$app_name
+  - DOMAIN-SUFFIX,g.co,$app_name
+  - DOMAIN-SUFFIX,gabia.net,$app_name
+  - DOMAIN-SUFFIX,geni.us,$app_name
+  - DOMAIN-SUFFIX,gfx.ms,$app_name
+  - DOMAIN-SUFFIX,ggpht.com,$app_name
+  - DOMAIN-SUFFIX,ghostnoteapp.com,$app_name
+  - DOMAIN-SUFFIX,git.io,$app_name
+  - DOMAIN-KEYWORD,github,$app_name
+  - DOMAIN-SUFFIX,globalsign.com,$app_name
+  - DOMAIN-SUFFIX,gmodules.com,$app_name
+  - DOMAIN-SUFFIX,godaddy.com,$app_name
+  - DOMAIN-SUFFIX,golang.org,$app_name
+  - DOMAIN-SUFFIX,gongm.in,$app_name
+  - DOMAIN-SUFFIX,goo.gl,$app_name
+  - DOMAIN-SUFFIX,goodreaders.com,$app_name
+  - DOMAIN-SUFFIX,goodreads.com,$app_name
+  - DOMAIN-SUFFIX,gravatar.com,$app_name
+  - DOMAIN-SUFFIX,gstatic.com,$app_name
+  - DOMAIN-SUFFIX,gvt0.com,$app_name
+  - DOMAIN-SUFFIX,hockeyapp.net,$app_name
+  - DOMAIN-SUFFIX,hotmail.com,$app_name
+  - DOMAIN-SUFFIX,icons8.com,$app_name
+  - DOMAIN-SUFFIX,ifixit.com,$app_name
+  - DOMAIN-SUFFIX,ift.tt,$app_name
+  - DOMAIN-SUFFIX,ifttt.com,$app_name
+  - DOMAIN-SUFFIX,iherb.com,$app_name
+  - DOMAIN-SUFFIX,imageshack.us,$app_name
+  - DOMAIN-SUFFIX,img.ly,$app_name
+  - DOMAIN-SUFFIX,imgur.com,$app_name
+  - DOMAIN-SUFFIX,imore.com,$app_name
+  - DOMAIN-SUFFIX,instapaper.com,$app_name
+  - DOMAIN-SUFFIX,ipn.li,$app_name
+  - DOMAIN-SUFFIX,is.gd,$app_name
+  - DOMAIN-SUFFIX,issuu.com,$app_name
+  - DOMAIN-SUFFIX,itgonglun.com,$app_name
+  - DOMAIN-SUFFIX,itun.es,$app_name
+  - DOMAIN-SUFFIX,ixquick.com,$app_name
+  - DOMAIN-SUFFIX,j.mp,$app_name
+  - DOMAIN-SUFFIX,js.revsci.net,$app_name
+  - DOMAIN-SUFFIX,jshint.com,$app_name
+  - DOMAIN-SUFFIX,jtvnw.net,$app_name
+  - DOMAIN-SUFFIX,justgetflux.com,$app_name
+  - DOMAIN-SUFFIX,kat.cr,$app_name
+  - DOMAIN-SUFFIX,klip.me,$app_name
+  - DOMAIN-SUFFIX,libsyn.com,$app_name
+  - DOMAIN-SUFFIX,linode.com,$app_name
+  - DOMAIN-SUFFIX,lithium.com,$app_name
+  - DOMAIN-SUFFIX,littlehj.com,$app_name
+  - DOMAIN-SUFFIX,live.com,$app_name
+  - DOMAIN-SUFFIX,live.net,$app_name
+  - DOMAIN-SUFFIX,livefilestore.com,$app_name
+  - DOMAIN-SUFFIX,llnwd.net,$app_name
+  - DOMAIN-SUFFIX,macid.co,$app_name
+  - DOMAIN-SUFFIX,macromedia.com,$app_name
+  - DOMAIN-SUFFIX,macrumors.com,$app_name
+  - DOMAIN-SUFFIX,mashable.com,$app_name
+  - DOMAIN-SUFFIX,mathjax.org,$app_name
+  - DOMAIN-SUFFIX,medium.com,$app_name
+  - DOMAIN-SUFFIX,mega.co.nz,$app_name
+  - DOMAIN-SUFFIX,mega.nz,$app_name
+  - DOMAIN-SUFFIX,megaupload.com,$app_name
+  - DOMAIN-SUFFIX,microsofttranslator.com,$app_name
+  - DOMAIN-SUFFIX,mindnode.com,$app_name
+  - DOMAIN-SUFFIX,mobile01.com,$app_name
+  - DOMAIN-SUFFIX,modmyi.com,$app_name
+  - DOMAIN-SUFFIX,msedge.net,$app_name
+  - DOMAIN-SUFFIX,myfontastic.com,$app_name
+  - DOMAIN-SUFFIX,name.com,$app_name
+  - DOMAIN-SUFFIX,nextmedia.com,$app_name
+  - DOMAIN-SUFFIX,nsstatic.net,$app_name
+  - DOMAIN-SUFFIX,nssurge.com,$app_name
+  - DOMAIN-SUFFIX,nyt.com,$app_name
+  - DOMAIN-SUFFIX,nytimes.com,$app_name
+  - DOMAIN-SUFFIX,omnigroup.com,$app_name
+  - DOMAIN-SUFFIX,onedrive.com,$app_name
+  - DOMAIN-SUFFIX,onenote.com,$app_name
+  - DOMAIN-SUFFIX,ooyala.com,$app_name
+  - DOMAIN-SUFFIX,openvpn.net,$app_name
+  - DOMAIN-SUFFIX,openwrt.org,$app_name
+  - DOMAIN-SUFFIX,orkut.com,$app_name
+  - DOMAIN-SUFFIX,osxdaily.com,$app_name
+  - DOMAIN-SUFFIX,outlook.com,$app_name
+  - DOMAIN-SUFFIX,ow.ly,$app_name
+  - DOMAIN-SUFFIX,paddleapi.com,$app_name
+  - DOMAIN-SUFFIX,parallels.com,$app_name
+  - DOMAIN-SUFFIX,parse.com,$app_name
+  - DOMAIN-SUFFIX,pdfexpert.com,$app_name
+  - DOMAIN-SUFFIX,periscope.tv,$app_name
+  - DOMAIN-SUFFIX,pinboard.in,$app_name
+  - DOMAIN-SUFFIX,pinterest.com,$app_name
+  - DOMAIN-SUFFIX,pixelmator.com,$app_name
+  - DOMAIN-SUFFIX,pixiv.net,$app_name
+  - DOMAIN-SUFFIX,playpcesor.com,$app_name
+  - DOMAIN-SUFFIX,playstation.com,$app_name
+  - DOMAIN-SUFFIX,playstation.com.hk,$app_name
+  - DOMAIN-SUFFIX,playstation.net,$app_name
+  - DOMAIN-SUFFIX,playstationnetwork.com,$app_name
+  - DOMAIN-SUFFIX,pushwoosh.com,$app_name
+  - DOMAIN-SUFFIX,rime.im,$app_name
+  - DOMAIN-SUFFIX,servebom.com,$app_name
+  - DOMAIN-SUFFIX,sfx.ms,$app_name
+  - DOMAIN-SUFFIX,shadowsocks.org,$app_name
+  - DOMAIN-SUFFIX,sharethis.com,$app_name
+  - DOMAIN-SUFFIX,shazam.com,$app_name
+  - DOMAIN-SUFFIX,skype.com,$app_name
+  - DOMAIN-SUFFIX,smartdns$app_name.com,$app_name
+  - DOMAIN-SUFFIX,smartmailcloud.com,$app_name
+  - DOMAIN-SUFFIX,sndcdn.com,$app_name
+  - DOMAIN-SUFFIX,sony.com,$app_name
+  - DOMAIN-SUFFIX,soundcloud.com,$app_name
+  - DOMAIN-SUFFIX,sourceforge.net,$app_name
+  - DOMAIN-SUFFIX,spotify.com,$app_name
+  - DOMAIN-SUFFIX,squarespace.com,$app_name
+  - DOMAIN-SUFFIX,sstatic.net,$app_name
+  - DOMAIN-SUFFIX,st.luluku.pw,$app_name
+  - DOMAIN-SUFFIX,stackoverflow.com,$app_name
+  - DOMAIN-SUFFIX,startpage.com,$app_name
+  - DOMAIN-SUFFIX,staticflickr.com,$app_name
+  - DOMAIN-SUFFIX,steamcommunity.com,$app_name
+  - DOMAIN-SUFFIX,symauth.com,$app_name
+  - DOMAIN-SUFFIX,symcb.com,$app_name
+  - DOMAIN-SUFFIX,symcd.com,$app_name
+  - DOMAIN-SUFFIX,tapbots.com,$app_name
+  - DOMAIN-SUFFIX,tapbots.net,$app_name
+  - DOMAIN-SUFFIX,tdesktop.com,$app_name
+  - DOMAIN-SUFFIX,techcrunch.com,$app_name
+  - DOMAIN-SUFFIX,techsmith.com,$app_name
+  - DOMAIN-SUFFIX,thepiratebay.org,$app_name
+  - DOMAIN-SUFFIX,theverge.com,$app_name
+  - DOMAIN-SUFFIX,time.com,$app_name
+  - DOMAIN-SUFFIX,timeinc.net,$app_name
+  - DOMAIN-SUFFIX,tiny.cc,$app_name
+  - DOMAIN-SUFFIX,tinypic.com,$app_name
+  - DOMAIN-SUFFIX,tmblr.co,$app_name
+  - DOMAIN-SUFFIX,todoist.com,$app_name
+  - DOMAIN-SUFFIX,trello.com,$app_name
+  - DOMAIN-SUFFIX,trustasiassl.com,$app_name
+  - DOMAIN-SUFFIX,tumblr.co,$app_name
+  - DOMAIN-SUFFIX,tumblr.com,$app_name
+  - DOMAIN-SUFFIX,tweetdeck.com,$app_name
+  - DOMAIN-SUFFIX,tweetmarker.net,$app_name
+  - DOMAIN-SUFFIX,twitch.tv,$app_name
+  - DOMAIN-SUFFIX,txmblr.com,$app_name
+  - DOMAIN-SUFFIX,typekit.net,$app_name
+  - DOMAIN-SUFFIX,ubertags.com,$app_name
+  - DOMAIN-SUFFIX,ublock.org,$app_name
+  - DOMAIN-SUFFIX,ubnt.com,$app_name
+  - DOMAIN-SUFFIX,ulyssesapp.com,$app_name
+  - DOMAIN-SUFFIX,urchin.com,$app_name
+  - DOMAIN-SUFFIX,usertrust.com,$app_name
+  - DOMAIN-SUFFIX,v.gd,$app_name
+  - DOMAIN-SUFFIX,v2ex.com,$app_name
+  - DOMAIN-SUFFIX,vimeo.com,$app_name
+  - DOMAIN-SUFFIX,vimeocdn.com,$app_name
+  - DOMAIN-SUFFIX,vine.co,$app_name
+  - DOMAIN-SUFFIX,vivaldi.com,$app_name
+  - DOMAIN-SUFFIX,vox-cdn.com,$app_name
+  - DOMAIN-SUFFIX,vsco.co,$app_name
+  - DOMAIN-SUFFIX,vultr.com,$app_name
+  - DOMAIN-SUFFIX,w.org,$app_name
+  - DOMAIN-SUFFIX,w3schools.com,$app_name
+  - DOMAIN-SUFFIX,webtype.com,$app_name
+  - DOMAIN-SUFFIX,wikiwand.com,$app_name
+  - DOMAIN-SUFFIX,wikileaks.org,$app_name
+  - DOMAIN-SUFFIX,wikimedia.org,$app_name
+  - DOMAIN-SUFFIX,wikipedia.com,$app_name
+  - DOMAIN-SUFFIX,wikipedia.org,$app_name
+  - DOMAIN-SUFFIX,windows.com,$app_name
+  - DOMAIN-SUFFIX,windows.net,$app_name
+  - DOMAIN-SUFFIX,wire.com,$app_name
+  - DOMAIN-SUFFIX,wordpress.com,$app_name
+  - DOMAIN-SUFFIX,workflowy.com,$app_name
+  - DOMAIN-SUFFIX,wp.com,$app_name
+  - DOMAIN-SUFFIX,wsj.com,$app_name
+  - DOMAIN-SUFFIX,wsj.net,$app_name
+  - DOMAIN-SUFFIX,xda-developers.com,$app_name
+  - DOMAIN-SUFFIX,xeeno.com,$app_name
+  - DOMAIN-SUFFIX,xiti.com,$app_name
+  - DOMAIN-SUFFIX,yahoo.com,$app_name
+  - DOMAIN-SUFFIX,yimg.com,$app_name
+  - DOMAIN-SUFFIX,ying.com,$app_name
+  - DOMAIN-SUFFIX,yoyo.org,$app_name
+  - DOMAIN-SUFFIX,ytimg.com,$app_name
 
   # Telegram
-  - DOMAIN-SUFFIX,telegra.ph,select
-  - DOMAIN-SUFFIX,telegram.org,select
+  - DOMAIN-SUFFIX,telegra.ph,$app_name
+  - DOMAIN-SUFFIX,telegram.org,$app_name
 
-  - IP-CIDR,91.108.4.0/22,select,no-resolve
-  - IP-CIDR,91.108.8.0/22,select,no-resolve
-  - IP-CIDR,91.108.12.0/22,select,no-resolve
-  - IP-CIDR,91.108.16.0/22,select,no-resolve
-  - IP-CIDR,91.108.56.0/22,select,no-resolve
-  - IP-CIDR,149.154.160.0/22,select,no-resolve
-  - IP-CIDR,149.154.164.0/22,select,no-resolve
-  - IP-CIDR,149.154.168.0/22,select,no-resolve
-  - IP-CIDR,149.154.172.0/22,select,no-resolve
+  - IP-CIDR,91.108.4.0/22,$app_name,no-resolve
+  - IP-CIDR,91.108.8.0/22,$app_name,no-resolve
+  - IP-CIDR,91.108.12.0/22,$app_name,no-resolve
+  - IP-CIDR,91.108.16.0/22,$app_name,no-resolve
+  - IP-CIDR,91.108.56.0/22,$app_name,no-resolve
+  - IP-CIDR,149.154.160.0/22,$app_name,no-resolve
+  - IP-CIDR,149.154.164.0/22,$app_name,no-resolve
+  - IP-CIDR,149.154.168.0/22,$app_name,no-resolve
+  - IP-CIDR,149.154.172.0/22,$app_name,no-resolve
 
   # LAN
   - DOMAIN-SUFFIX,local,DIRECT
@@ -491,4 +521,4 @@ Rule:
 
   # 最终规则
   - GEOIP,CN,DIRECT
-  - MATCH,select
+  - MATCH,$app_name

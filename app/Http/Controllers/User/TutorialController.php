@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Tutorial;
+use Illuminate\Support\Facades\DB;
 
 class TutorialController extends Controller
 {
@@ -51,6 +52,7 @@ class TutorialController extends Controller
         }
         $tutorial = Tutorial::select(['id', 'category_id', 'title'])
             ->where('show', 1)
+            ->orderBy('sort', 'ASC')
             ->get()
             ->groupBy('category_id');
         $user = User::find($request->session()->get('id'));
@@ -71,6 +73,9 @@ class TutorialController extends Controller
             array('-', '_', ''),
             base64_encode($response['data']['safe_area_var']['subscribe_url'])
         );
+        // end
+        // fuck support surge urlencode subscribe
+        $response['data']['safe_area_var']['ue_subscribe_url'] = urlencode($response['data']['safe_area_var']['subscribe_url']);
         // end
         return response($response);
     }

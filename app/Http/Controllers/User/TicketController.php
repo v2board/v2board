@@ -4,10 +4,12 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\TicketSave;
+use App\Http\Requests\User\TicketWithdraw;
+use App\Jobs\SendTelegramJob;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Ticket;
 use App\Models\TicketMessage;
-use App\Utils\Helper;
 use Illuminate\Support\Facades\DB;
 
 class TicketController extends Controller
@@ -75,6 +77,7 @@ class TicketController extends Controller
             abort(500, '工单创建失败');
         }
         DB::commit();
+        $this->sendNotify($ticket, $ticketMessage);
         return response([
             'data' => true
         ]);
@@ -112,6 +115,7 @@ class TicketController extends Controller
             abort(500, '工单回复失败');
         }
         DB::commit();
+        $this->sendNotify($ticket, $ticketMessage);
         return response([
             'data' => true
         ]);
@@ -143,5 +147,54 @@ class TicketController extends Controller
         return TicketMessage::where('ticket_id', $ticketId)
             ->orderBy('id', 'DESC')
             ->first();
+    }
+
+    public function withdraw(TicketWithdraw $request)
+    {
+        DB::beginTransaction();
+        $subject = '[提现申请]本工单由系统发出';
+        $ticket = Ticket::create([
+            'subject' => $subject,
+            'level' => 2,
+            'user_id' => $request->session()->get('id'),
+            'last_reply_user_id' => $request->session()->get('id')
+        ]);
+        if (!$ticket) {
+            DB::rollback();
+            abort(500, '工单创建失败');
+        }
+        $methodText = [
+            'alipay' => '支付宝',
+            'paypal' => '贝宝(Paypal)',
+            'usdt' => 'USDT',
+            'btc' => '比特币'
+        ];
+        $message = "提现方式：{$methodText[$request->input('withdraw_method')]}\r\n提现账号：{$request->input('withdraw_account')}\r\n";
+        $ticketMessage = TicketMessage::create([
+            'user_id' => $request->session()->get('id'),
+            'ticket_id' => $ticket->id,
+            'message' => $message
+        ]);
+        if (!$ticketMessage) {
+            DB::rollback();
+            abort(500, '工单创建失败');
+        }
+        DB::commit();
+        $this->sendNotify($ticket, $ticketMessage);
+        return response([
+            'data' => true
+        ]);
+    }
+
+    private function sendNotify(Ticket $ticket, TicketMessage $ticketMessage)
+    {
+        if (!config('v2board.telegram_bot_enable', 0)) return;
+        $users = User::where('is_admin', 1)
+            ->where('telegram_id', '!=', NULL)
+            ->get();
+        foreach ($users as $user) {
+            $text = "📮工单提醒 #{$ticket->id}\n———————————————\n主题：\n`{$ticket->subject}`\n内容：\n`{$ticketMessage->message}`";
+            SendTelegramJob::dispatch($user->telegram_id, $text);
+        }
     }
 }

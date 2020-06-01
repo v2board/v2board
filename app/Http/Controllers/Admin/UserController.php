@@ -47,13 +47,7 @@ class UserController extends Controller
             abort(500, '参数错误');
         }
         return response([
-            'data' => User::select([
-                'email',
-                'u',
-                'd',
-                'transfer_enable',
-                'expired_at'
-            ])->find($request->input('id'))
+            'data' => User::find($request->input('id'))
         ]);
     }
 
@@ -69,6 +63,7 @@ class UserController extends Controller
         }
         if (isset($params['password'])) {
             $params['password'] = password_hash($params['password'], PASSWORD_DEFAULT);
+            $params['password_algo'] = NULL;
         } else {
             unset($params['password']);
         }

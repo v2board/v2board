@@ -19,6 +19,7 @@ class UserRoute
             $router->post('/update', 'User\\UserController@update');
             $router->get ('/getSubscribe', 'User\\UserController@getSubscribe');
             $router->get ('/getStat', 'User\\UserController@getStat');
+            $router->post('/transfer', 'User\\UserController@transfer');
             // Order
             $router->post('/order/save', 'User\\OrderController@save');
             $router->post('/order/checkout', 'User\\OrderController@checkout');
@@ -44,11 +45,16 @@ class UserRoute
             $router->post('/ticket/close', 'User\\TicketController@close');
             $router->post('/ticket/save', 'User\\TicketController@save');
             $router->get ('/ticket/fetch', 'User\\TicketController@fetch');
+            $router->post('/ticket/withdraw', 'User\\TicketController@withdraw');
             // Server
             $router->get ('/server/fetch', 'User\\ServerController@fetch');
             $router->get ('/server/log/fetch', 'User\\ServerController@logFetch');
             // Coupon
             $router->post('/coupon/check', 'User\\CouponController@check');
+            // Telegram
+            $router->get ('/telegram/getBotInfo', 'User\\TelegramController@getBotInfo');
+            // Comm
+            $router->get ('/comm/config', 'User\\CommController@config');
         });
     }
 }
