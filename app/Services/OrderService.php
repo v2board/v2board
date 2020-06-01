@@ -119,14 +119,15 @@ class OrderService
             'month_price' => 1,
             'quarter_price' => 3,
             'half_year_price' => 6,
-            'year_price' => 12,
-            'onetime_price' => 0
+            'year_price' => 12
         ];
         $orderModel = Order::where('user_id', $user->id)
             ->where('cycle', '!=', 'reset_price')
             ->where('status', 3);
         $surplusAmount = 0;
         foreach ($orderModel->get() as $item) {
+            // 兼容历史余留问题
+            if ($item->cycle === 'onetime_price') continue;
             $surplusMonth = strtotime("+ {$strToMonth[$item->cycle]}month", $item->created_at->format('U'));
             if (!$surplusMonth) continue;
             $surplusMonth = ($surplusMonth - time()) / 2678400 / $strToMonth[$item->cycle];
