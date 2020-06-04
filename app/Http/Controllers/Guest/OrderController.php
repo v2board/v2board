@@ -80,11 +80,11 @@ class OrderController extends Controller
                 $source = $event->data->object;
                 if ($source->status === 'succeeded') {
                     $metaData = $source->metadata;
-                    $trade_no = $metaData->out_trade_no;
-                    if (!$trade_no) {
-                        abort(500, 'redis is not found trade no by stripe source id');
+                    $tradeNo = $metaData->out_trade_no;
+                    if (!$tradeNo) {
+                        abort(500, 'trade no is not found in metadata');
                     }
-                    if (!$this->handle($trade_no, $source->balance_transaction)) {
+                    if (!$this->handle($tradeNo, $source->balance_transaction)) {
                         abort(500, 'fail');
                     }
                     die('success');
