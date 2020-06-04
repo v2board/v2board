@@ -67,24 +67,24 @@ class OrderController extends Controller
         }
         switch ($event->type) {
             case 'source.chargeable':
-                $source = $event->data->object;
+                $object = $event->data->object;
                 \Stripe\Charge::create([
-                    'amount' => $source->amount,
-                    'currency' => $source->currency,
-                    'source' => $source->id,
-                    'metadata' => json_decode($source->metadata, true)
+                    'amount' => $object->amount,
+                    'currency' => $object->currency,
+                    'source' => $object->id,
+                    'metadata' => json_decode($object->metadata, true)
                 ]);
                 die('success');
                 break;
             case 'charge.succeeded':
-                $source = $event->data->object;
-                if ($source->status === 'succeeded') {
-                    $metaData = $source->metadata;
+                $object = $event->data->object;
+                if ($object->status === 'succeeded') {
+                    $metaData = $object->metadata ? $object->metadata : $object->source->metadata;
                     $tradeNo = $metaData->out_trade_no;
                     if (!$tradeNo) {
                         abort(500, 'trade no is not found in metadata');
                     }
-                    if (!$this->handle($tradeNo, $source->balance_transaction)) {
+                    if (!$this->handle($tradeNo, $object->balance_transaction)) {
                         abort(500, 'fail');
                     }
                     die('success');
