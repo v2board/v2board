@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Utils\CacheKey;
 use Illuminate\Console\Command;
 use App\Models\ServerLog;
+use App\Models\ServerStat;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
@@ -63,6 +64,7 @@ class V2boardCache extends Command
                 'online' => $serverLog->online
             ];
             Cache::put(CacheKey::get('SERVER_STAT', $serverLog->server_id), json_encode($data), 3600);
+            ServerStat::create($data);
         }
     }
 }
