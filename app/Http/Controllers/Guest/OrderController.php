@@ -72,7 +72,7 @@ class OrderController extends Controller
                     'amount' => $source->amount,
                     'currency' => $source->currency,
                     'source' => $source->id,
-                    'metadata' => (array)$source->metadata
+                    'metadata' => json_decode($source->metadata, true)
                 ]);
                 die('success');
                 break;
