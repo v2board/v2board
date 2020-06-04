@@ -178,10 +178,12 @@ CREATE TABLE `v2_server_stat` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `server_id` int(11) NOT NULL,
   `u` varchar(255) NOT NULL,
-  `d` varchar(25) NOT NULL,
+  `d` varchar(255) NOT NULL,
+  `online` int(11) NOT NULL,
   `created_at` int(11) NOT NULL,
   `updated_at` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `created_at` (`created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
@@ -261,4 +263,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2020-05-12 12:31:04
+-- 2020-06-04 15:23:25

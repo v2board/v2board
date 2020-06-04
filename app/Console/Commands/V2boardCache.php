@@ -2,13 +2,12 @@
 
 namespace App\Console\Commands;
 
+use App\Utils\CacheKey;
 use Illuminate\Console\Command;
-use App\Models\User;
-use App\Models\Order;
-use App\Models\Server;
 use App\Models\ServerLog;
-use App\Utils\Helper;
+use App\Models\ServerStat;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 class V2boardCache extends Command
 {
@@ -43,5 +42,29 @@ class V2boardCache extends Command
      */
     public function handle()
     {
+        $this->serverStat();
+    }
+
+    private function serverStat()
+    {
+        $serverLogs = ServerLog::select(
+            'server_id',
+            DB::raw("sum(u) as u"),
+            DB::raw("sum(d) as d"),
+            DB::raw("count(*) as online")
+        )
+            ->where('updated_at', '>=', time() - 3600)
+            ->groupBy('server_id')
+            ->get();
+        foreach ($serverLogs as $serverLog) {
+            $data = [
+                'server_id' => $serverLog->server_id,
+                'u' => $serverLog->u,
+                'd' => $serverLog->d,
+                'online' => $serverLog->online
+            ];
+            Cache::put(CacheKey::get('SERVER_STAT', $serverLog->server_id), json_encode($data), 3600);
+            ServerStat::create($data);
+        }
     }
 }

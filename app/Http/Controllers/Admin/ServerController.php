@@ -6,6 +6,7 @@ use App\Http\Requests\Admin\ServerSave;
 use App\Http\Requests\Admin\ServerSort;
 use App\Http\Requests\Admin\ServerUpdate;
 use App\Services\ServerService;
+use App\Utils\CacheKey;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\ServerGroup;
@@ -25,6 +26,14 @@ class ServerController extends Controller
                 $server[$i]['tags'] = json_decode($server[$i]['tags']);
             }
             $server[$i]['group_id'] = json_decode($server[$i]['group_id']);
+            $serverStat = Cache::get(CacheKey::get('SERVER_STAT', $server[$i]['id']));
+            dd($serverStat);
+            if ($serverStat) {
+                $serverStat = json_decode($serverStat, true);
+                $server[$i]['u'] = $serverStat['u'];
+                $server[$i]['d'] = $serverStat['d'];
+                $server[$i]['online'] = $serverStat['online'];
+            }
             if ($server[$i]['parent_id']) {
                 $server[$i]['last_check_at'] = Cache::get('server_last_check_at_' . $server[$i]['parent_id']);
             } else {

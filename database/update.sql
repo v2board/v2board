@@ -256,3 +256,9 @@ ADD INDEX log_at (`log_at`);
 
 ALTER TABLE `v2_user`
 ADD `telegram_id` bigint NULL AFTER `invite_user_id`;
+
+ALTER TABLE `v2_server_stat`
+ADD `online` int(11) NOT NULL AFTER `d`;
+
+ALTER TABLE `v2_server_stat`
+ADD INDEX `created_at` (`created_at`);
