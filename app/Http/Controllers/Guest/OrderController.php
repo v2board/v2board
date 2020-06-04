@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Guest;
 
+use App\Services\OrderService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
@@ -67,21 +68,25 @@ class OrderController extends Controller
         switch ($event->type) {
             case 'source.chargeable':
                 $source = $event->data->object;
-                $charge = \Stripe\Charge::create([
+                \Stripe\Charge::create([
                     'amount' => $source['amount'],
                     'currency' => $source['currency'],
                     'source' => $source['id'],
-                    'description' => config('v2board.app_name', 'V2Board') . $source['metadata']['invoice_id'],
+                    'metadata' => $source->metadata
                 ]);
-                if ($charge['status'] == 'succeeded') {
-                    $trade_no = Cache::get($source['id']);
+                die('success');
+                break;
+            case 'source.succeeded':
+                $source = $event->data->object;
+                if ($source->status === 'succeeded') {
+                    $metaData = $source->metadata;
+                    $trade_no = $metaData->out_trade_no;
                     if (!$trade_no) {
                         abort(500, 'redis is not found trade no by stripe source id');
                     }
-                    if (!$this->handle($trade_no, $source['id'])) {
+                    if (!$this->handle($trade_no, $source->balance_transaction)) {
                         abort(500, 'fail');
                     }
-                    Cache::forget($source['id']);
                     die('success');
                 }
                 break;
@@ -143,11 +148,7 @@ class OrderController extends Controller
         if (!$order) {
             abort(500, 'order is not found');
         }
-        if ($order->status !== 0) {
-            return true;
-        }
-        $order->status = 1;
-        $order->callback_no = $callbackNo;
-        return $order->save();
+        $orderService = new OrderService($order);
+        return $orderService->success($callbackNo);
     }
 }

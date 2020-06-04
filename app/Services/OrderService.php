@@ -141,4 +141,15 @@ class OrderService
         $order->surplus_amount = $surplusAmount > 0 ? $surplusAmount : 0;
         $order->surplus_order_ids = json_encode(array_map(function ($v) { return $v['id'];}, $orderModel->get()->toArray()));
     }
+
+    public function success(string $callbackNo)
+    {
+        $order = $this->order;
+        if ($order->status !== 0) {
+            return true;
+        }
+        $order->status = 1;
+        $order->callback_no = $callbackNo;
+        return $order->save();
+    }
 }

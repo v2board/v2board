@@ -9,12 +9,10 @@ use App\Services\OrderService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use App\Models\Order;
 use App\Models\Plan;
 use App\Models\User;
-use App\Models\Coupon;
 use App\Utils\Helper;
 use Omnipay\Omnipay;
 use Stripe\Stripe;
@@ -173,7 +171,7 @@ class OrderController extends Controller
             ]);
         }
         switch ($method) {
-            // return type => 0: QRCode / 1: URL
+            // return type => 0: QRCode / 1: URL / 2: No action
             case 0:
                 // alipayF2F
                 if (!(int)config('v2board.alipay_enable')) {
@@ -217,6 +215,14 @@ class OrderController extends Controller
                 return response([
                     'type' => 1,
                     'data' => $this->payTaro($order)
+                ]);
+            case 6:
+                if (!(int)config('v2board.stripe_card_enable')) {
+                    abort(500, '支付方式不可用');
+                }
+                return response([
+                    'type' => 2,
+                    'data' => $this->stripeCard($order, $request->input('token'))
                 ]);
             default:
                 abort(500, '支付方式不存在');
@@ -277,6 +283,14 @@ class OrderController extends Controller
             $obj->name = config('v2board.paytaro_name', '聚合支付');
             $obj->method = 5;
             $obj->icon = 'wallet';
+            array_push($data, $obj);
+        }
+
+        if ((int)config('v2board.stripe_card_enable')) {
+            $obj = new \StdClass();
+            $obj->name = '信用卡';
+            $obj->method = 6;
+            $obj->icon = 'card';
             array_push($data, $obj);
         }
 
@@ -347,7 +361,7 @@ class OrderController extends Controller
             'statement_descriptor' => $order->trade_no,
             'metadata' => [
                 'user_id' => $order->user_id,
-                'invoice_id' => $order->trade_no,
+                'out_trade_no' => $order->trade_no,
                 'identifier' => ''
             ],
             'redirect' => [
@@ -356,10 +370,6 @@ class OrderController extends Controller
         ]);
         if (!$source['redirect']['url']) {
             abort(500, '支付网关请求失败');
-        }
-
-        if (!Cache::put($source['id'], $order->trade_no, 3600)) {
-            abort(500, '订单创建失败');
         }
         return $source['redirect']['url'];
     }
@@ -378,7 +388,7 @@ class OrderController extends Controller
             'type' => 'wechat',
             'metadata' => [
                 'user_id' => $order->user_id,
-                'invoice_id' => $order->trade_no,
+                'out_trade_no' => $order->trade_no,
                 'identifier' => ''
             ],
             'redirect' => [
@@ -388,10 +398,36 @@ class OrderController extends Controller
         if (!$source['wechat']['qr_code_url']) {
             abort(500, '支付网关请求失败');
         }
-        if (!Cache::put($source['id'], $order->trade_no, 3600)) {
-            abort(500, '订单创建失败');
-        }
         return $source['wechat']['qr_code_url'];
+    }
+
+    private function stripeCard($order, string $token)
+    {
+        $currency = config('v2board.stripe_currency', 'hkd');
+        $exchange = Helper::exchange('CNY', strtoupper($currency));
+        if (!$exchange) {
+            abort(500, '货币转换超时，请稍后再试');
+        }
+        Stripe::setApiKey(config('v2board.stripe_sk_live'));
+        try {
+            $charge = \Stripe\Charge::create([
+                'amount' => floor($order->total_amount * $exchange),
+                'currency' => $currency,
+                'source' => $token,
+                'metadata' => [
+                    'user_id' => $order->user_id,
+                    'out_trade_no' => $order->trade_no,
+                    'identifier' => ''
+                ]
+            ]);
+        } catch (\Exception $e) {
+            abort(500, '遇到了点问题，请刷新页面稍后再试');
+        }
+        info($charge);
+        if (!$charge->paid) {
+            abort(500, '扣款失败，请检查信用卡信息');
+        }
+        return $charge->paid;
     }
 
     private function bitpayX($order)

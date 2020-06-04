@@ -76,6 +76,7 @@ class ConfigController extends Controller
                     // stripe
                     'stripe_alipay_enable' => (int)config('v2board.stripe_alipay_enable', 0),
                     'stripe_wepay_enable' => (int)config('v2board.stripe_wepay_enable', 0),
+                    'stripe_card_enable' => (int)config('v2board.stripe_card_enable', 0),
                     'stripe_sk_live' => config('v2board.stripe_sk_live'),
                     'stripe_pk_live' => config('v2board.stripe_pk_live'),
                     'stripe_webhook_key' => config('v2board.stripe_webhook_key'),
