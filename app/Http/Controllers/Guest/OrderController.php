@@ -76,7 +76,7 @@ class OrderController extends Controller
                 ]);
                 die('success');
                 break;
-            case 'source.succeeded':
+            case 'charge.succeeded':
                 $source = $event->data->object;
                 if ($source->status === 'succeeded') {
                     $metaData = $source->metadata;
