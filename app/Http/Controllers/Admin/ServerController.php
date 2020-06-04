@@ -27,7 +27,6 @@ class ServerController extends Controller
             }
             $server[$i]['group_id'] = json_decode($server[$i]['group_id']);
             $serverStat = Cache::get(CacheKey::get('SERVER_STAT', $server[$i]['id']));
-            dd($serverStat);
             if ($serverStat) {
                 $serverStat = json_decode($serverStat, true);
                 $server[$i]['u'] = $serverStat['u'];
