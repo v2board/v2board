@@ -69,10 +69,10 @@ class OrderController extends Controller
             case 'source.chargeable':
                 $source = $event->data->object;
                 \Stripe\Charge::create([
-                    'amount' => $source['amount'],
-                    'currency' => $source['currency'],
-                    'source' => $source['id'],
-                    'metadata' => $source->metadata
+                    'amount' => $source->amount,
+                    'currency' => $source->currency,
+                    'source' => $source->id,
+                    'metadata' => (array)$source->metadata
                 ]);
                 die('success');
                 break;
