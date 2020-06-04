@@ -79,7 +79,7 @@ class OrderController extends Controller
             case 'charge.succeeded':
                 $object = $event->data->object;
                 if ($object->status === 'succeeded') {
-                    $metaData = $object->metadata ? $object->metadata : $object->source->metadata;
+                    $metaData = isset($object->metadata->out_trade_no) ? $object->metadata : $object->source->metadata;
                     $tradeNo = $metaData->out_trade_no;
                     if (!$tradeNo) {
                         abort(500, 'trade no is not found in metadata');
