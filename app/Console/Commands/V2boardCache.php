@@ -42,7 +42,6 @@ class V2boardCache extends Command
      */
     public function handle()
     {
-        $this->cacheServerStat();
     }
 
     private function cacheServerStat()
@@ -63,8 +62,7 @@ class V2boardCache extends Command
                 'd' => $serverLog->d,
                 'online' => $serverLog->online
             ];
-            Cache::put(CacheKey::get('SERVER_STAT', $serverLog->server_id), json_encode($data), 3600);
-            ServerStat::create($data);
+//            ServerStat::create($data);
         }
     }
 }

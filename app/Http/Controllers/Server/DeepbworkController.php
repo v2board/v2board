@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Server;
 
 use App\Services\ServerService;
 use App\Services\UserService;
+use App\Utils\CacheKey;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\User;
@@ -36,7 +37,7 @@ class DeepbworkController extends Controller
         if (!$server) {
             abort(500, 'fail');
         }
-        Cache::put('server_last_check_at_' . $server->id, time());
+        Cache::put(CacheKey::get('SERVER_LAST_CHECK_AT', $server->id), time(), 3600);
         $serverService = new ServerService();
         $users = $serverService->getAvailableUsers(json_decode($server->group_id));
         $result = [];
@@ -71,6 +72,7 @@ class DeepbworkController extends Controller
         }
         $data = file_get_contents('php://input');
         $data = json_decode($data, true);
+        Cache::put(CacheKey::get('SERVER_ONLINE_USER', $server->id), count($data), 3600);
         $serverService = new ServerService();
         $userService = new UserService();
         foreach ($data as $item) {

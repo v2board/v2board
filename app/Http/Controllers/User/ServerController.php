@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Services\UserService;
+use App\Utils\CacheKey;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use App\Models\Server;
@@ -33,9 +34,9 @@ class ServerController extends Controller
         for ($i = 0; $i < count($server); $i++) {
             $server[$i]['link'] = Helper::buildVmessLink($server[$i], $user);
             if ($server[$i]['parent_id']) {
-                $server[$i]['last_check_at'] = Cache::get('server_last_check_at_' . $server[$i]['parent_id']);
+                $server[$i]['last_check_at'] = Cache::get(CacheKey::get('SERVER_LAST_CHECK_AT', $server[$i]['parent_id']));
             } else {
-                $server[$i]['last_check_at'] = Cache::get('server_last_check_at_' . $server[$i]['id']);
+                $server[$i]['last_check_at'] = Cache::get(CacheKey::get('SERVER_LAST_CHECK_AT', $server[$i]['id']));
             }
         }
         return response([
