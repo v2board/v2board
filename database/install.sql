@@ -179,12 +179,27 @@ CREATE TABLE `v2_server_stat` (
   `server_id` int(11) NOT NULL,
   `u` varchar(255) NOT NULL,
   `d` varchar(255) NOT NULL,
-  `online` int(11) NOT NULL,
   `created_at` int(11) NOT NULL,
   `updated_at` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `created_at` (`created_at`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+DROP TABLE IF EXISTS `v2_server_trojan`;
+CREATE TABLE `v2_server_trojan` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `group_id` varchar(255) NOT NULL,
+  `tags` varchar(255) DEFAULT NULL,
+  `name` varchar(255) NOT NULL,
+  `host` varchar(255) NOT NULL,
+  `port` int(11) NOT NULL,
+  `show` tinyint(1) NOT NULL DEFAULT '0',
+  `sort` int(11) DEFAULT NULL,
+  `created_at` int(11) NOT NULL,
+  `updated_at` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='trojan伺服器表';
 
 
 DROP TABLE IF EXISTS `v2_ticket`;
@@ -243,11 +258,12 @@ CREATE TABLE `v2_user` (
   `u` bigint(20) NOT NULL DEFAULT '0',
   `d` bigint(20) NOT NULL DEFAULT '0',
   `transfer_enable` bigint(20) NOT NULL DEFAULT '0',
+  `enable` tinyint(1) NOT NULL DEFAULT '1',
   `banned` tinyint(1) NOT NULL DEFAULT '0',
   `is_admin` tinyint(1) NOT NULL DEFAULT '0',
   `last_login_at` int(11) DEFAULT NULL,
   `last_login_ip` int(11) DEFAULT NULL,
-  `v2ray_uuid` varchar(36) NOT NULL,
+  `uuid` varchar(36) NOT NULL,
   `v2ray_alter_id` tinyint(4) NOT NULL DEFAULT '2',
   `v2ray_level` tinyint(4) NOT NULL DEFAULT '0',
   `group_id` int(11) DEFAULT NULL,
@@ -263,4 +279,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2020-06-04 15:23:25
+-- 2020-06-07 17:06:55

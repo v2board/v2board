@@ -63,7 +63,7 @@ class Helper
             "ps" => $server->name,
             "add" => $server->host,
             "port" => $server->port,
-            "id" => $user->v2ray_uuid,
+            "id" => $user->uuid,
             "aid" => "2",
             "net" => $server->network,
             "type" => "none",

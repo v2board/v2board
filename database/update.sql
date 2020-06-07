@@ -262,3 +262,23 @@ ADD `online` int(11) NOT NULL AFTER `d`;
 
 ALTER TABLE `v2_server_stat`
 ADD INDEX `created_at` (`created_at`);
+
+CREATE TABLE `v2_server_trojan` (
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `group_id` varchar(255) NOT NULL,
+  `tags` varchar(255) NULL,
+  `name` varchar(255) NOT NULL,
+  `host` varchar(255) NOT NULL,
+  `port` int(11) NOT NULL,
+  `show` tinyint(1) NOT NULL DEFAULT '0',
+  `sort` int(11) NULL,
+  `created_at` int(11) NOT NULL,
+  `updated_at` int(11) NOT NULL
+) COMMENT='trojan伺服器表' COLLATE 'utf8mb4_general_ci';
+
+ALTER TABLE `v2_server_stat`
+CHANGE `d` `d` varchar(255) COLLATE 'utf8_general_ci' NOT NULL AFTER `u`,
+DROP `online`;
+
+ALTER TABLE `v2_user`
+CHANGE `v2ray_uuid` `uuid` varchar(36) COLLATE 'utf8_general_ci' NOT NULL AFTER `last_login_ip`;

@@ -27,7 +27,7 @@ class ServerService
                 'u',
                 'd',
                 'transfer_enable',
-                'v2ray_uuid',
+                'uuid',
                 'v2ray_alter_id',
                 'v2ray_level'
             ])

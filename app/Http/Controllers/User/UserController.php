@@ -107,7 +107,7 @@ class UserController extends Controller
     public function resetSecurity(Request $request)
     {
         $user = User::find($request->session()->get('id'));
-        $user->v2ray_uuid = Helper::guid(true);
+        $user->uuid = Helper::guid(true);
         $user->token = Helper::guid();
         if (!$user->save()) {
             abort(500, '重置失败');

@@ -58,7 +58,7 @@ class AuthController extends Controller
         $user = new User();
         $user->email = $email;
         $user->password = password_hash($password, PASSWORD_DEFAULT);
-        $user->v2ray_uuid = Helper::guid(true);
+        $user->uuid = Helper::guid(true);
         $user->token = Helper::guid();
         if ($request->input('invite_code')) {
             $inviteCode = InviteCode::where('code', $request->input('invite_code'))

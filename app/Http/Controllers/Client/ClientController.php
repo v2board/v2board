@@ -52,7 +52,7 @@ class ClientController extends Controller
     {
         $uri = '';
         foreach ($server as $item) {
-            $uri .= "vmess=" . $item->host . ":" . $item->port . ", method=none, password=" . $user->v2ray_uuid . ", fast-open=false, udp-relay=false, tag=" . $item->name;
+            $uri .= "vmess=" . $item->host . ":" . $item->port . ", method=none, password=" . $user->uuid . ", fast-open=false, udp-relay=false, tag=" . $item->name;
             if ($item->tls) {
                 $tlsSettings = json_decode($item->tlsSettings);
                 if ($item->network === 'tcp') $uri .= ', obfs=over-tls';
@@ -83,7 +83,7 @@ class ClientController extends Controller
         header('subscription-userinfo: upload=' . $user->u . '; download=' . $user->d . ';total=' . $user->transfer_enable);
         foreach ($server as $item) {
             $str = '';
-            $str .= $item->name . '= vmess, ' . $item->host . ', ' . $item->port . ', chacha20-ietf-poly1305, "' . $user->v2ray_uuid . '", over-tls=' . ($item->tls ? "true" : "false") . ', certificate=0, group=' . config('v2board.app_name', 'V2Board');
+            $str .= $item->name . '= vmess, ' . $item->host . ', ' . $item->port . ', chacha20-ietf-poly1305, "' . $user->uuid . '", over-tls=' . ($item->tls ? "true" : "false") . ', certificate=0, group=' . config('v2board.app_name', 'V2Board');
             if ($item->network === 'ws') {
                 $str .= ', obfs=ws';
                 if ($item->networkSettings) {
@@ -112,7 +112,7 @@ class ClientController extends Controller
         $proxyGroup = '';
         foreach ($server as $item) {
             // [Proxy]
-            $proxies .= $item->name . ' = vmess, ' . $item->host . ', ' . $item->port . ', username=' . $user->v2ray_uuid . ', tfo=true';
+            $proxies .= $item->name . ' = vmess, ' . $item->host . ', ' . $item->port . ', username=' . $user->uuid . ', tfo=true';
             if ($item->tls) {
                 $tlsSettings = json_decode($item->tlsSettings);
                 $proxies .= ', tls=' . ($item->tls ? "true" : "false");
@@ -165,7 +165,7 @@ class ClientController extends Controller
         $proxyGroup = '';
         foreach ($server as $item) {
             // [Proxy]
-            $proxies .= $item->name . ' = vmess, ' . $item->host . ', ' . $item->port . ', username=' . $user->v2ray_uuid;
+            $proxies .= $item->name . ' = vmess, ' . $item->host . ', ' . $item->port . ', username=' . $user->uuid;
             if ($item->tls) {
                 $tlsSettings = json_decode($item->tlsSettings);
                 $proxies .= ', tls=' . ($item->tls ? "true" : "false");
@@ -229,7 +229,7 @@ class ClientController extends Controller
             $array['type'] = 'vmess';
             $array['server'] = $item->host;
             $array['port'] = $item->port;
-            $array['uuid'] = $user->v2ray_uuid;
+            $array['uuid'] = $user->uuid;
             $array['alterId'] = $user->v2ray_alter_id;
             $array['cipher'] = 'auto';
             if ($item->tls) {
