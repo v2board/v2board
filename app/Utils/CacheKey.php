@@ -8,7 +8,9 @@ class CacheKey
         'EMAIL_VERIFY_CODE' => '邮箱验证吗',
         'LAST_SEND_EMAIL_VERIFY_TIMESTAMP' => '最后一次发送邮箱验证码时间',
         'SERVER_ONLINE_USER' => '节点在线用户',
-        'SERVER_LAST_CHECK_AT' => '节点最后检查时间'
+        'SERVER_LAST_CHECK_AT' => '节点最后检查时间',
+        'SERVER_TROJAN_ONLINE_USER' => 'trojan节点在线用户',
+        'SERVER_TROJAN_LAST_CHECK_AT' => 'trojan节点最后检查时间'
     ];
 
     public static function get(string $key, $uniqueValue)
