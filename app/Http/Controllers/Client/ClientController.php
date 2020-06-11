@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Client;
 use App\Http\Controllers\Controller;
 use App\Services\ServerService;
 use App\Utils\Clash;
+use App\Utils\QuantumultX;
 use Illuminate\Http\Request;
 use App\Models\Server;
 use App\Utils\Helper;
@@ -24,10 +25,7 @@ class ClientController extends Controller
         }
         if (isset($_SERVER['HTTP_USER_AGENT'])) {
             if (strpos($_SERVER['HTTP_USER_AGENT'], 'Quantumult%20X') !== false) {
-                die($this->quantumultX($user, $servers['vmess']));
-            }
-            if (strpos($_SERVER['HTTP_USER_AGENT'], 'Quantumult') !== false) {
-                die($this->quantumult($user, $servers['vmess']));
+                die($this->quantumultX($user, $servers['vmess'], $servers['trojan']));
             }
             if (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'clash') !== false) {
                 die($this->clash($user, $servers['vmess'], $servers['trojan']));
@@ -39,68 +37,34 @@ class ClientController extends Controller
                 die($this->surge($user, $servers['vmess']));
             }
         }
-        die($this->origin($user, $servers['vmess']));
+        die($this->origin($user, $servers['vmess'], $servers['trojan']));
     }
 
-    private function quantumultX($user, $vmess)
+    private function quantumultX($user, $vmess = [], $trojan = [])
     {
         $uri = '';
         foreach ($vmess as $item) {
-            $uri .= "vmess=" . $item->host . ":" . $item->port . ", method=none, password=" . $user->uuid . ", fast-open=false, udp-relay=false, tag=" . $item->name;
-            if ($item->tls) {
-                $tlsSettings = json_decode($item->tlsSettings);
-                if ($item->network === 'tcp') $uri .= ', obfs=over-tls';
-                if (isset($tlsSettings->allowInsecure)) {
-                    // Default: tls-verification=true
-                    $uri .= ', tls-verification=' . ($tlsSettings->allowInsecure ? "false" : "true");
-                }
-                if (isset($tlsSettings->serverName)) {
-                    $uri .= ', obfs-host=' . $tlsSettings->serverName;
-                }
-            }
-            if ($item->network === 'ws') {
-                $uri .= ', obfs=' . ($item->tls ? 'wss' : 'ws');
-                if ($item->networkSettings) {
-                    $wsSettings = json_decode($item->networkSettings);
-                    if (isset($wsSettings->path)) $uri .= ', obfs-uri=' . $wsSettings->path;
-                    if (isset($wsSettings->headers->Host)) $uri .= ', obfs-host=' . $wsSettings->headers->Host;
-                }
-            }
-            $uri .= "\r\n";
+            $uri .= QuantumultX::buildVmess($user->uuid, $item);
+        }
+        foreach ($trojan as $item) {
+            $uri .= QuantumultX::buildTrojan($user->uuid, $item);
         }
         return base64_encode($uri);
     }
 
-    private function quantumult($user, $vmess)
-    {
-        $uri = '';
-        header('subscription-userinfo: upload=' . $user->u . '; download=' . $user->d . ';total=' . $user->transfer_enable);
-        foreach ($vmess as $item) {
-            $str = '';
-            $str .= $item->name . '= vmess, ' . $item->host . ', ' . $item->port . ', chacha20-ietf-poly1305, "' . $user->uuid . '", over-tls=' . ($item->tls ? "true" : "false") . ', certificate=0, group=' . config('v2board.app_name', 'V2Board');
-            if ($item->network === 'ws') {
-                $str .= ', obfs=ws';
-                if ($item->networkSettings) {
-                    $wsSettings = json_decode($item->networkSettings);
-                    if (isset($wsSettings->path)) $str .= ', obfs-path="' . $wsSettings->path . '"';
-                    if (isset($wsSettings->headers->Host)) $str .= ', obfs-header="Host:' . $wsSettings->headers->Host . '"';
-                }
-            }
-            $uri .= "vmess://" . base64_encode($str) . "\r\n";
-        }
-        return base64_encode($uri);
-    }
-
-    private function origin($user, $vmess)
+    private function origin($user, $vmess = [], $trojan = [])
     {
         $uri = '';
         foreach ($vmess as $item) {
             $uri .= Helper::buildVmessLink($item, $user);
         }
+        foreach ($trojan as $item) {
+            $uri .= Helper::buildTrojanLink($item, $user);
+        }
         return base64_encode($uri);
     }
 
-    private function surge($user, $vmess)
+    private function surge($user, $vmess = [])
     {
         $proxies = '';
         $proxyGroup = '';
@@ -153,7 +117,7 @@ class ClientController extends Controller
         return $config;
     }
 
-    private function surfboard($user, $vmess)
+    private function surfboard($user, $vmess = [])
     {
         $proxies = '';
         $proxyGroup = '';

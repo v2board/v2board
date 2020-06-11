@@ -56,6 +56,13 @@ class Helper
         return $str;
     }
 
+    public static function buildTrojanLink(Server $server, User $user)
+    {
+        $uri = "trojan://{$user->uuid}@{$server->host}:{$server->port}";
+        $uri .= "\r\n";
+        return $uri;
+    }
+
     public static function buildVmessLink(Server $server, User $user)
     {
         $config = [
