@@ -133,6 +133,7 @@ class OrderService
             $orderSurplusMonth = $orderSurplusMonth + $strToMonth[$item->cycle];
             $orderSurplusAmount = $orderSurplusAmount + ($item['total_amount'] + $item['balance_amount']);
         }
+        if (!$orderSurplusMonth || !$orderSurplusAmount) return;
         $monthUnitPrice = $orderSurplusAmount / $orderSurplusMonth;
         // 如果用户过期月大于订单过期月
         if ($userSurplusMonth > $orderSurplusMonth) {

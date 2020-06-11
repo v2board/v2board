@@ -3,6 +3,7 @@
 namespace App\Utils;
 
 use App\Models\Server;
+use App\Models\ServerTrojan;
 use App\Models\User;
 
 class Helper
@@ -56,7 +57,7 @@ class Helper
         return $str;
     }
 
-    public static function buildTrojanLink(Server $server, User $user)
+    public static function buildTrojanLink(ServerTrojan $server, User $user)
     {
         $uri = "trojan://{$user->uuid}@{$server->host}:{$server->port}";
         $uri .= "\r\n";
