@@ -13,8 +13,8 @@ use Illuminate\Support\Facades\Cache;
 class ServerService
 {
 
-    CONST SERVER_CONFIG = '{"api":{"services":["HandlerService","StatsService"],"tag":"api"},"dns":{},"stats":{},"inbound":{"port":443,"protocol":"vmess","settings":{"clients":[]},"sniffing":{"enabled":true,"destOverride":["http","tls"]},"streamSettings":{"network":"tcp"},"tag":"proxy"},"inboundDetour":[{"listen":"0.0.0.0","port":23333,"protocol":"dokodemo-door","settings":{"address":"0.0.0.0"},"tag":"api"}],"log":{"loglevel":"debug","access":"access.log","error":"error.log"},"outbound":{"protocol":"freedom","settings":{}},"outboundDetour":[{"protocol":"blackhole","settings":{},"tag":"block"}],"routing":{"rules":[{"inboundTag":"api","outboundTag":"api","type":"field"}]},"policy":{"levels":{"0":{"handshake":4,"connIdle":300,"uplinkOnly":5,"downlinkOnly":30,"statsUserUplink":true,"statsUserDownlink":true}}}}';
-
+    CONST V2RAY_CONFIG = '{"api":{"services":["HandlerService","StatsService"],"tag":"api"},"dns":{},"stats":{},"inbound":{"port":443,"protocol":"vmess","settings":{"clients":[]},"sniffing":{"enabled":true,"destOverride":["http","tls"]},"streamSettings":{"network":"tcp"},"tag":"proxy"},"inboundDetour":[{"listen":"0.0.0.0","port":23333,"protocol":"dokodemo-door","settings":{"address":"0.0.0.0"},"tag":"api"}],"log":{"loglevel":"debug","access":"access.log","error":"error.log"},"outbound":{"protocol":"freedom","settings":{}},"outboundDetour":[{"protocol":"blackhole","settings":{},"tag":"block"}],"routing":{"rules":[{"inboundTag":"api","outboundTag":"api","type":"field"}]},"policy":{"levels":{"0":{"handshake":4,"connIdle":300,"uplinkOnly":5,"downlinkOnly":30,"statsUserUplink":true,"statsUserDownlink":true}}}}';
+    CONST TROJAN_CONFIG = '{"run_type":"server","local_addr":"0.0.0.0","local_port":443,"remote_addr":"www.taobao.com","remote_port":80,"password":[],"ssl":{"cert":"server.crt","key":"server.key","sni":"domain.com","fallback_port":1234},"api":{"enabled":true,"api_addr":"127.0.0.1","api_port":10000}}';
     public function getVmess(User $user, $all = false):array
     {
         $vmess = [];
@@ -97,7 +97,7 @@ class ServerService
         if (!$server) {
             abort(500, '节点不存在');
         }
-        $json = json_decode(self::SERVER_CONFIG);
+        $json = json_decode(self::V2RAY_CONFIG);
         $json->log->loglevel = config('v2board.server_log_level', 'none');
         $json->inboundDetour[0]->port = (int)$localPort;
         $json->inbound->port = (int)$server->server_port;
@@ -107,6 +107,19 @@ class ServerService
         $this->setRule($server, $json);
         $this->setTls($server, $json);
 
+        return $json;
+    }
+
+    public function getTrojanConfig(int $nodeId, int $localPort)
+    {
+        $server = ServerTrojan::find($nodeId);
+        if (!$server) {
+            abort(500, '节点不存在');
+        }
+
+        $json = json_decode(self::TROJAN_CONFIG);
+        $json->ssl->sni = $server->host;
+        $json->api->api_port = $localPort;
         return $json;
     }
 
