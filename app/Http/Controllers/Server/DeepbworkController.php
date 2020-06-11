@@ -90,7 +90,8 @@ class DeepbworkController extends Controller
                 $request->input('node_id'),
                 $item['u'],
                 $item['d'],
-                $server->rate
+                $server->rate,
+                'vmess'
             );
         }
 

@@ -4,7 +4,7 @@ namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ServerSort extends FormRequest
+class ServerTrojanSort extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.

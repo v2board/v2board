@@ -165,6 +165,7 @@ CREATE TABLE `v2_server_log` (
   `u` varchar(255) NOT NULL,
   `d` varchar(255) NOT NULL,
   `rate` decimal(10,2) NOT NULL,
+  `method` varchar(255) NOT NULL,
   `log_at` int(11) NOT NULL,
   `created_at` int(11) NOT NULL,
   `updated_at` int(11) NOT NULL,
@@ -192,6 +193,7 @@ CREATE TABLE `v2_server_trojan` (
   `group_id` varchar(255) NOT NULL,
   `tags` varchar(255) DEFAULT NULL,
   `name` varchar(255) NOT NULL,
+  `rate` varchar(11) NOT NULL,
   `host` varchar(255) NOT NULL,
   `port` int(11) NOT NULL,
   `show` tinyint(1) NOT NULL DEFAULT '0',
@@ -279,4 +281,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2020-06-07 17:06:55
+-- 2020-06-11 12:38:33

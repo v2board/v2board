@@ -206,9 +206,9 @@ class ClientController extends Controller
             $subsURL .= $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
         }
 
-        $config = str_replace('$subs_link',$subsURL,$config);
-        $config = str_replace('$proxies',$proxies,$config);
-        $config = str_replace('$proxy_group',rtrim($proxyGroup, ', '),$config);
+        $config = str_replace('$subs_link', $subsURL, $config);
+        $config = str_replace('$proxies', $proxies, $config);
+        $config = str_replace('$proxy_group', rtrim($proxyGroup, ', '), $config);
         return $config;
     }
 

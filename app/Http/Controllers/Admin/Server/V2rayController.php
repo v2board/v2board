@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Admin\Server;
 
 use App\Http\Requests\Admin\ServerV2raySave;
 use App\Http\Requests\Admin\ServerV2raySort;
@@ -9,14 +9,11 @@ use App\Services\ServerService;
 use App\Utils\CacheKey;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\ServerGroup;
 use App\Models\Server;
-use App\Models\Plan;
-use App\Models\User;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
-class ServerController extends Controller
+class V2rayController extends Controller
 {
     public function fetch(Request $request)
     {
@@ -91,64 +88,6 @@ class ServerController extends Controller
 
         return response([
             'data' => true
-        ]);
-    }
-
-    public function groupFetch(Request $request)
-    {
-        if ($request->input('group_id')) {
-            return response([
-                'data' => [ServerGroup::find($request->input('group_id'))]
-            ]);
-        }
-        return response([
-            'data' => ServerGroup::get()
-        ]);
-    }
-
-    public function groupSave(Request $request)
-    {
-        if (empty($request->input('name'))) {
-            abort(500, '组名不能为空');
-        }
-
-        if ($request->input('id')) {
-            $serverGroup = ServerGroup::find($request->input('id'));
-        } else {
-            $serverGroup = new ServerGroup();
-        }
-
-        $serverGroup->name = $request->input('name');
-        return response([
-            'data' => $serverGroup->save()
-        ]);
-    }
-
-    public function groupDrop(Request $request)
-    {
-        if ($request->input('id')) {
-            $serverGroup = ServerGroup::find($request->input('id'));
-            if (!$serverGroup) {
-                abort(500, '组不存在');
-            }
-        }
-
-        $servers = Server::all();
-        foreach ($servers as $server) {
-            $groupId = json_decode($server->group_id);
-            if (in_array($request->input('id'), $groupId)) {
-                abort(500, '该组已被节点所使用，无法删除');
-            }
-        }
-
-        if (Plan::where('group_id', $request->input('id'))->first()) {
-            abort(500, '该组已被订阅所使用，无法删除');
-        }
-        if (User::where('group_id', $request->input('id'))->first()) {
-            abort(500, '该组已被用户所使用，无法删除');
-        }
-        return response([
-            'data' => $serverGroup->delete()
         ]);
     }
 

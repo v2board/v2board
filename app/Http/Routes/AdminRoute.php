@@ -23,16 +23,30 @@ class AdminRoute
             $router->post('/plan/update', 'Admin\\PlanController@update');
             $router->post('/plan/sort', 'Admin\\PlanController@sort');
             // Server
-            $router->get ('/server/fetch', 'Admin\\ServerController@fetch');
-            $router->post('/server/save', 'Admin\\ServerController@save');
             $router->get ('/server/group/fetch', 'Admin\\ServerController@groupFetch');
             $router->post('/server/group/save', 'Admin\\ServerController@groupSave');
             $router->post('/server/group/drop', 'Admin\\ServerController@groupDrop');
-            $router->post('/server/drop', 'Admin\\ServerController@drop');
-            $router->post('/server/update', 'Admin\\ServerController@update');
-            $router->post('/server/copy', 'Admin\\ServerController@copy');
-            $router->post('/server/viewConfig', 'Admin\\ServerController@viewConfig');
-            $router->post('/server/sort', 'Admin\\ServerController@sort');
+            $router->group([
+                'prefix' => 'server/trojan'
+            ], function ($router) {
+                $router->get ('fetch', 'Admin\\Server\\TrojanController@fetch');
+                $router->post('save', 'Admin\\Server\\TrojanController@save');
+                $router->post('drop', 'Admin\\Server\\TrojanController@drop');
+                $router->post('update', 'Admin\\Server\\TrojanController@update');
+                $router->post('copy', 'Admin\\Server\\TrojanController@copy');
+                $router->post('sort', 'Admin\\Server\\TrojanController@sort');
+            });
+            $router->group([
+                'prefix' => 'server/v2ray'
+            ], function ($router) {
+                $router->get ('fetch', 'Admin\\Server\\V2rayController@fetch');
+                $router->post('save', 'Admin\\Server\\V2rayController@save');
+                $router->post('drop', 'Admin\\Server\\V2rayController@drop');
+                $router->post('update', 'Admin\\Server\\V2rayController@update');
+                $router->post('copy', 'Admin\\Server\\V2rayController@copy');
+                $router->post('sort', 'Admin\\Server\\V2rayController@sort');
+                $router->post('viewConfig', 'Admin\\Server\\V2rayController@viewConfig');
+            });
             // Order
             $router->get ('/order/fetch', 'Admin\\OrderController@fetch');
             $router->post('/order/repair', 'Admin\\OrderController@repair');

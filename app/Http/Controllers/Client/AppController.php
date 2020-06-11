@@ -3,52 +3,65 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
+use App\Services\UserService;
 use Illuminate\Http\Request;
-use App\Models\User;
-use App\Models\Plan;
 use App\Models\Server;
-use App\Models\Notice;
-use App\Utils\Helper;
+use Symfony\Component\Yaml\Yaml;
 
 class AppController extends Controller
 {
-    CONST CLIENT_CONFIG = '{"policy":{"levels":{"0":{"uplinkOnly":0}}},"dns":{"servers":["8.8.8.8","localhost"]},"outboundDetour":[{"protocol":"freedom","tag":"direct","settings":{}}],"inbound":{"listen":"0.0.0.0","port":31211,"protocol":"socks","settings":{"auth":"noauth","udp":true,"ip":"127.0.0.1"}},"inboundDetour":[{"listen":"0.0.0.0","allocate":{"strategy":"always","refresh":5,"concurrency":3},"port":31210,"protocol":"http","tag":"httpDetour","domainOverride":["http","tls"],"streamSettings":{},"settings":{"timeout":0}}],"routing":{"strategy":"rules","settings":{"domainStrategy":"IPIfNonMatch","rules":[{"type":"field","ip":["geoip:cn"],"outboundTag":"direct"},{"type":"field","ip":["0.0.0.0/8","10.0.0.0/8","100.64.0.0/10","127.0.0.0/8","169.254.0.0/16","172.16.0.0/12","192.0.0.0/24","192.0.2.0/24","192.168.0.0/16","198.18.0.0/15","198.51.100.0/24","203.0.113.0/24","::1/128","fc00::/7","fe80::/10"],"outboundTag":"direct"}]}},"outbound":{"tag":"proxy","sendThrough":"0.0.0.0","mux":{"enabled":false,"concurrency":8},"protocol":"vmess","settings":{"vnext":[{"address":"server","port":443,"users":[{"id":"uuid","alterId":2,"security":"auto","level":0}],"remark":"remark"}]},"streamSettings":{"network":"tcp","tcpSettings":{"header":{"type":"none"}},"security":"none","tlsSettings":{"allowInsecure":true,"allowInsecureCiphers":true},"kcpSettings":{"header":{"type":"none"},"mtu":1350,"congestion":false,"tti":20,"uplinkCapacity":5,"writeBufferSize":1,"readBufferSize":1,"downlinkCapacity":20},"wsSettings":{"path":"","headers":{"Host":"server.cc"}}}}}';
-    CONST SOCKS_PORT = 10010;
-    CONST HTTP_PORT = 10011;
-
-    // TODO: 1.1.1 abolish
     public function data(Request $request)
     {
+        $server = [];
         $user = $request->user;
-        $nodes = [];
-        if ($user->plan_id) {
-            $user['plan'] = Plan::find($user->plan_id);
-            if (!$user['plan']) {
-                abort(500, '订阅计划不存在');
-            }
-            if ($user->expired_at > time()) {
-                $servers = Server::where('show', 1)
-                    ->orderBy('name')
-                    ->get();
-                foreach ($servers as $item) {
-                    $groupId = json_decode($item['group_id']);
-                    if (in_array($user->group_id, $groupId)) {
-                        array_push($nodes, $item);
-                    }
+        $userService = new UserService();
+        if ($userService->isAvailable($user)) {
+            $servers = Server::where('show', 1)
+                ->orderBy('sort', 'ASC')
+                ->get();
+            foreach ($servers as $item) {
+                $groupId = json_decode($item['group_id']);
+                if (in_array($user->group_id, $groupId)) {
+                    array_push($server, $item);
                 }
             }
         }
-        return response([
-            'data' => [
-                'nodes' => $nodes,
-                'u' => $user->u,
-                'd' => $user->d,
-                'transfer_enable' => $user->transfer_enable,
-                'expired_at' => $user->expired_at,
-                'plan' => isset($user['plan']) ? $user['plan'] : false,
-                'notice' => Notice::orderBy('created_at', 'DESC')->first()
-            ]
-        ]);
+        $config = Yaml::parseFile(base_path() . '/resources/rules/app.clash.yaml');
+        $proxy = [];
+        $proxies = [];
+        foreach ($server as $item) {
+            $array = [];
+            $array['name'] = $item->name;
+            $array['type'] = 'vmess';
+            $array['server'] = $item->host;
+            $array['port'] = $item->port;
+            $array['uuid'] = $user->uuid;
+            $array['alterId'] = $user->v2ray_alter_id;
+            $array['cipher'] = 'auto';
+            if ($item->tls) {
+                $tlsSettings = json_decode($item->tlsSettings);
+                $array['tls'] = true;
+                if (isset($tlsSettings->allowInsecure)) $array['skip-cert-verify'] = ($tlsSettings->allowInsecure ? true : false );
+            }
+            if ($item->network == 'ws') {
+                $array['network'] = $item->network;
+                if ($item->networkSettings) {
+                    $wsSettings = json_decode($item->networkSettings);
+                    if (isset($wsSettings->path)) $array['ws-path'] = $wsSettings->path;
+                    if (isset($wsSettings->headers->Host)) $array['ws-headers'] = [
+                        'Host' => $wsSettings->headers->Host
+                    ];
+                }
+            }
+            array_push($proxy, $array);
+            array_push($proxies, $item->name);
+        }
+
+        $config['Proxy'] = array_merge($config['Proxy'] ? $config['Proxy'] : [], $proxy);
+        foreach ($config['Proxy Group'] as $k => $v) {
+            $config['Proxy Group'][$k]['proxies'] = array_merge($config['Proxy Group'][$k]['proxies'], $proxies);
+        }
+        die(Yaml::dump($config));
     }
 
     public function config(Request $request)

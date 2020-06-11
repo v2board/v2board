@@ -124,21 +124,26 @@ class OrderService
         $orderModel = Order::where('user_id', $user->id)
             ->where('cycle', '!=', 'reset_price')
             ->where('status', 3);
-        $surplusAmount = 0;
+        $orderSurplusMonth = 0;
+        $orderSurplusAmount = 0;
+        $userSurplusMonth = ($user->expired_at - time()) / 2678400;
         foreach ($orderModel->get() as $item) {
             // 兼容历史余留问题
             if ($item->cycle === 'onetime_price') continue;
-            $surplusMonth = strtotime("+ {$strToMonth[$item->cycle]}month", $item->created_at->format('U'));
-            if (!$surplusMonth) continue;
-            $surplusMonth = ($surplusMonth - time()) / 2678400 / $strToMonth[$item->cycle];
-            if ($surplusMonth > 0) {
-                $surplusAmount = $surplusAmount + ($item['total_amount'] + $item['balance_amount']) * $surplusMonth;
-            }
+            $orderSurplusMonth = $orderSurplusMonth + $strToMonth[$item->cycle];
+            $orderSurplusAmount = $orderSurplusAmount + ($item['total_amount'] + $item['balance_amount']);
         }
-        if (!$surplusAmount) {
+        $monthUnitPrice = $orderSurplusAmount / $orderSurplusMonth;
+        // 如果用户过期月大于订单过期月
+        if ($userSurplusMonth > $orderSurplusMonth) {
+            $orderSurplusAmount = $orderSurplusMonth * $monthUnitPrice;
+        } else {
+            $orderSurplusAmount = $userSurplusMonth * $monthUnitPrice;
+        }
+        if (!$orderSurplusAmount) {
             return;
         }
-        $order->surplus_amount = $surplusAmount > 0 ? $surplusAmount : 0;
+        $order->surplus_amount = $orderSurplusAmount > 0 ? $orderSurplusAmount : 0;
         $order->surplus_order_ids = json_encode(array_map(function ($v) { return $v['id'];}, $orderModel->get()->toArray()));
     }
 

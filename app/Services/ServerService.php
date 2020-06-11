@@ -137,7 +137,7 @@ class ServerService
         }
     }
 
-    public function log(int $userId, int $serverId, int $u, int $d, float $rate)
+    public function log(int $userId, int $serverId, int $u, int $d, float $rate, string $method)
     {
         if (($u + $d) <= 10240) return;
         $timestamp = strtotime(date('Y-m-d H:0'));
@@ -146,6 +146,7 @@ class ServerService
             ->where('server_id', $serverId)
             ->where('user_id', $userId)
             ->where('rate', $rate)
+            ->where('method', $method)
             ->first();
         if ($serverLog) {
             $serverLog->u = $serverLog->u + $u;
@@ -159,6 +160,7 @@ class ServerService
             $serverLog->d = $d;
             $serverLog->rate = $rate;
             $serverLog->log_at = $timestamp;
+            $serverLog->method = $method;
             $serverLog->save();
         }
     }
