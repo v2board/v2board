@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
+use App\Services\ServerService;
+use App\Utils\Clash;
 use Illuminate\Http\Request;
 use App\Models\Server;
 use App\Utils\Helper;
@@ -14,44 +16,36 @@ class ClientController extends Controller
     public function subscribe(Request $request)
     {
         $user = $request->user;
-        $server = [];
         // account not expired and is not banned.
         $userService = new UserService();
         if ($userService->isAvailable($user)) {
-            $servers = Server::where('show', 1)
-                ->orderBy('sort', 'ASC')
-                ->get();
-            foreach ($servers as $item) {
-                $groupId = json_decode($item['group_id']);
-                if (in_array($user->group_id, $groupId)) {
-                    array_push($server, $item);
-                }
-            }
+            $serverService = new ServerService();
+            $servers = $serverService->getAllServers($user);
         }
         if (isset($_SERVER['HTTP_USER_AGENT'])) {
             if (strpos($_SERVER['HTTP_USER_AGENT'], 'Quantumult%20X') !== false) {
-                die($this->quantumultX($user, $server));
+                die($this->quantumultX($user, $servers['vmess']));
             }
             if (strpos($_SERVER['HTTP_USER_AGENT'], 'Quantumult') !== false) {
-                die($this->quantumult($user, $server));
+                die($this->quantumult($user, $servers['vmess']));
             }
             if (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'clash') !== false) {
-                die($this->clash($user, $server));
+                die($this->clash($user, $servers['vmess'], $servers['trojan']));
             }
             if (strpos($_SERVER['HTTP_USER_AGENT'], 'Surfboard') !== false) {
-                die($this->surfboard($user, $server));
+                die($this->surfboard($user, $servers['vmess']));
             }
             if (strpos($_SERVER['HTTP_USER_AGENT'], 'Surge') !== false) {
-                die($this->surge($user, $server));
+                die($this->surge($user, $servers['vmess']));
             }
         }
-        die($this->origin($user, $server));
+        die($this->origin($user, $servers['vmess']));
     }
 
-    private function quantumultX($user, $server)
+    private function quantumultX($user, $vmess)
     {
         $uri = '';
-        foreach ($server as $item) {
+        foreach ($vmess as $item) {
             $uri .= "vmess=" . $item->host . ":" . $item->port . ", method=none, password=" . $user->uuid . ", fast-open=false, udp-relay=false, tag=" . $item->name;
             if ($item->tls) {
                 $tlsSettings = json_decode($item->tlsSettings);
@@ -77,11 +71,11 @@ class ClientController extends Controller
         return base64_encode($uri);
     }
 
-    private function quantumult($user, $server)
+    private function quantumult($user, $vmess)
     {
         $uri = '';
         header('subscription-userinfo: upload=' . $user->u . '; download=' . $user->d . ';total=' . $user->transfer_enable);
-        foreach ($server as $item) {
+        foreach ($vmess as $item) {
             $str = '';
             $str .= $item->name . '= vmess, ' . $item->host . ', ' . $item->port . ', chacha20-ietf-poly1305, "' . $user->uuid . '", over-tls=' . ($item->tls ? "true" : "false") . ', certificate=0, group=' . config('v2board.app_name', 'V2Board');
             if ($item->network === 'ws') {
@@ -97,20 +91,20 @@ class ClientController extends Controller
         return base64_encode($uri);
     }
 
-    private function origin($user, $server)
+    private function origin($user, $vmess)
     {
         $uri = '';
-        foreach ($server as $item) {
+        foreach ($vmess as $item) {
             $uri .= Helper::buildVmessLink($item, $user);
         }
         return base64_encode($uri);
     }
 
-    private function surge($user, $server)
+    private function surge($user, $vmess)
     {
         $proxies = '';
         $proxyGroup = '';
-        foreach ($server as $item) {
+        foreach ($vmess as $item) {
             // [Proxy]
             $proxies .= $item->name . ' = vmess, ' . $item->host . ', ' . $item->port . ', username=' . $user->uuid . ', tfo=true';
             if ($item->tls) {
@@ -159,11 +153,11 @@ class ClientController extends Controller
         return $config;
     }
 
-    private function surfboard($user, $server)
+    private function surfboard($user, $vmess)
     {
         $proxies = '';
         $proxyGroup = '';
-        foreach ($server as $item) {
+        foreach ($vmess as $item) {
             // [Proxy]
             $proxies .= $item->name . ' = vmess, ' . $item->host . ', ' . $item->port . ', username=' . $user->uuid;
             if ($item->tls) {
@@ -212,7 +206,7 @@ class ClientController extends Controller
         return $config;
     }
 
-    private function clash($user, $server)
+    private function clash($user, $vmess = [], $trojan = [])
     {
         $defaultConfig = base_path() . '/resources/rules/default.clash.yaml';
         $customConfig = base_path() . '/resources/rules/custom.clash.yaml';
@@ -223,31 +217,14 @@ class ClientController extends Controller
         }
         $proxy = [];
         $proxies = [];
-        foreach ($server as $item) {
-            $array = [];
-            $array['name'] = $item->name;
-            $array['type'] = 'vmess';
-            $array['server'] = $item->host;
-            $array['port'] = $item->port;
-            $array['uuid'] = $user->uuid;
-            $array['alterId'] = $user->v2ray_alter_id;
-            $array['cipher'] = 'auto';
-            if ($item->tls) {
-                $tlsSettings = json_decode($item->tlsSettings);
-                $array['tls'] = true;
-                if (isset($tlsSettings->allowInsecure)) $array['skip-cert-verify'] = ($tlsSettings->allowInsecure ? true : false );
-            }
-            if ($item->network == 'ws') {
-                $array['network'] = $item->network;
-                if ($item->networkSettings) {
-                    $wsSettings = json_decode($item->networkSettings);
-                    if (isset($wsSettings->path)) $array['ws-path'] = $wsSettings->path;
-                    if (isset($wsSettings->headers->Host)) $array['ws-headers'] = [
-                        'Host' => $wsSettings->headers->Host
-                    ];
-                }
-            }
-            array_push($proxy, $array);
+        foreach ($vmess as $item) {
+            array_push($proxy, Clash::buildVmess($user->uuid, $item));
+            array_push($proxies, $item->name);
+        }
+
+
+        foreach ($trojan as $item) {
+            array_push($proxy, Clash::buildTrojan($user->uuid, $item));
             array_push($proxies, $item->name);
         }
 

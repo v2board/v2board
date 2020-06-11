@@ -5,11 +5,68 @@ namespace App\Services;
 use App\Models\ServerLog;
 use App\Models\User;
 use App\Models\Server;
+use App\Models\ServerTrojan;
+use App\Utils\CacheKey;
+use App\Utils\Helper;
+use Illuminate\Support\Facades\Cache;
 
 class ServerService
 {
 
     CONST SERVER_CONFIG = '{"api":{"services":["HandlerService","StatsService"],"tag":"api"},"dns":{},"stats":{},"inbound":{"port":443,"protocol":"vmess","settings":{"clients":[]},"sniffing":{"enabled":true,"destOverride":["http","tls"]},"streamSettings":{"network":"tcp"},"tag":"proxy"},"inboundDetour":[{"listen":"0.0.0.0","port":23333,"protocol":"dokodemo-door","settings":{"address":"0.0.0.0"},"tag":"api"}],"log":{"loglevel":"debug","access":"access.log","error":"error.log"},"outbound":{"protocol":"freedom","settings":{}},"outboundDetour":[{"protocol":"blackhole","settings":{},"tag":"block"}],"routing":{"rules":[{"inboundTag":"api","outboundTag":"api","type":"field"}]},"policy":{"levels":{"0":{"handshake":4,"connIdle":300,"uplinkOnly":5,"downlinkOnly":30,"statsUserUplink":true,"statsUserDownlink":true}}}}';
+
+    public function getVmess(User $user, $all = false):array
+    {
+        $vmess = [];
+        $model = Server::orderBy('sort', 'ASC');
+        if (!$all) {
+            $model->where('show', 1);
+        }
+        $vmesss = $model->get();
+        foreach ($vmesss as $k => $v) {
+            $groupId = json_decode($vmesss[$k]['group_id']);
+            if (in_array($user->group_id, $groupId)) {
+                $vmesss[$k]['link'] = Helper::buildVmessLink($vmesss[$k], $user);
+                if ($vmesss[$k]['parent_id']) {
+                    $vmesss[$k]['last_check_at'] = Cache::get(CacheKey::get('SERVER_LAST_CHECK_AT', $vmesss[$k]['parent_id']));
+                } else {
+                    $vmesss[$k]['last_check_at'] = Cache::get(CacheKey::get('SERVER_LAST_CHECK_AT', $vmesss[$k]['id']));
+                }
+                array_push($vmess, $vmesss[$k]);
+            }
+        }
+
+
+        return $vmess;
+    }
+
+    public function getTrojan(User $user, $all = false)
+    {
+        $trojan = [];
+        $model = ServerTrojan::orderBy('sort', 'ASC');
+        if (!$all) {
+            $model->where('show', 1);
+        }
+        $trojans = $model->get();
+        foreach ($trojans as $k => $v) {
+            $groupId = json_decode($trojans[$k]['group_id']);
+            if (in_array($user->group_id, $groupId)) {
+                $vmesss[$k]['last_check_at'] = Cache::get(CacheKey::get('SERVER_TROJAN_LAST_CHECK_AT', $trojans[$k]['id']));
+                array_push($trojan, $trojans[$k]);
+            }
+
+        }
+        return $trojan;
+    }
+
+    public function getAllServers(User $user, $all = false)
+    {
+        return [
+            'vmess' => $this->getVmess($user, $all),
+            'trojan' => $this->getTrojan($user, $all)
+        ];
+    }
+
 
     public function getAvailableUsers($groupId)
     {
@@ -34,7 +91,7 @@ class ServerService
             ->get();
     }
 
-    public function getConfig(int $nodeId, int $localPort)
+    public function getVmessConfig(int $nodeId, int $localPort)
     {
         $server = Server::find($nodeId);
         if (!$server) {

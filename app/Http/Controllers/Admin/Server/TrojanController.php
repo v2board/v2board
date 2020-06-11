@@ -23,6 +23,7 @@ class TrojanController extends Controller
             }
             $server[$i]['group_id'] = json_decode($server[$i]['group_id']);
             $server[$i]['online'] = Cache::get(CacheKey::get('SERVER_TROJAN_ONLINE_USER', $server[$i]['id']));
+            $server[$i]['last_check_at'] = Cache::get(CacheKey::get('SERVER_TROJAN_LAST_CHECK_AT', $server[$i]['id']));
         }
         return response([
             'data' => $server
