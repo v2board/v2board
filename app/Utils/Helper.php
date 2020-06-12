@@ -59,7 +59,7 @@ class Helper
 
     public static function buildTrojanLink(ServerTrojan $server, User $user)
     {
-        $uri = "trojan://{$user->uuid}@{$server->host}:{$server->port}";
+        $uri = "trojan://{$user->uuid}@{$server->host}:{$server->port}#{$server->name}";
         $uri .= "\r\n";
         return $uri;
     }
