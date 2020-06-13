@@ -118,6 +118,7 @@ class ServerService
         }
 
         $json = json_decode(self::TROJAN_CONFIG);
+        $json->local_port = $server->port;
         $json->ssl->sni = $server->host;
         $json->ssl->cert = "/root/.cert/{$server->host}.crt";
         $json->ssl->key = "/root/.cert/{$server->host}.key";
