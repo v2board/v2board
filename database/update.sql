@@ -280,3 +280,6 @@ ADD `rate` varchar(11) COLLATE 'utf8mb4_general_ci' NOT NULL AFTER `name`;
 
 ALTER TABLE `v2_server_log`
 ADD `method` varchar(255) NOT NULL AFTER `rate`;
+
+ALTER TABLE `v2_coupon`
+ADD `limit_plan_ids` varchar(255) NULL AFTER `limit_use`;

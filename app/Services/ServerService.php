@@ -51,7 +51,7 @@ class ServerService
         foreach ($trojans as $k => $v) {
             $groupId = json_decode($trojans[$k]['group_id']);
             if (in_array($user->group_id, $groupId)) {
-                $vmesss[$k]['last_check_at'] = Cache::get(CacheKey::get('SERVER_TROJAN_LAST_CHECK_AT', $trojans[$k]['id']));
+                $trojans[$k]['last_check_at'] = Cache::get(CacheKey::get('SERVER_TROJAN_LAST_CHECK_AT', $trojans[$k]['id']));
                 array_push($trojan, $trojans[$k]);
             }
 
