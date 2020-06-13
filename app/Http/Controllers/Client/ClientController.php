@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Services\ServerService;
 use App\Utils\Clash;
 use App\Utils\QuantumultX;
+use App\Utils\Surge;
 use Illuminate\Http\Request;
 use App\Models\Server;
 use App\Utils\Helper;
@@ -24,20 +25,21 @@ class ClientController extends Controller
             $servers = $serverService->getAllServers($user);
         }
         if (isset($_SERVER['HTTP_USER_AGENT'])) {
-            if (strpos($_SERVER['HTTP_USER_AGENT'], 'Quantumult%20X') !== false) {
+            $_SERVER['HTTP_USER_AGENT'] = strtolower($_SERVER['HTTP_USER_AGENT']);
+            if (strpos($_SERVER['HTTP_USER_AGENT'], 'quantumult%20x') !== false) {
                 die($this->quantumultX($user, $servers['vmess'], $servers['trojan']));
             }
-            if (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'clash') !== false) {
+            if (strpos($_SERVER['HTTP_USER_AGENT'], 'clash') !== false) {
                 die($this->clash($user, $servers['vmess'], $servers['trojan']));
             }
-            if (strpos($_SERVER['HTTP_USER_AGENT'], 'Surfboard') !== false) {
+            if (strpos($_SERVER['HTTP_USER_AGENT'], 'surfboard') !== false) {
                 die($this->surfboard($user, $servers['vmess']));
             }
-            if (strpos($_SERVER['HTTP_USER_AGENT'], 'Surge') !== false) {
-                die($this->surge($user, $servers['vmess']));
+            if (strpos($_SERVER['HTTP_USER_AGENT'], 'surge') !== false) {
+                die($this->surge($user, $servers['vmess'], $servers['trojan']));
             }
+            die($this->origin($user, $servers['vmess'], $servers['trojan']));
         }
-        die($this->origin($user, $servers['vmess'], $servers['trojan']));
     }
 
     private function quantumultX($user, $vmess = [], $trojan = [])
@@ -64,29 +66,20 @@ class ClientController extends Controller
         return base64_encode($uri);
     }
 
-    private function surge($user, $vmess = [])
+    private function surge($user, $vmess = [], $trojan = [])
     {
         $proxies = '';
         $proxyGroup = '';
         foreach ($vmess as $item) {
             // [Proxy]
-            $proxies .= $item->name . ' = vmess, ' . $item->host . ', ' . $item->port . ', username=' . $user->uuid . ', tfo=true';
-            if ($item->tls) {
-                $tlsSettings = json_decode($item->tlsSettings);
-                $proxies .= ', tls=' . ($item->tls ? "true" : "false");
-                if (isset($tlsSettings->allowInsecure)) {
-                  $proxies .= ', skip-cert-verify=' . ($tlsSettings->allowInsecure ? "true" : "false");
-                }
-            }
-            if ($item->network == 'ws') {
-                $proxies .= ', ws=true';
-                if ($item->networkSettings) {
-                    $wsSettings = json_decode($item->networkSettings);
-                    if (isset($wsSettings->path)) $proxies .= ', ws-path=' . $wsSettings->path;
-                    if (isset($wsSettings->headers->Host)) $proxies .= ', ws-headers=host:' . $wsSettings->headers->Host;
-                }
-            }
-            $proxies .= "\r\n";
+            $proxies .= Surge::buildVmess($user->uuid, $item);
+            // [Proxy Group]
+            $proxyGroup .= $item->name . ', ';
+        }
+
+        foreach ($trojan as $item) {
+            // [Proxy]
+            $proxies .= Surge::buildTrojan($user->uuid, $item);
             // [Proxy Group]
             $proxyGroup .= $item->name . ', ';
         }
@@ -111,9 +104,9 @@ class ClientController extends Controller
             $subsURL .= $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
         }
 
-        $config = str_replace('$subs_link',$subsURL,$config);
-        $config = str_replace('$proxies',$proxies,$config);
-        $config = str_replace('$proxy_group',rtrim($proxyGroup, ', '),$config);
+        $config = str_replace('$subs_link', $subsURL, $config);
+        $config = str_replace('$proxies', $proxies, $config);
+        $config = str_replace('$proxy_group', rtrim($proxyGroup, ', '), $config);
         return $config;
     }
 
