@@ -12,22 +12,21 @@ class CouponController extends Controller
 {
     public function fetch(Request $request)
     {
+        $coupons = Coupon::all();
+        foreach ($coupons as $k => $v) {
+            if ($coupons[$k]['limit_plan_ids']) $coupons[$k]['limit_plan_ids'] = json_decode($coupons[$k]['limit_plan_ids']);
+        }
         return response([
-            'data' => Coupon::all()
+            'data' => $coupons
         ]);
     }
 
     public function save(CouponSave $request)
     {
-        $params = $request->only([
-            'name',
-            'type',
-            'value',
-            'started_at',
-            'ended_at',
-            'limit_use'
-        ]);
-
+        $params = $request->only(array_keys(CouponSave::RULES));
+        if (isset($params['limit_plan_ids'])) {
+            $params['limit_plan_ids'] = json_encode($params['limit_plan_ids']);
+        }
         if (!$request->input('id')) {
             $params['code'] = Helper::randomChar(8);
             if (!Coupon::create($params)) {
