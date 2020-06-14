@@ -23,20 +23,21 @@ class ClientController extends Controller
         if ($userService->isAvailable($user)) {
             $serverService = new ServerService();
             $servers = $serverService->getAllServers($user);
-        }
-        if (isset($_SERVER['HTTP_USER_AGENT'])) {
-            $_SERVER['HTTP_USER_AGENT'] = strtolower($_SERVER['HTTP_USER_AGENT']);
-            if (strpos($_SERVER['HTTP_USER_AGENT'], 'quantumult%20x') !== false) {
-                die($this->quantumultX($user, $servers['vmess'], $servers['trojan']));
-            }
-            if (strpos($_SERVER['HTTP_USER_AGENT'], 'clash') !== false) {
-                die($this->clash($user, $servers['vmess'], $servers['trojan']));
-            }
-            if (strpos($_SERVER['HTTP_USER_AGENT'], 'surfboard') !== false) {
-                die($this->surfboard($user, $servers['vmess']));
-            }
-            if (strpos($_SERVER['HTTP_USER_AGENT'], 'surge') !== false) {
-                die($this->surge($user, $servers['vmess'], $servers['trojan']));
+
+            if (isset($_SERVER['HTTP_USER_AGENT'])) {
+                $_SERVER['HTTP_USER_AGENT'] = strtolower($_SERVER['HTTP_USER_AGENT']);
+                if (strpos($_SERVER['HTTP_USER_AGENT'], 'quantumult%20x') !== false) {
+                    die($this->quantumultX($user, $servers['vmess'], $servers['trojan']));
+                }
+                if (strpos($_SERVER['HTTP_USER_AGENT'], 'clash') !== false) {
+                    die($this->clash($user, $servers['vmess'], $servers['trojan']));
+                }
+                if (strpos($_SERVER['HTTP_USER_AGENT'], 'surfboard') !== false) {
+                    die($this->surfboard($user, $servers['vmess']));
+                }
+                if (strpos($_SERVER['HTTP_USER_AGENT'], 'surge') !== false) {
+                    die($this->surge($user, $servers['vmess'], $servers['trojan']));
+                }
             }
             die($this->origin($user, $servers['vmess'], $servers['trojan']));
         }
