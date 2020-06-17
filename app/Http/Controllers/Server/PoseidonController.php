@@ -14,6 +14,10 @@ use App\Models\ServerLog;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 
+/*
+ * V2ray Poseidon
+ * Github: https://github.com/ColetteContreras/trojan-poseidon
+ */
 class PoseidonController extends Controller
 {
     public $poseidonVersion;

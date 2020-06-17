@@ -14,6 +14,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 
+/*
+ * Tidal Lab Trojan
+ * Github: https://github.com/tokumeikoi/tidalab-trojan
+ */
 class TrojanTidalabController extends Controller
 {
     public function __construct(Request $request)

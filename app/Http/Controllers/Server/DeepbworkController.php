@@ -14,6 +14,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 
+/*
+ * V2ray Aurora
+ * Github: https://github.com/tokumeikoi/aurora
+ */
 class DeepbworkController extends Controller
 {
     public function __construct(Request $request)
