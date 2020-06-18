@@ -29,6 +29,8 @@ class TelegramController extends Controller
                     break;
                 case '/traffic': $this->traffic();
                     break;
+                case '/getLatestUrl': $this->getLatestUrl();
+                    break;
                 default: $this->help();
             }
         } catch (\Exception $e) {
@@ -84,7 +86,8 @@ class TelegramController extends Controller
         $telegramService = new TelegramService();
         $commands = [
             '/bind 订阅地址 - 绑定你的' . config('v2board.app_name', 'V2Board') . '账号',
-            '/traffic - 查询流量信息'
+            '/traffic - 查询流量信息',
+            '/getLatestUrl - 获取最新的' . config('v2board.app_name', 'V2Board') . '网址'
         ];
         $text = implode(PHP_EOL, $commands);
         $telegramService->sendMessage($msg->chat_id, "你可以使用以下命令进行操作：\n\n$text", 'markdown');
@@ -106,6 +109,19 @@ class TelegramController extends Controller
         $down = Helper::trafficConvert($user->d);
         $remaining = Helper::trafficConvert($user->transfer_enable - ($user->u + $user->d));
         $text = "🚥流量查询\n———————————————\n计划流量：`{$transferEnable}`\n已用上行：`{$up}`\n已用下行：`{$down}`\n剩余流量：`{$remaining}`";
+        $telegramService->sendMessage($msg->chat_id, $text, 'markdown');
+    }
+
+    private function getLatestUrl()
+    {
+        $msg = $this->msg;
+        $user = User::where('telegram_id', $msg->chat_id)->first();
+        $telegramService = new TelegramService();
+        $text = sprintf(
+            "%s的最新网址是：%s",
+            config('v2board.app_name', 'V2Board'),
+            config('v2board.app_url')
+        );
         $telegramService->sendMessage($msg->chat_id, $text, 'markdown');
     }
 }

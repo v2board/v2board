@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
+use App\Services\ServerService;
 use App\Services\UserService;
+use App\Utils\Clash;
 use Illuminate\Http\Request;
 use App\Models\Server;
 use Symfony\Component\Yaml\Yaml;
@@ -20,44 +22,20 @@ class AppController extends Controller
         $user = $request->user;
         $userService = new UserService();
         if ($userService->isAvailable($user)) {
-            $servers = Server::where('show', 1)
-                ->orderBy('sort', 'ASC')
-                ->get();
-            foreach ($servers as $item) {
-                $groupId = json_decode($item['group_id']);
-                if (in_array($user->group_id, $groupId)) {
-                    array_push($server, $item);
-                }
-            }
+            $serverService = new ServerService();
+            $servers = $serverService->getAllServers($user);
         }
         $config = Yaml::parseFile(base_path() . '/resources/rules/app.clash.yaml');
         $proxy = [];
         $proxies = [];
-        foreach ($server as $item) {
-            $array = [];
-            $array['name'] = $item->name;
-            $array['type'] = 'vmess';
-            $array['server'] = $item->host;
-            $array['port'] = $item->port;
-            $array['uuid'] = $user->uuid;
-            $array['alterId'] = $user->v2ray_alter_id;
-            $array['cipher'] = 'auto';
-            if ($item->tls) {
-                $tlsSettings = json_decode($item->tlsSettings);
-                $array['tls'] = true;
-                if (isset($tlsSettings->allowInsecure)) $array['skip-cert-verify'] = ($tlsSettings->allowInsecure ? true : false );
-            }
-            if ($item->network == 'ws') {
-                $array['network'] = $item->network;
-                if ($item->networkSettings) {
-                    $wsSettings = json_decode($item->networkSettings);
-                    if (isset($wsSettings->path)) $array['ws-path'] = $wsSettings->path;
-                    if (isset($wsSettings->headers->Host)) $array['ws-headers'] = [
-                        'Host' => $wsSettings->headers->Host
-                    ];
-                }
-            }
-            array_push($proxy, $array);
+
+        foreach ($servers['vmess'] as $item) {
+            array_push($proxy, Clash::buildVmess($user->uuid, $item));
+            array_push($proxies, $item->name);
+        }
+
+        foreach ($servers['trojan'] as $item) {
+            array_push($proxy, Clash::buildTrojan($user->uuid, $item));
             array_push($proxies, $item->name);
         }
 
