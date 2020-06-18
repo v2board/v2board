@@ -197,6 +197,7 @@ CREATE TABLE `v2_server_trojan` (
   `rate` varchar(11) NOT NULL,
   `host` varchar(255) NOT NULL,
   `port` int(11) NOT NULL,
+  `server_port` int(11) NOT NULL,
   `show` tinyint(1) NOT NULL DEFAULT '0',
   `sort` int(11) DEFAULT NULL,
   `created_at` int(11) NOT NULL,
@@ -282,4 +283,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2020-06-13 10:43:44
+-- 2020-06-18 12:12:19

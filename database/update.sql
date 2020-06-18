@@ -283,3 +283,6 @@ ADD `method` varchar(255) NOT NULL AFTER `rate`;
 
 ALTER TABLE `v2_coupon`
 ADD `limit_plan_ids` varchar(255) NULL AFTER `limit_use`;
+
+ALTER TABLE `v2_server_trojan`
+ADD `server_port` int(11) NOT NULL AFTER `port`;

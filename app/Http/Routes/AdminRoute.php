@@ -23,9 +23,9 @@ class AdminRoute
             $router->post('/plan/update', 'Admin\\PlanController@update');
             $router->post('/plan/sort', 'Admin\\PlanController@sort');
             // Server
-            $router->get ('/server/group/fetch', 'Admin\\ServerController@groupFetch');
-            $router->post('/server/group/save', 'Admin\\ServerController@groupSave');
-            $router->post('/server/group/drop', 'Admin\\ServerController@groupDrop');
+            $router->get ('/server/group/fetch', 'Admin\\Server\\GroupController@fetch');
+            $router->post('/server/group/save', 'Admin\\Server\\GroupController@save');
+            $router->post('/server/group/drop', 'Admin\\Server\\GroupController@drop');
             $router->group([
                 'prefix' => 'server/trojan'
             ], function ($router) {

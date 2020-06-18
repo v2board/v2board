@@ -12,6 +12,7 @@ class ServerTrojanSave extends FormRequest
         'group_id' => 'required|array',
         'host' => 'required|regex:/^(?!:\/\/)(?=.{1,255}$)((.{1,63}\.){1,127}(?![0-9]*$)[a-z0-9-]+\.?)$/i',
         'port' => 'required',
+        'server_port' => 'required',
         'tags' => 'nullable|array',
         'rate' => 'required|numeric'
     ];
@@ -34,6 +35,7 @@ class ServerTrojanSave extends FormRequest
             'host.required' => '节点地址不能为空',
             'host.regex' => '节点地址必须为域名',
             'port.required' => '连接端口不能为空',
+            'server_port.required' => '后端服务端口不能为空',
             'tags.array' => '标签格式不正确',
             'rate.required' => '倍率不能为空',
             'rate.numeric' => '倍率格式不正确'

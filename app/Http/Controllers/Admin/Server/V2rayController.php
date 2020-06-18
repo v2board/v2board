@@ -145,7 +145,7 @@ class V2rayController extends Controller
     public function viewConfig(Request $request)
     {
         $serverService = new ServerService();
-        $config = $serverService->getConfig($request->input('node_id'), 23333);
+        $config = $serverService->getVmessConfig($request->input('node_id'), 23333);
         return response([
             'data' => $config
         ]);
