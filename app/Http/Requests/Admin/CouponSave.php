@@ -13,7 +13,8 @@ class CouponSave extends FormRequest
         'started_at' => 'required|integer',
         'ended_at' => 'required|integer',
         'limit_use' => 'nullable|integer',
-        'limit_plan_ids' => 'nullable|array'
+        'limit_plan_ids' => 'nullable|array',
+        'code' => ''
     ];
     /**
      * Get the validation rules that apply to the request.
