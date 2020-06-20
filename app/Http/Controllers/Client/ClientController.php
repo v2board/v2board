@@ -29,7 +29,7 @@ class ClientController extends Controller
                 if (strpos($_SERVER['HTTP_USER_AGENT'], 'quantumult%20x') !== false) {
                     die($this->quantumultX($user, $servers['vmess'], $servers['trojan']));
                 }
-                if (strpos($_SERVER['HTTP_USER_AGENT'], 'Quantumult') !== false) {
+                if (strpos($_SERVER['HTTP_USER_AGENT'], 'quantumult') !== false) {
                     die($this->quantumult($user, $servers['vmess']));
                 }
                 if (strpos($_SERVER['HTTP_USER_AGENT'], 'clash') !== false) {
