@@ -29,6 +29,9 @@ class ClientController extends Controller
                 if (strpos($_SERVER['HTTP_USER_AGENT'], 'quantumult%20x') !== false) {
                     die($this->quantumultX($user, $servers['vmess'], $servers['trojan']));
                 }
+                if (strpos($_SERVER['HTTP_USER_AGENT'], 'Quantumult') !== false) {
+                    die($this->quantumult($user, $servers['vmess']));
+                }
                 if (strpos($_SERVER['HTTP_USER_AGENT'], 'clash') !== false) {
                     die($this->clash($user, $servers['vmess'], $servers['trojan']));
                 }
@@ -41,6 +44,26 @@ class ClientController extends Controller
             }
             die($this->origin($user, $servers['vmess'], $servers['trojan']));
         }
+    }
+    // TODO: Ready to stop support
+    private function quantumult($user, $vmess = [])
+    {
+        $uri = '';
+        header('subscription-userinfo: upload=' . $user->u . '; download=' . $user->d . ';total=' . $user->transfer_enable);
+        foreach ($vmess as $item) {
+            $str = '';
+            $str .= $item->name . '= vmess, ' . $item->host . ', ' . $item->port . ', chacha20-ietf-poly1305, "' . $user->v2ray_uuid . '", over-tls=' . ($item->tls ? "true" : "false") . ', certificate=0, group=' . config('v2board.app_name', 'V2Board');
+            if ($item->network === 'ws') {
+                $str .= ', obfs=ws';
+                if ($item->networkSettings) {
+                    $wsSettings = json_decode($item->networkSettings);
+                    if (isset($wsSettings->path)) $str .= ', obfs-path="' . $wsSettings->path . '"';
+                    if (isset($wsSettings->headers->Host)) $str .= ', obfs-header="Host:' . $wsSettings->headers->Host . '"';
+                }
+            }
+            $uri .= "vmess://" . base64_encode($str) . "\r\n";
+        }
+        return base64_encode($uri);
     }
 
     private function quantumultX($user, $vmess = [], $trojan = [])
