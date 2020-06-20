@@ -29,7 +29,7 @@ class TelegramController extends Controller
                     break;
                 case '/traffic': $this->traffic();
                     break;
-                case '/getLatestUrl': $this->getLatestUrl();
+                case '/getlatesturl': $this->getLatestUrl();
                     break;
                 default: $this->help();
             }
