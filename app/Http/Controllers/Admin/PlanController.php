@@ -22,6 +22,10 @@ class PlanController extends Controller
             DB::raw("count(*) as count")
         )
             ->where('plan_id', '!=', NULL)
+            ->where(function ($query) {
+                $query->where('expired_at', '>=', time())
+                    ->orWhere('expired_at', NULL);
+            })
             ->groupBy("plan_id")
             ->get();
         $plans = Plan::orderBy('sort', 'ASC')->get();
