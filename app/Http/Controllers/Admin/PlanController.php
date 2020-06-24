@@ -16,8 +16,23 @@ class PlanController extends Controller
 {
     public function fetch(Request $request)
     {
+
+        $counts = User::select(
+            DB::raw("plan_id"),
+            DB::raw("count(*) as count")
+        )
+            ->where('plan_id', '!=', NULL)
+            ->groupBy("plan_id")
+            ->get();
+        $plans = Plan::orderBy('sort', 'ASC')->get();
+        foreach ($plans as $k => $v) {
+            $plans[$k]->count = 0;
+            foreach ($counts as $kk => $vv) {
+                if ($plans[$k]->id === $counts[$kk]->plan_id) $plans[$k]->count = $counts[$kk]->count;
+            }
+        }
         return response([
-            'data' => Plan::orderBy('sort', 'ASC')->get()
+            'data' => $plans
         ]);
     }
 
