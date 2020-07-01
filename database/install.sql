@@ -199,7 +199,7 @@ CREATE TABLE `v2_server_trojan` (
   `host` varchar(255) NOT NULL COMMENT '主机名',
   `port` int(11) NOT NULL COMMENT '连接端口',
   `server_port` int(11) NOT NULL COMMENT '服务端口',
-  `allow_insecure` tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否允许不安全',
+  `allow_insecure` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否允许不安全',
   `server_name` varchar(255) DEFAULT NULL,
   `show` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否显示',
   `sort` int(11) DEFAULT NULL,
