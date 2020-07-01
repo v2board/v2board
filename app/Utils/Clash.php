@@ -41,6 +41,8 @@ class Clash
         $array['server'] = $server->host;
         $array['port'] = $server->port;
         $array['password'] = $password;
+        $array['sni'] = $server->server_name;
+        $array['skip-cert-verify'] = $server->allow_insecure ? true : false;
         return $array;
     }
 }

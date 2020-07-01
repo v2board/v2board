@@ -60,7 +60,11 @@ class Helper
     public static function buildTrojanLink(ServerTrojan $server, User $user)
     {
         $server->name = rawurlencode($server->name);
-        $uri = "trojan://{$user->uuid}@{$server->host}:{$server->port}#{$server->name}";
+        $query = http_build_query([
+            'allowInsecure' => $server->allow_insecure,
+            'peer' => $server->server_name
+        ]);
+        $uri = "trojan://{$user->uuid}@{$server->host}:{$server->port}?{$query}#{$server->name}";
         $uri .= "\r\n";
         return $uri;
     }

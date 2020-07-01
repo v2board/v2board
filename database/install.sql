@@ -190,15 +190,18 @@ CREATE TABLE `v2_server_stat` (
 
 DROP TABLE IF EXISTS `v2_server_trojan`;
 CREATE TABLE `v2_server_trojan` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `group_id` varchar(255) NOT NULL,
-  `tags` varchar(255) DEFAULT NULL,
-  `name` varchar(255) NOT NULL,
-  `rate` varchar(11) NOT NULL,
-  `host` varchar(255) NOT NULL,
-  `port` int(11) NOT NULL,
-  `server_port` int(11) NOT NULL,
-  `show` tinyint(1) NOT NULL DEFAULT '0',
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '节点ID',
+  `group_id` varchar(255) NOT NULL COMMENT '节点组',
+  `parent_id` int(11) DEFAULT NULL COMMENT '父节点',
+  `tags` varchar(255) DEFAULT NULL COMMENT '节点标签',
+  `name` varchar(255) NOT NULL COMMENT '节点名称',
+  `rate` varchar(11) NOT NULL COMMENT '倍率',
+  `host` varchar(255) NOT NULL COMMENT '主机名',
+  `port` int(11) NOT NULL COMMENT '连接端口',
+  `server_port` int(11) NOT NULL COMMENT '服务端口',
+  `allow_insecure` tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否允许不安全',
+  `server_name` varchar(255) DEFAULT NULL,
+  `show` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否显示',
   `sort` int(11) DEFAULT NULL,
   `created_at` int(11) NOT NULL,
   `updated_at` int(11) NOT NULL,
@@ -283,4 +286,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2020-06-18 12:12:19
+-- 2020-07-01 07:01:59

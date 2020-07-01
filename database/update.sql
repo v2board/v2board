@@ -286,3 +286,13 @@ ADD `limit_plan_ids` varchar(255) NULL AFTER `limit_use`;
 
 ALTER TABLE `v2_server_trojan`
 ADD `server_port` int(11) NOT NULL AFTER `port`;
+
+ALTER TABLE `v2_server_trojan`
+ADD `parent_id` int(11) NULL AFTER `group_id`;
+
+ALTER TABLE `v2_server_trojan`
+ADD `allow_insecure` tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否允许不安全' AFTER `server_port`,
+CHANGE `show` `show` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否显示' AFTER `allow_insecure`;
+
+ALTER TABLE `v2_server_trojan`
+ADD `server_name` varchar(255) NULL AFTER `allow_insecure`;
