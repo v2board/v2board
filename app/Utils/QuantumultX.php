@@ -34,7 +34,18 @@ class QuantumultX
     public static function buildTrojan($password, $server)
     {
         $tlsVerification = $server->allow_insecure ? true : false;
-        $uri = "trojan={$server->host}:{$server->port}, password={$password}, over-tls=true, tls-host={$server->server_name}, tls-verification={$tlsVerification}, fast-open=false, udp-relay=false, tag={$server->name}";
+        $config = [
+            "trojan={$server->host}:{$server->port}",
+            "password={$password}",
+            "over-tls=true",
+            $server->server_name ? "tls-host={$server->server_name}" : "",
+            "tls-verification={$tlsVerification}",
+            "fast-open=false",
+            "udp-relay=false",
+            "tag={$server->name}"
+        ];
+        $config = array_filter($config);
+        $uri = implode($config, ',');
         $uri .= "\r\n";
         return $uri;
     }
