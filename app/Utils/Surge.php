@@ -36,7 +36,8 @@ class Surge
             "{$server->port}",
             "password={$password}",
             "skip-cert-verify={$allowInsecure}",
-            $server->server_name ? "sni={$server->server_name}" : ""
+            $server->server_name ? "sni={$server->server_name}" : "",
+            "tfo=true"
         ];
         $config = array_filter($config);
         $uri = implode($config, ',');
