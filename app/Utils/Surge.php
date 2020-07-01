@@ -29,13 +29,12 @@ class Surge
 
     public static function buildTrojan($password, $server)
     {
-        $skipCertVerify = (string)($server->allow_insecure ? true : false);
         $config = [
             "{$server->name}=trojan",
             "{$server->host}",
             "{$server->port}",
             "password={$password}",
-            "skip-cert-verify={$skipCertVerify}",
+            $server->allow_insecure ? 'skip-cert-verify=true' : 'skip-cert-verify=false',
             $server->server_name ? "sni={$server->server_name}" : "",
             "tfo=true"
         ];

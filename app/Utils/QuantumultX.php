@@ -33,13 +33,12 @@ class QuantumultX
 
     public static function buildTrojan($password, $server)
     {
-        $tlsVerification = (string)($server->allow_insecure ? true : false);
         $config = [
             "trojan={$server->host}:{$server->port}",
             "password={$password}",
             "over-tls=true",
             $server->server_name ? "tls-host={$server->server_name}" : "",
-            "tls-verification={$tlsVerification}",
+            $server->allow_insecure ? 'tls-verification=true' : 'tls-verification=false',
             "fast-open=false",
             "udp-relay=false",
             "tag={$server->name}"
