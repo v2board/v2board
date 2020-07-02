@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\Server;
 use App\Http\Requests\Admin\ServerTrojanSave;
 use App\Http\Requests\Admin\ServerTrojanSort;
 use App\Http\Requests\Admin\ServerTrojanUpdate;
+use App\Services\ServerService;
 use App\Utils\CacheKey;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -129,6 +130,15 @@ class TrojanController extends Controller
         DB::commit();
         return response([
             'data' => true
+        ]);
+    }
+
+    public function viewConfig(Request $request)
+    {
+        $serverService = new ServerService();
+        $config = $serverService->getTrojanConfig($request->input('node_id'), 23333);
+        return response([
+            'data' => $config
         ]);
     }
 }

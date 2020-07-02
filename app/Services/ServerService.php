@@ -120,8 +120,8 @@ class ServerService
         $json = json_decode(self::TROJAN_CONFIG);
         $json->local_port = $server->server_port;
         $json->ssl->sni = $server->server_name ? $server->server_name : $server->host;
-        $json->ssl->cert = "/root/.cert/{$server->host}.crt";
-        $json->ssl->key = "/root/.cert/{$server->host}.key";
+        $json->ssl->cert = "/root/.cert/server.crt";
+        $json->ssl->key = "/root/.cert/server.key";
         $json->api->api_port = $localPort;
         return $json;
     }
@@ -196,8 +196,8 @@ class ServerService
             $tlsSettings = json_decode($server->tlsSettings);
             $json->inbound->streamSettings->security = 'tls';
             $tls = (object)[
-                'certificateFile' => '/home/v2ray.crt',
-                'keyFile' => '/home/v2ray.key'
+                'certificateFile' => '/root/.cert/server.crt',
+                'keyFile' => '/root/.cert/server.key'
             ];
             $json->inbound->streamSettings->tlsSettings = new \StdClass();
             if (isset($tlsSettings->serverName)) {

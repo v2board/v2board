@@ -35,6 +35,7 @@ class AdminRoute
                 $router->post('update', 'Admin\\Server\\TrojanController@update');
                 $router->post('copy', 'Admin\\Server\\TrojanController@copy');
                 $router->post('sort', 'Admin\\Server\\TrojanController@sort');
+                $router->post('viewConfig', 'Admin\\Server\\TrojanController@viewConfig');
             });
             $router->group([
                 'prefix' => 'server/v2ray'
