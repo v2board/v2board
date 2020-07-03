@@ -28,9 +28,9 @@ class ServerService
             if (in_array($user->group_id, $groupId)) {
                 $vmesss[$k]['link'] = Helper::buildVmessLink($vmesss[$k], $user);
                 if ($vmesss[$k]['parent_id']) {
-                    $vmesss[$k]['last_check_at'] = Cache::get(CacheKey::get('SERVER_LAST_CHECK_AT', $vmesss[$k]['parent_id']));
+                    $vmesss[$k]['last_check_at'] = Cache::get(CacheKey::get('SERVER_V2RAY_LAST_CHECK_AT', $vmesss[$k]['parent_id']));
                 } else {
-                    $vmesss[$k]['last_check_at'] = Cache::get(CacheKey::get('SERVER_LAST_CHECK_AT', $vmesss[$k]['id']));
+                    $vmesss[$k]['last_check_at'] = Cache::get(CacheKey::get('SERVER_V2RAY_LAST_CHECK_AT', $vmesss[$k]['id']));
                 }
                 array_push($vmess, $vmesss[$k]);
             }
@@ -51,7 +51,11 @@ class ServerService
         foreach ($trojans as $k => $v) {
             $groupId = json_decode($trojans[$k]['group_id']);
             if (in_array($user->group_id, $groupId)) {
-                $trojans[$k]['last_check_at'] = Cache::get(CacheKey::get('SERVER_TROJAN_LAST_CHECK_AT', $trojans[$k]['id']));
+                if ($trojans[$k]['parent_id']) {
+                    $trojans[$k]['last_check_at'] = Cache::get(CacheKey::get('SERVER_TROJAN_LAST_CHECK_AT', $trojans[$k]['parent_id']));
+                } else {
+                    $trojans[$k]['last_check_at'] = Cache::get(CacheKey::get('SERVER_TROJAN_LAST_CHECK_AT', $trojans[$k]['id']));
+                }
                 array_push($trojan, $trojans[$k]);
             }
 

@@ -37,7 +37,7 @@ class PoseidonController extends Controller
         if (!$server) {
             return $this->error("server could not be found", 404);
         }
-        Cache::put(CacheKey::get('SERVER_LAST_CHECK_AT', $server->id), time(), 3600);
+        Cache::put(CacheKey::get('SERVER_V2RAY_LAST_CHECK_AT', $server->id), time(), 3600);
         $serverService = new ServerService();
         $users = $serverService->getAvailableUsers(json_decode($server->group_id));
         $result = [];
@@ -67,7 +67,7 @@ class PoseidonController extends Controller
         }
         $data = file_get_contents('php://input');
         $data = json_decode($data, true);
-        Cache::put(CacheKey::get('SERVER_ONLINE_USER', $server->id), count($data), 3600);
+        Cache::put(CacheKey::get('SERVER_V2RAY_ONLINE_USER', $server->id), count($data), 3600);
         $serverService = new ServerService();
         $userService = new UserService();
         foreach ($data as $item) {
