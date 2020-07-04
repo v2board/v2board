@@ -16,7 +16,7 @@ class AppController extends Controller
     CONST SOCKS_PORT = 10010;
     CONST HTTP_PORT = 10011;
 
-    public function data(Request $request)
+    public function getConfig(Request $request)
     {
         $server = [];
         $user = $request->user;
@@ -44,6 +44,13 @@ class AppController extends Controller
             $config['Proxy Group'][$k]['proxies'] = array_merge($config['Proxy Group'][$k]['proxies'], $proxies);
         }
         die(Yaml::dump($config));
+    }
+
+    public function getVersion()
+    {
+        return response([
+            'data' => '4.0.0'
+        ]);
     }
 
     public function config(Request $request)
