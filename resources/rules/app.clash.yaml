@@ -1,7 +1,7 @@
 port: 8890
 socks-port: 8891
 allow-lan: false
-mode: Rule
+mode: rule
 log-level: info
 external-controller: 127.0.0.1:9091
 experimental:
