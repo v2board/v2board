@@ -209,9 +209,9 @@ class ClientController extends Controller
             array_push($proxies, $item->name);
         }
 
-        $config['Proxy'] = array_merge($config['Proxy'] ? $config['Proxy'] : [], $proxy);
-        foreach ($config['Proxy Group'] as $k => $v) {
-            $config['Proxy Group'][$k]['proxies'] = array_merge($config['Proxy Group'][$k]['proxies'], $proxies);
+        $config['proxies'] = array_merge($config['proxies'] ? $config['proxies'] : [], $proxy);
+        foreach ($config['proxy-groups'] as $k => $v) {
+            $config['proxy-groups'][$k]['proxies'] = array_merge($config['proxy-groups'][$k]['proxies'], $proxies);
         }
         $yaml = Yaml::dump($config);
         $yaml = str_replace('$app_name', config('v2board.app_name', 'V2Board'), $yaml);
