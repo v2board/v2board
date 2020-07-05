@@ -27,6 +27,7 @@ CREATE TABLE `v2_coupon` (
   `type` tinyint(1) NOT NULL,
   `value` int(11) NOT NULL,
   `limit_use` int(11) DEFAULT NULL,
+  `limit_plan_ids` varchar(255) DEFAULT NULL,
   `started_at` int(11) NOT NULL,
   `ended_at` int(11) NOT NULL,
   `created_at` int(11) NOT NULL,
@@ -165,6 +166,7 @@ CREATE TABLE `v2_server_log` (
   `u` varchar(255) NOT NULL,
   `d` varchar(255) NOT NULL,
   `rate` decimal(10,2) NOT NULL,
+  `method` varchar(255) NOT NULL,
   `log_at` int(11) NOT NULL,
   `created_at` int(11) NOT NULL,
   `updated_at` int(11) NOT NULL,
@@ -178,11 +180,33 @@ CREATE TABLE `v2_server_stat` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `server_id` int(11) NOT NULL,
   `u` varchar(255) NOT NULL,
-  `d` varchar(25) NOT NULL,
+  `d` varchar(255) NOT NULL,
+  `created_at` int(11) NOT NULL,
+  `updated_at` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `created_at` (`created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+DROP TABLE IF EXISTS `v2_server_trojan`;
+CREATE TABLE `v2_server_trojan` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '节点ID',
+  `group_id` varchar(255) NOT NULL COMMENT '节点组',
+  `parent_id` int(11) DEFAULT NULL COMMENT '父节点',
+  `tags` varchar(255) DEFAULT NULL COMMENT '节点标签',
+  `name` varchar(255) NOT NULL COMMENT '节点名称',
+  `rate` varchar(11) NOT NULL COMMENT '倍率',
+  `host` varchar(255) NOT NULL COMMENT '主机名',
+  `port` int(11) NOT NULL COMMENT '连接端口',
+  `server_port` int(11) NOT NULL COMMENT '服务端口',
+  `allow_insecure` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否允许不安全',
+  `server_name` varchar(255) DEFAULT NULL,
+  `show` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否显示',
+  `sort` int(11) DEFAULT NULL,
   `created_at` int(11) NOT NULL,
   `updated_at` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='trojan伺服器表';
 
 
 DROP TABLE IF EXISTS `v2_ticket`;
@@ -241,11 +265,12 @@ CREATE TABLE `v2_user` (
   `u` bigint(20) NOT NULL DEFAULT '0',
   `d` bigint(20) NOT NULL DEFAULT '0',
   `transfer_enable` bigint(20) NOT NULL DEFAULT '0',
+  `enable` tinyint(1) NOT NULL DEFAULT '1',
   `banned` tinyint(1) NOT NULL DEFAULT '0',
   `is_admin` tinyint(1) NOT NULL DEFAULT '0',
   `last_login_at` int(11) DEFAULT NULL,
   `last_login_ip` int(11) DEFAULT NULL,
-  `v2ray_uuid` varchar(36) NOT NULL,
+  `uuid` varchar(36) NOT NULL,
   `v2ray_alter_id` tinyint(4) NOT NULL DEFAULT '2',
   `v2ray_level` tinyint(4) NOT NULL DEFAULT '0',
   `group_id` int(11) DEFAULT NULL,
@@ -261,4 +286,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2020-05-12 12:31:04
+-- 2020-07-01 07:01:59

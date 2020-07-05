@@ -3,6 +3,7 @@
 namespace App\Utils;
 
 use App\Models\Server;
+use App\Models\ServerTrojan;
 use App\Models\User;
 
 class Helper
@@ -56,6 +57,18 @@ class Helper
         return $str;
     }
 
+    public static function buildTrojanLink(ServerTrojan $server, User $user)
+    {
+        $server->name = rawurlencode($server->name);
+        $query = http_build_query([
+            'allowInsecure' => $server->allow_insecure,
+            'peer' => $server->server_name
+        ]);
+        $uri = "trojan://{$user->uuid}@{$server->host}:{$server->port}?{$query}#{$server->name}";
+        $uri .= "\r\n";
+        return $uri;
+    }
+
     public static function buildVmessLink(Server $server, User $user)
     {
         $config = [
@@ -63,7 +76,7 @@ class Helper
             "ps" => $server->name,
             "add" => $server->host,
             "port" => $server->port,
-            "id" => $user->v2ray_uuid,
+            "id" => $user->uuid,
             "aid" => "2",
             "net" => $server->network,
             "type" => "none",

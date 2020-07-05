@@ -1,7 +1,7 @@
 port: 7890
 socks-port: 7891
 allow-lan: false
-mode: Rule
+mode: rule
 log-level: info
 external-controller: 127.0.0.1:9090
 experimental:
@@ -16,14 +16,14 @@ dns:
   fallback:
     - tls://1.0.0.1:853
     - tls://dns.google:853
-Proxy:
+proxies:
 
-Proxy Group:
+proxy-groups:
   - { name: "$app_name", type: select, proxies: ["自动选择", "故障转移"] }
   - { name: "自动选择", type: url-test, proxies: [], url: "http://www.gstatic.com/generate_204", interval: 86400 }
   - { name: "故障转移", type: fallback, proxies: [], url: "http://www.gstatic.com/generate_204", interval: 7200 }
 
-Rule:
+rules:
   # Apple
   - DOMAIN,safebrowsing.urlsec.qq.com,DIRECT # 如果您并不信任此服务提供商或防止其下载消耗过多带宽资源，可以进入 Safari 设置，关闭 Fraudulent Website Warning 功能，并使用 REJECT 策略。
   - DOMAIN,safebrowsing.googleapis.com,DIRECT # 如果您并不信任此服务提供商或防止其下载消耗过多带宽资源，可以进入 Safari 设置，关闭 Fraudulent Website Warning 功能，并使用 REJECT 策略。

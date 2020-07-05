@@ -43,6 +43,12 @@ class CouponService
                 return false;
             }
         }
+        if ($this->coupon->limit_plan_ids) {
+            $limitPlanIds = json_decode($this->coupon->limit_plan_ids);
+            if (!in_array($order->plan_id, $limitPlanIds)) {
+                return false;
+            }
+        }
         return true;
     }
 }

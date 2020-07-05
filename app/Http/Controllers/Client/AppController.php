@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
+use App\Services\ServerService;
+use App\Services\UserService;
+use App\Utils\Clash;
 use Illuminate\Http\Request;
-use App\Models\User;
-use App\Models\Plan;
 use App\Models\Server;
-use App\Models\Notice;
-use App\Utils\Helper;
+use Symfony\Component\Yaml\Yaml;
 
 class AppController extends Controller
 {
@@ -16,38 +16,40 @@ class AppController extends Controller
     CONST SOCKS_PORT = 10010;
     CONST HTTP_PORT = 10011;
 
-    // TODO: 1.1.1 abolish
-    public function data(Request $request)
+    public function getConfig(Request $request)
     {
+        $server = [];
         $user = $request->user;
-        $nodes = [];
-        if ($user->plan_id) {
-            $user['plan'] = Plan::find($user->plan_id);
-            if (!$user['plan']) {
-                abort(500, '订阅计划不存在');
-            }
-            if ($user->expired_at > time()) {
-                $servers = Server::where('show', 1)
-                    ->orderBy('name')
-                    ->get();
-                foreach ($servers as $item) {
-                    $groupId = json_decode($item['group_id']);
-                    if (in_array($user->group_id, $groupId)) {
-                        array_push($nodes, $item);
-                    }
-                }
-            }
+        $userService = new UserService();
+        if ($userService->isAvailable($user)) {
+            $serverService = new ServerService();
+            $servers = $serverService->getAllServers($user);
         }
+        $config = Yaml::parseFile(base_path() . '/resources/rules/app.clash.yaml');
+        $proxy = [];
+        $proxies = [];
+
+        foreach ($servers['vmess'] as $item) {
+            array_push($proxy, Clash::buildVmess($user->uuid, $item));
+            array_push($proxies, $item->name);
+        }
+
+        foreach ($servers['trojan'] as $item) {
+            array_push($proxy, Clash::buildTrojan($user->uuid, $item));
+            array_push($proxies, $item->name);
+        }
+
+        $config['proxies'] = array_merge($config['proxies'] ? $config['proxies'] : [], $proxy);
+        foreach ($config['proxy-groups'] as $k => $v) {
+            $config['proxy-groups'][$k]['proxies'] = array_merge($config['proxy-groups'][$k]['proxies'], $proxies);
+        }
+        die(Yaml::dump($config));
+    }
+
+    public function getVersion()
+    {
         return response([
-            'data' => [
-                'nodes' => $nodes,
-                'u' => $user->u,
-                'd' => $user->d,
-                'transfer_enable' => $user->transfer_enable,
-                'expired_at' => $user->expired_at,
-                'plan' => isset($user['plan']) ? $user['plan'] : false,
-                'notice' => Notice::orderBy('created_at', 'DESC')->first()
-            ]
+            'data' => '4.0.0'
         ]);
     }
 
@@ -74,7 +76,7 @@ class AppController extends Controller
         //other
         $json->outbound->settings->vnext[0]->address = (string)$server->host;
         $json->outbound->settings->vnext[0]->port = (int)$server->port;
-        $json->outbound->settings->vnext[0]->users[0]->id = (string)$user->v2ray_uuid;
+        $json->outbound->settings->vnext[0]->users[0]->id = (string)$user->uuid;
         $json->outbound->settings->vnext[0]->users[0]->alterId = (int)$user->v2ray_alter_id;
         $json->outbound->settings->vnext[0]->remark = (string)$server->name;
         $json->outbound->streamSettings->network = $server->network;

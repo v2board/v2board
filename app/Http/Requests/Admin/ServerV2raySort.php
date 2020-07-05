@@ -4,25 +4,25 @@ namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ServerUpdate extends FormRequest
+class ServerV2raySort extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
      *
      * @return array
      */
-
     public function rules()
     {
         return [
-            'show' => 'in:0,1'
+            'server_ids' => 'required|array'
         ];
     }
 
     public function messages()
     {
         return [
-            'show.in' => '显示状态格式不正确'
+            'server_ids.required' => '服务器ID不能为空',
+            'server_ids.array' => '服务器ID格式有误'
         ];
     }
 }

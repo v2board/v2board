@@ -23,6 +23,9 @@ class PayTaro
         $curl = new Curl();
         $curl->post('https://api.paytaro.com/v1/gateway/fetch', http_build_query($params));
         $result = $curl->response;
+        if (!$result) {
+            abort(500, '网络异常');
+        }
         if ($curl->error) {
             $errors = (array)$result->errors;
             abort(500, $errors[array_keys($errors)[0]][0]);

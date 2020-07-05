@@ -3,10 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
 
-class ServerLog extends Model
+class ServerStat extends Model
 {
-    protected $table = 'v2_server_log';
+    protected $table = 'v2_server_stat';
     protected $dateFormat = 'U';
+    protected $guarded = ['id'];
 }

@@ -11,7 +11,8 @@ class CommController extends Controller
     {
         return response([
             'data' => [
-                'isTelegram' => (int)config('v2board.telegram_bot_enable', 0)
+                'isTelegram' => (int)config('v2board.telegram_bot_enable', 0),
+                'stripePk' => config('v2board.stripe_pk_live')
             ]
         ]);
     }

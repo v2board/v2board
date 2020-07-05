@@ -44,6 +44,7 @@ class ConfigSave extends FormRequest
         // stripe
         'stripe_alipay_enable' => 'in:0,1',
         'stripe_wepay_enable' => 'in:0,1',
+        'stripe_card_enable' => 'in:0,1',
         'stripe_sk_live' => '',
         'stripe_pk_live' => '',
         'stripe_webhook_key' => '',

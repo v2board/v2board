@@ -15,7 +15,7 @@
         "laravel/tinker": "^1.0",
         "lokielse/omnipay-alipay": "3.0.6",
         "php-curl-class/php-curl-class": "^8.6",
-        "stripe/stripe-php": "^7.5",
+        "stripe/stripe-php": "^7.36.1",
         "symfony/yaml": "^4.3"
     },
     "require-dev": {

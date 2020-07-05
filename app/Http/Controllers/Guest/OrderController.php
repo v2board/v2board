@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Guest;
 
+use App\Services\OrderService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
@@ -66,22 +67,26 @@ class OrderController extends Controller
         }
         switch ($event->type) {
             case 'source.chargeable':
-                $source = $event->data->object;
-                $charge = \Stripe\Charge::create([
-                    'amount' => $source['amount'],
-                    'currency' => $source['currency'],
-                    'source' => $source['id'],
-                    'description' => config('v2board.app_name', 'V2Board') . $source['metadata']['invoice_id'],
+                $object = $event->data->object;
+                \Stripe\Charge::create([
+                    'amount' => $object->amount,
+                    'currency' => $object->currency,
+                    'source' => $object->id,
+                    'metadata' => json_decode($object->metadata, true)
                 ]);
-                if ($charge['status'] == 'succeeded') {
-                    $trade_no = Cache::get($source['id']);
-                    if (!$trade_no) {
-                        abort(500, 'redis is not found trade no by stripe source id');
+                die('success');
+                break;
+            case 'charge.succeeded':
+                $object = $event->data->object;
+                if ($object->status === 'succeeded') {
+                    $metaData = isset($object->metadata->out_trade_no) ? $object->metadata : $object->source->metadata;
+                    $tradeNo = $metaData->out_trade_no;
+                    if (!$tradeNo) {
+                        abort(500, 'trade no is not found in metadata');
                     }
-                    if (!$this->handle($trade_no, $source['id'])) {
+                    if (!$this->handle($tradeNo, $object->balance_transaction)) {
                         abort(500, 'fail');
                     }
-                    Cache::forget($source['id']);
                     die('success');
                 }
                 break;
@@ -143,11 +148,7 @@ class OrderController extends Controller
         if (!$order) {
             abort(500, 'order is not found');
         }
-        if ($order->status !== 0) {
-            return true;
-        }
-        $order->status = 1;
-        $order->callback_no = $callbackNo;
-        return $order->save();
+        $orderService = new OrderService($order);
+        return $orderService->success($callbackNo);
     }
 }
