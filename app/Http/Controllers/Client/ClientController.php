@@ -117,16 +117,7 @@ class ClientController extends Controller
         }
 
         // Subscription link
-        $subsURL = 'http';
-        if (isset( $_SERVER['HTTPS'] ) && strtolower( $_SERVER['HTTPS'] ) == 'on') {
-            $subsURL .= 's';
-        }
-        $subsURL .= '://';
-        if ($_SERVER['SERVER_PORT'] != ('80' || '443')) {
-            $subsURL .= $_SERVER['SERVER_NAME'] . ':' . $_SERVER['SERVER_PORT'] . $_SERVER['REQUEST_URI'];
-        } else {
-            $subsURL .= $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
-        }
+        $subsURL = config('v2board.subscribe_url', config('v2board.app_url', env('APP_URL'))) . '/api/v1/client/subscribe?token=' . $user['token'];
 
         $config = str_replace('$subs_link', $subsURL, $config);
         $config = str_replace('$proxies', $proxies, $config);
@@ -170,16 +161,7 @@ class ClientController extends Controller
         }
 
         // Subscription link
-        $subsURL = 'http';
-        if (isset( $_SERVER['HTTPS'] ) && strtolower( $_SERVER['HTTPS'] ) == 'on') {
-            $subsURL .= 's';
-        }
-        $subsURL .= '://';
-        if ($_SERVER['SERVER_PORT'] != ('80' || '443')) {
-            $subsURL .= $_SERVER['SERVER_NAME'] . ':' . $_SERVER['SERVER_PORT'] . $_SERVER['REQUEST_URI'];
-        } else {
-            $subsURL .= $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
-        }
+        $subsURL = config('v2board.subscribe_url', config('v2board.app_url', env('APP_URL'))) . '/api/v1/client/subscribe?token=' . $user['token'];
 
         $config = str_replace('$subs_link', $subsURL, $config);
         $config = str_replace('$proxies', $proxies, $config);
