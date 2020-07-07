@@ -96,6 +96,10 @@ class OrderController extends Controller
             abort(500, '必须存在订阅才可以购买流量重置包');
         }
 
+        if ($request->input('cycle') === 'reset_price' && $user->expired_at <= time()) {
+            abort(500, '当前订阅已过期，无法购买重置包');
+        }
+
         DB::beginTransaction();
         $order = new Order();
         $orderService = new OrderService($order);
