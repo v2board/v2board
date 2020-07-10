@@ -28,7 +28,7 @@ class CouponController extends Controller
             $params['limit_plan_ids'] = json_encode($params['limit_plan_ids']);
         }
         if (!$request->input('id')) {
-            if (!$params['code']) {
+            if (!isset($params['code'])) {
                 $params['code'] = Helper::randomChar(8);
             }
             if (!Coupon::create($params)) {
