@@ -6,21 +6,6 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class UserUpdate extends FormRequest
 {
-    CONST RULES = [
-        'email' => 'required|email',
-        'password' => 'nullable',
-        'transfer_enable' => 'numeric',
-        'expired_at' => 'nullable|integer',
-        'banned' => 'required|in:0,1',
-        'plan_id' => 'nullable|integer',
-        'commission_rate' => 'nullable|integer|min:0|max:100',
-        'discount' => 'nullable|integer|min:0|max:100',
-        'is_admin' => 'required|in:0,1',
-        'u' => 'integer',
-        'd' => 'integer',
-        'balance' => 'integer',
-        'commission_balance' => 'integer'
-    ];
     /**
      * Get the validation rules that apply to the request.
      *
@@ -28,7 +13,21 @@ class UserUpdate extends FormRequest
      */
     public function rules()
     {
-        return self::RULES;
+        return [
+            'email' => 'required|email',
+            'password' => 'nullable',
+            'transfer_enable' => 'numeric',
+            'expired_at' => 'nullable|integer',
+            'banned' => 'required|in:0,1',
+            'plan_id' => 'nullable|integer',
+            'commission_rate' => 'nullable|integer|min:0|max:100',
+            'discount' => 'nullable|integer|min:0|max:100',
+            'is_admin' => 'required|in:0,1',
+            'u' => 'integer',
+            'd' => 'integer',
+            'balance' => 'integer',
+            'commission_balance' => 'integer'
+        ];
     }
 
     public function messages()

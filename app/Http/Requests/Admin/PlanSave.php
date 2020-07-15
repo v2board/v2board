@@ -6,18 +6,6 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class PlanSave extends FormRequest
 {
-    CONST RULES = [
-        'name' => 'required',
-        'content' => '',
-        'group_id' => 'required',
-        'transfer_enable' => 'required',
-        'month_price' => 'nullable|integer',
-        'quarter_price' => 'nullable|integer',
-        'half_year_price' => 'nullable|integer',
-        'year_price' => 'nullable|integer',
-        'onetime_price' => 'nullable|integer',
-        'reset_price' => 'nullable|integer'
-    ];
     /**
      * Get the validation rules that apply to the request.
      *
@@ -25,7 +13,18 @@ class PlanSave extends FormRequest
      */
     public function rules()
     {
-        return self::RULES;
+        return [
+            'name' => 'required',
+            'content' => '',
+            'group_id' => 'required',
+            'transfer_enable' => 'required',
+            'month_price' => 'nullable|integer',
+            'quarter_price' => 'nullable|integer',
+            'half_year_price' => 'nullable|integer',
+            'year_price' => 'nullable|integer',
+            'onetime_price' => 'nullable|integer',
+            'reset_price' => 'nullable|integer'
+        ];
     }
 
     public function messages()

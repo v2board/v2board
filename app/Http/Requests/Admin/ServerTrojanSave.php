@@ -6,19 +6,6 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class ServerTrojanSave extends FormRequest
 {
-    CONST RULES = [
-        'show' => '',
-        'name' => 'required',
-        'group_id' => 'required|array',
-        'parent_id' => 'nullable|integer',
-        'host' => 'required',
-        'port' => 'required',
-        'server_port' => 'required',
-        'allow_insecure' => 'nullable|in:0,1',
-        'server_name' => 'nullable',
-        'tags' => 'nullable|array',
-        'rate' => 'required|numeric'
-    ];
     /**
      * Get the validation rules that apply to the request.
      *
@@ -26,7 +13,19 @@ class ServerTrojanSave extends FormRequest
      */
     public function rules()
     {
-        return self::RULES;
+        return [
+            'show' => '',
+            'name' => 'required',
+            'group_id' => 'required|array',
+            'parent_id' => 'nullable|integer',
+            'host' => 'required',
+            'port' => 'required',
+            'server_port' => 'required',
+            'allow_insecure' => 'nullable|in:0,1',
+            'server_name' => 'nullable',
+            'tags' => 'nullable|array',
+            'rate' => 'required|numeric'
+        ];
     }
 
     public function messages()

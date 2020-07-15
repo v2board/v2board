@@ -20,7 +20,7 @@ class TutorialController extends Controller
 
     public function save(TutorialSave $request)
     {
-        $params = $request->only(array_keys(TutorialSave::RULES));
+        $params = $request->validated();
 
         if (!$request->input('id')) {
             if (!Tutorial::create($params)) {

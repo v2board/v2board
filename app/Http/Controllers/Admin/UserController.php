@@ -53,7 +53,7 @@ class UserController extends Controller
 
     public function update(UserUpdate $request)
     {
-        $params = $request->only(array_keys(UserUpdate::RULES));
+        $params = $request->validated();
         $user = User::find($request->input('id'));
         if (!$user) {
             abort(500, '用户不存在');

@@ -6,16 +6,6 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class CouponSave extends FormRequest
 {
-    const RULES = [
-        'name' => 'required',
-        'type' => 'required|in:1,2',
-        'value' => 'required|integer',
-        'started_at' => 'required|integer',
-        'ended_at' => 'required|integer',
-        'limit_use' => 'nullable|integer',
-        'limit_plan_ids' => 'nullable|array',
-        'code' => ''
-    ];
     /**
      * Get the validation rules that apply to the request.
      *
@@ -23,7 +13,16 @@ class CouponSave extends FormRequest
      */
     public function rules()
     {
-        return self::RULES;
+        return [
+            'name' => 'required',
+            'type' => 'required|in:1,2',
+            'value' => 'required|integer',
+            'started_at' => 'required|integer',
+            'ended_at' => 'required|integer',
+            'limit_use' => 'nullable|integer',
+            'limit_plan_ids' => 'nullable|array',
+            'code' => ''
+        ];
     }
 
     public function messages()

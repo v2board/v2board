@@ -42,7 +42,7 @@ class PlanController extends Controller
 
     public function save(PlanSave $request)
     {
-        $params = $request->only(array_keys(PlanSave::RULES));
+        $params = $request->validated();
         if ($request->input('id')) {
             $plan = Plan::find($request->input('id'));
             if (!$plan) {

@@ -23,7 +23,7 @@ class CouponController extends Controller
 
     public function save(CouponSave $request)
     {
-        $params = $request->only(array_keys(CouponSave::RULES));
+        $params = $request->validated();
         if (isset($params['limit_plan_ids'])) {
             $params['limit_plan_ids'] = json_encode($params['limit_plan_ids']);
         }

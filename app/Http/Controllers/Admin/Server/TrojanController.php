@@ -37,7 +37,7 @@ class TrojanController extends Controller
 
     public function save(ServerTrojanSave $request)
     {
-        $params = $request->only(array_keys(ServerTrojanSave::RULES));
+        $params = $request->validated();
         $params['group_id'] = json_encode($params['group_id']);
         if (isset($params['tags'])) {
             $params['tags'] = json_encode($params['tags']);
