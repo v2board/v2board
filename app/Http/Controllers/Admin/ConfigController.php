@@ -82,14 +82,21 @@ class ConfigController extends Controller
                     'stripe_webhook_key' => config('v2board.stripe_webhook_key'),
                     'stripe_currency' => config('v2board.stripe_currency', 'hkd'),
                     // bitpayx
-                    'bitpayx_name' => config('v2board.bitpayx_name', '聚合支付'),
+                    'bitpayx_name' => config('v2board.bitpayx_name', '在线支付'),
                     'bitpayx_enable' => (int)config('v2board.bitpayx_enable', 0),
                     'bitpayx_appsecret' => config('v2board.bitpayx_appsecret'),
-                    // paytaro
-                    'paytaro_name' => config('v2board.paytaro_name', '聚合支付'),
-                    'paytaro_enable' => (int)config('v2board.paytaro_enable', 0),
-                    'paytaro_app_id' => config('v2board.paytaro_app_id'),
-                    'paytaro_app_secret' => config('v2board.paytaro_app_secret')
+                    // vGate
+                    'vgate_name' => config('v2board.vgate_name', '在线支付'),
+                    'vgate_enable' => (int)config('v2board.vgate_enable', 0),
+                    'vgate_url' => config('v2board.vgate_url'),
+                    'vgate_app_id' => config('v2board.vgate_app_id'),
+                    'vgate_app_secret' => config('v2board.vgate_app_secret'),
+                    // Epay
+                    'epay_name' => config('v2board.epay_name', '在线支付'),
+                    'epay_enable' => (int)config('v2board.epay_enable', 0),
+                    'epay_url' => config('v2board.epay_url'),
+                    'epay_pid' => config('v2board.epay_pid'),
+                    'epay_key' => config('v2board.epay_key'),
                 ],
                 'frontend' => [
                     'frontend_theme_sidebar' => config('v2board.frontend_theme_sidebar', 'light'),
