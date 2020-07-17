@@ -19,6 +19,7 @@ class Clash
             $tlsSettings = json_decode($server->tlsSettings);
             $array['tls'] = true;
             if (isset($tlsSettings->allowInsecure)) $array['skip-cert-verify'] = ($tlsSettings->allowInsecure ? true : false );
+            if (isset($tlsSettings->serverName)) $array['servername'] = $tlsSettings->serverName;
         }
         if ($server->network == 'ws') {
             $array['network'] = $server->network;
