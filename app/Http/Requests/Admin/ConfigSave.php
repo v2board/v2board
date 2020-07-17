@@ -63,13 +63,13 @@ class ConfigSave extends FormRequest
             // vGate
             'vgate_name' => '',
             'vgate_enable' => 'in:0,1',
-            'vgate_url' => 'url',
+            'vgate_url' => 'nullable|url',
             'vgate_app_id' => '',
             'vgate_app_secret' => '',
             // Epay
             'epay_name' => '',
             'epay_enable' => 'in:0,1',
-            'epay_url' => 'url',
+            'epay_url' => 'nullable|url',
             'epay_pid' => '',
             'epay_key' => '',
             // frontend
