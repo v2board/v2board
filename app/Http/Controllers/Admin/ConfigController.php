@@ -95,7 +95,8 @@ class ConfigController extends Controller
                     'frontend_theme_sidebar' => config('v2board.frontend_theme_sidebar', 'light'),
                     'frontend_theme_header' => config('v2board.frontend_theme_header', 'dark'),
                     'frontend_theme_color' => config('v2board.frontend_theme_color', 'default'),
-                    'frontend_background_url' => config('v2board.frontend_background_url')
+                    'frontend_background_url' => config('v2board.frontend_background_url'),
+                    'frontend_admin_path' => config('v2board.frontend_admin_path', 'admin')
                 ],
                 'server' => [
                     'server_token' => config('v2board.server_token'),
