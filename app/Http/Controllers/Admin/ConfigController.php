@@ -85,12 +85,12 @@ class ConfigController extends Controller
                     'bitpayx_name' => config('v2board.bitpayx_name', '在线支付'),
                     'bitpayx_enable' => (int)config('v2board.bitpayx_enable', 0),
                     'bitpayx_appsecret' => config('v2board.bitpayx_appsecret'),
-                    // vGate
-                    'vgate_name' => config('v2board.vgate_name', '在线支付'),
-                    'vgate_enable' => (int)config('v2board.vgate_enable', 0),
-                    'vgate_url' => config('v2board.vgate_url'),
-                    'vgate_app_id' => config('v2board.vgate_app_id'),
-                    'vgate_app_secret' => config('v2board.vgate_app_secret'),
+                    // mGate
+                    'mgate_name' => config('v2board.mgate_name', '在线支付'),
+                    'mgate_enable' => (int)config('v2board.mgate_enable', 0),
+                    'mgate_url' => config('v2board.mgate_url'),
+                    'mgate_app_id' => config('v2board.mgate_app_id'),
+                    'mgate_app_secret' => config('v2board.mgate_app_secret'),
                     // Epay
                     'epay_name' => config('v2board.epay_name', '在线支付'),
                     'epay_enable' => (int)config('v2board.epay_enable', 0),

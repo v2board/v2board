@@ -60,12 +60,12 @@ class ConfigSave extends FormRequest
             'bitpayx_name' => '',
             'bitpayx_enable' => 'in:0,1',
             'bitpayx_appsecret' => '',
-            // vGate
-            'vgate_name' => '',
-            'vgate_enable' => 'in:0,1',
-            'vgate_url' => 'nullable|url',
-            'vgate_app_id' => '',
-            'vgate_app_secret' => '',
+            // mGate
+            'mgate_name' => '',
+            'mgate_enable' => 'in:0,1',
+            'mgate_url' => 'nullable|url',
+            'mgate_app_id' => '',
+            'mgate_app_secret' => '',
             // Epay
             'epay_name' => '',
             'epay_enable' => 'in:0,1',

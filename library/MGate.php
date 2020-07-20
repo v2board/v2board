@@ -4,15 +4,17 @@ namespace Library;
 
 use \Curl\Curl;
 
-class PayTaro
+class MGate
 {
     private $appId;
     private $appSecret;
+    private $url;
 
-    public function __construct($appId, $appSecret)
+    public function __construct($url, $appId, $appSecret)
     {
         $this->appId = $appId;
         $this->appSecret = $appSecret;
+        $this->url = $url;
     }
 
     public function pay($params)
@@ -21,7 +23,7 @@ class PayTaro
         $str = http_build_query($params) . $this->appSecret;
         $params['sign'] = md5($str);
         $curl = new Curl();
-        $curl->post('https://api.paytaro.com/v1/gateway/fetch', http_build_query($params));
+        $curl->post($this->url . '/v1/gateway/fetch', http_build_query($params));
         $result = $curl->response;
         if (!$result) {
             abort(500, '网络异常');

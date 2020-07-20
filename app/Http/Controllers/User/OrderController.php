@@ -18,7 +18,8 @@ use Omnipay\Omnipay;
 use Stripe\Stripe;
 use Stripe\Source;
 use Library\BitpayX;
-use Library\PayTaro;
+use Library\MGate;
+use Library\Epay;
 
 class OrderController extends Controller
 {
@@ -213,12 +214,12 @@ class OrderController extends Controller
                     'data' => $this->bitpayX($order)
                 ]);
             case 5:
-                if (!(int)config('v2board.paytaro_enable')) {
+                if (!(int)config('v2board.mgate_enable')) {
                     abort(500, '支付方式不可用');
                 }
                 return response([
                     'type' => 1,
-                    'data' => $this->payTaro($order)
+                    'data' => $this->mgate($order)
                 ]);
             case 6:
                 if (!(int)config('v2board.stripe_card_enable')) {
@@ -227,6 +228,14 @@ class OrderController extends Controller
                 return response([
                     'type' => 2,
                     'data' => $this->stripeCard($order, $request->input('token'))
+                ]);
+            case 7:
+                if (!(int)config('v2board.epay_enable')) {
+                    abort(500, '支付方式不可用');
+                }
+                return response([
+                    'type' => 1,
+                    'data' => $this->epay($order)
                 ]);
             default:
                 abort(500, '支付方式不存在');
@@ -282,9 +291,9 @@ class OrderController extends Controller
             array_push($data, $bitpayX);
         }
 
-        if ((int)config('v2board.paytaro_enable')) {
+        if ((int)config('v2board.mgate_enable')) {
             $obj = new \StdClass();
-            $obj->name = config('v2board.paytaro_name', '在线支付');
+            $obj->name = config('v2board.mgate_name', '在线支付');
             $obj->method = 5;
             $obj->icon = 'wallet';
             array_push($data, $obj);
@@ -295,6 +304,14 @@ class OrderController extends Controller
             $obj->name = '信用卡';
             $obj->method = 6;
             $obj->icon = 'card';
+            array_push($data, $obj);
+        }
+
+        if ((int)config('v2board.epay_enable')) {
+            $obj = new \StdClass();
+            $obj->name = config('v2board.epay_name', '在线支付');
+            $obj->method = 7;
+            $obj->icon = 'wallet';
             array_push($data, $obj);
         }
 
@@ -454,16 +471,28 @@ class OrderController extends Controller
         return isset($result['payment_url']) ? $result['payment_url'] : false;
     }
 
-    private function payTaro($order)
+    private function mgate($order)
     {
-        $payTaro = new PayTaro(config('v2board.paytaro_app_id'), config('v2board.paytaro_app_secret'));
-        $result = $payTaro->pay([
-            'app_id' => config('v2board.paytaro_app_id'),
+        $mgate = new MGate(config('v2board_mgate_url'), config('v2board.mgate_app_id'), config('v2board.mgate_app_secret'));
+        $result = $mgate->pay([
+            'app_id' => config('v2board.mgate_app_id'),
             'out_trade_no' => $order->trade_no,
             'total_amount' => $order->total_amount,
-            'notify_url' => url('/api/v1/guest/order/payTaroNotify'),
+            'notify_url' => url('/api/v1/guest/order/mgateNotify'),
             'return_url' => config('v2board.app_url', env('APP_URL')) . '/#/order'
         ]);
         return $result;
+    }
+
+    private function epay($order)
+    {
+        $epay = new Epay(config('v2board.epay_url'), config('v2board.epay_pid'), config('v2board.epay_key'));
+        return $epay->pay([
+            'money' => $order->total_amount / 100,
+            'name' => $order->trade_no,
+            'notify_url' => url('/api/v1/guest/order/epayNotify'),
+            'return_url' => config('v2board.app_url', env('APP_URL')) . '/#/order',
+            'out_trade_no' => $order->trade_no
+        ]);
     }
 }
