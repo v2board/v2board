@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Services\ServerService;
 use App\Utils\Clash;
 use App\Utils\QuantumultX;
+use App\Utils\Shadowrocket;
 use App\Utils\Surge;
 use Illuminate\Http\Request;
 use App\Models\Server;
@@ -41,6 +42,9 @@ class ClientController extends Controller
                 if (strpos($_SERVER['HTTP_USER_AGENT'], 'surge') !== false) {
                     die($this->surge($user, $servers['vmess'], $servers['trojan']));
                 }
+                if (strpos($_SERVER['HTTP_USER_AGENT'], 'shadowrocket') !== false) {
+                    die($this->shadowrocket($user, $servers['vmess'], $servers['trojan']));
+                }
             }
             die($this->origin($user, $servers['vmess'], $servers['trojan']));
         }
@@ -62,6 +66,20 @@ class ClientController extends Controller
                 }
             }
             $uri .= "vmess://" . base64_encode($str) . "\r\n";
+        }
+        return base64_encode($uri);
+    }
+
+    private function shadowrocket($user, $vmess = [], $trojan = [])
+    {
+        $uri = '';
+        //TODO: display remaining traffic and expire date
+        //$uri .= 'STATUS=' . 'Traffic:' . 'Expiry:' . '\r\n';
+        foreach ($vmess as $item) {
+            $uri .= Shadowrocket::buildVmess($user->uuid, $item);
+        }
+        foreach ($trojan as $item) {
+            $uri .= Shadowrocket::buildTrojan($user->uuid, $item);
         }
         return base64_encode($uri);
     }
