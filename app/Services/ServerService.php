@@ -174,22 +174,26 @@ class ServerService
         if ($server->ruleSettings) {
             $rules = json_decode($server->ruleSettings);
             // domain
-            if (isset($rules->domain) && !empty($rules->domain)) {
+            if (isset($rules->domain)) {
                 $rules->domain = array_filter($rules->domain);
-                $domainObj = new \StdClass();
-                $domainObj->type = 'field';
-                $domainObj->domain = $rules->domain;
-                $domainObj->outboundTag = 'block';
-                array_push($json->routing->rules, $domainObj);
+                if (!empty($rules->domain)) {
+                    $domainObj = new \StdClass();
+                    $domainObj->type = 'field';
+                    $domainObj->domain = $rules->domain;
+                    $domainObj->outboundTag = 'block';
+                    array_push($json->routing->rules, $domainObj);
+                }
             }
             // protocol
-            if (isset($rules->protocol) && !empty($rules->protocol)) {
+            if (isset($rules->protocol)) {
                 $rules->protocol = array_filter($rules->protocol);
-                $protocolObj = new \StdClass();
-                $protocolObj->type = 'field';
-                $protocolObj->protocol = $rules->protocol;
-                $protocolObj->outboundTag = 'block';
-                array_push($json->routing->rules, $protocolObj);
+                if (!empty($rules->protocol)) {
+                    $protocolObj = new \StdClass();
+                    $protocolObj->type = 'field';
+                    $protocolObj->protocol = $rules->protocol;
+                    $protocolObj->outboundTag = 'block';
+                    array_push($json->routing->rules, $protocolObj);
+                }
             }
         }
     }
