@@ -23,7 +23,7 @@ class TrojanController extends Controller
                 $server[$i]['tags'] = json_decode($server[$i]['tags']);
             }
             $server[$i]['group_id'] = json_decode($server[$i]['group_id']);
-            $server[$i]['online'] = Cache::get(CacheKey::get('SERVER_TROJAN_ONLINE_USER', $server[$i]['id']));
+            $server[$i]['online'] = Cache::get(CacheKey::get('SERVER_TROJAN_ONLINE_USER', $server[$i]['parent_id'] ? $server[$i]['parent_id'] : $server[$i]['id']));
             if ($server[$i]['parent_id']) {
                 $server[$i]['last_check_at'] = Cache::get(CacheKey::get('SERVER_TROJAN_LAST_CHECK_AT', $server[$i]['parent_id']));
             } else {
