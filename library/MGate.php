@@ -29,8 +29,14 @@ class MGate
             abort(500, '网络异常');
         }
         if ($curl->error) {
-            $errors = (array)$result->errors;
-            abort(500, $errors[array_keys($errors)[0]][0]);
+            if (isset($result->errors)) {
+                $errors = (array)$result->errors;
+                abort(500, $errors[array_keys($errors)[0]][0]);
+            }
+            if (isset($result->message)) {
+                abort(500, $result->message);
+            }
+            abort(500, '未知错误');
         }
         $curl->close();
         if (!isset($result->data->trade_no)) {
