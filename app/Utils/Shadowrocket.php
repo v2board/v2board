@@ -23,7 +23,7 @@ class Shadowrocket
             if (isset($wsSettings->path)) $config['path'] = $wsSettings->path;
             if (isset($wsSettings->headers->Host)) $config['obfsParam'] = $wsSettings->headers->Host;
         }
-        $query = http_build_query($config);
+        $query = http_build_query($config, null, '&', PHP_QUERY_RFC3986);
         $uri = "vmess://{$userinfo}?{$query}&tfo=1";
         $uri .= "\r\n";
         return $uri;
