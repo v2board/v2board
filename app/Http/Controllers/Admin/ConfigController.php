@@ -138,7 +138,7 @@ class ConfigController extends Controller
         if (!\File::put(base_path() . '/config/v2board.php', "<?php\n return $data ;")) {
             abort(500, '修改失败');
         }
-        if (function_exists('opcache')) {
+        if (function_exists('opcache_reset')) {
             opcache_reset();
         }
         \Artisan::call('config:cache');
