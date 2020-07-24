@@ -297,7 +297,6 @@ CHANGE `show` `show` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否显示' AFTE
 ALTER TABLE `v2_server_trojan`
 ADD `server_name` varchar(255) NULL AFTER `allow_insecure`;
 
-SELECT *
-FROM `v2_server`
-WHERE `ruleSettings` = '{}'
-LIMIT 50
+UPDATE `v2_server` SET
+`ruleSettings` = NULL
+WHERE `ruleSettings` = '{}';
