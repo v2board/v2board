@@ -473,7 +473,7 @@ class OrderController extends Controller
 
     private function mgate($order)
     {
-        $mgate = new MGate(config('v2board_mgate_url'), config('v2board.mgate_app_id'), config('v2board.mgate_app_secret'));
+        $mgate = new MGate(config('v2board.mgate_url'), config('v2board.mgate_app_id'), config('v2board.mgate_app_secret'));
         $result = $mgate->pay([
             'app_id' => config('v2board.mgate_app_id'),
             'out_trade_no' => $order->trade_no,
