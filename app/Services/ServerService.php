@@ -171,30 +171,38 @@ class ServerService
 
     private function setRule(Server $server, object $json)
     {
+        $domainRules = array_filter(explode(PHP_EOL, config('v2board.server_v2ray_domain')));
+        $protocolRules = array_filter(explode(PHP_EOL, config('v2board.server_v2ray_protocol')));
         if ($server->ruleSettings) {
-            $rules = json_decode($server->ruleSettings);
+            $ruleSettings = json_decode($server->ruleSettings);
             // domain
-            if (isset($rules->domain)) {
-                $rules->domain = array_filter($rules->domain);
-                if (!empty($rules->domain)) {
-                    $domainObj = new \StdClass();
-                    $domainObj->type = 'field';
-                    $domainObj->domain = $rules->domain;
-                    $domainObj->outboundTag = 'block';
-                    array_push($json->routing->rules, $domainObj);
+            if (isset($ruleSettings->domain)) {
+                $ruleSettings->domain = array_filter($ruleSettings->domain);
+                if (!empty($ruleSettings->domain)) {
+                    $domainRules = array_merge($domainRules, $ruleSettings->domain);
                 }
             }
             // protocol
-            if (isset($rules->protocol)) {
-                $rules->protocol = array_filter($rules->protocol);
-                if (!empty($rules->protocol)) {
-                    $protocolObj = new \StdClass();
-                    $protocolObj->type = 'field';
-                    $protocolObj->protocol = $rules->protocol;
-                    $protocolObj->outboundTag = 'block';
-                    array_push($json->routing->rules, $protocolObj);
+            if (isset($ruleSettings->protocol)) {
+                $ruleSettings->protocol = array_filter($ruleSettings->protocol);
+                if (!empty($ruleSettings->protocol)) {
+                    $protocolRules = array_merge($protocolRules, $ruleSettings->protocol);
                 }
             }
+        }
+        if (!empty($domainRules)) {
+            $domainObj = new \StdClass();
+            $domainObj->type = 'field';
+            $domainObj->domain = $domainRules;
+            $domainObj->outboundTag = 'block';
+            array_push($json->routing->rules, $domainObj);
+        }
+        if (!empty($protocolRules)) {
+            $protocolObj = new \StdClass();
+            $protocolObj->type = 'field';
+            $protocolObj->protocol = $protocolRules;
+            $protocolObj->outboundTag = 'block';
+            array_push($json->routing->rules, $protocolObj);
         }
     }
 

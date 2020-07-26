@@ -42,7 +42,9 @@ class ConfigSave extends FormRequest
             // server
             'server_token' => 'nullable|min:16',
             'server_license' => 'nullable',
-            'server_log_level' => 'nullable|in:debug,info,warning,error,none',
+            'server_log_enable' => 'in:0,1',
+            'server_v2ray_domain' => '',
+            'server_v2ray_protocol' => '',
             // alipay
             'alipay_enable' => 'in:0,1',
             'alipay_appid' => 'nullable|integer|min:16',
