@@ -43,7 +43,7 @@ class QuantumultX
             }
         }
 
-        $uri = implode($config, ',');
+        $uri = implode(',', $config);
         $uri .= "\r\n";
         return $uri;
     }
@@ -61,7 +61,7 @@ class QuantumultX
             "tag={$server->name}"
         ];
         $config = array_filter($config);
-        $uri = implode($config, ',');
+        $uri = implode(',', $config);
         $uri .= "\r\n";
         return $uri;
     }
