@@ -18,7 +18,8 @@ class QuantumultX
                 $tlsSettings = json_decode($server->tlsSettings);
                 array_push($config, 'obfs=over-tls');
                 if (isset($tlsSettings->allowInsecure)) {
-                    array_push($config, $server->allow_insecure ? 'tls-verification=true' : 'tls-verification=false');
+                    // Tips: allowInsecure=false = tls-verification=true
+                    array_push($config, $tlsSettings->allowInsecure ? 'tls-verification=false' : 'tls-verification=true');
                 }
                 if (isset($tlsSettings->serverName)) {
                     array_push($config, "obfs-host={$tlsSettings->serverName}");
@@ -31,7 +32,7 @@ class QuantumultX
                 $tlsSettings = json_decode($server->tlsSettings);
                 array_push($config, 'obfs=wss');
                 if (isset($tlsSettings->allowInsecure)) {
-                    array_push($config, $server->allow_insecure ? 'tls-verification=true' : 'tls-verification=false');
+                    array_push($config, $tlsSettings->allowInsecure ? 'tls-verification=false' : 'tls-verification=true');
                 }
             } else {
                 array_push($config, 'obfs=ws');
@@ -55,7 +56,8 @@ class QuantumultX
             "password={$password}",
             "over-tls=true",
             $server->server_name ? "tls-host={$server->server_name}" : "",
-            $server->allow_insecure ? 'tls-verification=true' : 'tls-verification=false',
+            // Tips: allowInsecure=false = tls-verification=true
+            $server->allow_insecure ? 'tls-verification=false' : 'tls-verification=true',
             "fast-open=false",
             "udp-relay=false",
             "tag={$server->name}"
