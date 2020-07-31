@@ -205,7 +205,7 @@ class ServerService
             array_push($json->routing->rules, $protocolObj);
         }
         if (empty($domainRules) && empty($protocolRules)) {
-            $json->inbound->sniffing->enable = false;
+            $json->inbound->sniffing->enabled = false;
         }
     }
 
