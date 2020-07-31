@@ -7,6 +7,7 @@ use App\Http\Requests\User\TicketSave;
 use App\Http\Requests\User\TicketWithdraw;
 use App\Jobs\SendTelegramJob;
 use App\Models\User;
+use App\Services\TelegramService;
 use Illuminate\Http\Request;
 use App\Models\Ticket;
 use App\Models\TicketMessage;
@@ -180,21 +181,10 @@ class TicketController extends Controller
             abort(500, '工单创建失败');
         }
         DB::commit();
-        $this->sendNotify($ticket, $ticketMessage);
+        $telegramService = new TelegramService();
+        $telegramService->sendMessageWithAdmin("📮工单提醒 #{$ticket->id}\n———————————————\n主题：\n`{$ticket->subject}`\n内容：\n`{$ticketMessage->message}`");
         return response([
             'data' => true
         ]);
-    }
-
-    private function sendNotify(Ticket $ticket, TicketMessage $ticketMessage)
-    {
-        if (!config('v2board.telegram_bot_enable', 0)) return;
-        $users = User::where('is_admin', 1)
-            ->where('telegram_id', '!=', NULL)
-            ->get();
-        foreach ($users as $user) {
-            $text = "📮工单提醒 #{$ticket->id}\n———————————————\n主题：\n`{$ticket->subject}`\n内容：\n`{$ticketMessage->message}`";
-            SendTelegramJob::dispatch($user->telegram_id, $text);
-        }
     }
 }
