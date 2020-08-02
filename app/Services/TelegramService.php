@@ -2,6 +2,7 @@
 namespace App\Services;
 
 use App\Jobs\SendTelegramJob;
+use App\Models\User;
 use \Curl\Curl;
 
 class TelegramService {
