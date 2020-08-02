@@ -181,10 +181,15 @@ class TicketController extends Controller
             abort(500, '工单创建失败');
         }
         DB::commit();
-        $telegramService = new TelegramService();
-        $telegramService->sendMessageWithAdmin("📮工单提醒 #{$ticket->id}\n———————————————\n主题：\n`{$ticket->subject}`\n内容：\n`{$ticketMessage->message}`");
+        $this->sendNotify($ticket, $ticketMessage);
         return response([
             'data' => true
         ]);
+    }
+
+    private function sendNotify(Ticket $ticket, TicketMessage $ticketMessage)
+    {
+        $telegramService = new TelegramService();
+        $telegramService->sendMessageWithAdmin("📮工单提醒 #{$ticket->id}\n———————————————\n主题：\n`{$ticket->subject}`\n内容：\n`{$ticketMessage->message}`");
     }
 }
