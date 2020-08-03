@@ -154,6 +154,7 @@ class TelegramController extends Controller
     private function replayTicket($ticketId)
     {
         $msg = $this->msg;
+        if (!$msg->is_private) return;
         $user = User::where('telegram_id', $msg->chat_id)->first();
         if (!$user) {
             abort(500, '用户不存在');
