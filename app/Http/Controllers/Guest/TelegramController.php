@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Utils\Helper;
+use App\Services\TicketService;
 
 class TelegramController extends Controller
 {
@@ -24,18 +25,38 @@ class TelegramController extends Controller
         $this->msg = $this->getMessage($request->input());
         if (!$this->msg) return;
         try {
-            switch($this->msg->command) {
-                case '/bind': $this->bind();
+            switch($this->msg->message_type) {
+                case 'send':
+                    $this->fromSend();
                     break;
-                case '/traffic': $this->traffic();
+                case 'reply':
+                    $this->fromReply();
                     break;
-                case '/getlatesturl': $this->getLatestUrl();
-                    break;
-                default: $this->help();
             }
         } catch (\Exception $e) {
             $telegramService = new TelegramService();
             $telegramService->sendMessage($this->msg->chat_id, $e->getMessage());
+        }
+    }
+
+    private function fromSend()
+    {
+        switch($this->msg->command) {
+            case '/bind': $this->bind();
+                break;
+            case '/traffic': $this->traffic();
+                break;
+            case '/getlatesturl': $this->getLatestUrl();
+                break;
+            default: $this->help();
+        }
+    }
+
+    private function fromReply()
+    {
+        // ticket
+        if (preg_match("/[#](.*)/", $this->msg->reply_text, $match)) {
+            $this->replayTicket($match[1]);
         }
     }
 
@@ -50,6 +71,11 @@ class TelegramController extends Controller
         $obj->args = array_slice($text, 1);
         $obj->chat_id = $data['message']['chat']['id'];
         $obj->message_id = $data['message']['message_id'];
+        $obj->message_type = !isset($data['message']['reply_to_message']) ? 'send' : 'reply';
+        $obj->text = $data['message']['text'];
+        if ($obj->message_type === 'reply') {
+            $obj->reply_text = $data['message']['reply_to_message']['text'];
+        }
         return $obj;
     }
 
@@ -123,5 +149,24 @@ class TelegramController extends Controller
             config('v2board.app_url')
         );
         $telegramService->sendMessage($msg->chat_id, $text, 'markdown');
+    }
+
+    private function replayTicket($ticketId)
+    {
+        $msg = $this->msg;
+        $user = User::where('telegram_id', $msg->chat_id)->first();
+        if (!$user) {
+            abort(500, '用户不存在');
+        }
+        $ticketService = new TicketService();
+        if ($user->is_admin) {
+            $ticketService->replyByAdmin(
+                $ticketId,
+                $msg->text,
+                $user->id
+            );
+        }
+        $telegramService = new TelegramService();
+        $telegramService->sendMessage($msg->chat_id, "#`{$ticketId}` 的工单已回复成功", 'markdown');
     }
 }
