@@ -65,7 +65,7 @@ class TicketController extends Controller
             abort(500, '消息不能为空');
         }
         $ticketService = new TicketService();
-        $ticketService->replayByAdmin(
+        $ticketService->replyByAdmin(
             $request->input('id'),
             $request->input('message'),
             $request->session()->get('id')

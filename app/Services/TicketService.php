@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class TicketService {
-    public function replayByAdmin($ticketId, $message, $userId):void
+    public function replyByAdmin($ticketId, $message, $userId):void
     {
         $ticket = Ticket::where('id', $ticketId)
             ->first();
