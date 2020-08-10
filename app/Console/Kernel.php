@@ -31,7 +31,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('check:commission')->everyMinute();
         // reset
         $schedule->command('reset:traffic')->daily();
-        $schedule->command('reset:serverLog')->monthly();
+        $schedule->command('reset:serverLog')->quarterly();
         // send
         $schedule->command('send:remindMail')->dailyAt('11:30');
     }
