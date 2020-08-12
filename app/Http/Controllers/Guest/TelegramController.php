@@ -48,6 +48,8 @@ class TelegramController extends Controller
                 break;
             case '/getlatesturl': $this->getLatestUrl();
                 break;
+            case '/unbind': $this->unbind();
+                break;
             default: $this->help();
         }
     }
@@ -97,12 +99,33 @@ class TelegramController extends Controller
         if (!$user) {
             abort(500, '用户不存在');
         }
+        if ($user->telegram_id) {
+            abort(500, '该账号已经绑定了Telegram账号');
+        }
         $user->telegram_id = $msg->chat_id;
         if (!$user->save()) {
             abort(500, '设置失败');
         }
         $telegramService = new TelegramService();
         $telegramService->sendMessage($msg->chat_id, '绑定成功');
+    }
+
+    private function unbind()
+    {
+        $msg = $this->msg;
+        if (!$msg->is_private) return;
+        $user = User::where('telegram_id', $msg->chat_id)->first();
+        $telegramService = new TelegramService();
+        if (!$user) {
+            $this->help();
+            $telegramService->sendMessage($msg->chat_id, '没有查询到您的用户信息，请先绑定账号', 'markdown');
+            return;
+        }
+        $user->telegram_id = NULL;
+        if (!$user->save()) {
+            abort(500, '解绑失败');
+        }
+        $telegramService->sendMessage($msg->chat_id, '解绑成功', 'markdown');
     }
 
     private function help()
@@ -113,7 +136,8 @@ class TelegramController extends Controller
         $commands = [
             '/bind 订阅地址 - 绑定你的' . config('v2board.app_name', 'V2Board') . '账号',
             '/traffic - 查询流量信息',
-            '/getlatesturl - 获取最新的' . config('v2board.app_name', 'V2Board') . '网址'
+            '/getlatesturl - 获取最新的' . config('v2board.app_name', 'V2Board') . '网址',
+            '/unbind - 解除绑定'
         ];
         $text = implode(PHP_EOL, $commands);
         $telegramService->sendMessage($msg->chat_id, "你可以使用以下命令进行操作：\n\n$text", 'markdown');
