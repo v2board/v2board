@@ -136,17 +136,11 @@ class AuthController extends Controller
         ]);
     }
 
+    // 准备废弃
     public function token2Login(Request $request)
     {
         if ($request->input('token')) {
-            $user = User::where('token', $request->input('token'))->first();
-            if (!$user) {
-                return header('Location:' . config('v2board.app_url'));
-            }
-            $code = Helper::guid();
-            $key = 'token2Login_' . $code;
-            Cache::put($key, $user->id, 600);
-            $redirect = '/#/login?verify=' . $code . '&redirect=' . ($request->input('redirect') ? $request->input('redirect') : 'dashboard');
+            $redirect = '/#/login?verify=' . $request->input('token') . '&redirect=' . ($request->input('redirect') ? $request->input('redirect') : 'dashboard');
             if (config('v2board.app_url')) {
                 $location = config('v2board.app_url') . $redirect;
             } else {
@@ -156,7 +150,7 @@ class AuthController extends Controller
         }
 
         if ($request->input('verify')) {
-            $key = 'token2Login_' . $request->input('verify');
+            $key =  CacheKey::get('TEMP_TOKEN', $request->input('verify'));
             $userId = Cache::get($key);
             if (!$userId) {
                 abort(500, '令牌有误');
@@ -178,6 +172,21 @@ class AuthController extends Controller
                 'data' => true
             ]);
         }
+    }
+
+    public function getTempToken(Request $request)
+    {
+        $user = User::where('token', $request->input('token'))->first();
+        if (!$user) {
+            abort(500, '用户不存在');
+        }
+
+        $code = Helper::guid();
+        $key = CacheKey::get('TEMP_TOKEN', $code);
+        Cache::put($key, $user->id, 60);
+        return response([
+            'data' => $code
+        ]);
     }
 
     public function check(Request $request)
