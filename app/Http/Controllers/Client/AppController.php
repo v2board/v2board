@@ -49,7 +49,10 @@ class AppController extends Controller
     public function getVersion()
     {
         return response([
-            'data' => '4.0.0'
+            'data' => [
+                'version' => '4.0.0',
+                'download_url' => ''
+            ]
         ]);
     }
 
