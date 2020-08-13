@@ -91,6 +91,7 @@ class ClientController extends Controller
     private function quantumultX($user, $vmess = [], $trojan = [])
     {
         $uri = '';
+        header("subscription-userinfo: upload={$user->u}; download={$user->d}; total={$user->transfer_enable}; expire={$user->expired_at}");
         foreach ($vmess as $item) {
             $uri .= QuantumultX::buildVmess($user->uuid, $item);
         }
