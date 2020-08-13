@@ -62,7 +62,8 @@ class Helper
         $server->name = rawurlencode($server->name);
         $query = http_build_query([
             'allowInsecure' => $server->allow_insecure,
-            'peer' => $server->server_name
+            'peer' => $server->server_name,
+            'sni' => $server->server_name
         ]);
         $uri = "trojan://{$user->uuid}@{$server->host}:{$server->port}?{$query}#{$server->name}";
         $uri .= "\r\n";
