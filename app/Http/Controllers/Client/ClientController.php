@@ -193,6 +193,9 @@ class ClientController extends Controller
 
     private function clash($user, $vmess = [], $trojan = [])
     {
+        if (strpos($_SERVER['HTTP_USER_AGENT'], 'clashforwindows') !== false) {
+            header("profile-update-interval: 24");
+        }
         $defaultConfig = base_path() . '/resources/rules/default.clash.yaml';
         $customConfig = base_path() . '/resources/rules/custom.clash.yaml';
         if (\File::exists($customConfig)) {
