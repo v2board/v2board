@@ -116,7 +116,13 @@ class ConfigController extends Controller
                     'apple_id' => config('v2board.apple_id')
                 ],
                 'email' => [
-                    'email_template' => config('v2board.email_template', 'default')
+                    'email_template' => config('v2board.email_template', 'default'),
+                    'email_host' => config('v2board.email_host'),
+                    'email_port' => config('v2board.email_port'),
+                    'email_username' => config('v2board.email_username'),
+                    'email_password' => config('v2board.email_password'),
+                    'email_encryption' => config('v2board.email_encryption'),
+                    'email_from_address' => config('v2board.email_from_address')
                 ],
                 'telegram' => [
                     'telegram_bot_enable' => config('v2board.telegram_bot_enable', 0),

@@ -85,6 +85,12 @@ class ConfigSave extends FormRequest
             'apple_id_password' => '',
             // email
             'email_template' => '',
+            'email_host' => '',
+            'email_port' => '',
+            'email_username' => '',
+            'email_password' => '',
+            'email_encryption' => '',
+            'email_from_address' => '',
             // telegram
             'telegram_bot_enable' => 'in:0,1',
             'telegram_bot_token' => '',

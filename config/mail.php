@@ -29,7 +29,7 @@ return [
     |
     */
 
-    'host' => env('MAIL_HOST', config('v2board.mail_host')),
+    'host' => env('MAIL_HOST', config('v2board.email_host')),
 
     /*
     |--------------------------------------------------------------------------
@@ -42,7 +42,7 @@ return [
     |
     */
 
-    'port' => env('MAIL_PORT', config('v2board.mail_port', 587)),
+    'port' => env('MAIL_PORT', config('v2board.email_port', 587)),
 
     /*
     |--------------------------------------------------------------------------
@@ -56,8 +56,8 @@ return [
     */
 
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', config('v2board.mail_from_address')),
-        'name' => env('MAIL_FROM_NAME', config('v2board.mail_from_address')),
+        'address' => env('MAIL_FROM_ADDRESS', config('v2board.email_from_address')),
+        'name' => env('MAIL_FROM_NAME', config('v2board.email_from_address')),
     ],
 
     /*
@@ -71,7 +71,7 @@ return [
     |
     */
 
-    'encryption' => env('MAIL_ENCRYPTION', config('v2board.mail_encryption')),
+    'encryption' => env('MAIL_ENCRYPTION', config('v2board.email_encryption')),
 
     /*
     |--------------------------------------------------------------------------
@@ -84,9 +84,9 @@ return [
     |
     */
 
-    'username' => env('MAIL_USERNAME', config('v2board.mail_username')),
+    'username' => env('MAIL_USERNAME', config('v2board.email_username')),
 
-    'password' => env('MAIL_PASSWORD', config('v2board.mail_password')),
+    'password' => env('MAIL_PASSWORD', config('v2board.email_password')),
 
     /*
     |--------------------------------------------------------------------------
