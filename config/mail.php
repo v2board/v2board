@@ -57,7 +57,7 @@ return [
 
     'from' => [
         'address' => env('MAIL_FROM_ADDRESS', config('v2board.mail_from_address')),
-        'name' => env('MAIL_FROM_NAME', config('v2board.mail_from_name')),
+        'name' => env('MAIL_FROM_NAME', config('v2board.mail_from_address')),
     ],
 
     /*
