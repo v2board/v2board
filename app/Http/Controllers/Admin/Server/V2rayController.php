@@ -37,7 +37,7 @@ class V2rayController extends Controller
 
     public function save(ServerV2raySave $request)
     {
-        $params = $request->only(array_keys(ServerV2raySave::RULES));
+        $params = $request->validated();
         $params['group_id'] = json_encode($params['group_id']);
         if (isset($params['tags'])) {
             $params['tags'] = json_encode($params['tags']);

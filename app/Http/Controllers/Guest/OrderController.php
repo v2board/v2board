@@ -3,14 +3,16 @@
 namespace App\Http\Controllers\Guest;
 
 use App\Services\OrderService;
+use App\Services\TelegramService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use Library\Epay;
 use Omnipay\Omnipay;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 use Library\BitpayX;
-use Library\PayTaro;
+use Library\MGate;
 
 class OrderController extends Controller
 {
@@ -128,12 +130,22 @@ class OrderController extends Controller
         ]));
     }
 
-    public function payTaroNotify(Request $request)
+    public function mgateNotify(Request $request)
     {
-        // Log::info('payTaroNotify: ' . json_encode($request->input()));
+        $mgate = new MGate(config('v2board.mgate_url'), config('v2board.mgate_app_id'), config('v2board.mgate_app_secret'));
+        if (!$mgate->verify($request->input())) {
+            abort(500, 'fail');
+        }
+        if (!$this->handle($request->input('out_trade_no'), $request->input('trade_no'))) {
+            abort(500, 'fail');
+        }
+        die('success');
+    }
 
-        $payTaro = new PayTaro(config('v2board.paytaro_app_id'), config('v2board.paytaro_app_secret'));
-        if (!$payTaro->verify($request->input())) {
+    public function epayNotify(Request $request)
+    {
+        $epay = new Epay(config('v2board.epay_url'), config('v2board.epay_pid'), config('v2board.epay_key'));
+        if (!$epay->verify($request->input())) {
             abort(500, 'fail');
         }
         if (!$this->handle($request->input('out_trade_no'), $request->input('trade_no'))) {
@@ -149,6 +161,16 @@ class OrderController extends Controller
             abort(500, 'order is not found');
         }
         $orderService = new OrderService($order);
-        return $orderService->success($callbackNo);
+        if (!$orderService->success($callbackNo)) {
+            return false;
+        }
+        $telegramService = new TelegramService();
+        $message = sprintf(
+            "💰成功收款%s元\n———————————————\n订单号：%s",
+            $order->total_amount / 100,
+            $order->trade_no
+        );
+        $telegramService->sendMessageWithAdmin($message);
+        return true;
     }
 }

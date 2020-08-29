@@ -10,7 +10,7 @@
 
 ## Demo
 
-[Demo](https://v2board.com) site provided by 👉[Moack](https://www.moack.co.kr/dedicated.php)👈
+[Demo](https://v2board.com)
 
 ## Document
 [Click](https://docs.v2board.com)

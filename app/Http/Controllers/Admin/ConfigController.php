@@ -82,31 +82,47 @@ class ConfigController extends Controller
                     'stripe_webhook_key' => config('v2board.stripe_webhook_key'),
                     'stripe_currency' => config('v2board.stripe_currency', 'hkd'),
                     // bitpayx
-                    'bitpayx_name' => config('v2board.bitpayx_name', '聚合支付'),
+                    'bitpayx_name' => config('v2board.bitpayx_name', '在线支付'),
                     'bitpayx_enable' => (int)config('v2board.bitpayx_enable', 0),
                     'bitpayx_appsecret' => config('v2board.bitpayx_appsecret'),
-                    // paytaro
-                    'paytaro_name' => config('v2board.paytaro_name', '聚合支付'),
-                    'paytaro_enable' => (int)config('v2board.paytaro_enable', 0),
-                    'paytaro_app_id' => config('v2board.paytaro_app_id'),
-                    'paytaro_app_secret' => config('v2board.paytaro_app_secret')
+                    // mGate
+                    'mgate_name' => config('v2board.mgate_name', '在线支付'),
+                    'mgate_enable' => (int)config('v2board.mgate_enable', 0),
+                    'mgate_url' => config('v2board.mgate_url'),
+                    'mgate_app_id' => config('v2board.mgate_app_id'),
+                    'mgate_app_secret' => config('v2board.mgate_app_secret'),
+                    // Epay
+                    'epay_name' => config('v2board.epay_name', '在线支付'),
+                    'epay_enable' => (int)config('v2board.epay_enable', 0),
+                    'epay_url' => config('v2board.epay_url'),
+                    'epay_pid' => config('v2board.epay_pid'),
+                    'epay_key' => config('v2board.epay_key'),
                 ],
                 'frontend' => [
                     'frontend_theme_sidebar' => config('v2board.frontend_theme_sidebar', 'light'),
                     'frontend_theme_header' => config('v2board.frontend_theme_header', 'dark'),
                     'frontend_theme_color' => config('v2board.frontend_theme_color', 'default'),
-                    'frontend_background_url' => config('v2board.frontend_background_url')
+                    'frontend_background_url' => config('v2board.frontend_background_url'),
+                    'frontend_admin_path' => config('v2board.frontend_admin_path', 'admin')
                 ],
                 'server' => [
                     'server_token' => config('v2board.server_token'),
                     'server_license' => config('v2board.server_license'),
-                    'server_log_level' => config('v2board.server_log_level', 'none')
+                    'server_log_enable' => config('v2board.server_log_enable', 0),
+                    'server_v2ray_domain' => config('v2board.server_v2ray_domain'),
+                    'server_v2ray_protocol' => config('v2board.server_v2ray_protocol'),
                 ],
                 'tutorial' => [
                     'apple_id' => config('v2board.apple_id')
                 ],
                 'email' => [
-                    'email_template' => config('v2board.email_template', 'default')
+                    'email_template' => config('v2board.email_template', 'default'),
+                    'email_host' => config('v2board.email_host'),
+                    'email_port' => config('v2board.email_port'),
+                    'email_username' => config('v2board.email_username'),
+                    'email_password' => config('v2board.email_password'),
+                    'email_encryption' => config('v2board.email_encryption'),
+                    'email_from_address' => config('v2board.email_from_address')
                 ],
                 'telegram' => [
                     'telegram_bot_enable' => config('v2board.telegram_bot_enable', 0),
@@ -121,7 +137,7 @@ class ConfigController extends Controller
         $data = $request->input();
         $array = \Config::get('v2board');
         foreach ($data as $k => $v) {
-            if (!in_array($k, array_keys(ConfigSave::RULES))) {
+            if (!in_array($k, array_keys($request->validated()))) {
                 abort(500, '参数' . $k . '不在规则内，禁止修改');
             }
             $array[$k] = $v;
@@ -130,10 +146,10 @@ class ConfigController extends Controller
         if (!\File::put(base_path() . '/config/v2board.php', "<?php\n return $data ;")) {
             abort(500, '修改失败');
         }
-        \Artisan::call('config:cache');
-        if (function_exists('opcache')) {
+        if (function_exists('opcache_reset')) {
             opcache_reset();
         }
+        \Artisan::call('config:cache');
         return response([
             'data' => true
         ]);

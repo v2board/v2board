@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Services\ServerService;
 use App\Utils\Clash;
 use App\Utils\QuantumultX;
+use App\Utils\Shadowrocket;
 use App\Utils\Surge;
 use Illuminate\Http\Request;
 use App\Models\Server;
@@ -41,6 +42,9 @@ class ClientController extends Controller
                 if (strpos($_SERVER['HTTP_USER_AGENT'], 'surge') !== false) {
                     die($this->surge($user, $servers['vmess'], $servers['trojan']));
                 }
+                if (strpos($_SERVER['HTTP_USER_AGENT'], 'shadowrocket') !== false) {
+                    die($this->shadowrocket($user, $servers['vmess'], $servers['trojan']));
+                }
             }
             die($this->origin($user, $servers['vmess'], $servers['trojan']));
         }
@@ -66,9 +70,28 @@ class ClientController extends Controller
         return base64_encode($uri);
     }
 
+    private function shadowrocket($user, $vmess = [], $trojan = [])
+    {
+        $uri = '';
+        //display remaining traffic and expire date
+        $upload = round($user->u / (1024*1024*1024), 2);
+        $download = round($user->d / (1024*1024*1024), 2);
+        $totalTraffic = round($user->transfer_enable / (1024*1024*1024), 2);
+        $expiredDate = date('Y-m-d', $user->expired_at);
+        $uri .= "STATUS=🚀↑:{$upload}GB,↓:{$download}GB,TOT:{$totalTraffic}GB💡Expires:{$expiredDate}\r\n";
+        foreach ($vmess as $item) {
+            $uri .= Shadowrocket::buildVmess($user->uuid, $item);
+        }
+        foreach ($trojan as $item) {
+            $uri .= Shadowrocket::buildTrojan($user->uuid, $item);
+        }
+        return base64_encode($uri);
+    }
+
     private function quantumultX($user, $vmess = [], $trojan = [])
     {
         $uri = '';
+        header("subscription-userinfo: upload={$user->u}; download={$user->d}; total={$user->transfer_enable}; expire={$user->expired_at}");
         foreach ($vmess as $item) {
             $uri .= QuantumultX::buildVmess($user->uuid, $item);
         }

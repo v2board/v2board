@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Utils\Helper;
+use App\Services\TicketService;
 
 class TelegramController extends Controller
 {
@@ -24,18 +25,40 @@ class TelegramController extends Controller
         $this->msg = $this->getMessage($request->input());
         if (!$this->msg) return;
         try {
-            switch($this->msg->command) {
-                case '/bind': $this->bind();
+            switch($this->msg->message_type) {
+                case 'send':
+                    $this->fromSend();
                     break;
-                case '/traffic': $this->traffic();
+                case 'reply':
+                    $this->fromReply();
                     break;
-                case '/getlatesturl': $this->getLatestUrl();
-                    break;
-                default: $this->help();
             }
         } catch (\Exception $e) {
             $telegramService = new TelegramService();
             $telegramService->sendMessage($this->msg->chat_id, $e->getMessage());
+        }
+    }
+
+    private function fromSend()
+    {
+        switch($this->msg->command) {
+            case '/bind': $this->bind();
+                break;
+            case '/traffic': $this->traffic();
+                break;
+            case '/getlatesturl': $this->getLatestUrl();
+                break;
+            case '/unbind': $this->unbind();
+                break;
+            default: $this->help();
+        }
+    }
+
+    private function fromReply()
+    {
+        // ticket
+        if (preg_match("/[#](.*)/", $this->msg->reply_text, $match)) {
+            $this->replayTicket($match[1]);
         }
     }
 
@@ -50,6 +73,11 @@ class TelegramController extends Controller
         $obj->args = array_slice($text, 1);
         $obj->chat_id = $data['message']['chat']['id'];
         $obj->message_id = $data['message']['message_id'];
+        $obj->message_type = !isset($data['message']['reply_to_message']) ? 'send' : 'reply';
+        $obj->text = $data['message']['text'];
+        if ($obj->message_type === 'reply') {
+            $obj->reply_text = $data['message']['reply_to_message']['text'];
+        }
         return $obj;
     }
 
@@ -71,12 +99,33 @@ class TelegramController extends Controller
         if (!$user) {
             abort(500, '用户不存在');
         }
+        if ($user->telegram_id) {
+            abort(500, '该账号已经绑定了Telegram账号');
+        }
         $user->telegram_id = $msg->chat_id;
         if (!$user->save()) {
             abort(500, '设置失败');
         }
         $telegramService = new TelegramService();
         $telegramService->sendMessage($msg->chat_id, '绑定成功');
+    }
+
+    private function unbind()
+    {
+        $msg = $this->msg;
+        if (!$msg->is_private) return;
+        $user = User::where('telegram_id', $msg->chat_id)->first();
+        $telegramService = new TelegramService();
+        if (!$user) {
+            $this->help();
+            $telegramService->sendMessage($msg->chat_id, '没有查询到您的用户信息，请先绑定账号', 'markdown');
+            return;
+        }
+        $user->telegram_id = NULL;
+        if (!$user->save()) {
+            abort(500, '解绑失败');
+        }
+        $telegramService->sendMessage($msg->chat_id, '解绑成功', 'markdown');
     }
 
     private function help()
@@ -87,7 +136,8 @@ class TelegramController extends Controller
         $commands = [
             '/bind 订阅地址 - 绑定你的' . config('v2board.app_name', 'V2Board') . '账号',
             '/traffic - 查询流量信息',
-            '/getlatesturl - 获取最新的' . config('v2board.app_name', 'V2Board') . '网址'
+            '/getlatesturl - 获取最新的' . config('v2board.app_name', 'V2Board') . '网址',
+            '/unbind - 解除绑定'
         ];
         $text = implode(PHP_EOL, $commands);
         $telegramService->sendMessage($msg->chat_id, "你可以使用以下命令进行操作：\n\n$text", 'markdown');
@@ -123,5 +173,25 @@ class TelegramController extends Controller
             config('v2board.app_url')
         );
         $telegramService->sendMessage($msg->chat_id, $text, 'markdown');
+    }
+
+    private function replayTicket($ticketId)
+    {
+        $msg = $this->msg;
+        if (!$msg->is_private) return;
+        $user = User::where('telegram_id', $msg->chat_id)->first();
+        if (!$user) {
+            abort(500, '用户不存在');
+        }
+        $ticketService = new TicketService();
+        if ($user->is_admin) {
+            $ticketService->replyByAdmin(
+                $ticketId,
+                $msg->text,
+                $user->id
+            );
+        }
+        $telegramService = new TelegramService();
+        $telegramService->sendMessage($msg->chat_id, "#`{$ticketId}` 的工单已回复成功", 'markdown');
     }
 }

@@ -30,7 +30,7 @@ Route::get('/', function (Request $request) {
     ]);
 });
 
-Route::get('/admin', function () {
+Route::get('/' . config('v2board.frontend_admin_path', 'admin'), function () {
     return view('admin', [
         'title' => config('v2board.app_name', 'V2Board'),
         'theme_sidebar' => config('v2board.frontend_theme_sidebar', 'light'),

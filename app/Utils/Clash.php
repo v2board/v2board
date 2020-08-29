@@ -15,10 +15,12 @@ class Clash
         $array['uuid'] = $uuid;
         $array['alterId'] = 2;
         $array['cipher'] = 'auto';
+        $array['udp'] = true;
         if ($server->tls) {
             $tlsSettings = json_decode($server->tlsSettings);
             $array['tls'] = true;
             if (isset($tlsSettings->allowInsecure)) $array['skip-cert-verify'] = ($tlsSettings->allowInsecure ? true : false );
+            if (isset($tlsSettings->serverName)) $array['servername'] = $tlsSettings->serverName;
         }
         if ($server->network == 'ws') {
             $array['network'] = $server->network;
@@ -41,6 +43,7 @@ class Clash
         $array['server'] = $server->host;
         $array['port'] = $server->port;
         $array['password'] = $password;
+        $array['udp'] = true;
         $array['sni'] = $server->server_name;
         if ($server->allow_insecure) {
             $array['skip-cert-verify'] = true;

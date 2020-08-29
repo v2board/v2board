@@ -99,6 +99,7 @@ class UserController extends Controller
             }
         }
         $user['subscribe_url'] = config('v2board.subscribe_url', config('v2board.app_url', env('APP_URL'))) . '/api/v1/client/subscribe?token=' . $user['token'];
+        $user['reset_day'] = $this->getResetDay($user);
         return response([
             'data' => $user
         ]);
@@ -159,5 +160,25 @@ class UserController extends Controller
         return response([
             'data' => true
         ]);
+    }
+
+    private function getResetDay(User $user)
+    {
+        if ($user->expired_at <= time() || $user->expired_at === NULL) return null;
+        $day = date('d', $user->expired_at);
+        $today = date('d');
+        $lastDay = date('d', strtotime('last day of +0 months'));
+
+        if ((int)config('v2board.reset_traffic_method') === 0) {
+            return $lastDay - $today;
+        }
+        if ((int)config('v2board.reset_traffic_method') === 1) {
+            if ((int)$day >= (int)$today) {
+                return $day - $today;
+            } else {
+                return $lastDay - $today + $day;
+            }
+        }
+        return null;
     }
 }

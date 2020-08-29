@@ -23,12 +23,12 @@ class CouponController extends Controller
 
     public function save(CouponSave $request)
     {
-        $params = $request->only(array_keys(CouponSave::RULES));
+        $params = $request->validated();
         if (isset($params['limit_plan_ids'])) {
             $params['limit_plan_ids'] = json_encode($params['limit_plan_ids']);
         }
         if (!$request->input('id')) {
-            if (!$params['code']) {
+            if (!isset($params['code'])) {
                 $params['code'] = Helper::randomChar(8);
             }
             if (!Coupon::create($params)) {

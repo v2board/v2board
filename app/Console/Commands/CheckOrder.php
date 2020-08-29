@@ -117,11 +117,13 @@ class CheckOrder extends Command
             $user->expired_at = time();
         }
         $user->transfer_enable = $plan->transfer_enable * 1073741824;
-        // 当续费清空流量或用户先前是一次性订阅
-        if ((int)config('v2board.renew_reset_traffic_enable', 1) || $user->expired_at === NULL) {
-            $user->u = 0;
-            $user->d = 0;
-        }
+
+        // 续费重置&类型=续费
+        if ((int)config('v2board.renew_reset_traffic_enable', 1) && $order->type === 2) $this->buyReset($user);
+        // 购买前用户过期为NULL（一次性）
+        if ($user->expired_at === NULL) $this->buyReset($user);
+        // 新购
+        if ($order->type === 1) $this->buyReset($user);
         $user->plan_id = $plan->id;
         $user->group_id = $plan->group_id;
         $user->expired_at = $this->getTime($order->cycle, $user->expired_at);
