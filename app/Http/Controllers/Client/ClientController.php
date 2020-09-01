@@ -216,6 +216,7 @@ class ClientController extends Controller
 
         $config['proxies'] = array_merge($config['proxies'] ? $config['proxies'] : [], $proxy);
         foreach ($config['proxy-groups'] as $k => $v) {
+            if (!is_array($config['proxy-groups'][$k]['proxies'])) continue;
             $config['proxy-groups'][$k]['proxies'] = array_merge($config['proxy-groups'][$k]['proxies'], $proxies);
         }
         $yaml = Yaml::dump($config);
