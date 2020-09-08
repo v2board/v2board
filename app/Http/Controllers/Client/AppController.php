@@ -18,7 +18,7 @@ class AppController extends Controller
 
     public function getConfig(Request $request)
     {
-        $server = [];
+        $servers = [];
         $user = $request->user;
         $userService = new UserService();
         if ($userService->isAvailable($user)) {
