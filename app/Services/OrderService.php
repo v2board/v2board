@@ -36,11 +36,6 @@ class OrderService
         return true;
     }
 
-    public function create()
-    {
-
-    }
-
     public function setOrderType(User $user)
     {
         $order = $this->order;
