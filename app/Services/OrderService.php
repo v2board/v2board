@@ -106,8 +106,8 @@ class OrderService
         if ($user->discount && $trafficUnitPrice) {
             $trafficUnitPrice = $trafficUnitPrice - ($trafficUnitPrice * $user->discount / 100);
         }
-        $notUsedTrafficPrice = $plan->transfer_enable - (($user->u + $user->d) / 1073741824);
-        $result = $trafficUnitPrice * $notUsedTrafficPrice;
+        $notUsedTraffic = $plan->transfer_enable - (($user->u + $user->d) / 1073741824);
+        $result = $trafficUnitPrice * $notUsedTraffic;
         $orderModel = Order::where('user_id', $user->id)->where('cycle', '!=', 'reset_price')->where('status', 3);
         $order->surplus_amount = $result > 0 ? $result : 0;
         $order->surplus_order_ids = json_encode(array_column($orderModel->get()->toArray(), 'id'));

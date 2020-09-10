@@ -7,8 +7,6 @@ use Illuminate\Console\Command;
 use App\Models\Order;
 use App\Models\User;
 use App\Models\Plan;
-use App\Utils\Helper;
-use App\Models\Coupon;
 use Illuminate\Support\Facades\DB;
 
 class CheckOrder extends Command
@@ -83,10 +81,10 @@ class CheckOrder extends Command
         }
         switch ((string)$order->cycle) {
             case 'onetime_price':
-                $this->buyByOneTime($order, $user, $plan);
+                $this->buyByOneTime($user, $plan);
                 break;
             case 'reset_price':
-                $this->buyReset($user);
+                $this->buyByResetTraffic($user);
                 break;
             default:
                 $this->buyByCycle($order, $user, $plan);
@@ -104,7 +102,7 @@ class CheckOrder extends Command
         DB::commit();
     }
 
-    private function buyReset(User $user)
+    private function buyByResetTraffic(User $user)
     {
         $user->u = 0;
         $user->d = 0;
@@ -119,17 +117,17 @@ class CheckOrder extends Command
         $user->transfer_enable = $plan->transfer_enable * 1073741824;
 
         // 续费重置&类型=续费
-        if ((int)config('v2board.renew_reset_traffic_enable', 1) && $order->type === 2) $this->buyReset($user);
+        if ((int)config('v2board.renew_reset_traffic_enable', 1) && $order->type === 2) $this->buyByResetTraffic($user);
         // 购买前用户过期为NULL（一次性）
-        if ($user->expired_at === NULL) $this->buyReset($user);
+        if ($user->expired_at === NULL) $this->buyByResetTraffic($user);
         // 新购
-        if ($order->type === 1) $this->buyReset($user);
+        if ($order->type === 1) $this->buyByResetTraffic($user);
         $user->plan_id = $plan->id;
         $user->group_id = $plan->group_id;
         $user->expired_at = $this->getTime($order->cycle, $user->expired_at);
     }
 
-    private function buyByOneTime(Order $order, User $user, Plan $plan)
+    private function buyByOneTime(User $user, Plan $plan)
     {
         $user->transfer_enable = $plan->transfer_enable * 1073741824;
         $user->u = 0;
