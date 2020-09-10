@@ -300,3 +300,7 @@ ADD `server_name` varchar(255) NULL AFTER `allow_insecure`;
 UPDATE `v2_server` SET
 `ruleSettings` = NULL
 WHERE `ruleSettings` = '{}';
+
+ALTER TABLE `v2_plan`
+ADD `two_year_price` int(11) NULL AFTER `year_price`,
+ADD `three_year_price` int(11) NULL AFTER `two_year_price`;

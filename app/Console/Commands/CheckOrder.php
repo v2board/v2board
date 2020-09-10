@@ -153,6 +153,10 @@ class CheckOrder extends Command
                 return strtotime('+6 month', $timestamp);
             case 'year_price':
                 return strtotime('+12 month', $timestamp);
+            case 'two_year_price':
+                return strtotime('+24 month', $timestamp);
+            case 'three_year_price':
+                return strtotime('+36 month', $timestamp);
         }
     }
 }

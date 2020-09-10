@@ -113,6 +113,8 @@ CREATE TABLE `v2_plan` (
   `quarter_price` int(11) DEFAULT NULL,
   `half_year_price` int(11) DEFAULT NULL,
   `year_price` int(11) DEFAULT NULL,
+  `two_year_price` int(11) DEFAULT NULL,
+  `three_year_price` int(11) DEFAULT NULL,
   `onetime_price` int(11) DEFAULT NULL,
   `reset_price` int(11) DEFAULT NULL,
   `created_at` int(11) NOT NULL,
@@ -286,4 +288,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2020-07-01 07:01:59
+-- 2020-09-04 07:38:57

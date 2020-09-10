@@ -110,7 +110,7 @@ class OrderService
         $result = $trafficUnitPrice * $notUsedTrafficPrice;
         $orderModel = Order::where('user_id', $user->id)->where('cycle', '!=', 'reset_price')->where('status', 3);
         $order->surplus_amount = $result > 0 ? $result : 0;
-        $order->surplus_order_ids = json_encode(array_map(function ($v) { return $v['id'];}, $orderModel->get()->toArray()));
+        $order->surplus_order_ids = json_encode(array_column($orderModel->get()->toArray(), 'id'));
     }
 
     private function getSurplusValueByCycle(User $user, Order $order)
@@ -145,7 +145,7 @@ class OrderService
             return;
         }
         $order->surplus_amount = $orderSurplusAmount > 0 ? $orderSurplusAmount : 0;
-        $order->surplus_order_ids = json_encode(array_map(function ($v) { return $v['id'];}, $orderModel->get()->toArray()));
+        $order->surplus_order_ids = json_encode(array_column($orderModel->get()->toArray(), 'id'));
     }
 
     public function success(string $callbackNo)
