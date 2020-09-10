@@ -46,7 +46,7 @@ class OrderService
         $order = $this->order;
         if ($order->cycle === 'reset_price') {
             $order->type = 4;
-        } else if ($user->plan_id !== NULL && $order->plan_id !== $user->plan_id && $user->expired_at > time()) { // 用户订阅存在且用户订阅与购买订阅不同且用户订阅未过期 === 更换
+        } else if ($user->plan_id !== NULL && $order->plan_id !== $user->plan_id && ($user->expired_at > time() || $user->expired_at === NULL)) {
             if (!(int)config('v2board.plan_change_enable', 1)) abort(500, '目前不允许更改订阅，请联系客服或提交工单操作');
             $order->type = 3;
             $this->getSurplusValue($user, $order);
