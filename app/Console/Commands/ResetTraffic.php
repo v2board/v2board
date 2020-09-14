@@ -54,7 +54,7 @@ class ResetTraffic extends Command
         }
     }
 
-    private function resetByMonthFirstDay($user):void
+    private function resetByMonthFirstDay():void
     {
         $user = $this->user;
         if ((string)date('d') === '01') {
