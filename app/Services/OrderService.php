@@ -136,10 +136,7 @@ class OrderService
         foreach ($orders as $k => $item) {
             // 兼容历史余留问题
             if ($item->cycle === 'onetime_price') continue;
-            if ($this->orderIsUsed($item)) {
-                unset($orders[$k]);
-                continue;
-            }
+            if ($this->orderIsUsed($item)) continue;
             $orderSurplusMonth = $orderSurplusMonth + self::STRTOTIME[$item->cycle];
             $orderSurplusAmount = $orderSurplusAmount + ($item['total_amount'] + $item['balance_amount']);
         }
