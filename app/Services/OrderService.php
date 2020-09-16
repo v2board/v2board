@@ -9,6 +9,14 @@ use Illuminate\Support\Facades\DB;
 
 class OrderService
 {
+    CONST STRTOTIME = [
+        'month_price' => 1,
+        'quarter_price' => 3,
+        'half_year_price' => 6,
+        'year_price' => 12,
+        'two_year_price' => 24,
+        'three_year_price' => 36
+    ];
     public $order;
 
     public function __construct(Order $order)
@@ -108,24 +116,31 @@ class OrderService
         $order->surplus_order_ids = json_encode(array_column($orderModel->get()->toArray(), 'id'));
     }
 
+    private function orderIsUsed(Order $order):bool
+    {
+        $month = self::STRTOTIME[$order->cycle];
+        $orderExpireDay = strtotime('+'. $month . ' month', $order->created_at->timestamp);
+        if ($orderExpireDay < time()) return true;
+        return false;
+    }
+
     private function getSurplusValueByCycle(User $user, Order $order)
     {
-        $strToMonth = [
-            'month_price' => 1,
-            'quarter_price' => 3,
-            'half_year_price' => 6,
-            'year_price' => 12
-        ];
         $orderModel = Order::where('user_id', $user->id)
             ->where('cycle', '!=', 'reset_price')
             ->where('status', 3);
+        $orders = $orderModel->get();
         $orderSurplusMonth = 0;
         $orderSurplusAmount = 0;
         $userSurplusMonth = ($user->expired_at - time()) / 2678400;
-        foreach ($orderModel->get() as $item) {
+        foreach ($orders as $k => $item) {
             // 兼容历史余留问题
             if ($item->cycle === 'onetime_price') continue;
-            $orderSurplusMonth = $orderSurplusMonth + $strToMonth[$item->cycle];
+            if ($this->orderIsUsed($item)) {
+                unset($orders[$k]);
+                continue;
+            }
+            $orderSurplusMonth = $orderSurplusMonth + self::STRTOTIME[$item->cycle];
             $orderSurplusAmount = $orderSurplusAmount + ($item['total_amount'] + $item['balance_amount']);
         }
         if (!$orderSurplusMonth || !$orderSurplusAmount) return;
@@ -140,7 +155,7 @@ class OrderService
             return;
         }
         $order->surplus_amount = $orderSurplusAmount > 0 ? $orderSurplusAmount : 0;
-        $order->surplus_order_ids = json_encode(array_column($orderModel->get()->toArray(), 'id'));
+        $order->surplus_order_ids = json_encode(array_column($orders->toArray(), 'id'));
     }
 
     public function success(string $callbackNo)
