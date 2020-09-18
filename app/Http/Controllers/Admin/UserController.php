@@ -19,7 +19,7 @@ class UserController extends Controller
         $sort = $request->input('sort') ? $request->input('sort') : 'created_at';
         $userModel = User::orderBy($sort, $sortType);
         if ($request->input('email')) {
-            $userModel->where('email', $request->input('email'));
+            $userModel->where('email', 'like', '%' . $request->input('email') . '%');
         }
         if ($request->input('invite_user_id')) {
             $userModel->where('invite_user_id', $request->input('invite_user_id'));

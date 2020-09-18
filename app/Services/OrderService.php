@@ -119,7 +119,7 @@ class OrderService
     private function orderIsUsed(Order $order):bool
     {
         $month = self::STRTOTIME[$order->cycle];
-        $orderExpireDay = strtotime('+'. $month . ' month', $order->created_at->timestamp);
+        $orderExpireDay = strtotime('+' . $month . ' month', $order->created_at->timestamp);
         if ($orderExpireDay < time()) return true;
         return false;
     }
