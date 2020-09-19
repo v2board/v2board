@@ -184,7 +184,7 @@ class TelegramController extends Controller
             abort(500, '用户不存在');
         }
         $ticketService = new TicketService();
-        if ($user->is_admin) {
+        if ($user->is_admin || $user->is_staff) {
             $ticketService->replyByAdmin(
                 $ticketId,
                 $msg->text,
@@ -194,4 +194,6 @@ class TelegramController extends Controller
         $telegramService = new TelegramService();
         $telegramService->sendMessage($msg->chat_id, "#`{$ticketId}` 的工单已回复成功", 'markdown');
     }
+
+
 }

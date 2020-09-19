@@ -270,6 +270,7 @@ CREATE TABLE `v2_user` (
   `enable` tinyint(1) NOT NULL DEFAULT '1',
   `banned` tinyint(1) NOT NULL DEFAULT '0',
   `is_admin` tinyint(1) NOT NULL DEFAULT '0',
+  `is_staff` tinyint(1) NOT NULL DEFAULT '0',
   `last_login_at` int(11) DEFAULT NULL,
   `last_login_ip` int(11) DEFAULT NULL,
   `uuid` varchar(36) NOT NULL,
@@ -288,4 +289,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2020-09-04 07:38:57
+-- 2020-09-19 14:39:28
