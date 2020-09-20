@@ -46,12 +46,14 @@ class TelegramService {
         return $response;
     }
 
-    public function sendMessageWithAdmin($message)
+    public function sendMessageWithAdmin($message, $isStaff = false)
     {
         if (!config('v2board.telegram_bot_enable', 0)) return;
-        $users = User::where(function ($query) {
-            $query->where('is_admin', 1)
-                ->orWhere('is_staff', 1);
+        $users = User::where(function ($query) use ($isStaff) {
+            $query->where('is_admin', 1);
+            if ($isStaff) {
+                $query->orWhere('is_staff', 1);
+            }
         })
             ->where('telegram_id', '!=', NULL)
             ->get();
