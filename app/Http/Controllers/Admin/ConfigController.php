@@ -147,7 +147,9 @@ class ConfigController extends Controller
             abort(500, '修改失败');
         }
         if (function_exists('opcache_reset')) {
-            opcache_reset();
+            if (!opcache_reset()) {
+                abort(500, '保存失败，请删除或检查opcache状态');
+            }
         }
         \Artisan::call('config:cache');
         return response([
