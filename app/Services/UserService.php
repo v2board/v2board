@@ -88,6 +88,8 @@ class UserService
         if (!$user->save()) {
             return false;
         }
+        $mailService = new MailService();
+        $mailService->remindTraffic($user);
         return true;
     }
 }
