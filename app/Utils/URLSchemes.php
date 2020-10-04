@@ -44,7 +44,6 @@ class URLSchemes
 
     public static function buildTrojan(ServerTrojan $server, User $user)
     {
-        $server->name = rawurlencode($server->name);
         $query = http_build_query([
             'allowInsecure' => $server->allow_insecure,
             'peer' => $server->server_name,
