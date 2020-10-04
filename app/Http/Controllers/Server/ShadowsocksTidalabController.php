@@ -47,7 +47,7 @@ class ShadowsocksTidalabController extends Controller
         foreach ($users as $user) {
             array_push($result, [
                 'id' => $user->id,
-                'port' => $server->port,
+                'port' => $server->server_port,
                 'cipher' => $server->cipher,
                 'secret' => $user->uuid
             ]);
