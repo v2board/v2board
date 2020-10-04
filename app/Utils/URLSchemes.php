@@ -10,12 +10,13 @@ class URLSchemes
 {
     public static function buildShadowsocks(ServerShadowsocks $server, User $user)
     {
+        $name = rawurlencode($server->name);
         $str = str_replace(
             ['+', '/', '='],
             ['-', '_', ''],
             base64_encode("{$server->cipher}:{$user->uuid}")
         );
-        return "ss://{$str}@{$server->host}:{$server->port}#{$server->name}\r\n";
+        return "ss://{$str}@{$server->host}:{$server->port}#{$name}\r\n";
     }
 
 
@@ -44,12 +45,13 @@ class URLSchemes
 
     public static function buildTrojan(ServerTrojan $server, User $user)
     {
+        $name = rawurlencode($server->name);
         $query = http_build_query([
             'allowInsecure' => $server->allow_insecure,
             'peer' => $server->server_name,
             'sni' => $server->server_name
         ]);
-        $uri = "trojan://{$user->uuid}@{$server->host}:{$server->port}?{$query}#{$server->name}";
+        $uri = "trojan://{$user->uuid}@{$server->host}:{$server->port}?{$query}#{$name}";
         $uri .= "\r\n";
         return $uri;
     }

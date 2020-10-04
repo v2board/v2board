@@ -44,7 +44,7 @@ class ClientController extends Controller
                     die($this->surge($user, $servers['vmess'], $servers['trojan']));
                 }
                 if (strpos($_SERVER['HTTP_USER_AGENT'], 'shadowrocket') !== false) {
-                    die($this->shadowrocket($user, $servers['vmess'], $servers['trojan']));
+                    die($this->shadowrocket($user, $servers['shadowsocks'], $servers['vmess'], $servers['trojan']));
                 }
             }
             die($this->origin($user, $servers['shadowsocks'], $servers['vmess'], $servers['trojan']));
@@ -71,7 +71,7 @@ class ClientController extends Controller
         return base64_encode($uri);
     }
 
-    private function shadowrocket($user, $vmess = [], $trojan = [])
+    private function shadowrocket($user, $shadowsocks = [], $vmess = [], $trojan = [])
     {
         $uri = '';
         //display remaining traffic and expire date
@@ -80,6 +80,9 @@ class ClientController extends Controller
         $totalTraffic = round($user->transfer_enable / (1024*1024*1024), 2);
         $expiredDate = date('Y-m-d', $user->expired_at);
         $uri .= "STATUS=🚀↑:{$upload}GB,↓:{$download}GB,TOT:{$totalTraffic}GB💡Expires:{$expiredDate}\r\n";
+        foreach ($shadowsocks as $item) {
+            $uri .= Shadowrocket::buildShadowsocks($user->uuid, $item);
+        }
         foreach ($vmess as $item) {
             $uri .= Shadowrocket::buildVmess($user->uuid, $item);
         }
