@@ -82,9 +82,9 @@ class ServerService
             $shadowsockss[$k]['link'] = URLSchemes::buildShadowsocks($shadowsockss[$k], $user);
             if (in_array($user->group_id, $groupId)) {
                 if ($shadowsockss[$k]['parent_id']) {
-                    $shadowsockss[$k]['last_check_at'] = Cache::get(CacheKey::get('SERVER_TROJAN_LAST_CHECK_AT', $shadowsockss[$k]['parent_id']));
+                    $shadowsockss[$k]['last_check_at'] = Cache::get(CacheKey::get('SERVER_SHADOWSOCKS_LAST_CHECK_AT', $shadowsockss[$k]['parent_id']));
                 } else {
-                    $shadowsockss[$k]['last_check_at'] = Cache::get(CacheKey::get('SERVER_TROJAN_LAST_CHECK_AT', $shadowsockss[$k]['id']));
+                    $shadowsockss[$k]['last_check_at'] = Cache::get(CacheKey::get('SERVER_SHADOWSOCKS_LAST_CHECK_AT', $shadowsockss[$k]['id']));
                 }
                 array_push($shadowsocks, $shadowsockss[$k]);
             }
