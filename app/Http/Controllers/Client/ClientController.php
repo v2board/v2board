@@ -8,6 +8,7 @@ use App\Utils\Clash;
 use App\Utils\QuantumultX;
 use App\Utils\Shadowrocket;
 use App\Utils\Surge;
+use App\Utils\URLSchemes;
 use Illuminate\Http\Request;
 use App\Models\Server;
 use App\Utils\Helper;
@@ -34,7 +35,7 @@ class ClientController extends Controller
                     die($this->quantumult($user, $servers['vmess']));
                 }
                 if (strpos($_SERVER['HTTP_USER_AGENT'], 'clash') !== false) {
-                    die($this->clash($user, $servers['vmess'], $servers['trojan']));
+                    die($this->clash($user, $servers['shadowsocks'], $servers['vmess'], $servers['trojan']));
                 }
                 if (strpos($_SERVER['HTTP_USER_AGENT'], 'surfboard') !== false) {
                     die($this->surfboard($user, $servers['vmess']));
@@ -46,7 +47,7 @@ class ClientController extends Controller
                     die($this->shadowrocket($user, $servers['vmess'], $servers['trojan']));
                 }
             }
-            die($this->origin($user, $servers['vmess'], $servers['trojan']));
+            die($this->origin($user, $servers['shadowsocks'], $servers['vmess'], $servers['trojan']));
         }
     }
     // TODO: Ready to stop support
@@ -101,14 +102,17 @@ class ClientController extends Controller
         return base64_encode($uri);
     }
 
-    private function origin($user, $vmess = [], $trojan = [])
+    private function origin($user, $shadowsocks = [], $vmess = [], $trojan = [])
     {
         $uri = '';
+        foreach ($shadowsocks as $item) {
+            $uri .= URLSchemes::buildShadowsocks($item, $user);
+        }
         foreach ($vmess as $item) {
-            $uri .= Helper::buildVmessLink($item, $user);
+            $uri .= URLSchemes::buildVmess($item, $user);
         }
         foreach ($trojan as $item) {
-            $uri .= Helper::buildTrojanLink($item, $user);
+            $uri .= URLSchemes::buildTrojan($item, $user);
         }
         return base64_encode($uri);
     }
@@ -192,7 +196,7 @@ class ClientController extends Controller
         return $config;
     }
 
-    private function clash($user, $vmess = [], $trojan = [])
+    private function clash($user, $shadowsocks = [], $vmess = [], $trojan = [])
     {
         $defaultConfig = base_path() . '/resources/rules/default.clash.yaml';
         $customConfig = base_path() . '/resources/rules/custom.clash.yaml';
@@ -203,6 +207,12 @@ class ClientController extends Controller
         }
         $proxy = [];
         $proxies = [];
+
+        foreach ($shadowsocks as $item) {
+            array_push($proxy, Clash::buildShadowsocks($user->uuid, $item));
+            array_push($proxies, $item->name);
+        }
+
         foreach ($vmess as $item) {
             array_push($proxy, Clash::buildVmess($user->uuid, $item));
             array_push($proxies, $item->name);

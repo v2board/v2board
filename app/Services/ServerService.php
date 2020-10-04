@@ -3,11 +3,13 @@
 namespace App\Services;
 
 use App\Models\ServerLog;
+use App\Models\ServerShadowsocks;
 use App\Models\User;
 use App\Models\Server;
 use App\Models\ServerTrojan;
 use App\Utils\CacheKey;
 use App\Utils\Helper;
+use App\Utils\URLSchemes;
 use Illuminate\Support\Facades\Cache;
 
 class ServerService
@@ -24,9 +26,10 @@ class ServerService
         }
         $vmesss = $model->get();
         foreach ($vmesss as $k => $v) {
+            $vmesss[$k]['protocol_type'] = 'vmess';
             $groupId = json_decode($vmesss[$k]['group_id']);
             if (in_array($user->group_id, $groupId)) {
-                $vmesss[$k]['link'] = Helper::buildVmessLink($vmesss[$k], $user);
+                $vmesss[$k]['link'] = URLSchemes::buildVmess($vmesss[$k], $user);
                 if ($vmesss[$k]['parent_id']) {
                     $vmesss[$k]['last_check_at'] = Cache::get(CacheKey::get('SERVER_V2RAY_LAST_CHECK_AT', $vmesss[$k]['parent_id']));
                 } else {
@@ -49,7 +52,9 @@ class ServerService
         }
         $trojans = $model->get();
         foreach ($trojans as $k => $v) {
+            $trojans[$k]['protocol_type'] = 'trojan';
             $groupId = json_decode($trojans[$k]['group_id']);
+            $trojans[$k]['link'] = URLSchemes::buildTrojan($trojans[$k], $user);
             if (in_array($user->group_id, $groupId)) {
                 if ($trojans[$k]['parent_id']) {
                     $trojans[$k]['last_check_at'] = Cache::get(CacheKey::get('SERVER_TROJAN_LAST_CHECK_AT', $trojans[$k]['parent_id']));
@@ -63,9 +68,35 @@ class ServerService
         return $trojan;
     }
 
+    public function getShadowsocks(User $user, $all = false)
+    {
+        $shadowsocks = [];
+        $model = ServerShadowsocks::orderBy('sort', 'ASC');
+        if (!$all) {
+            $model->where('show', 1);
+        }
+        $shadowsockss = $model->get();
+        foreach ($shadowsockss as $k => $v) {
+            $shadowsockss[$k]['protocol_type'] = 'shadowsocks';
+            $groupId = json_decode($shadowsockss[$k]['group_id']);
+            $shadowsockss[$k]['link'] = URLSchemes::buildShadowsocks($shadowsockss[$k], $user);
+            if (in_array($user->group_id, $groupId)) {
+                if ($shadowsockss[$k]['parent_id']) {
+                    $shadowsockss[$k]['last_check_at'] = Cache::get(CacheKey::get('SERVER_TROJAN_LAST_CHECK_AT', $shadowsockss[$k]['parent_id']));
+                } else {
+                    $shadowsockss[$k]['last_check_at'] = Cache::get(CacheKey::get('SERVER_TROJAN_LAST_CHECK_AT', $shadowsockss[$k]['id']));
+                }
+                array_push($shadowsocks, $shadowsockss[$k]);
+            }
+
+        }
+        return $shadowsocks;
+    }
+
     public function getAllServers(User $user, $all = false)
     {
         return [
+            'shadowsocks' => $this->getShadowsocks($user, $all),
             'vmess' => $this->getVmess($user, $all),
             'trojan' => $this->getTrojan($user, $all)
         ];

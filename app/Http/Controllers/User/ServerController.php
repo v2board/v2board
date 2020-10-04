@@ -24,7 +24,7 @@ class ServerController extends Controller
         if ($userService->isAvailable($user)) {
             $serverService = new ServerService();
             $servers = $serverService->getAllServers($user);
-            $servers = array_merge($servers['vmess'], $servers['trojan']);
+            $servers = array_merge($servers['shadowsocks'], $servers['vmess'], $servers['trojan']);
         }
         return response([
             'data' => $servers

@@ -29,6 +29,11 @@ class AppController extends Controller
         $proxy = [];
         $proxies = [];
 
+        foreach ($servers['shadowsocks'] as $item) {
+            array_push($proxy, Clash::buildShadowsocks($user->uuid, $item));
+            array_push($proxies, $item->name);
+        }
+
         foreach ($servers['vmess'] as $item) {
             array_push($proxy, Clash::buildVmess($user->uuid, $item));
             array_push($proxies, $item->name);

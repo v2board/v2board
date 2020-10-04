@@ -5,6 +5,19 @@ namespace App\Utils;
 
 class Clash
 {
+    public static function buildShadowsocks($uuid, $server)
+    {
+        $array = [];
+        $array['name'] = $server->name;
+        $array['type'] = 'ss';
+        $array['server'] = $server->host;
+        $array['port'] = $server->port;
+        $array['cipher'] = $server->cipher;
+        $array['password'] = $uuid;
+        $array['udp'] = true;
+        return $array;
+    }
+
     public static function buildVmess($uuid, $server)
     {
         $array = [];

@@ -48,6 +48,16 @@ class AdminRoute
                 $router->post('sort', 'Admin\\Server\\V2rayController@sort');
                 $router->post('viewConfig', 'Admin\\Server\\V2rayController@viewConfig');
             });
+            $router->group([
+                'prefix' => 'server/shadowsocks'
+            ], function ($router) {
+                $router->get ('fetch', 'Admin\\Server\\ShadowsocksController@fetch');
+                $router->post('save', 'Admin\\Server\\ShadowsocksController@save');
+                $router->post('drop', 'Admin\\Server\\ShadowsocksController@drop');
+                $router->post('update', 'Admin\\Server\\ShadowsocksController@update');
+                $router->post('copy', 'Admin\\Server\\ShadowsocksController@copy');
+                $router->post('sort', 'Admin\\Server\\ShadowsocksController@sort');
+            });
             // Order
             $router->get ('/order/fetch', 'Admin\\OrderController@fetch');
             $router->post('/order/repair', 'Admin\\OrderController@repair');

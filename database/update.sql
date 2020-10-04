@@ -307,3 +307,23 @@ ADD `three_year_price` int(11) NULL AFTER `two_year_price`;
 
 ALTER TABLE `v2_user`
 ADD `is_staff` tinyint(1) NOT NULL DEFAULT '0' AFTER `is_admin`;
+
+CREATE TABLE `v2_server_shadowsocks` (
+  `id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `group_id` varchar(255) NOT NULL,
+  `parent_id` int(11) NULL,
+  `tags` varchar(255) NULL,
+  `name` varchar(255) NOT NULL,
+  `rate` varchar(11) NOT NULL,
+  `host` varchar(255) NOT NULL,
+  `port` int(11) NOT NULL,
+  `server_port` int(11) NOT NULL,
+  `cipher` varchar(255) NOT NULL,
+  `show` tinyint NOT NULL DEFAULT '0',
+  `sort` int(11) NULL,
+  `created_at` int(11) NOT NULL,
+  `updated_at` int(11) NOT NULL
+) COLLATE 'utf8mb4_general_ci';
+
+ALTER TABLE `v2_coupon`
+CHANGE `code` `code` varchar(255) COLLATE 'utf8_general_ci' NOT NULL AFTER `id`;

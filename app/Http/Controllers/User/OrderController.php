@@ -82,7 +82,7 @@ class OrderController extends Controller
             }
         }
 
-        if (!$plan->renew && $user->plan_id == $plan->id) {
+        if (!$plan->renew && $user->plan_id == $plan->id && $request->input('cycle') !== 'reset_price') {
             abort(500, '该订阅无法续费，请更换其他订阅');
         }
 

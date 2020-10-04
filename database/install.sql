@@ -22,7 +22,7 @@ CREATE TABLE `failed_jobs` (
 DROP TABLE IF EXISTS `v2_coupon`;
 CREATE TABLE `v2_coupon` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `code` char(8) NOT NULL,
+  `code` varchar(255) NOT NULL,
   `name` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
   `type` tinyint(1) NOT NULL,
   `value` int(11) NOT NULL,
@@ -177,6 +177,26 @@ CREATE TABLE `v2_server_log` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
+DROP TABLE IF EXISTS `v2_server_shadowsocks`;
+CREATE TABLE `v2_server_shadowsocks` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `group_id` varchar(255) NOT NULL,
+  `parent_id` int(11) DEFAULT NULL,
+  `tags` varchar(255) DEFAULT NULL,
+  `name` varchar(255) NOT NULL,
+  `rate` varchar(11) NOT NULL,
+  `host` varchar(255) NOT NULL,
+  `port` int(11) NOT NULL,
+  `server_port` int(11) NOT NULL,
+  `cipher` varchar(255) NOT NULL,
+  `show` tinyint(4) NOT NULL DEFAULT '0',
+  `sort` int(11) DEFAULT NULL,
+  `created_at` int(11) NOT NULL,
+  `updated_at` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
 DROP TABLE IF EXISTS `v2_server_stat`;
 CREATE TABLE `v2_server_stat` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -289,4 +309,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2020-09-19 14:39:28
+-- 2020-09-29 09:05:00
