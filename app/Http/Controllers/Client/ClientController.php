@@ -8,6 +8,7 @@ use App\Utils\Clash;
 use App\Utils\QuantumultX;
 use App\Utils\Shadowrocket;
 use App\Utils\Surge;
+use App\Utils\Surfboard;
 use App\Utils\URLSchemes;
 use Illuminate\Http\Request;
 use App\Models\Server;
@@ -38,7 +39,7 @@ class ClientController extends Controller
                     die($this->clash($user, $servers['shadowsocks'], $servers['vmess'], $servers['trojan']));
                 }
                 if (strpos($_SERVER['HTTP_USER_AGENT'], 'surfboard') !== false) {
-                    die($this->surfboard($user, $servers['vmess']));
+                    die($this->surfboard($user, $servers['shadowsocks'], $servers['vmess']));
                 }
                 if (strpos($_SERVER['HTTP_USER_AGENT'], 'surge') !== false) {
                     die($this->surge($user, $servers['vmess'], $servers['trojan']));
@@ -155,29 +156,21 @@ class ClientController extends Controller
         return $config;
     }
 
-    private function surfboard($user, $vmess = [])
+    private function surfboard($user, $shadowsocks = [], $vmess = [])
     {
         $proxies = '';
         $proxyGroup = '';
+
+        foreach ($shadowsocks as $item) {
+            // [Proxy]
+            $proxies .= Surfboard::buildShadowsocks($user->uuid, $item);
+            // [Proxy Group]
+            $proxyGroup .= $item->name . ', ';
+        }
+
         foreach ($vmess as $item) {
             // [Proxy]
-            $proxies .= $item->name . ' = vmess, ' . $item->host . ', ' . $item->port . ', username=' . $user->uuid;
-            if ($item->tls) {
-                $tlsSettings = json_decode($item->tlsSettings);
-                $proxies .= ', tls=' . ($item->tls ? "true" : "false");
-                if (isset($tlsSettings->allowInsecure)) {
-                  $proxies .= ', skip-cert-verify=' . ($tlsSettings->allowInsecure ? "true" : "false");
-                }
-            }
-            if ($item->network == 'ws') {
-                $proxies .= ', ws=true';
-                if ($item->networkSettings) {
-                    $wsSettings = json_decode($item->networkSettings);
-                    if (isset($wsSettings->path)) $proxies .= ', ws-path=' . $wsSettings->path;
-                    if (isset($wsSettings->headers->Host)) $proxies .= ', ws-headers=host:' . $wsSettings->headers->Host;
-                }
-            }
-            $proxies .= "\r\n";
+            $proxies .= Surfboard::buildVmess($user->uuid, $item);
             // [Proxy Group]
             $proxyGroup .= $item->name . ', ';
         }
