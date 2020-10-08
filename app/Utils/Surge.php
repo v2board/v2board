@@ -5,6 +5,23 @@ namespace App\Utils;
 
 class Surge
 {
+    public static function buildShadowsocks($password, $server)
+    {
+        $config = [
+            "{$server->name}=ss",
+            "{$server->host}",
+            "{$server->port}",
+            "encrypt-method={$server->cipher}",
+            "password={$password}",
+            "tfo=true",
+            "udp-relay=true"
+        ];
+        $config = array_filter($config);
+        $uri = implode(',', $config);
+        $uri .= "\r\n";
+        return $uri;
+    }
+
     public static function buildVmess($uuid, $server)
     {
         $proxies = $server->name . ' = vmess, ' . $server->host . ', ' . $server->port . ', username=' . $uuid . ', tfo=true';

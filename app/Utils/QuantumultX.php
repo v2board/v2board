@@ -5,6 +5,22 @@ namespace App\Utils;
 
 class QuantumultX
 {
+    public static function buildShadowsocks($password, $server)
+    {
+        $config = [
+            "shadowsocks={$server->host}:{$server->port}",
+            "method={$server->cipher}",
+            "password={$password}",
+            "fast-open=true",
+            "udp-relay=true",
+            "tag={$server->name}"
+        ];
+        $config = array_filter($config);
+        $uri = implode(',', $config);
+        $uri .= "\r\n";
+        return $uri;
+    }
+
     public static function buildVmess($uuid, $server)
     {
         $config = [

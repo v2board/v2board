@@ -30,7 +30,7 @@ class ClientController extends Controller
             if (isset($_SERVER['HTTP_USER_AGENT'])) {
                 $_SERVER['HTTP_USER_AGENT'] = strtolower($_SERVER['HTTP_USER_AGENT']);
                 if (strpos($_SERVER['HTTP_USER_AGENT'], 'quantumult%20x') !== false) {
-                    die($this->quantumultX($user, $servers['vmess'], $servers['trojan']));
+                    die($this->quantumultX($user, $servers['shadowsocks'], $servers['vmess'], $servers['trojan']));
                 }
                 if (strpos($_SERVER['HTTP_USER_AGENT'], 'quantumult') !== false) {
                     die($this->quantumult($user, $servers['vmess']));
@@ -42,7 +42,7 @@ class ClientController extends Controller
                     die($this->surfboard($user, $servers['shadowsocks'], $servers['vmess']));
                 }
                 if (strpos($_SERVER['HTTP_USER_AGENT'], 'surge') !== false) {
-                    die($this->surge($user, $servers['vmess'], $servers['trojan']));
+                    die($this->surge($user, $servers['shadowsocks'], $servers['vmess'], $servers['trojan']));
                 }
                 if (strpos($_SERVER['HTTP_USER_AGENT'], 'shadowrocket') !== false) {
                     die($this->shadowrocket($user, $servers['shadowsocks'], $servers['vmess'], $servers['trojan']));
@@ -93,10 +93,13 @@ class ClientController extends Controller
         return base64_encode($uri);
     }
 
-    private function quantumultX($user, $vmess = [], $trojan = [])
+    private function quantumultX($user, $shadowsocks = [], $vmess = [], $trojan = [])
     {
         $uri = '';
         header("subscription-userinfo: upload={$user->u}; download={$user->d}; total={$user->transfer_enable}; expire={$user->expired_at}");
+        foreach ($shadowsocks as $item) {
+            $uri .= QuantumultX::buildShadowsocks($user->uuid, $item);
+        }
         foreach ($vmess as $item) {
             $uri .= QuantumultX::buildVmess($user->uuid, $item);
         }
@@ -121,10 +124,18 @@ class ClientController extends Controller
         return base64_encode($uri);
     }
 
-    private function surge($user, $vmess = [], $trojan = [])
+    private function surge($user, $shadowsocks = [], $vmess = [], $trojan = [])
     {
         $proxies = '';
         $proxyGroup = '';
+
+        foreach ($shadowsocks as $item) {
+            // [Proxy]
+            $proxies .= Surge::buildShadowsocks($user->uuid, $item);
+            // [Proxy Group]
+            $proxyGroup .= $item->name . ', ';
+        }
+
         foreach ($vmess as $item) {
             // [Proxy]
             $proxies .= Surge::buildVmess($user->uuid, $item);
@@ -213,7 +224,6 @@ class ClientController extends Controller
             array_push($proxy, Clash::buildVmess($user->uuid, $item));
             array_push($proxies, $item->name);
         }
-
 
         foreach ($trojan as $item) {
             array_push($proxy, Clash::buildTrojan($user->uuid, $item));
