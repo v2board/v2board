@@ -5,11 +5,7 @@ namespace App\Http\Controllers\Admin\Server;
 use App\Http\Requests\Admin\ServerShadowsocksSave;
 use App\Http\Requests\Admin\ServerShadowsocksSort;
 use App\Http\Requests\Admin\ServerShadowsocksUpdate;
-use App\Http\Requests\Admin\ServerV2raySave;
-use App\Http\Requests\Admin\ServerV2raySort;
-use App\Http\Requests\Admin\ServerV2rayUpdate;
 use App\Models\ServerShadowsocks;
-use App\Services\ServerService;
 use App\Utils\CacheKey;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -113,7 +109,7 @@ class ShadowsocksController extends Controller
         if (!$server) {
             abort(500, '服务器不存在');
         }
-        if (!Server::create($server->toArray())) {
+        if (!ServerShadowsocks::create($server->toArray())) {
             abort(500, '复制失败');
         }
 

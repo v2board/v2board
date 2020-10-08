@@ -67,6 +67,7 @@ class AdminRoute
             $router->get ('/user/fetch', 'Admin\\UserController@fetch');
             $router->post('/user/update', 'Admin\\UserController@update');
             $router->get ('/user/getUserInfoById', 'Admin\\UserController@getUserInfoById');
+            $router->post('/user/generate', 'Admin\\UserController@generate');
             // Stat
             $router->get ('/stat/getOverride', 'Admin\\StatController@getOverride');
             // Notice
