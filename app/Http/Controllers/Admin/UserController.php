@@ -109,7 +109,7 @@ class UserController extends Controller
 
     public function dumpCSV(Request $request)
     {
-        $userModel = new User();
+        $userModel = User::orderBy('id', 'asc');
         $this->filter($request, $userModel);
         $res = $userModel->get();
         $plan = Plan::get();
