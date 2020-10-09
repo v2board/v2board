@@ -11,8 +11,8 @@ class QuantumultX
             "shadowsocks={$server->host}:{$server->port}",
             "method={$server->cipher}",
             "password={$password}",
-            "fast-open=true",
-            "udp-relay=true",
+            'fast-open=true',
+            'udp-relay=true',
             "tag={$server->name}"
         ];
         $config = array_filter($config);
@@ -25,8 +25,10 @@ class QuantumultX
     {
         $config = [
             "vmess={$server->host}:{$server->port}",
-            "method=chacha20-poly1305",
+            'method=chacha20-poly1305',
             "password={$uuid}",
+            'fast-open=true',
+            'udp-relay=true',
             "tag={$server->name}"
         ];
         if ($server->network === 'tcp') {
@@ -37,7 +39,7 @@ class QuantumultX
                     // Tips: allowInsecure=false = tls-verification=true
                     array_push($config, $tlsSettings->allowInsecure ? 'tls-verification=false' : 'tls-verification=true');
                 }
-                if (isset($tlsSettings->serverName)) {
+                if (!empty($tlsSettings->serverName)) {
                     array_push($config, "obfs-host={$tlsSettings->serverName}");
                 }
             }
@@ -70,12 +72,12 @@ class QuantumultX
         $config = [
             "trojan={$server->host}:{$server->port}",
             "password={$password}",
-            "over-tls=true",
+            'over-tls=true',
             $server->server_name ? "tls-host={$server->server_name}" : "",
             // Tips: allowInsecure=false = tls-verification=true
             $server->allow_insecure ? 'tls-verification=false' : 'tls-verification=true',
-            "fast-open=false",
-            "udp-relay=false",
+            'fast-open=true',
+            'udp-relay=true',
             "tag={$server->name}"
         ];
         $config = array_filter($config);

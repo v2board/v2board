@@ -12,10 +12,10 @@ class Surfboard
             "{$server->host}",
             "{$server->port}",
             "{$server->cipher}",
-            "password={$password}",
-            "https://raw.githubusercontent.com/Hackl0us/proxy-tool-backup/master/SSEncrypt.module",
-            "tfo=true",
-            "udp-relay=true"
+            "{$password}",
+            'https://raw.githubusercontent.com/Hackl0us/proxy-tool-backup/master/SSEncrypt.module',
+            'tfo=true',
+            'udp-relay=true'
         ];
         $config = array_filter($config);
         $uri = implode(',', $config);
@@ -30,18 +30,15 @@ class Surfboard
             "{$server->host}",
             "{$server->port}",
             "username={$uuid}",
-            "tfo=true",
-            "udp-relay=false"
+            'tfo=true',
+            'udp-relay=true'
         ];
         if ($server->network === 'tcp') {
             if ($server->tls) {
                 $tlsSettings = json_decode($server->tlsSettings);
                 array_push($config, $server->tls ? 'tls=true' : 'tls=false');
-                if (isset($tlsSettings->allowInsecure)) {
+                if (!empty($tlsSettings->allowInsecure)) {
                     array_push($config, $tlsSettings->allowInsecure ? 'skip-cert-verify=true' : 'skip-cert-verify=false');
-                }
-                if (isset($tlsSettings->serverName)) {
-                    array_push($config, "obfs-host={$tlsSettings->serverName}");
                 }
             }
         }
@@ -51,7 +48,7 @@ class Surfboard
             if ($server->tls) {
                 $tlsSettings = json_decode($server->tlsSettings);
                 array_push($config, $server->tls ? 'tls=true' : 'tls=false');
-                if (isset($tlsSettings->allowInsecure)) {
+                if (!empty($tlsSettings->allowInsecure)) {
                     array_push($config, $tlsSettings->allowInsecure ? 'skip-cert-verify=true' : 'skip-cert-verify=false');
                 }
             }
