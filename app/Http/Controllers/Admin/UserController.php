@@ -133,7 +133,7 @@ class UserController extends Controller
             $subscribeUrl = $baseUrl . '/api/v1/client/subscribe?token=' . $user['token'];
             $data .= "{$user['email']},{$balance},{$commissionBalance},{$transferEnable},{$notUseFlow},{$expireDate},{$planName},{$subscribeUrl}\r\n";
         }
-        echo $data;
+        echo "\xEF\xBB\xBF" . $data;
     }
 
     public function generate(UserGenerate $request)
