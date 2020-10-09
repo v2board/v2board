@@ -14,11 +14,19 @@ use App\Models\InviteCode;
 use App\Utils\Helper;
 use App\Utils\Dict;
 use App\Utils\CacheKey;
+use ReCaptcha\ReCaptcha;
 
 class AuthController extends Controller
 {
     public function register(AuthRegister $request)
     {
+        if ((int)config('v2board.recaptcha_enable', 0)) {
+            $recaptcha = new ReCaptcha(config('v2board.recaptcha_key'));
+            $recaptchaResp = $recaptcha->verify($request->input('recaptcha_data'));
+            if (!$recaptchaResp->isSuccess()) {
+                abort(500, '验证码有误');
+            }
+        }
         if ((int)config('v2board.email_whitelist_enable', 0)) {
             if (!Helper::emailSuffixVerify(
                 $request->input('email'),

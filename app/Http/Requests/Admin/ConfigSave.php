@@ -35,6 +35,9 @@ class ConfigSave extends FormRequest
             'email_whitelist_enable' => 'in:0,1',
             'email_whitelist_suffix' => '',
             'email_gmail_limit_enable' => 'in:0,1',
+            'recaptcha_enable' => 'in:0,1',
+            'recaptcha_key' => '',
+            'recaptcha_site_key' => '',
             // subscribe
             'plan_change_enable' => 'in:0,1',
             'reset_traffic_method' => 'in:0,1',

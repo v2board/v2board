@@ -12,7 +12,8 @@ class CouponController extends Controller
 {
     public function fetch(Request $request)
     {
-        $coupons = Coupon::all();
+        $coupon = Coupon::orderBy('created_at', 'desc');
+        $coupons = $coupon->get();
         foreach ($coupons as $k => $v) {
             if ($coupons[$k]['limit_plan_ids']) $coupons[$k]['limit_plan_ids'] = json_decode($coupons[$k]['limit_plan_ids']);
         }
