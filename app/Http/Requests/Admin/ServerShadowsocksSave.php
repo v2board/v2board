@@ -21,7 +21,7 @@ class ServerShadowsocksSave extends FormRequest
             'host' => 'required',
             'port' => 'required',
             'server_port' => 'required',
-            'cipher' => 'required',
+            'cipher' => 'required|in:aes-128-gcm,aes-256-gcm,chacha20-ietf-poly1305',
             'tags' => 'nullable|array',
             'rate' => 'required|numeric'
         ];
