@@ -54,6 +54,9 @@ class OrderService
             default:
                 $this->buyByCycle($order, $user, $plan);
         }
+
+        if ((int)config('v2board.renew_reset_traffic_enable', 0)) $this->buyByResetTraffic($user);
+
         if (!$user->save()) {
             DB::rollBack();
             abort(500, '开通失败');
@@ -223,10 +226,7 @@ class OrderService
             $user->expired_at = time();
         }
         $user->transfer_enable = $plan->transfer_enable * 1073741824;
-
-        // 续费重置&类型=续费
-        if ((int)config('v2board.renew_reset_traffic_enable', 1) && $order->type === 2) $this->buyByResetTraffic($user);
-        // 购买前用户过期为NULL（一次性）
+        // 从一次性转换到循环
         if ($user->expired_at === NULL) $this->buyByResetTraffic($user);
         // 新购
         if ($order->type === 1) $this->buyByResetTraffic($user);
@@ -237,9 +237,8 @@ class OrderService
 
     private function buyByOneTime(User $user, Plan $plan)
     {
+        $this->buyByResetTraffic($user);
         $user->transfer_enable = $plan->transfer_enable * 1073741824;
-        $user->u = 0;
-        $user->d = 0;
         $user->plan_id = $plan->id;
         $user->group_id = $plan->group_id;
         $user->expired_at = NULL;
