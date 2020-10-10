@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 
 class OrderService
 {
-    CONST STRTOTIME = [
+    CONST STR_TO_TIME = [
         'month_price' => 1,
         'quarter_price' => 3,
         'half_year_price' => 6,
@@ -164,7 +164,7 @@ class OrderService
 
     private function orderIsUsed(Order $order):bool
     {
-        $month = self::STRTOTIME[$order->cycle];
+        $month = self::STR_TO_TIME[$order->cycle];
         $orderExpireDay = strtotime('+' . $month . ' month', $order->created_at->timestamp);
         if ($orderExpireDay < time()) return true;
         return false;
@@ -183,7 +183,7 @@ class OrderService
             // 兼容历史余留问题
             if ($item->cycle === 'onetime_price') continue;
             if ($this->orderIsUsed($item)) continue;
-            $orderSurplusMonth = $orderSurplusMonth + self::STRTOTIME[$item->cycle];
+            $orderSurplusMonth = $orderSurplusMonth + self::STR_TO_TIME[$item->cycle];
             $orderSurplusAmount = $orderSurplusAmount + ($item['total_amount'] + $item['balance_amount']);
         }
         if (!$orderSurplusMonth || !$orderSurplusAmount) return;
