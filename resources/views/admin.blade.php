@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <link rel="stylesheet" href="/assets/admin/antd.chunk.css?v={{$verison}}">
+    <link rel="stylesheet" href="/assets/admin/components.chunk.css?v={{$verison}}">
     <link rel="stylesheet" href="/assets/admin/umi.css?v={{$verison}}">
     <link rel="stylesheet" href="/assets/admin/custom.css?v={{$verison}}">
     <meta charset="utf-8">
@@ -27,7 +27,7 @@
 <body>
 <div id="root"></div>
 <script src="/assets/admin/vendors.async.js?v={{$verison}}"></script>
-<script src="/assets/admin/antd.async.js?v={{$verison}}"></script>
+<script src="/assets/admin/components.async.js?v={{$verison}}"></script>
 <script src="/assets/admin/umi.js?v={{$verison}}"></script>
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-P1E9Z5LRRK"></script>

@@ -74,10 +74,12 @@ class TrojanTidalabController extends Controller
         Cache::put(CacheKey::get('SERVER_TROJAN_ONLINE_USER', $server->id), count($data), 3600);
         $serverService = new ServerService();
         $userService = new UserService();
+        DB::beginTransaction();
         foreach ($data as $item) {
             $u = $item['u'] * $server->rate;
             $d = $item['d'] * $server->rate;
             if (!$userService->trafficFetch($u, $d, $item['user_id'])) {
+                DB::rollBack();
                 return response([
                     'ret' => 0,
                     'msg' => 'user fetch fail'
@@ -93,6 +95,7 @@ class TrojanTidalabController extends Controller
                 'trojan'
             );
         }
+        DB::commit();
 
         return response([
             'ret' => 1,

@@ -80,7 +80,7 @@ class UserService
     {
         $user = User::find($userId);
         if (!$user) {
-            return false;
+            return true;
         }
         $user->t = time();
         $user->u = $user->u + $u;

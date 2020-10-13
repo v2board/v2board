@@ -73,10 +73,12 @@ class ShadowsocksTidalabController extends Controller
         Cache::put(CacheKey::get('SERVER_SHADOWSOCKS_ONLINE_USER', $server->id), count($data), 3600);
         $serverService = new ServerService();
         $userService = new UserService();
+        DB::beginTransaction();
         foreach ($data as $item) {
             $u = $item['u'] * $server->rate;
             $d = $item['d'] * $server->rate;
             if (!$userService->trafficFetch((float)$u, (float)$d, (int)$item['user_id'])) {
+                DB::rollBack();
                 return response([
                     'ret' => 0,
                     'msg' => 'user fetch fail'
@@ -92,6 +94,7 @@ class ShadowsocksTidalabController extends Controller
                 'trojan'
             );
         }
+        DB::commit();
 
         return response([
             'ret' => 1,
