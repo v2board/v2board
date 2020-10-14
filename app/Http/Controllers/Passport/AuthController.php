@@ -144,7 +144,6 @@ class AuthController extends Controller
         ]);
     }
 
-    // 准备废弃
     public function token2Login(Request $request)
     {
         if ($request->input('token')) {
@@ -154,7 +153,7 @@ class AuthController extends Controller
             } else {
                 $location = url($redirect);
             }
-            return header('Location:' . $location);
+            return redirect()->to($location)->send();
         }
 
         if ($request->input('verify')) {
