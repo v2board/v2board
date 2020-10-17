@@ -4,7 +4,7 @@ namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class TutorialSave extends FormRequest
+class KnowledgeSave extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -14,10 +14,10 @@ class TutorialSave extends FormRequest
     public function rules()
     {
         return [
+            'category' => 'required',
+            'language' => 'required',
             'title' => 'required',
-            // 1:windows 2:macos 3:ios 4:android 5:linux 6:router
-            'category_id' => 'required|in:1,2,3,4,5,6',
-            'steps' => 'required'
+            'body' => 'required'
         ];
     }
 
@@ -25,9 +25,9 @@ class TutorialSave extends FormRequest
     {
         return [
             'title.required' => '标题不能为空',
-            'category_id.required' => '分类不能为空',
-            'category_id.in' => '分类格式不正确',
-            'steps.required' => '教程步骤不能为空'
+            'category.required' => '分类不能为空',
+            'body.required' => '内容不能为空',
+            'language.required' => '语言不能为空'
         ];
     }
 }

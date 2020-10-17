@@ -49,6 +49,21 @@ CREATE TABLE `v2_invite_code` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
+DROP TABLE IF EXISTS `v2_knowledge`;
+CREATE TABLE `v2_knowledge` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `language` char(5) NOT NULL COMMENT '語言',
+  `category` varchar(255) NOT NULL COMMENT '分類名',
+  `title` varchar(255) NOT NULL COMMENT '標題',
+  `body` text NOT NULL COMMENT '內容',
+  `sort` int(11) DEFAULT NULL COMMENT '排序',
+  `show` tinyint(1) NOT NULL DEFAULT '0' COMMENT '顯示',
+  `created_at` int(11) NOT NULL COMMENT '創建時間',
+  `updated_at` int(11) NOT NULL COMMENT '更新時間',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='知識庫';
+
+
 DROP TABLE IF EXISTS `v2_mail_log`;
 CREATE TABLE `v2_mail_log` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -257,20 +272,6 @@ CREATE TABLE `v2_ticket_message` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-DROP TABLE IF EXISTS `v2_tutorial`;
-CREATE TABLE `v2_tutorial` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `category_id` int(11) NOT NULL,
-  `title` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
-  `steps` text,
-  `show` tinyint(1) NOT NULL DEFAULT '0',
-  `sort` int(11) DEFAULT NULL,
-  `created_at` int(11) NOT NULL,
-  `updated_at` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
 DROP TABLE IF EXISTS `v2_user`;
 CREATE TABLE `v2_user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -309,4 +310,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2020-09-29 09:05:00
+-- 2020-10-17 18:49:28

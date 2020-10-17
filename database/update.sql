@@ -327,3 +327,15 @@ CREATE TABLE `v2_server_shadowsocks` (
 
 ALTER TABLE `v2_coupon`
 CHANGE `code` `code` varchar(255) COLLATE 'utf8_general_ci' NOT NULL AFTER `id`;
+
+CREATE TABLE `v2_knowledge` (
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `language` char(5) NOT NULL COMMENT '語言',
+  `category` varchar(255) NOT NULL COMMENT '分類名',
+  `title` varchar(255) NOT NULL COMMENT '標題',
+  `body` text NOT NULL COMMENT '內容',
+  `sort` int(11) NULL COMMENT '排序',
+  `show` tinyint(1) NOT NULL DEFAULT '0' COMMENT '顯示',
+  `created_at` int(11) NOT NULL COMMENT '創建時間',
+  `updated_at` int(11) NOT NULL COMMENT '更新時間'
+) COMMENT='知識庫' COLLATE 'utf8mb4_general_ci';

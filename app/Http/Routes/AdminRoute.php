@@ -86,12 +86,13 @@ class AdminRoute
             $router->get ('/coupon/fetch', 'Admin\\CouponController@fetch');
             $router->post('/coupon/save', 'Admin\\CouponController@save');
             $router->post('/coupon/drop', 'Admin\\CouponController@drop');
-            // Tutorial
-            $router->get ('/tutorial/fetch', 'Admin\\TutorialController@fetch');
-            $router->post('/tutorial/save', 'Admin\\TutorialController@save');
-            $router->post('/tutorial/show', 'Admin\\TutorialController@show');
-            $router->post('/tutorial/drop', 'Admin\\TutorialController@drop');
-            $router->post('/tutorial/sort', 'Admin\\TutorialController@sort');
+            // Knowledge
+            $router->get ('/knowledge/fetch', 'Admin\\KnowledgeController@fetch');
+            $router->get ('/knowledge/getCategory', 'Admin\\KnowledgeController@getCategory');
+            $router->post('/knowledge/save', 'Admin\\KnowledgeController@save');
+            $router->post('/knowledge/show', 'Admin\\KnowledgeController@show');
+            $router->post('/knowledge/drop', 'Admin\\KnowledgeController@drop');
+            $router->post('/knowledge/sort', 'Admin\\KnowledgeController@sort');
         });
     }
 }

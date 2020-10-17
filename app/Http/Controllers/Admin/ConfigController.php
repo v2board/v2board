@@ -68,7 +68,8 @@ class ConfigController extends Controller
                 'subscribe' => [
                     'plan_change_enable' => (int)config('v2board.plan_change_enable', 1),
                     'reset_traffic_method' => (int)config('v2board.reset_traffic_method', 0),
-                    'renew_reset_traffic_enable' => (int)config('v2board.renew_reset_traffic_enable', 0)
+                    'renew_reset_traffic_enable' => (int)config('v2board.renew_reset_traffic_enable', 0),
+                    'surplus_enable' => (int)config('v2board.surplus_enable', 1)
                 ],
                 'pay' => [
                     // alipay
