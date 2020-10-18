@@ -19,15 +19,15 @@ class UserController extends Controller
     private function filter(Request $request, $builder)
     {
         if ($request->input('filter')) {
-            $request->validate([
-                'filter' => 'array',
-                'filter.*.key' => 'required|in:email,transfer_enable,d,expired_at,uuid,token',
-                'filter.*.condition' => 'required|in:>,<,=,>=,<=',
-                'filter.*.value' => 'required'
-            ]);
             foreach ($request->input('filter') as $filter) {
-                if ($filter['key'] === 'email' && $filter['condition'] === '=') {
+                if ($filter['key'] === 'email') {
                     $builder->where($filter['key'], 'like', '%' . $filter['value'] . '%');
+                    continue;
+                }
+                if ($filter['key'] === 'invite_by_email') {
+                    $user = User::where('email', $filter['value'])->first();
+                    if (!$user) continue;
+                    $builder->where('invite_user_id', $user->id);
                     continue;
                 }
                 if ($filter['key'] === 'd' || $filter['key'] === 'transfer_enable') {
