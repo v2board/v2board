@@ -69,6 +69,7 @@ class AdminRoute
             $router->get ('/user/getUserInfoById', 'Admin\\UserController@getUserInfoById');
             $router->post('/user/generate', 'Admin\\UserController@generate');
             $router->post('/user/dumpCSV', 'Admin\\UserController@dumpCSV');
+            $router->post('/user/sendMail', 'Admin\\UserController@sendMail');
             // Stat
             $router->get ('/stat/getOverride', 'Admin\\StatController@getOverride');
             // Notice
@@ -80,8 +81,6 @@ class AdminRoute
             $router->get ('/ticket/fetch', 'Admin\\TicketController@fetch');
             $router->post('/ticket/reply', 'Admin\\TicketController@reply');
             $router->post('/ticket/close', 'Admin\\TicketController@close');
-            // Mail
-            $router->post('/mail/send', 'Admin\\MailController@send');
             // Coupon
             $router->get ('/coupon/fetch', 'Admin\\CouponController@fetch');
             $router->post('/coupon/save', 'Admin\\CouponController@save');

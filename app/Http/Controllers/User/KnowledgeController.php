@@ -27,6 +27,7 @@ class KnowledgeController extends Controller
             $knowledge['body'] = str_replace('{{appleId}}', $appleId, $knowledge['body']);
             $knowledge['body'] = str_replace('{{appleIdPassword}}', $appleIdPassword, $knowledge['body']);
             $knowledge['body'] = str_replace('{{subscribeUrl}}', $subscribeUrl, $knowledge['body']);
+            $knowledge['body'] = str_replace('{{urlEncodeSubscribeUrl}}', urlencode($subscribeUrl), $knowledge['body']);
             return response([
                 'data' => $knowledge
             ]);

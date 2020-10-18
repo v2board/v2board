@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\Admin\UserFetch;
 use App\Http\Requests\Admin\UserGenerate;
+use App\Http\Requests\Admin\UserSendMail;
 use App\Http\Requests\Admin\UserUpdate;
+use App\Jobs\SendEmailJob;
 use App\Utils\Helper;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -207,5 +209,30 @@ class UserController extends Controller
             $data .= "{$user['email']},{$password},{$expireDate},{$user['uuid']},{$createDate},{$subscribeUrl}\r\n";
         }
         echo $data;
+    }
+
+    public function sendMail(UserSendMail $request)
+    {
+        $sortType = in_array($request->input('sort_type'), ['ASC', 'DESC']) ? $request->input('sort_type') : 'DESC';
+        $sort = $request->input('sort') ? $request->input('sort') : 'created_at';
+        $userModel = User::orderBy($sort, $sortType);
+        $this->filter($request, $userModel);
+        $users = $userModel->get();
+        foreach ($users as $user) {
+            SendEmailJob::dispatch([
+                'email' => $user->email,
+                'subject' => $request->input('subject'),
+                'template_name' => 'notify',
+                'template_value' => [
+                    'name' => config('v2board.app_name', 'V2Board'),
+                    'url' => config('v2board.app_url'),
+                    'content' => $request->input('content')
+                ]
+            ]);
+        }
+
+        return response([
+            'data' => true
+        ]);
     }
 }
