@@ -23,6 +23,7 @@ class KnowledgeController extends Controller
             $appleId = $userService->isAvailable($user) ? config('v2board.apple_id') : '没有有效订阅无法使用本站提供的AppleID';
             $appleIdPassword = $userService->isAvailable($user) ? config('v2board.apple_id_password') : '没有有效订阅无法使用本站提供的AppleID';
             $subscribeUrl = config('v2board.subscribe_url', config('v2board.app_url', env('APP_URL'))) . '/api/v1/client/subscribe?token=' . $user['token'];
+            $knowledge['body'] = str_replace('{{siteName}}', config('v2board.app_name', 'V2Board'), $knowledge['body']);
             $knowledge['body'] = str_replace('{{appleId}}', $appleId, $knowledge['body']);
             $knowledge['body'] = str_replace('{{appleIdPassword}}', $appleIdPassword, $knowledge['body']);
             $knowledge['body'] = str_replace('{{subscribeUrl}}', $subscribeUrl, $knowledge['body']);
