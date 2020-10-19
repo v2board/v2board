@@ -215,9 +215,9 @@ class UserController extends Controller
     {
         $sortType = in_array($request->input('sort_type'), ['ASC', 'DESC']) ? $request->input('sort_type') : 'DESC';
         $sort = $request->input('sort') ? $request->input('sort') : 'created_at';
-        $userModel = User::orderBy($sort, $sortType);
-        $this->filter($request, $userModel);
-        $users = $userModel->get();
+        $builder = User::orderBy($sort, $sortType);
+        $this->filter($request, $builder);
+        $users = $builder->get();
         foreach ($users as $user) {
             SendEmailJob::dispatch([
                 'email' => $user->email,
@@ -229,6 +229,25 @@ class UserController extends Controller
                     'content' => $request->input('content')
                 ]
             ]);
+        }
+
+        return response([
+            'data' => true
+        ]);
+    }
+
+    public function ban(Request $request)
+    {
+        $sortType = in_array($request->input('sort_type'), ['ASC', 'DESC']) ? $request->input('sort_type') : 'DESC';
+        $sort = $request->input('sort') ? $request->input('sort') : 'created_at';
+        $builder = User::orderBy($sort, $sortType);
+        $this->filter($request, $builder);
+        try {
+            $builder->update([
+                'banned' => 1
+            ]);
+        } catch (\Exception $e) {
+            abort(500, '处理失败');
         }
 
         return response([

@@ -139,6 +139,10 @@ class AuthController extends Controller
             $request->session()->put('is_admin', true);
             $data['is_admin'] = true;
         }
+        if ($user->is_staff) {
+            $request->session()->put('is_staff', true);
+            $data['is_staff'] = true;
+        }
         return response([
             'data' => $data
         ]);
@@ -185,7 +189,7 @@ class AuthController extends Controller
     {
         $user = User::where('token', $request->input('token'))->first();
         if (!$user) {
-            abort(500, '用户不存在');
+            abort(500, '令牌有误');
         }
 
         $code = Helper::guid();
@@ -193,6 +197,27 @@ class AuthController extends Controller
         Cache::put($key, $user->id, 60);
         return response([
             'data' => $code
+        ]);
+    }
+
+    public function getQuickLoginUrl(Request $request)
+    {
+        $user = User::where('token', $request->input('token'))->first();
+        if (!$user) {
+            abort(500, '令牌有误');
+        }
+
+        $code = Helper::guid();
+        $key = CacheKey::get('TEMP_TOKEN', $code);
+        Cache::put($key, $user->id, 60);
+        $redirect = '/#/login?verify=' . $code . '&redirect=' . ($request->input('redirect') ? $request->input('redirect') : 'dashboard');
+        if (config('v2board.app_url')) {
+            $url = config('v2board.app_url') . $redirect;
+        } else {
+            $url = url($redirect);
+        }
+        return response([
+            'data' => $url
         ]);
     }
 

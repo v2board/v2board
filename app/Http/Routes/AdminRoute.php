@@ -70,6 +70,7 @@ class AdminRoute
             $router->post('/user/generate', 'Admin\\UserController@generate');
             $router->post('/user/dumpCSV', 'Admin\\UserController@dumpCSV');
             $router->post('/user/sendMail', 'Admin\\UserController@sendMail');
+            $router->post('/user/ban', 'Admin\\UserController@ban');
             // Stat
             $router->get ('/stat/getOverride', 'Admin\\StatController@getOverride');
             // Notice
