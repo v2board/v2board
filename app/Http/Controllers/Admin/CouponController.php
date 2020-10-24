@@ -111,7 +111,7 @@ class CouponController extends Controller
         $data = "名称,类型,金额或比例,开始时间,结束时间,可用次数,可用于订阅,券码,生成时间\r\n";
         foreach($coupons as $coupon) {
             $type = ['', '金额', '比例'][$coupon['type']];
-            $value = $coupon['type'] === 1 ? ($coupon['value'] / 100) : $coupon['value'];
+            $value = ['', ($coupon['value'] / 100),$coupon['value']][$coupon['type']];
             $startTime = date('Y-m-d H:i:s', $coupon['started_at']);
             $endTime = date('Y-m-d H:i:s', $coupon['ended_at']);
             $limitUse = $coupon['limit_use'] ?? '不限制';
