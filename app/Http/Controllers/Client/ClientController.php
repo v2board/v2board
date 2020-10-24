@@ -20,31 +20,35 @@ class ClientController extends Controller
 {
     public function subscribe(Request $request)
     {
+        $flag = $request->input('flag')
+            ? $request->input('flag')
+            : isset($_SERVER['HTTP_USER_AGENT'])
+                ? $_SERVER['HTTP_USER_AGENT']
+                : '';
+        $flag = strtolower($flag);
         $user = $request->user;
         // account not expired and is not banned.
         $userService = new UserService();
         if ($userService->isAvailable($user)) {
             $serverService = new ServerService();
             $servers = $serverService->getAllServers($user);
-
-            if (isset($_SERVER['HTTP_USER_AGENT'])) {
-                $_SERVER['HTTP_USER_AGENT'] = strtolower($_SERVER['HTTP_USER_AGENT']);
-                if (strpos($_SERVER['HTTP_USER_AGENT'], 'quantumult%20x') !== false) {
+            if ($flag) {
+                if (strpos($flag, 'quantumult%20x') !== false) {
                     die($this->quantumultX($user, $servers['shadowsocks'], $servers['vmess'], $servers['trojan']));
                 }
-                if (strpos($_SERVER['HTTP_USER_AGENT'], 'quantumult') !== false) {
+                if (strpos($flag, 'quantumult') !== false) {
                     die($this->quantumult($user, $servers['vmess']));
                 }
-                if (strpos($_SERVER['HTTP_USER_AGENT'], 'clash') !== false) {
+                if (strpos($flag, 'clash') !== false) {
                     die($this->clash($user, $servers['shadowsocks'], $servers['vmess'], $servers['trojan']));
                 }
-                if (strpos($_SERVER['HTTP_USER_AGENT'], 'surfboard') !== false) {
+                if (strpos($flag, 'surfboard') !== false) {
                     die($this->surfboard($user, $servers['shadowsocks'], $servers['vmess']));
                 }
-                if (strpos($_SERVER['HTTP_USER_AGENT'], 'surge') !== false) {
+                if (strpos($flag, 'surge') !== false) {
                     die($this->surge($user, $servers['shadowsocks'], $servers['vmess'], $servers['trojan']));
                 }
-                if (strpos($_SERVER['HTTP_USER_AGENT'], 'shadowrocket') !== false) {
+                if (strpos($flag, 'shadowrocket') !== false) {
                     die($this->shadowrocket($user, $servers['shadowsocks'], $servers['vmess'], $servers['trojan']));
                 }
             }

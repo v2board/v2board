@@ -339,3 +339,6 @@ CREATE TABLE `v2_knowledge` (
   `created_at` int(11) NOT NULL COMMENT '創建時間',
   `updated_at` int(11) NOT NULL COMMENT '更新時間'
 ) COMMENT='知識庫' COLLATE 'utf8mb4_general_ci';
+
+ALTER TABLE `v2_order`
+ADD `coupon_id` int(11) NULL AFTER `plan_id`;

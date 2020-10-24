@@ -113,6 +113,7 @@ class OrderController extends Controller
                 DB::rollBack();
                 abort(500, '优惠券使用失败');
             }
+            $order->coupon_id = $couponService->getId();
         }
 
         $orderService->setVipDiscount($user);

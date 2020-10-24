@@ -84,7 +84,7 @@ class AdminRoute
             $router->post('/ticket/close', 'Admin\\TicketController@close');
             // Coupon
             $router->get ('/coupon/fetch', 'Admin\\CouponController@fetch');
-            $router->post('/coupon/save', 'Admin\\CouponController@save');
+            $router->post('/coupon/generate', 'Admin\\CouponController@generate');
             $router->post('/coupon/drop', 'Admin\\CouponController@drop');
             // Knowledge
             $router->get ('/knowledge/fetch', 'Admin\\KnowledgeController@fetch');

@@ -22,10 +22,6 @@ class UserController extends Controller
     {
         if ($request->input('filter')) {
             foreach ($request->input('filter') as $filter) {
-                if ($filter['key'] === 'email') {
-                    $builder->where($filter['key'], 'like', '%' . $filter['value'] . '%');
-                    continue;
-                }
                 if ($filter['key'] === 'invite_by_email') {
                     $user = User::where('email', $filter['value'])->first();
                     if (!$user) continue;
@@ -34,6 +30,10 @@ class UserController extends Controller
                 }
                 if ($filter['key'] === 'd' || $filter['key'] === 'transfer_enable') {
                     $filter['value'] = $filter['value'] * 1073741824;
+                }
+                if ($filter['condition'] === '模糊') {
+                    $filter['condition'] = 'like';
+                    $filter['value'] = "%{$filter['value']}%";
                 }
                 $builder->where($filter['key'], $filter['condition'], $filter['value']);
             }
@@ -164,7 +164,7 @@ class UserController extends Controller
                 'data' => true
             ]);
         }
-        if ($request->input('count')) {
+        if ($request->input('generate_count')) {
             $this->multiGenerate($request);
         }
     }
@@ -178,7 +178,7 @@ class UserController extends Controller
             }
         }
         $users = [];
-        for ($i = 0;$i < $request->input('count');$i++) {
+        for ($i = 0;$i < $request->input('generate_count');$i++) {
             $user = [
                 'email' => Helper::randomChar(6) . '@' . $request->input('email_suffix'),
                 'plan_id' => isset($plan->id) ? $plan->id : NULL,

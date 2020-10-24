@@ -14,7 +14,7 @@ class UserGenerate extends FormRequest
     public function rules()
     {
         return [
-            'count' => 'nullable|integer|max:500',
+            'generate_count' => 'nullable|integer|max:500',
             'expired_at' => 'nullable|integer',
             'plan_id' => 'nullable|integer',
             'email_prefix' => 'nullable',
@@ -26,6 +26,8 @@ class UserGenerate extends FormRequest
     public function messages()
     {
         return [
+            'generate_count.integer' => '生成数量必须为数字',
+            'generate_count.max' => '生成数量最大为500个'
         ];
     }
 }
