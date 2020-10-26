@@ -87,15 +87,12 @@ class OrderController extends Controller
         }
 
         if ($plan[$request->input('cycle')] === NULL) {
-            if ($request->input('cycle') === 'reset_price') {
-                abort(500, '该订阅当前不支持重置流量');
-            }
             abort(500, '该订阅周期无法进行购买，请选择其他周期');
         }
 
         if ($request->input('cycle') === 'reset_price') {
-            if (($user->expired_at <= time() || $user->expired_at !== NULL) && !$user->plan_id) {
-                abort(500, '当前无法购买流量重置包');
+            if ($user->expired_at <= time() || !$user->plan_id) {
+                abort(500, '订阅已过期或无有效订阅，无法购买重置包');
             }
         }
 
