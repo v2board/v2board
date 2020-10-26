@@ -94,8 +94,9 @@ class OrderController extends Controller
         }
 
         if ($request->input('cycle') === 'reset_price') {
-            if (!($user->expired_at > time() || $user->expired_at === NULL) && !$user->plan_id)
-            abort(500, '当前无法购买流量重置包');
+            if (($user->expired_at <= time() || $user->expired_at !== NULL) && !$user->plan_id) {
+                abort(500, '当前无法购买流量重置包');
+            }
         }
 
         DB::beginTransaction();
