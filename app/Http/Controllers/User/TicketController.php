@@ -155,7 +155,7 @@ class TicketController extends Controller
         $user = User::find($request->session()->get('id'));
         $limit = config('v2board.commission_withdraw_limit', 100);
         if ($limit > ($user->commission_balance / 100)) {
-            abort(500, '当前系统要求的提现门槛为：' . $limit);
+            abort(500, "当前系统要求的提现门槛佣金需为{$limit}CNY");
         }
         DB::beginTransaction();
         $subject = '[提现申请]本工单由系统发出';
