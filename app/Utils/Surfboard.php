@@ -12,7 +12,7 @@ class Surfboard
             "{$server->host}",
             "{$server->port}",
             "{$server->cipher}",
-            "password={$password}",
+            "{$password}",
             "https://raw.githubusercontent.com/Hackl0us/proxy-tool-backup/master/SSEncrypt.module",
             "tfo=true",
             "udp-relay=true"
