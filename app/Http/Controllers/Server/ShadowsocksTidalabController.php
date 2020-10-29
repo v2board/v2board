@@ -9,7 +9,6 @@ use App\Utils\CacheKey;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Models\ServerTrojan;
 use App\Models\ServerLog;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -91,7 +90,7 @@ class ShadowsocksTidalabController extends Controller
                 $item['u'],
                 $item['d'],
                 $server->rate,
-                'trojan'
+                'shadowsocks'
             );
         }
         DB::commit();
