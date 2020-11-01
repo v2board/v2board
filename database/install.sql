@@ -22,7 +22,7 @@ CREATE TABLE `failed_jobs` (
 DROP TABLE IF EXISTS `v2_coupon`;
 CREATE TABLE `v2_coupon` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `code` char(8) NOT NULL,
+  `code` varchar(255) NOT NULL,
   `name` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
   `type` tinyint(1) NOT NULL,
   `value` int(11) NOT NULL,
@@ -47,6 +47,21 @@ CREATE TABLE `v2_invite_code` (
   `updated_at` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+DROP TABLE IF EXISTS `v2_knowledge`;
+CREATE TABLE `v2_knowledge` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `language` char(5) NOT NULL COMMENT '語言',
+  `category` varchar(255) NOT NULL COMMENT '分類名',
+  `title` varchar(255) NOT NULL COMMENT '標題',
+  `body` text NOT NULL COMMENT '內容',
+  `sort` int(11) DEFAULT NULL COMMENT '排序',
+  `show` tinyint(1) NOT NULL DEFAULT '0' COMMENT '顯示',
+  `created_at` int(11) NOT NULL COMMENT '創建時間',
+  `updated_at` int(11) NOT NULL COMMENT '更新時間',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='知識庫';
 
 
 DROP TABLE IF EXISTS `v2_mail_log`;
@@ -113,6 +128,8 @@ CREATE TABLE `v2_plan` (
   `quarter_price` int(11) DEFAULT NULL,
   `half_year_price` int(11) DEFAULT NULL,
   `year_price` int(11) DEFAULT NULL,
+  `two_year_price` int(11) DEFAULT NULL,
+  `three_year_price` int(11) DEFAULT NULL,
   `onetime_price` int(11) DEFAULT NULL,
   `reset_price` int(11) DEFAULT NULL,
   `created_at` int(11) NOT NULL,
@@ -175,6 +192,26 @@ CREATE TABLE `v2_server_log` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
+DROP TABLE IF EXISTS `v2_server_shadowsocks`;
+CREATE TABLE `v2_server_shadowsocks` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `group_id` varchar(255) NOT NULL,
+  `parent_id` int(11) DEFAULT NULL,
+  `tags` varchar(255) DEFAULT NULL,
+  `name` varchar(255) NOT NULL,
+  `rate` varchar(11) NOT NULL,
+  `host` varchar(255) NOT NULL,
+  `port` int(11) NOT NULL,
+  `server_port` int(11) NOT NULL,
+  `cipher` varchar(255) NOT NULL,
+  `show` tinyint(4) NOT NULL DEFAULT '0',
+  `sort` int(11) DEFAULT NULL,
+  `created_at` int(11) NOT NULL,
+  `updated_at` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
 DROP TABLE IF EXISTS `v2_server_stat`;
 CREATE TABLE `v2_server_stat` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -235,20 +272,6 @@ CREATE TABLE `v2_ticket_message` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-DROP TABLE IF EXISTS `v2_tutorial`;
-CREATE TABLE `v2_tutorial` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `category_id` int(11) NOT NULL,
-  `title` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
-  `steps` text,
-  `show` tinyint(1) NOT NULL DEFAULT '0',
-  `sort` int(11) DEFAULT NULL,
-  `created_at` int(11) NOT NULL,
-  `updated_at` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
 DROP TABLE IF EXISTS `v2_user`;
 CREATE TABLE `v2_user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -265,9 +288,9 @@ CREATE TABLE `v2_user` (
   `u` bigint(20) NOT NULL DEFAULT '0',
   `d` bigint(20) NOT NULL DEFAULT '0',
   `transfer_enable` bigint(20) NOT NULL DEFAULT '0',
-  `enable` tinyint(1) NOT NULL DEFAULT '1',
   `banned` tinyint(1) NOT NULL DEFAULT '0',
   `is_admin` tinyint(1) NOT NULL DEFAULT '0',
+  `is_staff` tinyint(1) NOT NULL DEFAULT '0',
   `last_login_at` int(11) DEFAULT NULL,
   `last_login_ip` int(11) DEFAULT NULL,
   `uuid` varchar(36) NOT NULL,
@@ -286,4 +309,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2020-07-01 07:01:59
+-- 2020-10-17 18:49:28

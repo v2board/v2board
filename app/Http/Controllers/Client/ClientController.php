@@ -8,6 +8,8 @@ use App\Utils\Clash;
 use App\Utils\QuantumultX;
 use App\Utils\Shadowrocket;
 use App\Utils\Surge;
+use App\Utils\Surfboard;
+use App\Utils\URLSchemes;
 use Illuminate\Http\Request;
 use App\Models\Server;
 use App\Utils\Helper;
@@ -18,35 +20,38 @@ class ClientController extends Controller
 {
     public function subscribe(Request $request)
     {
+        $flag = $request->input('flag')
+            ?? (isset($_SERVER['HTTP_USER_AGENT'])
+                ? $_SERVER['HTTP_USER_AGENT']
+                : '');
+        $flag = strtolower($flag);
         $user = $request->user;
         // account not expired and is not banned.
         $userService = new UserService();
         if ($userService->isAvailable($user)) {
             $serverService = new ServerService();
             $servers = $serverService->getAllServers($user);
-
-            if (isset($_SERVER['HTTP_USER_AGENT'])) {
-                $_SERVER['HTTP_USER_AGENT'] = strtolower($_SERVER['HTTP_USER_AGENT']);
-                if (strpos($_SERVER['HTTP_USER_AGENT'], 'quantumult%20x') !== false) {
-                    die($this->quantumultX($user, $servers['vmess'], $servers['trojan']));
+            if ($flag) {
+                if (strpos($flag, 'quantumult%20x') !== false) {
+                    die($this->quantumultX($user, $servers['shadowsocks'], $servers['vmess'], $servers['trojan']));
                 }
-                if (strpos($_SERVER['HTTP_USER_AGENT'], 'quantumult') !== false) {
+                if (strpos($flag, 'quantumult') !== false) {
                     die($this->quantumult($user, $servers['vmess']));
                 }
-                if (strpos($_SERVER['HTTP_USER_AGENT'], 'clash') !== false) {
-                    die($this->clash($user, $servers['vmess'], $servers['trojan']));
+                if (strpos($flag, 'clash') !== false) {
+                    die($this->clash($user, $servers['shadowsocks'], $servers['vmess'], $servers['trojan']));
                 }
-                if (strpos($_SERVER['HTTP_USER_AGENT'], 'surfboard') !== false) {
-                    die($this->surfboard($user, $servers['vmess']));
+                if (strpos($flag, 'surfboard') !== false) {
+                    die($this->surfboard($user, $servers['shadowsocks'], $servers['vmess']));
                 }
-                if (strpos($_SERVER['HTTP_USER_AGENT'], 'surge') !== false) {
-                    die($this->surge($user, $servers['vmess'], $servers['trojan']));
+                if (strpos($flag, 'surge') !== false) {
+                    die($this->surge($user, $servers['shadowsocks'], $servers['vmess'], $servers['trojan']));
                 }
-                if (strpos($_SERVER['HTTP_USER_AGENT'], 'shadowrocket') !== false) {
-                    die($this->shadowrocket($user, $servers['vmess'], $servers['trojan']));
+                if (strpos($flag, 'shadowrocket') !== false) {
+                    die($this->shadowrocket($user, $servers['shadowsocks'], $servers['vmess'], $servers['trojan']));
                 }
             }
-            die($this->origin($user, $servers['vmess'], $servers['trojan']));
+            die($this->origin($user, $servers['shadowsocks'], $servers['vmess'], $servers['trojan']));
         }
     }
     // TODO: Ready to stop support
@@ -70,7 +75,7 @@ class ClientController extends Controller
         return base64_encode($uri);
     }
 
-    private function shadowrocket($user, $vmess = [], $trojan = [])
+    private function shadowrocket($user, $shadowsocks = [], $vmess = [], $trojan = [])
     {
         $uri = '';
         //display remaining traffic and expire date
@@ -79,6 +84,9 @@ class ClientController extends Controller
         $totalTraffic = round($user->transfer_enable / (1024*1024*1024), 2);
         $expiredDate = date('Y-m-d', $user->expired_at);
         $uri .= "STATUS=🚀↑:{$upload}GB,↓:{$download}GB,TOT:{$totalTraffic}GB💡Expires:{$expiredDate}\r\n";
+        foreach ($shadowsocks as $item) {
+            $uri .= Shadowrocket::buildShadowsocks($user->uuid, $item);
+        }
         foreach ($vmess as $item) {
             $uri .= Shadowrocket::buildVmess($user->uuid, $item);
         }
@@ -88,10 +96,13 @@ class ClientController extends Controller
         return base64_encode($uri);
     }
 
-    private function quantumultX($user, $vmess = [], $trojan = [])
+    private function quantumultX($user, $shadowsocks = [], $vmess = [], $trojan = [])
     {
         $uri = '';
         header("subscription-userinfo: upload={$user->u}; download={$user->d}; total={$user->transfer_enable}; expire={$user->expired_at}");
+        foreach ($shadowsocks as $item) {
+            $uri .= QuantumultX::buildShadowsocks($user->uuid, $item);
+        }
         foreach ($vmess as $item) {
             $uri .= QuantumultX::buildVmess($user->uuid, $item);
         }
@@ -101,22 +112,33 @@ class ClientController extends Controller
         return base64_encode($uri);
     }
 
-    private function origin($user, $vmess = [], $trojan = [])
+    private function origin($user, $shadowsocks = [], $vmess = [], $trojan = [])
     {
         $uri = '';
+        foreach ($shadowsocks as $item) {
+            $uri .= URLSchemes::buildShadowsocks($item, $user);
+        }
         foreach ($vmess as $item) {
-            $uri .= Helper::buildVmessLink($item, $user);
+            $uri .= URLSchemes::buildVmess($item, $user);
         }
         foreach ($trojan as $item) {
-            $uri .= Helper::buildTrojanLink($item, $user);
+            $uri .= URLSchemes::buildTrojan($item, $user);
         }
         return base64_encode($uri);
     }
 
-    private function surge($user, $vmess = [], $trojan = [])
+    private function surge($user, $shadowsocks = [], $vmess = [], $trojan = [])
     {
         $proxies = '';
         $proxyGroup = '';
+
+        foreach ($shadowsocks as $item) {
+            // [Proxy]
+            $proxies .= Surge::buildShadowsocks($user->uuid, $item);
+            // [Proxy Group]
+            $proxyGroup .= $item->name . ', ';
+        }
+
         foreach ($vmess as $item) {
             // [Proxy]
             $proxies .= Surge::buildVmess($user->uuid, $item);
@@ -148,29 +170,21 @@ class ClientController extends Controller
         return $config;
     }
 
-    private function surfboard($user, $vmess = [])
+    private function surfboard($user, $shadowsocks = [], $vmess = [])
     {
         $proxies = '';
         $proxyGroup = '';
+
+        foreach ($shadowsocks as $item) {
+            // [Proxy]
+            $proxies .= Surfboard::buildShadowsocks($user->uuid, $item);
+            // [Proxy Group]
+            $proxyGroup .= $item->name . ', ';
+        }
+
         foreach ($vmess as $item) {
             // [Proxy]
-            $proxies .= $item->name . ' = vmess, ' . $item->host . ', ' . $item->port . ', username=' . $user->uuid;
-            if ($item->tls) {
-                $tlsSettings = json_decode($item->tlsSettings);
-                $proxies .= ', tls=' . ($item->tls ? "true" : "false");
-                if (isset($tlsSettings->allowInsecure)) {
-                  $proxies .= ', skip-cert-verify=' . ($tlsSettings->allowInsecure ? "true" : "false");
-                }
-            }
-            if ($item->network == 'ws') {
-                $proxies .= ', ws=true';
-                if ($item->networkSettings) {
-                    $wsSettings = json_decode($item->networkSettings);
-                    if (isset($wsSettings->path)) $proxies .= ', ws-path=' . $wsSettings->path;
-                    if (isset($wsSettings->headers->Host)) $proxies .= ', ws-headers=host:' . $wsSettings->headers->Host;
-                }
-            }
-            $proxies .= "\r\n";
+            $proxies .= Surfboard::buildVmess($user->uuid, $item);
             // [Proxy Group]
             $proxyGroup .= $item->name . ', ';
         }
@@ -192,7 +206,7 @@ class ClientController extends Controller
         return $config;
     }
 
-    private function clash($user, $vmess = [], $trojan = [])
+    private function clash($user, $shadowsocks = [], $vmess = [], $trojan = [])
     {
         $defaultConfig = base_path() . '/resources/rules/default.clash.yaml';
         $customConfig = base_path() . '/resources/rules/custom.clash.yaml';
@@ -203,11 +217,16 @@ class ClientController extends Controller
         }
         $proxy = [];
         $proxies = [];
+
+        foreach ($shadowsocks as $item) {
+            array_push($proxy, Clash::buildShadowsocks($user->uuid, $item));
+            array_push($proxies, $item->name);
+        }
+
         foreach ($vmess as $item) {
             array_push($proxy, Clash::buildVmess($user->uuid, $item));
             array_push($proxies, $item->name);
         }
-
 
         foreach ($trojan as $item) {
             array_push($proxy, Clash::buildTrojan($user->uuid, $item));
@@ -216,6 +235,7 @@ class ClientController extends Controller
 
         $config['proxies'] = array_merge($config['proxies'] ? $config['proxies'] : [], $proxy);
         foreach ($config['proxy-groups'] as $k => $v) {
+            if (!is_array($config['proxy-groups'][$k]['proxies'])) continue;
             $config['proxy-groups'][$k]['proxies'] = array_merge($config['proxy-groups'][$k]['proxies'], $proxies);
         }
         $yaml = Yaml::dump($config);

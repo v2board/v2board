@@ -51,4 +51,9 @@ class CouponService
         }
         return true;
     }
+
+    public function getId()
+    {
+        return $this->coupon->id;
+    }
 }

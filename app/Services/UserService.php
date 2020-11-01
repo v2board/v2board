@@ -80,7 +80,7 @@ class UserService
     {
         $user = User::find($userId);
         if (!$user) {
-            return false;
+            return true;
         }
         $user->t = time();
         $user->u = $user->u + $u;
@@ -88,6 +88,8 @@ class UserService
         if (!$user->save()) {
             return false;
         }
+        $mailService = new MailService();
+        $mailService->remindTraffic($user);
         return true;
     }
 }

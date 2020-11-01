@@ -11,6 +11,7 @@
     "require": {
         "php": "^7.2",
         "fideloper/proxy": "^4.0",
+        "google/recaptcha": "^1.2",
         "laravel/framework": "^6.0",
         "laravel/tinker": "^1.0",
         "lokielse/omnipay-alipay": "3.0.6",

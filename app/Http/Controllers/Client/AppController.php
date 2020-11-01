@@ -18,7 +18,7 @@ class AppController extends Controller
 
     public function getConfig(Request $request)
     {
-        $server = [];
+        $servers = [];
         $user = $request->user;
         $userService = new UserService();
         if ($userService->isAvailable($user)) {
@@ -28,6 +28,11 @@ class AppController extends Controller
         $config = Yaml::parseFile(base_path() . '/resources/rules/app.clash.yaml');
         $proxy = [];
         $proxies = [];
+
+        foreach ($servers['shadowsocks'] as $item) {
+            array_push($proxy, Clash::buildShadowsocks($user->uuid, $item));
+            array_push($proxies, $item->name);
+        }
 
         foreach ($servers['vmess'] as $item) {
             array_push($proxy, Clash::buildVmess($user->uuid, $item));

@@ -46,7 +46,8 @@ class ConfigController extends Controller
                     'invite_gen_limit' => config('v2board.invite_gen_limit', 5),
                     'invite_never_expire' => config('v2board.invite_never_expire', 0),
                     'commission_first_time_enable' => config('v2board.commission_first_time_enable', 1),
-                    'commission_auto_check_enable' => config('v2board.commission_auto_check_enable', 1)
+                    'commission_auto_check_enable' => config('v2board.commission_auto_check_enable', 1),
+                    'commission_withdraw_limit' => config('v2board.commission_withdraw_limit', 100)
                 ],
                 'site' => [
                     'safe_mode_enable' => (int)config('v2board.safe_mode_enable', 0),
@@ -60,12 +61,16 @@ class ConfigController extends Controller
                     'try_out_hour' => (int)config('v2board.try_out_hour', 1),
                     'email_whitelist_enable' => (int)config('v2board.email_whitelist_enable', 0),
                     'email_whitelist_suffix' => config('v2board.email_whitelist_suffix', Dict::EMAIL_WHITELIST_SUFFIX_DEFAULT),
-                    'email_gmail_limit_enable' => config('v2board.email_gmail_limit_enable', 0)
+                    'email_gmail_limit_enable' => config('v2board.email_gmail_limit_enable', 0),
+                    'recaptcha_enable' => (int)config('v2board.recaptcha_enable', 0),
+                    'recaptcha_key' => config('v2board.recaptcha_key'),
+                    'recaptcha_site_key' => config('v2board.recaptcha_site_key')
                 ],
                 'subscribe' => [
                     'plan_change_enable' => (int)config('v2board.plan_change_enable', 1),
                     'reset_traffic_method' => (int)config('v2board.reset_traffic_method', 0),
-                    'renew_reset_traffic_enable' => (int)config('v2board.renew_reset_traffic_enable', 1)
+                    'renew_reset_traffic_enable' => (int)config('v2board.renew_reset_traffic_enable', 0),
+                    'surplus_enable' => (int)config('v2board.surplus_enable', 1)
                 ],
                 'pay' => [
                     // alipay
@@ -147,7 +152,9 @@ class ConfigController extends Controller
             abort(500, '修改失败');
         }
         if (function_exists('opcache_reset')) {
-            opcache_reset();
+            if (!opcache_reset()) {
+                abort(500, '缓存清除失败，请卸载或检查opcache配置状态');
+            }
         }
         \Artisan::call('config:cache');
         return response([

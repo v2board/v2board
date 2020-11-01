@@ -13,6 +13,7 @@ use App\Jobs\SendEmailJob;
 use App\Models\InviteCode;
 use App\Utils\Dict;
 use App\Utils\CacheKey;
+use ReCaptcha\ReCaptcha;
 
 class CommController extends Controller
 {
@@ -24,7 +25,10 @@ class CommController extends Controller
                 'isInviteForce' => (int)config('v2board.invite_force', 0) ? 1 : 0,
                 'emailWhitelistSuffix' => (int)config('v2board.email_whitelist_enable', 0)
                     ? $this->getEmailSuffix()
-                    : 0
+                    : 0,
+                'isRecaptcha' => (int)config('v2board.recaptcha_enable', 0) ? 1 : 0,
+                'recaptchaSiteKey' => config('v2board.recaptcha_site_key'),
+                'appDescription' => config('v2board.app_description')
             ]
         ]);
     }
@@ -38,6 +42,13 @@ class CommController extends Controller
 
     public function sendEmailVerify(CommSendEmailVerify $request)
     {
+        if ((int)config('v2board.recaptcha_enable', 0)) {
+            $recaptcha = new ReCaptcha(config('v2board.recaptcha_key'));
+            $recaptchaResp = $recaptcha->verify($request->input('recaptcha_data'));
+            if (!$recaptchaResp->isSuccess()) {
+                abort(500, '验证码有误');
+            }
+        }
         $email = $request->input('email');
         if (Cache::get(CacheKey::get('LAST_SEND_EMAIL_VERIFY_TIMESTAMP', $email))) {
             abort(500, '验证码已发送，请过一会再请求');

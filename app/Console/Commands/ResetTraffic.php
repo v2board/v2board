@@ -7,7 +7,7 @@ use App\Models\User;
 
 class ResetTraffic extends Command
 {
-    protected $user;
+    protected $builder;
     /**
      * The name and signature of the console command.
      *
@@ -30,7 +30,7 @@ class ResetTraffic extends Command
     public function __construct()
     {
         parent::__construct();
-        $this->user = User::where('expired_at', '!=', NULL)
+        $this->builder = User::where('expired_at', '!=', NULL)
             ->where('expired_at', '>', time());
     }
 
@@ -54,11 +54,11 @@ class ResetTraffic extends Command
         }
     }
 
-    private function resetByMonthFirstDay($user):void
+    private function resetByMonthFirstDay():void
     {
-        $user = $this->user;
+        $builder = $this->builder;
         if ((string)date('d') === '01') {
-            $user->update([
+            $builder->update([
                 'u' => 0,
                 'd' => 0
             ]);
@@ -67,10 +67,10 @@ class ResetTraffic extends Command
 
     private function resetByExpireDay():void
     {
-        $user = $this->user;
+        $builder = $this->builder;
         $lastDay = date('d', strtotime('last day of +0 months'));
         $users = [];
-        foreach ($user->get() as $item) {
+        foreach ($builder->get() as $item) {
             $expireDay = date('d', $item->expired_at);
             $today = date('d');
             if ($expireDay === $today) {

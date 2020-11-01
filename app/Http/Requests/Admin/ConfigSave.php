@@ -22,6 +22,7 @@ class ConfigSave extends FormRequest
             'invite_never_expire' => 'in:0,1',
             'commission_first_time_enable' => 'in:0,1',
             'commission_auto_check_enable' => 'in:0,1',
+            'commission_withdraw_limit' => 'nullable|numeric',
             // site
             'stop_register' => 'in:0,1',
             'email_verify' => 'in:0,1',
@@ -35,10 +36,14 @@ class ConfigSave extends FormRequest
             'email_whitelist_enable' => 'in:0,1',
             'email_whitelist_suffix' => '',
             'email_gmail_limit_enable' => 'in:0,1',
+            'recaptcha_enable' => 'in:0,1',
+            'recaptcha_key' => '',
+            'recaptcha_site_key' => '',
             // subscribe
             'plan_change_enable' => 'in:0,1',
             'reset_traffic_method' => 'in:0,1',
             'renew_reset_traffic_enable' => 'in:0,1',
+            'surplus_enable' => 'in:0,1',
             // server
             'server_token' => 'nullable|min:16',
             'server_license' => 'nullable',
@@ -81,7 +86,7 @@ class ConfigSave extends FormRequest
             'frontend_background_url' => 'nullable|url',
             'frontend_admin_path' => '',
             // tutorial
-            'apple_id' => 'email',
+            'apple_id' => 'nullable|email',
             'apple_id_password' => '',
             // email
             'email_template' => '',

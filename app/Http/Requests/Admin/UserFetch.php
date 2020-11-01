@@ -4,7 +4,7 @@ namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class TutorialSort extends FormRequest
+class UserFetch extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -14,15 +14,15 @@ class TutorialSort extends FormRequest
     public function rules()
     {
         return [
-            'tutorial_ids' => 'required|array'
+            'filter.*.key' => 'required|in:id,email,transfer_enable,d,expired_at,uuid,token,invite_by_email,invite_user_id',
+            'filter.*.condition' => 'required|in:>,<,=,>=,<=,模糊',
+            'filter.*.value' => 'required'
         ];
     }
 
     public function messages()
     {
         return [
-            'tutorial_ids.required' => '教程ID不能为空',
-            'tutorial_ids.array' => '教程ID格式有误'
         ];
     }
 }

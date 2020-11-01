@@ -157,6 +157,7 @@ class OrderController extends Controller
     private function handle($tradeNo, $callbackNo)
     {
         $order = Order::where('trade_no', $tradeNo)->first();
+        if ($order->status === 1) return true;
         if (!$order) {
             abort(500, 'order is not found');
         }

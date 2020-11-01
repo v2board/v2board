@@ -54,7 +54,6 @@ class UserController extends Controller
                 'last_login_at',
                 'created_at',
                 'banned',
-                'is_admin',
                 'remind_expire',
                 'remind_traffic',
                 'expired_at',

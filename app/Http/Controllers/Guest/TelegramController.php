@@ -73,7 +73,7 @@ class TelegramController extends Controller
         $obj->args = array_slice($text, 1);
         $obj->chat_id = $data['message']['chat']['id'];
         $obj->message_id = $data['message']['message_id'];
-        $obj->message_type = !isset($data['message']['reply_to_message']) ? 'send' : 'reply';
+        $obj->message_type = !isset($data['message']['reply_to_message']['text']) ? 'send' : 'reply';
         $obj->text = $data['message']['text'];
         if ($obj->message_type === 'reply') {
             $obj->reply_text = $data['message']['reply_to_message']['text'];
@@ -184,7 +184,7 @@ class TelegramController extends Controller
             abort(500, '用户不存在');
         }
         $ticketService = new TicketService();
-        if ($user->is_admin) {
+        if ($user->is_admin || $user->is_staff) {
             $ticketService->replyByAdmin(
                 $ticketId,
                 $msg->text,
@@ -194,4 +194,6 @@ class TelegramController extends Controller
         $telegramService = new TelegramService();
         $telegramService->sendMessage($msg->chat_id, "#`{$ticketId}` 的工单已回复成功", 'markdown');
     }
+
+
 }
