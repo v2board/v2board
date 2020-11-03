@@ -95,6 +95,7 @@ CREATE TABLE `v2_order` (
   `invite_user_id` int(11) DEFAULT NULL,
   `user_id` int(11) NOT NULL,
   `plan_id` int(11) NOT NULL,
+  `coupon_id` int(11) DEFAULT NULL,
   `type` int(11) NOT NULL COMMENT '1新购2续费3升级',
   `cycle` varchar(255) NOT NULL,
   `trade_no` varchar(36) NOT NULL,
@@ -309,4 +310,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2020-10-17 18:49:28
+-- 2020-11-03 18:08:25
