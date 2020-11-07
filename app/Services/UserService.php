@@ -92,7 +92,6 @@ class UserService
             $mailService = new MailService();
             $mailService->remindTraffic($user);
         } catch (\Exception $e) {
-            return true;
         }
         return true;
     }
