@@ -29,7 +29,7 @@ class MailService
 
     private function remindTrafficIsWarnValue($ud, $transfer_enable)
     {
-        if ($ud <= 0) return false;
+        if (!$ud) return false;
         if (!$transfer_enable) return false;
         $percentage = ($ud / $transfer_enable) * 100;
         if ($percentage < 80) return false;

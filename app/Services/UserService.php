@@ -88,8 +88,12 @@ class UserService
         if (!$user->save()) {
             return false;
         }
-        $mailService = new MailService();
-        $mailService->remindTraffic($user);
+        try {
+            $mailService = new MailService();
+            $mailService->remindTraffic($user);
+        } catch (\Exception $e) {
+            return true;
+        }
         return true;
     }
 }
