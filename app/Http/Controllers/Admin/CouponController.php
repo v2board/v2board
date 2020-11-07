@@ -94,12 +94,12 @@ class CouponController extends Controller
     private function multiGenerate(CouponGenerate $request)
     {
         $coupons = [];
+        $coupon = $request->validated();
+        $coupon['limit_plan_ids'] = json_encode($coupon['limit_plan_ids']);
+        $coupon['created_at'] = $coupon['updated_at'] = time();
+        unset($coupon['generate_count']);
         for ($i = 0;$i < $request->input('generate_count');$i++) {
-            $coupon = $request->validated();
-            $coupon['limit_plan_ids'] = json_encode($coupon['limit_plan_ids']);
             $coupon['code'] = Helper::randomChar(8);
-            $coupon['created_at'] = $coupon['updated_at'] = time();
-            unset($coupon['generate_count']);
             array_push($coupons, $coupon);
         }
         DB::beginTransaction();
