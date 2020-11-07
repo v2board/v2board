@@ -77,25 +77,32 @@ class DeepbworkController extends Controller
         Cache::put(CacheKey::get('SERVER_V2RAY_ONLINE_USER', $server->id), count($data), 3600);
         $serverService = new ServerService();
         $userService = new UserService();
-        foreach ($data as $item) {
-            $u = $item['u'] * $server->rate;
-            $d = $item['d'] * $server->rate;
-            if (!$userService->trafficFetch($u, $d, $item['user_id'])) {
-                return response([
-                    'ret' => 0,
-                    'msg' => 'user fetch fail'
-                ]);
-            }
+        DB::beginTransaction();
+        try {
+            foreach ($data as $item) {
+                $u = $item['u'] * $server->rate;
+                $d = $item['d'] * $server->rate;
+                if (!$userService->trafficFetch($u, $d, $item['user_id'])) {
+                    continue;
+                }
 
-            $serverService->log(
-                $item['user_id'],
-                $request->input('node_id'),
-                $item['u'],
-                $item['d'],
-                $server->rate,
-                'vmess'
-            );
+                $serverService->log(
+                    $item['user_id'],
+                    $request->input('node_id'),
+                    $item['u'],
+                    $item['d'],
+                    $server->rate,
+                    'vmess'
+                );
+            }
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response([
+                'ret' => 0,
+                'msg' => 'user fetch fail'
+            ]);
         }
+        DB::commit();
 
         return response([
             'ret' => 1,
