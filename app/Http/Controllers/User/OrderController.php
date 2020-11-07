@@ -97,7 +97,7 @@ class OrderController extends Controller
         }
 
         if (!$plan->show && $plan->renew && !$userService->isAvailable($user)) {
-            abort(500, '订阅已过期，无法续费该订阅');
+            abort(500, '订阅已过期，请更换其他订阅');
         }
 
         DB::beginTransaction();
