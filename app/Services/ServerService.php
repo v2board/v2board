@@ -270,6 +270,7 @@ class ServerService
             ->where('user_id', $userId)
             ->where('rate', $rate)
             ->where('method', $method)
+            ->lockForUpdate()
             ->first();
         if ($serverLog) {
             $serverLog->u = $serverLog->u + $u;

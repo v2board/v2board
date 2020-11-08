@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Order;
+use App\Models\Server;
 use App\Models\User;
 
 class UserService
@@ -76,9 +77,10 @@ class UserService
         return true;
     }
 
-    public function trafficFetch(int $u, int $d, int $userId):bool
+    public function trafficFetch(int $u, int $d, int $userId, Server $server, string $protocol):bool
     {
-        $user = User::find($userId);
+        $user = User::lockForUpdate()
+            ->find($userId);
         if (!$user) {
             return true;
         }
@@ -88,9 +90,18 @@ class UserService
         if (!$user->save()) {
             return false;
         }
+        $mailService = new MailService();
+        $serverService = new ServerService();
         try {
-            $mailService = new MailService();
             $mailService->remindTraffic($user);
+            $serverService->log(
+                $userId,
+                $server->id,
+                $u,
+                $d,
+                $server->rate,
+                $protocol
+            );
         } catch (\Exception $e) {
         }
         return true;
