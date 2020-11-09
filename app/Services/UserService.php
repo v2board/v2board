@@ -77,7 +77,7 @@ class UserService
         return true;
     }
 
-    public function trafficFetch(int $u, int $d, int $userId, Server $server, string $protocol):bool
+    public function trafficFetch(int $u, int $d, int $userId, object $server, string $protocol):bool
     {
         $user = User::lockForUpdate()
             ->find($userId);
