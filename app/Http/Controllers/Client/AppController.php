@@ -56,7 +56,9 @@ class AppController extends Controller
         return response([
             'data' => [
                 'version' => '4.0.0',
-                'download_url' => ''
+                'download_url' => '',
+                'android_version' => '4.0.0',
+                'android_download_url' => ''
             ]
         ]);
     }
