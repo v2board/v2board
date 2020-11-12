@@ -342,3 +342,6 @@ CREATE TABLE `v2_knowledge` (
 
 ALTER TABLE `v2_order`
 ADD `coupon_id` int(11) NULL AFTER `plan_id`;
+
+ALTER TABLE `v2_server_stat`
+ADD `method` varchar(255) NOT NULL AFTER `server_id`;

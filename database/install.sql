@@ -217,6 +217,7 @@ DROP TABLE IF EXISTS `v2_server_stat`;
 CREATE TABLE `v2_server_stat` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `server_id` int(11) NOT NULL,
+  `method` varchar(255) NOT NULL,
   `u` varchar(255) NOT NULL,
   `d` varchar(255) NOT NULL,
   `created_at` int(11) NOT NULL,
@@ -310,4 +311,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2020-11-03 18:08:25
+-- 2020-11-12 18:16:53
