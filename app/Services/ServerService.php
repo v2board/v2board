@@ -319,6 +319,15 @@ class ServerService
             if (!empty($server[$i]['tags'])) {
                 $server[$i]['tags'] = json_decode($server[$i]['tags']);
             }
+            if (!empty($server[$i]['dnsSettings'])) {
+                $server[$i]['dnsSettings'] = json_decode($server[$i]['dnsSettings']);
+            }
+            if (!empty($server[$i]['tlsSettings'])) {
+                $server[$i]['tlsSettings'] = json_decode($server[$i]['tlsSettings']);
+            }
+            if (!empty($server[$i]['ruleSettings'])) {
+                $server[$i]['ruleSettings'] = json_decode($server[$i]['ruleSettings']);
+            }
             $server[$i]['group_id'] = json_decode($server[$i]['group_id']);
             $server[$i]['online'] = Cache::get(CacheKey::get('SERVER_V2RAY_ONLINE_USER', $server[$i]['parent_id'] ? $server[$i]['parent_id'] : $server[$i]['id']));
             if ($server[$i]['parent_id']) {
