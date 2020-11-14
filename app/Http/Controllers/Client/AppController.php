@@ -23,7 +23,7 @@ class AppController extends Controller
         $userService = new UserService();
         if ($userService->isAvailable($user)) {
             $serverService = new ServerService();
-            $servers = $serverService->getAllServers($user);
+            $servers = $serverService->getAvailableServers($user);
         }
         $config = Yaml::parseFile(base_path() . '/resources/rules/app.clash.yaml');
         $proxy = [];
