@@ -35,7 +35,7 @@ class ServerService
                 } else {
                     $vmesss[$k]['last_check_at'] = Cache::get(CacheKey::get('SERVER_V2RAY_LAST_CHECK_AT', $vmesss[$k]['id']));
                 }
-                array_push($vmess, $vmesss[$k]);
+                array_push($vmess, $vmesss[$k]->toArray());
             }
         }
 
@@ -61,7 +61,7 @@ class ServerService
                 } else {
                     $trojans[$k]['last_check_at'] = Cache::get(CacheKey::get('SERVER_TROJAN_LAST_CHECK_AT', $trojans[$k]['id']));
                 }
-                array_push($trojan, $trojans[$k]);
+                array_push($trojan, $trojans[$k]->toArray());
             }
 
         }
@@ -86,7 +86,7 @@ class ServerService
                 } else {
                     $shadowsockss[$k]['last_check_at'] = Cache::get(CacheKey::get('SERVER_SHADOWSOCKS_LAST_CHECK_AT', $shadowsockss[$k]['id']));
                 }
-                array_push($shadowsocks, $shadowsockss[$k]);
+                array_push($shadowsocks, $shadowsockss[$k]->toArray());
             }
 
         }
@@ -100,6 +100,7 @@ class ServerService
             $this->getV2ray($user, $all),
             $this->getTrojan($user, $all)
         );
+        info($servers);
         $tmp = array_column($servers, 'sort');
         array_multisort($tmp, SORT_ASC, $servers);
         return $servers;
