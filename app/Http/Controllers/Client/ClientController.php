@@ -62,13 +62,13 @@ class ClientController extends Controller
         foreach ($servers as $item) {
             if ($item['type'] === 'v2ray') {
                 $str = '';
-                $str .= $item->name . '= vmess, ' . $item->host . ', ' . $item->port . ', chacha20-ietf-poly1305, "' . $user->uuid . '", over-tls=' . ($item->tls ? "true" : "false") . ', certificate=0, group=' . config('v2board.app_name', 'V2Board');
-                if ($item->network === 'ws') {
+                $str .= $item['name'] . '= vmess, ' . $item['host'] . ', ' . $item['port'] . ', chacha20-ietf-poly1305, "' . $user['uuid'] . '", over-tls=' . ($item['tls'] ? "true" : "false") . ', certificate=0, group=' . config('v2board.app_name', 'V2Board');
+                if ($item['network'] === 'ws') {
                     $str .= ', obfs=ws';
-                    if ($item->networkSettings) {
-                        $wsSettings = json_decode($item->networkSettings);
-                        if (isset($wsSettings->path)) $str .= ', obfs-path="' . $wsSettings->path . '"';
-                        if (isset($wsSettings->headers->Host)) $str .= ', obfs-header="Host:' . $wsSettings->headers->Host . '"';
+                    if ($item['networkSettings']) {
+                        $wsSettings = json_decode($item['networkSettings']);
+                        if (isset($wsSettings['path'])) $str .= ', obfs-path="' . $wsSettings['path'] . '"';
+                        if (isset($wsSettings['headers']['Host'])) $str .= ', obfs-header="Host:' . $wsSettings['headers']['Host'] . '"';
                     }
                 }
                 $uri .= "vmess://" . base64_encode($str) . "\r\n";
@@ -88,13 +88,13 @@ class ClientController extends Controller
         $uri .= "STATUS=🚀↑:{$upload}GB,↓:{$download}GB,TOT:{$totalTraffic}GB💡Expires:{$expiredDate}\r\n";
         foreach ($servers as $item) {
             if ($item['type'] === 'shadowsocks') {
-                $uri .= Shadowrocket::buildShadowsocks($user->uuid, $item);
+                $uri .= Shadowrocket::buildShadowsocks($user['uuid'], $item);
             }
             if ($item['type'] === 'v2ray') {
-                $uri .= Shadowrocket::buildVmess($user->uuid, $item);
+                $uri .= Shadowrocket::buildVmess($user['uuid'], $item);
             }
             if ($item['type'] === 'trojan') {
-                $uri .= Shadowrocket::buildTrojan($user->uuid, $item);
+                $uri .= Shadowrocket::buildTrojan($user['uuid'], $item);
             }
         }
         return base64_encode($uri);
@@ -106,13 +106,13 @@ class ClientController extends Controller
         header("subscription-userinfo: upload={$user->u}; download={$user->d}; total={$user->transfer_enable}; expire={$user->expired_at}");
         foreach ($servers as $item) {
             if ($item['type'] === 'shadowsocks') {
-                $uri .= QuantumultX::buildShadowsocks($user->uuid, $item);
+                $uri .= QuantumultX::buildShadowsocks($user['uuid'], $item);
             }
             if ($item['type'] === 'v2ray') {
-                $uri .= QuantumultX::buildVmess($user->uuid, $item);
+                $uri .= QuantumultX::buildVmess($user['uuid'], $item);
             }
             if ($item['type'] === 'trojan') {
-                $uri .= QuantumultX::buildTrojan($user->uuid, $item);
+                $uri .= QuantumultX::buildTrojan($user['uuid'], $item);
             }
         }
         return base64_encode($uri);
@@ -143,21 +143,21 @@ class ClientController extends Controller
         foreach ($servers as $item) {
             if ($item['type'] === 'shadowsocks') {
                 // [Proxy]
-                $proxies .= Surge::buildShadowsocks($user->uuid, $item);
+                $proxies .= Surge::buildShadowsocks($user['uuid'], $item);
                 // [Proxy Group]
-                $proxyGroup .= $item->name . ', ';
+                $proxyGroup .= $item['name'] . ', ';
             }
             if ($item['type'] === 'v2ray') {
                 // [Proxy]
-                $proxies .= Surge::buildVmess($user->uuid, $item);
+                $proxies .= Surge::buildVmess($user['uuid'], $item);
                 // [Proxy Group]
-                $proxyGroup .= $item->name . ', ';
+                $proxyGroup .= $item['name'] . ', ';
             }
             if ($item['type'] === 'trojan') {
                 // [Proxy]
-                $proxies .= Surge::buildTrojan($user->uuid, $item);
+                $proxies .= Surge::buildTrojan($user['uuid'], $item);
                 // [Proxy Group]
-                $proxyGroup .= $item->name . ', ';
+                $proxyGroup .= $item['name'] . ', ';
             }
         }
 
@@ -186,15 +186,15 @@ class ClientController extends Controller
         foreach ($servers as $item) {
             if ($item['type'] === 'shadowsocks') {
                 // [Proxy]
-                $proxies .= Surfboard::buildShadowsocks($user->uuid, $item);
+                $proxies .= Surfboard::buildShadowsocks($user['uuid'], $item);
                 // [Proxy Group]
-                $proxyGroup .= $item->name . ', ';
+                $proxyGroup .= $item['name'] . ', ';
             }
             if ($item['type'] === 'v2ray') {
                 // [Proxy]
-                $proxies .= Surfboard::buildVmess($user->uuid, $item);
+                $proxies .= Surfboard::buildVmess($user['uuid'], $item);
                 // [Proxy Group]
-                $proxyGroup .= $item->name . ', ';
+                $proxyGroup .= $item['name'] . ', ';
             }
         }
 
@@ -229,16 +229,16 @@ class ClientController extends Controller
 
         foreach ($servers as $item) {
             if ($item['type'] === 'shadowsocks') {
-                array_push($proxy, Clash::buildShadowsocks($user->uuid, $item));
-                array_push($proxies, $item->name);
+                array_push($proxy, Clash::buildShadowsocks($user['uuid'], $item));
+                array_push($proxies, $item['name']);
             }
             if ($item['type'] === 'v2ray') {
-                array_push($proxy, Clash::buildVmess($user->uuid, $item));
-                array_push($proxies, $item->name);
+                array_push($proxy, Clash::buildVmess($user['uuid'], $item));
+                array_push($proxies, $item['name']);
             }
             if ($item['type'] === 'trojan') {
-                array_push($proxy, Clash::buildTrojan($user->uuid, $item));
-                array_push($proxies, $item->name);
+                array_push($proxy, Clash::buildTrojan($user['uuid'], $item));
+                array_push($proxies, $item['name']);
             }
         }
 
