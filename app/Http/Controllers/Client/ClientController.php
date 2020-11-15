@@ -66,7 +66,7 @@ class ClientController extends Controller
                 if ($item['network'] === 'ws') {
                     $str .= ', obfs=ws';
                     if ($item['networkSettings']) {
-                        $wsSettings = json_decode($item['networkSettings']);
+                        $wsSettings = json_decode($item['networkSettings'], true);
                         if (isset($wsSettings['path'])) $str .= ', obfs-path="' . $wsSettings['path'] . '"';
                         if (isset($wsSettings['headers']['Host'])) $str .= ', obfs-header="Host:' . $wsSettings['headers']['Host'] . '"';
                     }
