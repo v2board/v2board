@@ -19,30 +19,33 @@ class ServerService
     CONST TROJAN_CONFIG = '{"run_type":"server","local_addr":"0.0.0.0","local_port":443,"remote_addr":"www.taobao.com","remote_port":80,"password":[],"ssl":{"cert":"server.crt","key":"server.key","sni":"domain.com"},"api":{"enabled":true,"api_addr":"127.0.0.1","api_port":10000}}';
     public function getV2ray(User $user, $all = false):array
     {
+        $servers = [];
         $model = Server::orderBy('sort', 'ASC');
         if (!$all) {
             $model->where('show', 1);
         }
-        $vmess = $model->get();
-        for ($i = 0; $i < count($vmess); $i++) {
-            $vmess[$i]['type'] = 'v2ray';
-            $groupId = json_decode($vmess[$i]['group_id']);
+        $v2ray = $model->get();
+        for ($i = 0; $i < count($v2ray); $i++) {
+            $v2ray[$i]['type'] = 'v2ray';
+            $groupId = json_decode($v2ray[$i]['group_id']);
             if (in_array($user->group_id, $groupId)) {
-                $vmess[$i]['link'] = URLSchemes::buildVmess($vmess[$i], $user);
-                if ($vmess[$i]['parent_id']) {
-                    $vmess[$i]['last_check_at'] = Cache::get(CacheKey::get('SERVER_V2RAY_LAST_CHECK_AT', $vmess[$i]['parent_id']));
+                $v2ray[$i]['link'] = URLSchemes::buildVmess($v2ray[$i], $user);
+                if ($v2ray[$i]['parent_id']) {
+                    $v2ray[$i]['last_check_at'] = Cache::get(CacheKey::get('SERVER_V2RAY_LAST_CHECK_AT', $v2ray[$i]['parent_id']));
                 } else {
-                    $vmess[$i]['last_check_at'] = Cache::get(CacheKey::get('SERVER_V2RAY_LAST_CHECK_AT', $vmess[$i]['id']));
+                    $v2ray[$i]['last_check_at'] = Cache::get(CacheKey::get('SERVER_V2RAY_LAST_CHECK_AT', $v2ray[$i]['id']));
                 }
+                array_push($servers, $v2ray[$i]->toArray());
             }
         }
 
 
-        return $vmess->toArray();
+        return $servers;
     }
 
     public function getTrojan(User $user, $all = false):array
     {
+        $servers = [];
         $model = ServerTrojan::orderBy('sort', 'ASC');
         if (!$all) {
             $model->where('show', 1);
@@ -58,14 +61,15 @@ class ServerService
                 } else {
                     $trojan[$i]['last_check_at'] = Cache::get(CacheKey::get('SERVER_TROJAN_LAST_CHECK_AT', $trojan[$i]['id']));
                 }
+                array_push($servers, $trojan[$i]->toArray());
             }
-
         }
-        return $trojan->toArray();
+        return $servers;
     }
 
     public function getShadowsocks(User $user, $all = false)
     {
+        $servers = [];
         $model = ServerShadowsocks::orderBy('sort', 'ASC');
         if (!$all) {
             $model->where('show', 1);
@@ -81,10 +85,11 @@ class ServerService
                 } else {
                     $shadowsocks[$i]['last_check_at'] = Cache::get(CacheKey::get('SERVER_SHADOWSOCKS_LAST_CHECK_AT', $shadowsocks[$i]['id']));
                 }
+                array_push($servers, $shadowsocks[$i]->toArray());
             }
 
         }
-        return $shadowsocks->toArray();
+        return $servers;
     }
 
     public function getAvailableServers(User $user, $all = false)
