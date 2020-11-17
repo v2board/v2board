@@ -107,7 +107,7 @@ CREATE TABLE `v2_order` (
   `balance_amount` int(11) DEFAULT NULL COMMENT '使用余额',
   `surplus_order_ids` text COMMENT '折抵订单',
   `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0待支付1开通中2已取消3已完成4已折抵',
-  `commission_status` tinyint(1) NOT NULL DEFAULT '0',
+  `commission_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0待确认1发放中2有效3无效',
   `commission_balance` int(11) NOT NULL DEFAULT '0',
   `created_at` int(11) NOT NULL,
   `updated_at` int(11) NOT NULL,
@@ -311,4 +311,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2020-11-12 18:16:53
+-- 2020-11-17 08:48:00
