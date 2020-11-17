@@ -345,3 +345,10 @@ ADD `coupon_id` int(11) NULL AFTER `plan_id`;
 
 ALTER TABLE `v2_server_stat`
 ADD `method` varchar(255) NOT NULL AFTER `server_id`;
+
+ALTER TABLE `v2_server`
+ADD `alter_id` int(11) NOT NULL DEFAULT '1' AFTER `network`;
+
+ALTER TABLE `v2_user`
+DROP `v2ray_alter_id`,
+DROP `v2ray_level`;

@@ -87,7 +87,7 @@ class AppController extends Controller
         $json->outbound->settings->vnext[0]->address = (string)$server->host;
         $json->outbound->settings->vnext[0]->port = (int)$server->port;
         $json->outbound->settings->vnext[0]->users[0]->id = (string)$user->uuid;
-        $json->outbound->settings->vnext[0]->users[0]->alterId = (int)$user->v2ray_alter_id;
+        $json->outbound->settings->vnext[0]->users[0]->alterId = (int)$server->alter_id;
         $json->outbound->settings->vnext[0]->remark = (string)$server->name;
         $json->outbound->streamSettings->network = $server->network;
         if ($server->networkSettings) {

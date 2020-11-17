@@ -48,8 +48,7 @@ class TrojanTidalabController extends Controller
                 "password" => $user->uuid,
             ];
             unset($user['uuid']);
-            unset($user['v2ray_alter_id']);
-            unset($user['v2ray_level']);
+            unset($user['email']);
             array_push($result, $user);
         }
         return response([

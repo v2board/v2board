@@ -121,9 +121,7 @@ class ServerService
                 'u',
                 'd',
                 'transfer_enable',
-                'uuid',
-                'v2ray_alter_id',
-                'v2ray_level'
+                'uuid'
             ])
             ->get();
     }
