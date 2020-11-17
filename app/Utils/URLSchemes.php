@@ -26,7 +26,7 @@ class URLSchemes
             "add" => $server['host'],
             "port" => $server['port'],
             "id" => $user['uuid'],
-            "aid" => "2",
+            "aid" => $server['alter_id'],
             "net" => $server['network'],
             "type" => "none",
             "host" => "",
