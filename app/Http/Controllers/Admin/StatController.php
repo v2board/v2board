@@ -34,11 +34,11 @@ class StatController extends Controller
                     ->count(),
                 'day_income' => Order::where('created_at', '>=', strtotime(date('Y-m-d')))
                     ->where('created_at', '<', time())
-                    ->where('status', [3, 4])
+                    ->whereIn('status', [3, 4])
                     ->sum('total_amount'),
                 'last_month_income' => Order::where('created_at', '>=', strtotime('-1 month', strtotime(date('Y-m-1'))))
                     ->where('created_at', '<', strtotime(date('Y-m-1')))
-                    ->where('status', [3, 4])
+                    ->whereIn('status', [3, 4])
                     ->sum('total_amount')
             ]
         ]);
