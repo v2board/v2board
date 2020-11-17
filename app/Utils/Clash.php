@@ -26,7 +26,7 @@ class Clash
         $array['server'] = $server['host'];
         $array['port'] = $server['port'];
         $array['uuid'] = $uuid;
-        $array['alterId'] = 2;
+        $array['alterId'] = $server['alter_id'];
         $array['cipher'] = 'auto';
         $array['udp'] = true;
         if ($server['tls']) {

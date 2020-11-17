@@ -20,7 +20,8 @@ class Shadowrocket
     {
         $userinfo = base64_encode('auto:' . $uuid . '@' . $server['host'] . ':' . $server['port']);
         $config = [
-            'remark' => $server['name']
+            'remark' => $server['name'],
+            'alterId' => $server['alter_id']
         ];
         if ($server['tls']) {
             $tlsSettings = json_decode($server['tlsSettings'], true);
