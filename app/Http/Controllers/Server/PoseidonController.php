@@ -135,9 +135,23 @@ class PoseidonController extends Controller
     }
 
     protected function success($data) {
+         $req = request();
+        // Only for "GET" method
+        if (!$req->isMethod('GET') || !$data) {
+            return response([
+                'msg' => 'ok',
+                'data' => $data,
+            ]);
+        }
+
+        $etag = sha1(json_encode($data));
+        if ($etag == $req->header("IF-NONE-MATCH")) {
+            return response(null, 304);
+        }
+
         return response([
             'msg' => 'ok',
             'data' => $data,
-        ]);
+        ])->header('ETAG', $etag);
     }
 }
