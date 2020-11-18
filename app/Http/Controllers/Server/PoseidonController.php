@@ -45,12 +45,11 @@ class PoseidonController extends Controller
             $user->v2ray_user = [
                 "uuid" => $user->uuid,
                 "email" => sprintf("%s@v2board.user", $user->uuid),
-                "alter_id" => $user->v2ray_alter_id,
-                "level" => $user->v2ray_level,
+                "alter_id" => $server->alter_id,
+                "level" => 0,
             ];
             unset($user['uuid']);
-            unset($user['v2ray_alter_id']);
-            unset($user['v2ray_level']);
+            unset($user['email']);
             array_push($result, $user);
         }
 
