@@ -152,7 +152,7 @@ class ConfigController extends Controller
             abort(500, '修改失败');
         }
         if (function_exists('opcache_reset')) {
-            if (!opcache_reset()) {
+            if (opcache_reset() === false) {
                 abort(500, '缓存清除失败，请卸载或检查opcache配置状态');
             }
         }
