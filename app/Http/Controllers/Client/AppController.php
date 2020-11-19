@@ -51,14 +51,34 @@ class AppController extends Controller
         die(Yaml::dump($config));
     }
 
-    public function getVersion()
+    public function getVersion(Request $request)
     {
+        if (strpos($request->header('user-agent'), 'tunnelab/4.0.0') !== -1) {
+            if (strpos($request->header('user-agent'), 'Win64') !== -1) {
+                return response([
+                    'data' => [
+                        'version' => config('v2board.windows_version'),
+                        'download_url' => config('v2board.windows_download_url')
+                    ]
+                ]);
+            } else {
+                return response([
+                    'data' => [
+                        'version' => config('v2board.macos_version'),
+                        'download_url' => config('v2board.macos_download_url')
+                    ]
+                ]);
+            }
+            return;
+        }
         return response([
             'data' => [
-                'version' => '4.0.0',
-                'download_url' => '',
-                'android_version' => '4.0.0',
-                'android_download_url' => ''
+                'windows_version' => config('v2board.windows_version'),
+                'windows_download_url' => config('v2board.windows_download_url'),
+                'macos_version' => config('v2board.macos_version'),
+                'macos_download_url' => config('v2board.macos_download_url'),
+                'android_version' => config('v2board.android_version'),
+                'android_download_url' => config('v2board.android_download_url')
             ]
         ]);
     }
