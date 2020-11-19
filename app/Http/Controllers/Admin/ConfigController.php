@@ -134,7 +134,7 @@ class ConfigController extends Controller
                     'telegram_bot_token' => config('v2board.telegram_bot_token')
                 ],
                 'app' => [
-                    'windows_version' => config('v2board.window_version'),
+                    'windows_version' => config('v2board.windows_version'),
                     'windows_download_url' => config('v2board.windows_download_url'),
                     'macos_version' => config('v2board.macos_version'),
                     'macos_download_url' => config('v2board.macos_download_url'),
