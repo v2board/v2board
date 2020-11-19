@@ -41,6 +41,7 @@ class Clash
             }
         }
         if ($server['network'] === 'ws') {
+            $array['network'] = 'ws';
             if ($server['networkSettings']) {
                 $wsSettings = json_decode($server['networkSettings'], true);
                 if (isset($wsSettings['path']) && !empty($wsSettings['path']))
