@@ -32,32 +32,25 @@ class Surge
             'tfo=true',
             'udp-relay=true'
         ];
-        if ($server['network'] === 'tcp') {
-            if ($server['tls']) {
+
+        if ($server['tls']) {
+            array_push($config, 'tls=true');
+            if ($server['tlsSettings']) {
                 $tlsSettings = json_decode($server['tlsSettings'], true);
-                array_push($config, $server['tls'] ? 'tls=true' : 'tls=false');
-                if (!empty($tlsSettings['allowInsecure'])) {
-                    array_push($config, $tlsSettings['allowInsecure'] ? 'skip-cert-verify=true' : 'skip-cert-verify=false');
-                }
-                if (!empty($tlsSettings['serverName'])) {
+                if (isset($tlsSettings['allowInsecure']) && !empty($tlsSettings['allowInsecure']))
+                    array_push($config, 'skip-cert-verify=' . $tlsSettings['allowInsecure'] ? 'true' : 'false');
+                if (isset($tlsSettings['serverName']) && !empty($tlsSettings['serverName']))
                     array_push($config, "sni={$tlsSettings['serverName']}");
-                }
             }
         }
-
         if ($server['network'] === 'ws') {
             array_push($config, 'ws=true');
-            if ($server['tls']) {
-                $tlsSettings = json_decode($server['tlsSettings'], true);
-                array_push($config, $server['tls'] ? 'tls=true' : 'tls=false');
-                if (!empty($tlsSettings['allowInsecure'])) {
-                    array_push($config, $tlsSettings['allowInsecure'] ? 'skip-cert-verify=true' : 'skip-cert-verify=false');
-                }
-            }
             if ($server['networkSettings']) {
                 $wsSettings = json_decode($server['networkSettings'], true);
-                if (isset($wsSettings['path'])) array_push($config, "ws-path={$wsSettings['path']}");
-                if (isset($wsSettings['headers']['Host'])) array_push($config, "ws-headers=host:{$wsSettings['headers']['Host']}");
+                if (isset($wsSettings['path']) && !empty($wsSettings['path']))
+                    array_push($config, "ws-path={$wsSettings['path']}");
+                if (isset($wsSettings['headers']['Host']) && !empty($wsSettings['headers']['Host']))
+                    array_push($config, "ws-headers=Host:{$wsSettings['headers']['Host']}");
             }
         }
 
