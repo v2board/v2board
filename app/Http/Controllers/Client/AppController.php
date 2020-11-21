@@ -53,8 +53,8 @@ class AppController extends Controller
 
     public function getVersion(Request $request)
     {
-        if (strpos($request->header('user-agent'), 'tunnelab/4.0.0') !== -1) {
-            if (strpos($request->header('user-agent'), 'Win64') !== -1) {
+        if (strpos($request->header('user-agent'), 'tunnelab/4.0.0') !== false) {
+            if (strpos($request->header('user-agent'), 'Win64') !== false) {
                 return response([
                     'data' => [
                         'version' => config('v2board.windows_version'),
