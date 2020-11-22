@@ -53,7 +53,9 @@ class AppController extends Controller
 
     public function getVersion(Request $request)
     {
-        if (strpos($request->header('user-agent'), 'tunnelab/4.0.0') !== false) {
+        if (strpos($request->header('user-agent'), 'tidalab/4.0.0') !== false
+            || strpos($request->header('user-agent'), 'tunnelab/4.0.0') !== false
+        ) {
             if (strpos($request->header('user-agent'), 'Win64') !== false) {
                 return response([
                     'data' => [
