@@ -50,6 +50,9 @@ class ClientController extends Controller
                 if (strpos($flag, 'shadowrocket') !== false) {
                     die($this->shadowrocket($user, $servers));
                 }
+                if (strpos($flag, 'shadowsocks') !== false) {
+                    die($this->shaodowsocksSIP008($user, $servers));
+                }
             }
             die($this->origin($user, $servers));
         }
@@ -133,6 +136,25 @@ class ClientController extends Controller
             }
         }
         return base64_encode($uri);
+    }
+
+    private function shaodowsocksSIP008($user, $servers = [])
+    {
+        $configs = [];
+        $subs = [];
+        $subs['servers'] = [];
+
+        foreach ($servers as $item) {
+            if ($item['type'] === 'shadowsocks') {
+                array_push($configs, URLSchemes::buildShadowsocksSIP008($item, $user));
+            }
+        }
+
+        $subs['version'] = 1;
+        $subs['remark'] = config('v2board.app_name', 'V2Board');
+        $subs['servers'] = array_merge($subs['servers'] ? $subs['servers'] : [], $configs);
+
+        return json_encode($subs, JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
     }
 
     private function surge($user, $servers = [])

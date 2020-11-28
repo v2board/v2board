@@ -1,21 +1,35 @@
-port: 7890
-socks-port: 7891
-allow-lan: false
+# port: 7890
+# socks-port: 7891
+# redir-port: 7892
+# tproxy-port: 7893
+mixed-port: 7890
+allow-lan: true
 mode: rule
 log-level: info
 external-controller: 127.0.0.1:9090
-experimental:
-  ignore-resolve-fail: true
+
 dns:
   enable: true
+  # listen: 0.0.0.0:53
   ipv6: false
-  enhanced-mode: redir-host
-  nameserver:
-    - 1.2.4.8
+
+  default-nameserver:
     - 223.5.5.5
+    - 119.29.29.29
+  enhanced-mode: redir-host
+  fake-ip-range: 198.18.0.1/16
+  use-hosts: true
+  nameserver:
+    - https://dns.alidns.com/dns-query
+    - https://doh.pub/dns-query
   fallback:
     - tls://1.0.0.1:853
-    - tls://dns.google:853
+    - https://dns.google/dns-query
+  fallback-filter:
+    geoip: true
+    ipcidr:
+      - 240.0.0.0/4
+
 proxies:
 
 proxy-groups:
@@ -24,33 +38,43 @@ proxy-groups:
   - { name: "故障转移", type: fallback, proxies: [], url: "http://www.gstatic.com/generate_204", interval: 7200 }
 
 rules:
+  # 自定义规则
+  ## 您可以在此处插入您补充的自定义规则（请注意保持缩进）
+
   # Apple
   - DOMAIN,safebrowsing.urlsec.qq.com,DIRECT # 如果您并不信任此服务提供商或防止其下载消耗过多带宽资源，可以进入 Safari 设置，关闭 Fraudulent Website Warning 功能，并使用 REJECT 策略。
   - DOMAIN,safebrowsing.googleapis.com,DIRECT # 如果您并不信任此服务提供商或防止其下载消耗过多带宽资源，可以进入 Safari 设置，关闭 Fraudulent Website Warning 功能，并使用 REJECT 策略。
-  - DOMAIN,ocsp.apple.com,$app_name
+  - DOMAIN,developer.apple.com,$app_name
   - DOMAIN-SUFFIX,digicert.com,$app_name
-  - DOMAIN-SUFFIX,entrust.net,$app_name
+  - DOMAIN,ocsp.apple.com,$app_name
+  - DOMAIN,ocsp.comodoca.com,$app_name
+  - DOMAIN,ocsp.usertrust.com,$app_name
+  - DOMAIN,ocsp.sectigo.com,$app_name
   - DOMAIN,ocsp.verisign.net,$app_name
-  - DOMAIN-SUFFIX,apps.apple.com,$app_name
+  - DOMAIN-SUFFIX,apple-dns.net,$app_name
+  - DOMAIN,testflight.apple.com,$app_name
+  - DOMAIN,sandbox.itunes.apple.com,$app_name
   - DOMAIN,itunes.apple.com,$app_name
+  - DOMAIN-SUFFIX,apps.apple.com,$app_name
   - DOMAIN-SUFFIX,blobstore.apple.com,$app_name
-  - DOMAIN-SUFFIX,music.apple.com,DIRECT
+  - DOMAIN,cvws.icloud-content.com,$app_name
   - DOMAIN-SUFFIX,mzstatic.com,DIRECT
   - DOMAIN-SUFFIX,itunes.apple.com,DIRECT
   - DOMAIN-SUFFIX,icloud.com,DIRECT
   - DOMAIN-SUFFIX,icloud-content.com,DIRECT
   - DOMAIN-SUFFIX,me.com,DIRECT
-  - DOMAIN-SUFFIX,mzstatic.com,DIRECT
-  - DOMAIN-SUFFIX,akadns.net,DIRECT
   - DOMAIN-SUFFIX,aaplimg.com,DIRECT
+  - DOMAIN-SUFFIX,cdn20.com,DIRECT
   - DOMAIN-SUFFIX,cdn-apple.com,DIRECT
+  - DOMAIN-SUFFIX,akadns.net,DIRECT
+  - DOMAIN-SUFFIX,akamaiedge.net,DIRECT
+  - DOMAIN-SUFFIX,edgekey.net,DIRECT
+  - DOMAIN-SUFFIX,mwcloudcdn.com,DIRECT
+  - DOMAIN-SUFFIX,mwcname.com,DIRECT
   - DOMAIN-SUFFIX,apple.com,DIRECT
   - DOMAIN-SUFFIX,apple-cloudkit.com,DIRECT
+  - DOMAIN-SUFFIX,apple-mapkit.com,DIRECT
   # - DOMAIN,e.crashlytics.com,REJECT //注释此选项有助于大多数App开发者分析崩溃信息；如果您拒绝一切崩溃数据统计、搜集，请取消 # 注释。
-
-
-  # 自定义规则
-  ## 您可以在此处插入您补充的自定义规则（请注意保持缩进）
 
   # 国内网站
   - DOMAIN-SUFFIX,cn,DIRECT
@@ -65,7 +89,6 @@ rules:
   - DOMAIN-SUFFIX,acfun.tv,DIRECT
   - DOMAIN-SUFFIX,air-matters.com,DIRECT
   - DOMAIN-SUFFIX,aixifan.com,DIRECT
-  - DOMAIN-SUFFIX,akamaized.net,DIRECT
   - DOMAIN-KEYWORD,alicdn,DIRECT
   - DOMAIN-KEYWORD,alipay,DIRECT
   - DOMAIN-KEYWORD,taobao,DIRECT
@@ -97,7 +120,6 @@ rules:
   - DOMAIN-SUFFIX,godic.net,DIRECT
   - DOMAIN-SUFFIX,gtimg.com,DIRECT
   - DOMAIN,cdn.hockeyapp.net,DIRECT
-  - DOMAIN-SUFFIX,hdslb.com,DIRECT
   - DOMAIN-SUFFIX,hongxiu.com,DIRECT
   - DOMAIN-SUFFIX,hxcdn.net,DIRECT
   - DOMAIN-SUFFIX,iciba.com,DIRECT
@@ -209,21 +231,24 @@ rules:
   - DOMAIN-KEYWORD,adsrvmedia,REJECT
   - DOMAIN-KEYWORD,adwords,REJECT
   - DOMAIN-KEYWORD,adservice,REJECT
+  - DOMAIN-SUFFIX,appsflyer.com,REJECT
   - DOMAIN-KEYWORD,domob,REJECT
+  - DOMAIN-SUFFIX,doubleclick.net,REJECT
   - DOMAIN-KEYWORD,duomeng,REJECT
   - DOMAIN-KEYWORD,dwtrack,REJECT
   - DOMAIN-KEYWORD,guanggao,REJECT
   - DOMAIN-KEYWORD,lianmeng,REJECT
   - DOMAIN-SUFFIX,mmstat.com,REJECT
+  - DOMAIN-KEYWORD,mopub,REJECT
   - DOMAIN-KEYWORD,omgmta,REJECT
   - DOMAIN-KEYWORD,openx,REJECT
   - DOMAIN-KEYWORD,partnerad,REJECT
   - DOMAIN-KEYWORD,pingfore,REJECT
   - DOMAIN-KEYWORD,supersonicads,REJECT
-  - DOMAIN-KEYWORD,tracking,REJECT
   - DOMAIN-KEYWORD,uedas,REJECT
   - DOMAIN-KEYWORD,umeng,REJECT
   - DOMAIN-KEYWORD,usage,REJECT
+  - DOMAIN-SUFFIX,vungle.com,REJECT
   - DOMAIN-KEYWORD,wlmonitor,REJECT
   - DOMAIN-KEYWORD,zjtoolbar,REJECT
 
@@ -232,6 +257,7 @@ rules:
   - DOMAIN-SUFFIX,abpchina.org,$app_name
   - DOMAIN-SUFFIX,adblockplus.org,$app_name
   - DOMAIN-SUFFIX,adobe.com,$app_name
+  - DOMAIN-SUFFIX,akamaized.net,$app_name
   - DOMAIN-SUFFIX,alfredapp.com,$app_name
   - DOMAIN-SUFFIX,amplitude.com,$app_name
   - DOMAIN-SUFFIX,ampproject.org,$app_name
@@ -499,18 +525,18 @@ rules:
   # Telegram
   - DOMAIN-SUFFIX,telegra.ph,$app_name
   - DOMAIN-SUFFIX,telegram.org,$app_name
-
   - IP-CIDR,91.108.4.0/22,$app_name,no-resolve
-  - IP-CIDR,91.108.8.0/22,$app_name,no-resolve
-  - IP-CIDR,91.108.12.0/22,$app_name,no-resolve
+  - IP-CIDR,91.108.8.0/21,$app_name,no-resolve
   - IP-CIDR,91.108.16.0/22,$app_name,no-resolve
   - IP-CIDR,91.108.56.0/22,$app_name,no-resolve
-  - IP-CIDR,149.154.160.0/22,$app_name,no-resolve
-  - IP-CIDR,149.154.164.0/22,$app_name,no-resolve
-  - IP-CIDR,149.154.168.0/22,$app_name,no-resolve
-  - IP-CIDR,149.154.172.0/22,$app_name,no-resolve
+  - IP-CIDR,149.154.160.0/20,$app_name,no-resolve
+  - IP-CIDR6,2001:67c:4e8::/48,$app_name,no-resolve
+  - IP-CIDR6,2001:b28:f23d::/48,$app_name,no-resolve
+  - IP-CIDR6,2001:b28:f23f::/48,$app_name,no-resolve
 
   # LAN
+  - DOMAIN,injections.adguard.org,DIRECT
+  - DOMAIN,local.adguard.org,DIRECT
   - DOMAIN-SUFFIX,local,DIRECT
   - IP-CIDR,127.0.0.0/8,DIRECT
   - IP-CIDR,172.16.0.0/12,DIRECT
@@ -518,6 +544,8 @@ rules:
   - IP-CIDR,10.0.0.0/8,DIRECT
   - IP-CIDR,17.0.0.0/8,DIRECT
   - IP-CIDR,100.64.0.0/10,DIRECT
+  - IP-CIDR,224.0.0.0/4,DIRECT
+  - IP-CIDR6,fe80::/10,DIRECT
 
   # 最终规则
   - GEOIP,CN,DIRECT

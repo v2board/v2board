@@ -17,6 +17,18 @@ class URLSchemes
         return "ss://{$str}@{$server['host']}:{$server['port']}#{$name}\r\n";
     }
 
+    public static function buildShadowsocksSIP008($server, User $user)
+    {
+        $config = [
+            "id" => $server['id'],
+            "remark" => $server['name'],
+            "server" => $server['host'],
+            "server_port" => $server['port'],
+            "password" => $user['uuid'],
+            "method" => $server['cipher']
+        ];
+        return $config;
+    }
 
     public static function buildVmess($server, User $user)
     {
