@@ -28,7 +28,6 @@ class CouponController extends Controller
         }
         if ($coupon->limit_plan_ids) {
             $limitPlanIds = json_decode($coupon->limit_plan_ids);
-            info($limitPlanIds);
             if (!in_array($request->input('plan_id'), $limitPlanIds)) {
                 abort(500, '这个计划无法使用该优惠码');
             }
