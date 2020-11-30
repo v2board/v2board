@@ -165,7 +165,7 @@ class UserController extends Controller
     {
         if ($user->expired_at <= time() || $user->expired_at === NULL) return null;
         $day = date('d', $user->expired_at);
-        $today = date('d');
+        $today = date('d', strtotime('-1 day'));
         $lastDay = date('d', strtotime('last day of +0 months'));
 
         if ((int)config('v2board.reset_traffic_method') === 0) {
