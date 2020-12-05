@@ -31,34 +31,33 @@ class QuantumultX
             'udp-relay=true',
             "tag={$server['name']}"
         ];
-        if ($server['network'] === 'tcp') {
-            if ($server['tls']) {
-                $tlsSettings = json_decode($server['tlsSettings'], true);
+
+        if ($server['tls']) {
+            if ($server['network'] === 'tcp') {
                 array_push($config, 'obfs=over-tls');
-                if (isset($tlsSettings['allowInsecure'])) {
-                    // Tips: allowInsecure=false = tls-verification=true
-                    array_push($config, $tlsSettings['allowInsecure'] ? 'tls-verification=false' : 'tls-verification=true');
-                }
-                if (!empty($tlsSettings['serverName'])) {
-                    array_push($config, "obfs-host={$tlsSettings['serverName']}");
-                }
+            } else {
+                array_push($config, 'obfs=wss');
             }
+        } else if ($server['network'] === 'ws') {
+            array_push($config, 'obfs=ws');
         }
 
-        if ($server['network'] === 'ws') {
-            if ($server['tls']) {
+        if ($server['tls']) {
+            if ($server['tlsSettings']) {
                 $tlsSettings = json_decode($server['tlsSettings'], true);
-                array_push($config, 'obfs=wss');
-                if (isset($tlsSettings['allowInsecure'])) {
-                    array_push($config, $tlsSettings['allowInsecure'] ? 'tls-verification=false' : 'tls-verification=true');
-                }
-            } else {
-                array_push($config, 'obfs=ws');
+                if (isset($tlsSettings['allowInsecure']) && !empty($tlsSettings['allowInsecure']))
+                    array_push($config, 'tls-verification=' . $tlsSettings['allowInsecure'] ? 'false' : 'true');
+                if (isset($tlsSettings['serverName']) && !empty($tlsSettings['serverName']))
+                    array_push($config, "sni={$tlsSettings['serverName']}");
             }
+        }
+        if ($server['network'] === 'ws') {
             if ($server['networkSettings']) {
                 $wsSettings = json_decode($server['networkSettings'], true);
-                if (isset($wsSettings['path'])) array_push($config, "obfs-uri={$wsSettings['path']}");
-                if (isset($wsSettings['headers']['Host'])) array_push($config, "obfs-host={$wsSettings['headers']['Host']}");
+                if (isset($wsSettings['path']) && !empty($wsSettings['path']))
+                    array_push($config, "obfs-uri={$wsSettings['path']}");
+                if (isset($wsSettings['headers']['Host']) && !empty($wsSettings['headers']['Host']))
+                    array_push($config, "obfs-host={$wsSettings['headers']['Host']}");
             }
         }
 
