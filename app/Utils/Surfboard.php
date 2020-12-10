@@ -39,7 +39,7 @@ class Surfboard
             if ($server['tlsSettings']) {
                 $tlsSettings = json_decode($server['tlsSettings'], true);
                 if (isset($tlsSettings['allowInsecure']) && !empty($tlsSettings['allowInsecure']))
-                    array_push($config, 'skip-cert-verify=' . $tlsSettings['allowInsecure'] ? 'true' : 'false');
+                    array_push($config, 'skip-cert-verify=' . ($tlsSettings['allowInsecure'] ? 'true' : 'false'));
                 if (isset($tlsSettings['serverName']) && !empty($tlsSettings['serverName']))
                     array_push($config, "sni={$tlsSettings['serverName']}");
             }
