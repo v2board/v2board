@@ -100,7 +100,14 @@ class ConfigSave extends FormRequest
             'telegram_bot_enable' => 'in:0,1',
             'telegram_bot_token' => '',
             'telegram_discuss_id' => '',
-            'telegram_channel_id' => ''
+            'telegram_channel_id' => '',
+            // app
+            'windows_version' => '',
+            'windows_download_url' => '',
+            'macos_version' => '',
+            'macos_download_url' => '',
+            'android_version' => '',
+            'android_download_url' => ''
         ];
     }
 

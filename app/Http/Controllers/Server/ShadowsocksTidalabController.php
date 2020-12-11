@@ -70,28 +70,22 @@ class ShadowsocksTidalabController extends Controller
         $data = file_get_contents('php://input');
         $data = json_decode($data, true);
         Cache::put(CacheKey::get('SERVER_SHADOWSOCKS_ONLINE_USER', $server->id), count($data), 3600);
-        $serverService = new ServerService();
         $userService = new UserService();
         DB::beginTransaction();
-        foreach ($data as $item) {
-            $u = $item['u'] * $server->rate;
-            $d = $item['d'] * $server->rate;
-            if (!$userService->trafficFetch((float)$u, (float)$d, (int)$item['user_id'])) {
-                DB::rollBack();
-                return response([
-                    'ret' => 0,
-                    'msg' => 'user fetch fail'
-                ]);
+        try {
+            foreach ($data as $item) {
+                $u = $item['u'] * $server->rate;
+                $d = $item['d'] * $server->rate;
+                if (!$userService->trafficFetch((float)$u, (float)$d, (int)$item['user_id'], $server, 'shadowsocks')) {
+                    continue;
+                }
             }
-
-            $serverService->log(
-                $item['user_id'],
-                $request->input('node_id'),
-                $item['u'],
-                $item['d'],
-                $server->rate,
-                'shadowsocks'
-            );
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response([
+                'ret' => 0,
+                'msg' => 'user fetch fail'
+            ]);
         }
         DB::commit();
 
@@ -99,23 +93,5 @@ class ShadowsocksTidalabController extends Controller
             'ret' => 1,
             'msg' => 'ok'
         ]);
-    }
-
-    // 后端获取配置
-    public function config(Request $request)
-    {
-        $nodeId = $request->input('node_id');
-        $localPort = $request->input('local_port');
-        if (empty($nodeId) || empty($localPort)) {
-            abort(500, '参数错误');
-        }
-        $serverService = new ServerService();
-        try {
-            $json = $serverService->getTrojanConfig($nodeId, $localPort);
-        } catch (\Exception $e) {
-            abort(500, $e->getMessage());
-        }
-
-        die(json_encode($json, JSON_UNESCAPED_UNICODE));
     }
 }

@@ -15,7 +15,7 @@ class OrderUpdate extends FormRequest
     {
         return [
             'status' => 'in:0,1,2,3',
-            'commission_status' => 'in:0,1,2'
+            'commission_status' => 'in:0,1,3'
         ];
     }
 

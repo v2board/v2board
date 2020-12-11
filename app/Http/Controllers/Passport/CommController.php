@@ -28,7 +28,8 @@ class CommController extends Controller
                     : 0,
                 'isRecaptcha' => (int)config('v2board.recaptcha_enable', 0) ? 1 : 0,
                 'recaptchaSiteKey' => config('v2board.recaptcha_site_key'),
-                'appDescription' => config('v2board.app_description')
+                'appDescription' => config('v2board.app_description'),
+                'appUrl' => config('v2board.app_url')
             ]
         ]);
     }

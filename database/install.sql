@@ -107,7 +107,7 @@ CREATE TABLE `v2_order` (
   `balance_amount` int(11) DEFAULT NULL COMMENT '使用余额',
   `surplus_order_ids` text COMMENT '折抵订单',
   `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0待支付1开通中2已取消3已完成4已折抵',
-  `commission_status` tinyint(1) NOT NULL DEFAULT '0',
+  `commission_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0待确认1发放中2有效3无效',
   `commission_balance` int(11) NOT NULL DEFAULT '0',
   `created_at` int(11) NOT NULL,
   `updated_at` int(11) NOT NULL,
@@ -152,6 +152,7 @@ CREATE TABLE `v2_server` (
   `tags` varchar(255) DEFAULT NULL,
   `rate` varchar(11) NOT NULL,
   `network` text NOT NULL,
+  `alter_id` int(11) NOT NULL DEFAULT '1',
   `settings` text,
   `rules` text,
   `networkSettings` text,
@@ -217,6 +218,7 @@ DROP TABLE IF EXISTS `v2_server_stat`;
 CREATE TABLE `v2_server_stat` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `server_id` int(11) NOT NULL,
+  `method` varchar(255) NOT NULL,
   `u` varchar(255) NOT NULL,
   `d` varchar(255) NOT NULL,
   `created_at` int(11) NOT NULL,
@@ -295,8 +297,6 @@ CREATE TABLE `v2_user` (
   `last_login_at` int(11) DEFAULT NULL,
   `last_login_ip` int(11) DEFAULT NULL,
   `uuid` varchar(36) NOT NULL,
-  `v2ray_alter_id` tinyint(4) NOT NULL DEFAULT '2',
-  `v2ray_level` tinyint(4) NOT NULL DEFAULT '0',
   `group_id` int(11) DEFAULT NULL,
   `plan_id` int(11) DEFAULT NULL,
   `remind_expire` tinyint(4) DEFAULT '1',
@@ -310,4 +310,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2020-11-03 18:08:25
+-- 2020-11-17 10:46:49

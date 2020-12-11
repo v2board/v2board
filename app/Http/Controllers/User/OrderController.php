@@ -78,7 +78,7 @@ class OrderController extends Controller
 
         if ((!$plan->show && !$plan->renew) || (!$plan->show && $user->plan_id !== $plan->id)) {
             if ($request->input('cycle') !== 'reset_price') {
-                abort(500, '该订阅已售罄');
+                abort(500, '该订阅已售罄，请更换其他订阅');
             }
         }
 
@@ -94,6 +94,10 @@ class OrderController extends Controller
             if ($user->expired_at <= time() || !$user->plan_id) {
                 abort(500, '订阅已过期或无有效订阅，无法购买重置包');
             }
+        }
+
+        if (!$plan->show && $plan->renew && !$userService->isAvailable($user)) {
+            abort(500, '订阅已过期，请更换其他订阅');
         }
 
         DB::beginTransaction();

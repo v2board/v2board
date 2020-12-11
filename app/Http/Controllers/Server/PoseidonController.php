@@ -45,12 +45,11 @@ class PoseidonController extends Controller
             $user->v2ray_user = [
                 "uuid" => $user->uuid,
                 "email" => sprintf("%s@v2board.user", $user->uuid),
-                "alter_id" => $user->v2ray_alter_id,
-                "level" => $user->v2ray_level,
+                "alter_id" => $server->alter_id,
+                "level" => 0,
             ];
             unset($user['uuid']);
-            unset($user['v2ray_alter_id']);
-            unset($user['v2ray_level']);
+            unset($user['email']);
             array_push($result, $user);
         }
 
@@ -68,23 +67,13 @@ class PoseidonController extends Controller
         $data = file_get_contents('php://input');
         $data = json_decode($data, true);
         Cache::put(CacheKey::get('SERVER_V2RAY_ONLINE_USER', $server->id), count($data), 3600);
-        $serverService = new ServerService();
         $userService = new UserService();
         foreach ($data as $item) {
             $u = $item['u'] * $server->rate;
             $d = $item['d'] * $server->rate;
-            if (!$userService->trafficFetch($u, $d, $item['user_id'])) {
+            if (!$userService->trafficFetch($u, $d, $item['user_id'], $server, 'vmess')) {
                 return $this->error("user fetch fail", 500);
             }
-
-            $serverService->log(
-                $item['user_id'],
-                $request->input('node_id'),
-                $item['u'],
-                $item['d'],
-                $server->rate,
-                'vmess'
-            );
         }
 
         return $this->success('');
@@ -146,9 +135,23 @@ class PoseidonController extends Controller
     }
 
     protected function success($data) {
+         $req = request();
+        // Only for "GET" method
+        if (!$req->isMethod('GET') || !$data) {
+            return response([
+                'msg' => 'ok',
+                'data' => $data,
+            ]);
+        }
+
+        $etag = sha1(json_encode($data));
+        if ($etag == $req->header("IF-NONE-MATCH")) {
+            return response(null, 304);
+        }
+
         return response([
             'msg' => 'ok',
             'data' => $data,
-        ]);
+        ])->header('ETAG', $etag);
     }
 }

@@ -47,7 +47,8 @@ class CheckCommission extends Command
     {
         if ((int)config('v2board.commission_auto_check_enable', 1)) {
             Order::where('commission_status', 0)
-                ->where('status', 3)
+                ->where('invite_user_id', '!=', NULL)
+                ->whereIn('status', [3, 4])
                 ->where('updated_at', '<=', strtotime('-3 day', time()))
                 ->update([
                     'commission_status' => 1
@@ -58,17 +59,15 @@ class CheckCommission extends Command
     public function autoPayCommission()
     {
         $order = Order::where('commission_status', 1)
-            ->where('status', 3)
+            ->where('invite_user_id', '!=', NULL)
             ->get();
         foreach ($order as $item) {
-            if ($item->invite_user_id) {
-                $inviter = User::find($item->invite_user_id);
-                if (!$inviter) continue;
-                $inviter->commission_balance = $inviter->commission_balance + $item->commission_balance;
-                if ($inviter->save()) {
-                    $item->commission_status = 2;
-                    $item->save();
-                }
+            $inviter = User::find($item->invite_user_id);
+            if (!$inviter) continue;
+            $inviter->commission_balance = $inviter->commission_balance + $item->commission_balance;
+            if ($inviter->save()) {
+                $item->commission_status = 2;
+                $item->save();
             }
         }
     }

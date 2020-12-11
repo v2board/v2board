@@ -15,26 +15,6 @@ use Illuminate\Support\Facades\DB;
 
 class V2rayController extends Controller
 {
-    public function fetch(Request $request)
-    {
-        $server = Server::orderBy('sort', 'ASC')->get();
-        for ($i = 0; $i < count($server); $i++) {
-            if (!empty($server[$i]['tags'])) {
-                $server[$i]['tags'] = json_decode($server[$i]['tags']);
-            }
-            $server[$i]['group_id'] = json_decode($server[$i]['group_id']);
-            $server[$i]['online'] = Cache::get(CacheKey::get('SERVER_V2RAY_ONLINE_USER', $server[$i]['parent_id'] ? $server[$i]['parent_id'] : $server[$i]['id']));
-            if ($server[$i]['parent_id']) {
-                $server[$i]['last_check_at'] = Cache::get(CacheKey::get('SERVER_V2RAY_LAST_CHECK_AT', $server[$i]['parent_id']));
-            } else {
-                $server[$i]['last_check_at'] = Cache::get(CacheKey::get('SERVER_V2RAY_LAST_CHECK_AT', $server[$i]['id']));
-            }
-        }
-        return response([
-            'data' => $server
-        ]);
-    }
-
     public function save(ServerV2raySave $request)
     {
         $params = $request->validated();
@@ -148,21 +128,6 @@ class V2rayController extends Controller
         $config = $serverService->getVmessConfig($request->input('node_id'), 23333);
         return response([
             'data' => $config
-        ]);
-    }
-
-    public function sort(ServerV2raySort $request)
-    {
-        DB::beginTransaction();
-        foreach ($request->input('server_ids') as $k => $v) {
-            if (!Server::find($v)->update(['sort' => $k + 1])) {
-                DB::rollBack();
-                abort(500, '保存失败');
-            }
-        }
-        DB::commit();
-        return response([
-            'data' => true
         ]);
     }
 }

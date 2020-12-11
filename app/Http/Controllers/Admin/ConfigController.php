@@ -132,6 +132,14 @@ class ConfigController extends Controller
                 'telegram' => [
                     'telegram_bot_enable' => config('v2board.telegram_bot_enable', 0),
                     'telegram_bot_token' => config('v2board.telegram_bot_token')
+                ],
+                'app' => [
+                    'windows_version' => config('v2board.windows_version'),
+                    'windows_download_url' => config('v2board.windows_download_url'),
+                    'macos_version' => config('v2board.macos_version'),
+                    'macos_download_url' => config('v2board.macos_download_url'),
+                    'android_version' => config('v2board.android_version'),
+                    'android_download_url' => config('v2board.android_download_url')
                 ]
             ]
         ]);
@@ -152,7 +160,7 @@ class ConfigController extends Controller
             abort(500, '修改失败');
         }
         if (function_exists('opcache_reset')) {
-            if (!opcache_reset()) {
+            if (opcache_reset() === false) {
                 abort(500, '缓存清除失败，请卸载或检查opcache配置状态');
             }
         }

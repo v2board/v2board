@@ -177,7 +177,7 @@
                                     align="center" valign="top">
                                     <a href="{{$url}}/#/subscribe"
                                         style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 12px; color: #999; text-decoration: none; margin: 0;">我的订阅</a> |
-                                    <a href="{{$url}}/#/tutorial"
+                                    <a href="{{$url}}/#/knowledge"
                                         style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 12px; color: #999; text-decoration: none; margin: 0;">使用教程</a>
                                 </td>
                             </tr>

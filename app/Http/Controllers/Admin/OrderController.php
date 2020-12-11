@@ -25,7 +25,7 @@ class OrderController extends Controller
         }
         if ($request->input('is_commission')) {
             $orderModel->where('invite_user_id', '!=', NULL);
-            $orderModel->where('status', 3);
+            $orderModel->whereIn('status', [3, 4]);
             $orderModel->where('commission_balance', '>', 0);
         }
         if ($request->input('id')) {

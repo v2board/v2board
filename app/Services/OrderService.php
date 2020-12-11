@@ -127,7 +127,7 @@ class OrderService
         if ($user->invite_user_id && $order->total_amount > 0) {
             $order->invite_user_id = $user->invite_user_id;
             $commissionFirstTime = (int)config('v2board.commission_first_time_enable', 1);
-            if (!$commissionFirstTime || ($commissionFirstTime && !Order::where('user_id', $user->id)->where('status', 3)->first())) {
+            if (!$commissionFirstTime || ($commissionFirstTime && !$this->haveValidOrder($user))) {
                 $inviter = User::find($user->invite_user_id);
                 if ($inviter && $inviter->commission_rate) {
                     $order->commission_balance = $order->total_amount * ($inviter->commission_rate / 100);
@@ -136,6 +136,13 @@ class OrderService
                 }
             }
         }
+    }
+
+    private function haveValidOrder(User $user)
+    {
+        return Order::where('user_id', $user->id)
+            ->whereIn('status', [3, 4])
+            ->first();
     }
 
     private function getSurplusValue(User $user, Order $order)
