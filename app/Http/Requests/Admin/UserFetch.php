@@ -14,7 +14,7 @@ class UserFetch extends FormRequest
     public function rules()
     {
         return [
-            'filter.*.key' => 'required|in:id,email,transfer_enable,d,expired_at,uuid,token,invite_by_email,invite_user_id',
+            'filter.*.key' => 'required|in:id,email,transfer_enable,d,expired_at,uuid,token,invite_by_email,invite_user_id,plan_id',
             'filter.*.condition' => 'required|in:>,<,=,>=,<=,模糊',
             'filter.*.value' => 'required'
         ];
