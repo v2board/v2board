@@ -304,7 +304,7 @@ class ServerService
             } else {
                 $server[$i]['last_check_at'] = Cache::get(CacheKey::get('SERVER_SHADOWSOCKS_LAST_CHECK_AT', $server[$i]['id']));
             }
-            $server[$i]['available'] = (time() - 300) > $server[$i]['last_check_at'];
+            $server[$i]['available'] = (time() - 300) < $server[$i]['last_check_at'];
         }
         return $server->toArray();
     }
@@ -333,7 +333,7 @@ class ServerService
             } else {
                 $server[$i]['last_check_at'] = Cache::get(CacheKey::get('SERVER_V2RAY_LAST_CHECK_AT', $server[$i]['id']));
             }
-            $server[$i]['available'] = (time() - 300) > $server[$i]['last_check_at'];
+            $server[$i]['available'] = (time() - 300) < $server[$i]['last_check_at'];
         }
         return $server->toArray();
     }
@@ -353,7 +353,7 @@ class ServerService
             } else {
                 $server[$i]['last_check_at'] = Cache::get(CacheKey::get('SERVER_TROJAN_LAST_CHECK_AT', $server[$i]['id']));
             }
-            $server[$i]['available'] = (time() - 300) > $server[$i]['last_check_at'];
+            $server[$i]['available'] = (time() - 300) < $server[$i]['last_check_at'];
         }
         return $server->toArray();
     }
