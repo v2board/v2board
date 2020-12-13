@@ -304,6 +304,7 @@ class ServerService
             } else {
                 $server[$i]['last_check_at'] = Cache::get(CacheKey::get('SERVER_SHADOWSOCKS_LAST_CHECK_AT', $server[$i]['id']));
             }
+            $server[$i]['available'] = (time() - 300) > $server[$i]['last_check_at'];
         }
         return $server->toArray();
     }
