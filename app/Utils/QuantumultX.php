@@ -47,8 +47,6 @@ class QuantumultX
                 $tlsSettings = json_decode($server['tlsSettings'], true);
                 if (isset($tlsSettings['allowInsecure']) && !empty($tlsSettings['allowInsecure']))
                     array_push($config, 'tls-verification=' . ($tlsSettings['allowInsecure'] ? 'false' : 'true'));
-                if (isset($tlsSettings['serverName']) && !empty($tlsSettings['serverName']))
-                    array_push($config, "tls-host={$tlsSettings['serverName']}");
             }
         }
         if ($server['network'] === 'ws') {
