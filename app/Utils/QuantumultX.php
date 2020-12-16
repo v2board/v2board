@@ -33,30 +33,31 @@ class QuantumultX
         ];
 
         if ($server['tls']) {
-            if ($server['network'] === 'tcp') {
+            if ($server['network'] === 'tcp')
                 array_push($config, 'obfs=over-tls');
-            } else {
-                array_push($config, 'obfs=wss');
-            }
-        } else if ($server['network'] === 'ws') {
-            array_push($config, 'obfs=ws');
-        }
-
-        if ($server['tls']) {
             if ($server['tlsSettings']) {
                 $tlsSettings = json_decode($server['tlsSettings'], true);
                 if (isset($tlsSettings['allowInsecure']) && !empty($tlsSettings['allowInsecure']))
                     array_push($config, 'tls-verification=' . ($tlsSettings['allowInsecure'] ? 'false' : 'true'));
+                if (isset($tlsSettings['serverName']) && !empty($tlsSettings['serverName']))
+                    $host = $tlsSettings['serverName'];
             }
         }
         if ($server['network'] === 'ws') {
+            if ($server['tls'])
+                array_push($config, 'obfs=wss');
+            else
+                array_push($config, 'obfs=ws');
             if ($server['networkSettings']) {
                 $wsSettings = json_decode($server['networkSettings'], true);
                 if (isset($wsSettings['path']) && !empty($wsSettings['path']))
                     array_push($config, "obfs-uri={$wsSettings['path']}");
-                if (isset($wsSettings['headers']['Host']) && !empty($wsSettings['headers']['Host']))
-                    array_push($config, "obfs-host={$wsSettings['headers']['Host']}");
+                if (isset($wsSettings['headers']['Host']) && !empty($wsSettings['headers']['Host']) && !isset($host))
+                    $host = $wsSettings['headers']['Host'];
             }
+        }
+        if (isset($host)) {
+            array_push($config, "obfs-host={$host}");
         }
 
         $uri = implode(',', $config);
