@@ -79,6 +79,11 @@ class ConfigSave extends FormRequest
             'epay_url' => 'nullable|url',
             'epay_pid' => '',
             'epay_key' => '',
+            // PayBeaver
+            'paybeaver_name' => '',
+            'paybeaver_enable' => 'in:0,1',
+            'paybeaver_app_id' => '',
+            'paybeaver_app_secret' => '',
             // frontend
             'frontend_theme_sidebar' => 'in:dark,light',
             'frontend_theme_header' => 'in:dark,light',

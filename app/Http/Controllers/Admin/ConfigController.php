@@ -102,6 +102,11 @@ class ConfigController extends Controller
                     'epay_url' => config('v2board.epay_url'),
                     'epay_pid' => config('v2board.epay_pid'),
                     'epay_key' => config('v2board.epay_key'),
+                    // PayBeaver
+                    'paybeaver_name' => config('v2board.paybeaver_name', '在线支付'),
+                    'paybeaver_enable' => (int)config('v2board.paybeaver_enable', 0),
+                    'paybeaver_app_id' => config('v2board.paybeaver_app_id'),
+                    'paybeaver_app_secret' => config('v2board.paybeaver_app_secret'),
                 ],
                 'frontend' => [
                     'frontend_theme_sidebar' => config('v2board.frontend_theme_sidebar', 'light'),

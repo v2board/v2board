@@ -18,6 +18,7 @@ class GuestRoute
             $router->post('/order/bitpayXNotify', 'Guest\\OrderController@bitpayXNotify');
             $router->post('/order/mgateNotify', 'Guest\\OrderController@mgateNotify');
             $router->post('/order/epayNotify', 'Guest\\OrderController@epayNotify');
+            $router->post('/order/paybeaverNotify', 'Guest\\OrderController@paybeaverNotify');
             // Telegram
             $router->post('/telegram/webhook', 'Guest\\TelegramController@webhook');
         });

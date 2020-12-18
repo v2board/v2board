@@ -20,6 +20,7 @@ use Stripe\Source;
 use Library\BitpayX;
 use Library\MGate;
 use Library\Epay;
+use Library\PayBeaver;
 
 class OrderController extends Controller
 {
@@ -237,6 +238,14 @@ class OrderController extends Controller
                     'type' => 1,
                     'data' => $this->epay($order)
                 ]);
+            case 8:
+                if (!(int)config('v2board.paybeaver_enable')) {
+                    abort(500, '支付方式不可用');
+                }
+                return response([
+                    'type' => 1,
+                    'data' => $this->paybeaver($order)
+                ]);
             default:
                 abort(500, '支付方式不存在');
         }
@@ -311,6 +320,14 @@ class OrderController extends Controller
             $obj = new \StdClass();
             $obj->name = config('v2board.epay_name', '在线支付');
             $obj->method = 7;
+            $obj->icon = 'wallet';
+            array_push($data, $obj);
+        }
+
+        if ((int)config('v2board.paybeaver_enable')) {
+            $obj = new \StdClass();
+            $obj->name = config('v2board.paybeaver_name', '在线支付');
+            $obj->method = 8;
             $obj->icon = 'wallet';
             array_push($data, $obj);
         }
@@ -494,5 +511,23 @@ class OrderController extends Controller
             'return_url' => config('v2board.app_url', env('APP_URL')) . '/#/order',
             'out_trade_no' => $order->trade_no
         ]);
+    }
+
+    private function paybeaver($order)
+    {
+        $paybeaver = new PayBeaver(config('v2board.paybeaver_app_id'), config('v2board.paybeaver_app_secret'));
+
+        $result = $paybeaver->createOrder([
+            'app_id' => config('v2board.paybeaver_app_id'),
+            'merchant_order_id' => $order->trade_no,
+            'price_amount' => $order->total_amount,
+            'notify_url' => url('/api/v1/guest/order/paybeaverNotify'),
+            'return_url' => config('v2board.app_url', env('APP_URL')) . '/#/order'
+        ]);
+
+        if (isset($result['message'])) abort(500, $result['message']);
+        if (!isset($result['data']) || !isset($result['data']['pay_url'])) abort(500, '未知错误');
+
+        return $result['data']['pay_url'];
     }
 }

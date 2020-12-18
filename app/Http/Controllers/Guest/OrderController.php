@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 use Library\BitpayX;
 use Library\MGate;
+use Library\PayBeaver;
 
 class OrderController extends Controller
 {
@@ -152,6 +153,18 @@ class OrderController extends Controller
             abort(500, 'fail');
         }
         die('success');
+    }
+
+    public function paybeaverNotify(Request $r)
+    {
+        $paybeaver = new PayBeaver(config('v2board.paybeaver_app_id'), config('v2board.paybeaver_app_secret'));
+
+        abort_unless($paybeaver->verify($r->input()), 500, 'fail');
+        abort_unless($this->handle($r->input('merchant_order_id'), $r->input(['order_id'])), 500, 'fail');
+
+        die(json_encode(array(
+            'status' => 200,
+        )));
     }
 
     private function handle($tradeNo, $callbackNo)
