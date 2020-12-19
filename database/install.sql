@@ -1,4 +1,4 @@
--- Adminer 4.7.6 MySQL dump
+-- Adminer 4.7.8 MySQL dump
 
 SET NAMES utf8;
 SET time_zone = '+00:00';
@@ -14,7 +14,7 @@ CREATE TABLE `failed_jobs` (
   `queue` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
   `exception` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
-  `failed_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `failed_at` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -41,8 +41,8 @@ CREATE TABLE `v2_invite_code` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
   `code` char(32) NOT NULL,
-  `status` tinyint(1) NOT NULL DEFAULT '0',
-  `pv` int(11) NOT NULL DEFAULT '0',
+  `status` tinyint(1) NOT NULL DEFAULT 0,
+  `pv` int(11) NOT NULL DEFAULT 0,
   `created_at` int(11) NOT NULL,
   `updated_at` int(11) NOT NULL,
   PRIMARY KEY (`id`)
@@ -57,7 +57,7 @@ CREATE TABLE `v2_knowledge` (
   `title` varchar(255) NOT NULL COMMENT '標題',
   `body` text NOT NULL COMMENT '內容',
   `sort` int(11) DEFAULT NULL COMMENT '排序',
-  `show` tinyint(1) NOT NULL DEFAULT '0' COMMENT '顯示',
+  `show` tinyint(1) NOT NULL DEFAULT 0 COMMENT '顯示',
   `created_at` int(11) NOT NULL COMMENT '創建時間',
   `updated_at` int(11) NOT NULL COMMENT '更新時間',
   PRIMARY KEY (`id`)
@@ -70,7 +70,7 @@ CREATE TABLE `v2_mail_log` (
   `email` varchar(64) NOT NULL,
   `subject` varchar(255) NOT NULL,
   `template_name` varchar(255) NOT NULL,
-  `error` text,
+  `error` text DEFAULT NULL,
   `created_at` int(11) NOT NULL,
   `updated_at` int(11) NOT NULL,
   PRIMARY KEY (`id`)
@@ -105,10 +105,10 @@ CREATE TABLE `v2_order` (
   `surplus_amount` int(11) DEFAULT NULL COMMENT '剩余价值',
   `refund_amount` int(11) DEFAULT NULL COMMENT '退款金额',
   `balance_amount` int(11) DEFAULT NULL COMMENT '使用余额',
-  `surplus_order_ids` text COMMENT '折抵订单',
-  `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0待支付1开通中2已取消3已完成4已折抵',
-  `commission_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0待确认1发放中2有效3无效',
-  `commission_balance` int(11) NOT NULL DEFAULT '0',
+  `surplus_order_ids` text DEFAULT NULL COMMENT '折抵订单',
+  `status` tinyint(1) NOT NULL DEFAULT 0 COMMENT '0待支付1开通中2已取消3已完成4已折抵',
+  `commission_status` tinyint(1) NOT NULL DEFAULT 0 COMMENT '0待确认1发放中2有效3无效',
+  `commission_balance` int(11) NOT NULL DEFAULT 0,
   `created_at` int(11) NOT NULL,
   `updated_at` int(11) NOT NULL,
   PRIMARY KEY (`id`)
@@ -121,10 +121,10 @@ CREATE TABLE `v2_plan` (
   `group_id` int(11) NOT NULL,
   `transfer_enable` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
-  `show` tinyint(1) NOT NULL DEFAULT '0',
+  `show` tinyint(1) NOT NULL DEFAULT 0,
   `sort` int(11) DEFAULT NULL,
-  `renew` tinyint(1) NOT NULL DEFAULT '1',
-  `content` text,
+  `renew` tinyint(1) NOT NULL DEFAULT 1,
+  `content` text DEFAULT NULL,
   `month_price` int(11) DEFAULT NULL,
   `quarter_price` int(11) DEFAULT NULL,
   `half_year_price` int(11) DEFAULT NULL,
@@ -148,18 +148,18 @@ CREATE TABLE `v2_server` (
   `host` varchar(255) NOT NULL,
   `port` int(11) NOT NULL,
   `server_port` int(11) NOT NULL,
-  `tls` tinyint(4) NOT NULL DEFAULT '0',
+  `tls` tinyint(4) NOT NULL DEFAULT 0,
   `tags` varchar(255) DEFAULT NULL,
   `rate` varchar(11) NOT NULL,
   `network` text NOT NULL,
-  `alter_id` int(11) NOT NULL DEFAULT '1',
-  `settings` text,
-  `rules` text,
-  `networkSettings` text,
-  `tlsSettings` text,
-  `ruleSettings` text,
-  `dnsSettings` text,
-  `show` tinyint(1) NOT NULL DEFAULT '0',
+  `alter_id` int(11) NOT NULL DEFAULT 1,
+  `settings` text DEFAULT NULL,
+  `rules` text DEFAULT NULL,
+  `networkSettings` text DEFAULT NULL,
+  `tlsSettings` text DEFAULT NULL,
+  `ruleSettings` text DEFAULT NULL,
+  `dnsSettings` text DEFAULT NULL,
+  `show` tinyint(1) NOT NULL DEFAULT 0,
   `sort` int(11) DEFAULT NULL,
   `created_at` int(11) NOT NULL,
   `updated_at` int(11) NOT NULL,
@@ -206,26 +206,12 @@ CREATE TABLE `v2_server_shadowsocks` (
   `port` int(11) NOT NULL,
   `server_port` int(11) NOT NULL,
   `cipher` varchar(255) NOT NULL,
-  `show` tinyint(4) NOT NULL DEFAULT '0',
+  `show` tinyint(4) NOT NULL DEFAULT 0,
   `sort` int(11) DEFAULT NULL,
   `created_at` int(11) NOT NULL,
   `updated_at` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-
-DROP TABLE IF EXISTS `v2_server_stat`;
-CREATE TABLE `v2_server_stat` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `server_id` int(11) NOT NULL,
-  `method` varchar(255) NOT NULL,
-  `u` varchar(255) NOT NULL,
-  `d` varchar(255) NOT NULL,
-  `created_at` int(11) NOT NULL,
-  `updated_at` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `created_at` (`created_at`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS `v2_server_trojan`;
@@ -239,14 +225,29 @@ CREATE TABLE `v2_server_trojan` (
   `host` varchar(255) NOT NULL COMMENT '主机名',
   `port` int(11) NOT NULL COMMENT '连接端口',
   `server_port` int(11) NOT NULL COMMENT '服务端口',
-  `allow_insecure` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否允许不安全',
+  `allow_insecure` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否允许不安全',
   `server_name` varchar(255) DEFAULT NULL,
-  `show` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否显示',
+  `show` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否显示',
   `sort` int(11) DEFAULT NULL,
   `created_at` int(11) NOT NULL,
   `updated_at` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='trojan伺服器表';
+
+
+DROP TABLE IF EXISTS `v2_stat_server`;
+CREATE TABLE `v2_stat_server` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `server_id` int(11) NOT NULL COMMENT '节点id',
+  `server_type` char(11) NOT NULL COMMENT '节点类型',
+  `u` varchar(255) NOT NULL,
+  `d` varchar(255) NOT NULL,
+  `record_type` char(1) NOT NULL COMMENT 'd day m month',
+  `record_at` int(11) NOT NULL COMMENT '记录时间',
+  `created_at` int(11) NOT NULL,
+  `updated_at` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='节点数据统计';
 
 
 DROP TABLE IF EXISTS `v2_ticket`;
@@ -256,7 +257,7 @@ CREATE TABLE `v2_ticket` (
   `last_reply_user_id` int(11) NOT NULL,
   `subject` varchar(255) NOT NULL,
   `level` tinyint(1) NOT NULL,
-  `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0:已开启 1:已关闭',
+  `status` tinyint(1) NOT NULL DEFAULT 0 COMMENT '0:已开启 1:已关闭',
   `created_at` int(11) NOT NULL,
   `updated_at` int(11) NOT NULL,
   PRIMARY KEY (`id`)
@@ -283,26 +284,26 @@ CREATE TABLE `v2_user` (
   `email` varchar(64) NOT NULL,
   `password` varchar(64) NOT NULL,
   `password_algo` char(10) DEFAULT NULL,
-  `balance` int(11) NOT NULL DEFAULT '0',
+  `balance` int(11) NOT NULL DEFAULT 0,
   `discount` int(11) DEFAULT NULL,
   `commission_rate` int(11) DEFAULT NULL,
-  `commission_balance` int(11) NOT NULL DEFAULT '0',
-  `t` int(11) NOT NULL DEFAULT '0',
-  `u` bigint(20) NOT NULL DEFAULT '0',
-  `d` bigint(20) NOT NULL DEFAULT '0',
-  `transfer_enable` bigint(20) NOT NULL DEFAULT '0',
-  `banned` tinyint(1) NOT NULL DEFAULT '0',
-  `is_admin` tinyint(1) NOT NULL DEFAULT '0',
-  `is_staff` tinyint(1) NOT NULL DEFAULT '0',
+  `commission_balance` int(11) NOT NULL DEFAULT 0,
+  `t` int(11) NOT NULL DEFAULT 0,
+  `u` bigint(20) NOT NULL DEFAULT 0,
+  `d` bigint(20) NOT NULL DEFAULT 0,
+  `transfer_enable` bigint(20) NOT NULL DEFAULT 0,
+  `banned` tinyint(1) NOT NULL DEFAULT 0,
+  `is_admin` tinyint(1) NOT NULL DEFAULT 0,
+  `is_staff` tinyint(1) NOT NULL DEFAULT 0,
   `last_login_at` int(11) DEFAULT NULL,
   `last_login_ip` int(11) DEFAULT NULL,
   `uuid` varchar(36) NOT NULL,
   `group_id` int(11) DEFAULT NULL,
   `plan_id` int(11) DEFAULT NULL,
-  `remind_expire` tinyint(4) DEFAULT '1',
-  `remind_traffic` tinyint(4) DEFAULT '1',
+  `remind_expire` tinyint(4) DEFAULT 1,
+  `remind_traffic` tinyint(4) DEFAULT 1,
   `token` char(32) NOT NULL,
-  `expired_at` bigint(20) DEFAULT '0',
+  `expired_at` bigint(20) DEFAULT 0,
   `created_at` int(11) NOT NULL,
   `updated_at` int(11) NOT NULL,
   PRIMARY KEY (`id`),
@@ -310,4 +311,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2020-11-17 10:46:49
+-- 2020-12-19 18:41:35

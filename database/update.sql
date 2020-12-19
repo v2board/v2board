@@ -352,3 +352,26 @@ ADD `alter_id` int(11) NOT NULL DEFAULT '1' AFTER `network`;
 ALTER TABLE `v2_user`
 DROP `v2ray_alter_id`,
 DROP `v2ray_level`;
+
+DROP TABLE `v2_server_stat`;
+
+CREATE TABLE `v2_stat_server` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `server_id` int(11) NOT NULL COMMENT '节点id',
+  `server_type` char(11) NOT NULL COMMENT '节点类型',
+  `u` varchar(255) NOT NULL,
+  `d` varchar(255) NOT NULL,
+  `record_type` char(1) NOT NULL COMMENT 'd day m month',
+  `record_at` int(11) NOT NULL COMMENT '记录时间',
+  `created_at` int(11) NOT NULL,
+  `updated_at` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='节点数据统计';
+
+ALTER TABLE `v2_stat_server`
+ADD UNIQUE `server_id_server_type_record_at` (`server_id`, `server_type`, `record_at`);
+
+ALTER TABLE `v2_stat_server`
+ADD INDEX `record_at` (`record_at`),
+ADD INDEX `server_id` (`server_id`);
+
