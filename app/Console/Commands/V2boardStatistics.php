@@ -7,21 +7,21 @@ use Illuminate\Console\Command;
 use App\Models\ServerLog;
 use Illuminate\Support\Facades\DB;
 
-class StatServer extends Command
+class V2BoardStatistics extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'stat:server';
+    protected $signature = 'v2board:statistics';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = '统计节点数据';
+    protected $description = '统计任务';
 
     /**
      * Create a new command instance.
@@ -40,14 +40,19 @@ class StatServer extends Command
      */
     public function handle()
     {
+        $this->statServer();
+    }
+
+    private function statServer()
+    {
         $endAt = strtotime(date('Y-m-d'));
         $startAt = strtotime('-1 day', $endAt);
         $statistics = ServerLog::select([
-                'server_id',
-                'method as server_type',
-                DB::raw("sum(u) as u"),
-                DB::raw("sum(d) as d"),
-            ])
+            'server_id',
+            'method as server_type',
+            DB::raw("sum(u) as u"),
+            DB::raw("sum(d) as d"),
+        ])
             ->where('log_at', '>=', $startAt)
             ->where('log_at', '<', $endAt)
             ->groupBy('server_id', 'method')
