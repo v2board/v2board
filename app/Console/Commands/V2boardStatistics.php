@@ -43,6 +43,11 @@ class V2BoardStatistics extends Command
         $this->statServer();
     }
 
+    private function statOrder()
+    {
+
+    }
+
     private function statServer()
     {
         $endAt = strtotime(date('Y-m-d'));
