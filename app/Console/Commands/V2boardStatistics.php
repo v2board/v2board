@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use App\Jobs\StatServerJob;
 use Illuminate\Console\Command;
-use App\Models\ServerLog;
+use App\Models\Order;
 use Illuminate\Support\Facades\DB;
 
 class V2BoardStatistics extends Command
@@ -40,12 +40,29 @@ class V2BoardStatistics extends Command
      */
     public function handle()
     {
-        $this->statServer();
+        $this->statOrder();
+//        $this->statServer();
     }
 
     private function statOrder()
     {
-
+        $endAt = strtotime(date('Y-m-d'));
+        $startAt = strtotime('-1 day', $endAt);
+        $builder = Order::where('updated_at', '>=', $startAt)
+            ->where('updated_at', '<', $endAt)
+            ->whereIn('status', [3, 4]);
+        $orderCount = $builder->count();
+        $orderAmount = $builder->sum('total_amount');
+        $builder = $builder->where('commission_balance', '!=', NULL)
+            ->whereIn('commission_status', [1, 2]);
+        $commissionCount = $builder->count();
+        $commissionAmount = $builder->sum('commission_balance');
+        dd([
+            $orderCount,
+            $orderAmount,
+            $commissionCount,
+            $commissionAmount
+        ]);
     }
 
     private function statServer()
