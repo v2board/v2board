@@ -24,7 +24,7 @@ class OrderService
         $this->order = $order;
     }
 
-    public function open()
+    public function open(): bool
     {
         $order = $this->order;
         $user = User::find($order->user_id);
@@ -41,7 +41,7 @@ class OrderService
                 ]);
             } catch (\Exception $e) {
                 DB::rollback();
-                abort(500, '开通失败');
+                return false;
             }
         }
         switch ((string)$order->cycle) {
@@ -59,15 +59,16 @@ class OrderService
 
         if (!$user->save()) {
             DB::rollBack();
-            abort(500, '开通失败');
+            return false;
         }
         $order->status = 3;
         if (!$order->save()) {
             DB::rollBack();
-            abort(500, '开通失败');
+            return false;
         }
 
         DB::commit();
+        return true;
     }
 
     public function cancel():bool
