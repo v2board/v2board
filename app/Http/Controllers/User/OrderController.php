@@ -110,7 +110,12 @@ class OrderController extends Controller
         $order->total_amount = $plan[$request->input('cycle')];
 
         if ($request->input('coupon_code')) {
-            $couponService = new CouponService($request->input('coupon_code'));
+            try {
+                $couponService = new CouponService($request->input('coupon_code'));
+            } catch (\Exception $e) {
+                DB::rollBack();
+                throw $e;
+            }
             if (!$couponService->use($order)) {
                 DB::rollBack();
                 abort(500, '优惠券使用失败');
@@ -119,7 +124,12 @@ class OrderController extends Controller
         }
 
         $orderService->setVipDiscount($user);
-        $orderService->setOrderType($user);
+        try {
+            $orderService->setOrderType($user);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
         $orderService->setInvite($user);
 
         if ($user->balance && $order->total_amount > 0) {
