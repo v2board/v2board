@@ -5,6 +5,8 @@ namespace App\Console\Commands;
 use App\Jobs\StatServerJob;
 use Illuminate\Console\Command;
 use App\Models\Order;
+use App\Models\StatOrder;
+use App\Models\ServerLog;
 use Illuminate\Support\Facades\DB;
 
 class V2BoardStatistics extends Command
@@ -40,8 +42,8 @@ class V2BoardStatistics extends Command
      */
     public function handle()
     {
-        $this->statOrder();
-//        $this->statServer();
+         $this->statOrder();
+         $this->statServer();
     }
 
     private function statOrder()
@@ -57,12 +59,22 @@ class V2BoardStatistics extends Command
             ->whereIn('commission_status', [1, 2]);
         $commissionCount = $builder->count();
         $commissionAmount = $builder->sum('commission_balance');
-        dd([
-            $orderCount,
-            $orderAmount,
-            $commissionCount,
-            $commissionAmount
-        ]);
+        $data = [
+            'order_count' => $orderCount,
+            'order_amount' => $orderAmount,
+            'commission_count' => $commissionCount,
+            'commission_amount' => $commissionAmount,
+            'record_type' => 'd',
+            'record_at' => $startAt
+        ];
+        $statistic = StatOrder::where('record_at', $startAt)
+            ->where('record_type', 'd')
+            ->first();
+        if ($statistic) {
+            $statistic->update($data);
+            return;
+        }
+        StatOrder::create($data);
     }
 
     private function statServer()
@@ -81,7 +93,7 @@ class V2BoardStatistics extends Command
             ->get()
             ->toArray();
         foreach ($statistics as $statistic) {
-            $statistic['record_type'] = 'm';
+            $statistic['record_type'] = 'd';
             $statistic['record_at'] = $startAt;
             StatServerJob::dispatch($statistic);
         }

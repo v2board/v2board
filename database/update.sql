@@ -376,7 +376,7 @@ ADD INDEX `record_at` (`record_at`),
 ADD INDEX `server_id` (`server_id`);
 
 CREATE TABLE `v2_stat_order` (
-  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `order_count` int(11) NOT NULL COMMENT '订单数量',
   `order_amount` int(11) NOT NULL COMMENT '订单合计',
   `commission_count` int(11) NOT NULL,
@@ -384,8 +384,10 @@ CREATE TABLE `v2_stat_order` (
   `record_type` char(1) NOT NULL,
   `record_at` int(11) NOT NULL,
   `created_at` int(11) NOT NULL,
-  `updated_at` int(11) NOT NULL
-) COMMENT='订单统计' COLLATE 'utf8_general_ci';
+  `updated_at` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `record_at` (`record_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='订单统计';
 
-ALTER TABLE `v2_stat_order`
-ADD UNIQUE `record_at` (`record_at`);
+ALTER TABLE `v2_user`
+DROP `enable`;
