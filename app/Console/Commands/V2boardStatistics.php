@@ -50,8 +50,8 @@ class V2BoardStatistics extends Command
     {
         $endAt = strtotime(date('Y-m-d'));
         $startAt = strtotime('-1 day', $endAt);
-        $builder = Order::where('updated_at', '>=', $startAt)
-            ->where('updated_at', '<', $endAt)
+        $builder = Order::where('created_at', '>=', $startAt)
+            ->where('created_at', '<', $endAt)
             ->whereIn('status', [3, 4]);
         $orderCount = $builder->count();
         $orderAmount = $builder->sum('total_amount');
