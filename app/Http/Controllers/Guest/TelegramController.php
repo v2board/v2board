@@ -117,7 +117,10 @@ class TelegramController extends Controller
         $user = User::where('telegram_id', $msg->chat_id)->first();
         $telegramService = new TelegramService();
         if (!$user) {
-            $this->help();
+            try {
+                $this->help();
+            } catch (\Exception $e) {
+            }
             $telegramService->sendMessage($msg->chat_id, '没有查询到您的用户信息，请先绑定账号', 'markdown');
             return;
         }
@@ -150,7 +153,10 @@ class TelegramController extends Controller
         $user = User::where('telegram_id', $msg->chat_id)->first();
         $telegramService = new TelegramService();
         if (!$user) {
-            $this->help();
+            try {
+                $this->help();
+            } catch (\Exception $e) {
+            }
             $telegramService->sendMessage($msg->chat_id, '没有查询到您的用户信息，请先绑定账号', 'markdown');
             return;
         }
