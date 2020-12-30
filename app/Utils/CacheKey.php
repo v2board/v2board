@@ -13,14 +13,14 @@ class CacheKey
         'SERVER_TROJAN_LAST_CHECK_AT' => 'trojan节点最后检查时间',
         'SERVER_SHADOWSOCKS_ONLINE_USER' => 'ss节点在线用户',
         'SERVER_SHADOWSOCKS_LAST_CHECK_AT' => 'ss节点最后检查时间',
-        'TEMP_TOKEN' => '临时令牌',
-        'LAST_SEND_EMAIL_REMIND_TRAFFIC'
+        'LAST_SEND_EMAIL_REMIND_TRAFFIC' => '',
+        'TEMP_TOKEN' => '临时令牌'
     ];
 
     public static function get(string $key, $uniqueValue)
     {
         if (!in_array($key, array_keys(self::KEYS))) {
-            abort(500, 'key is not in cache key list');
+            throw new \Exception('key is not in cache key list');
         }
         return $key . '_' . $uniqueValue;
     }
