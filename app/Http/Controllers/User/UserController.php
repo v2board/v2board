@@ -27,6 +27,9 @@ class UserController extends Controller
     public function changePassword(UserChangePassword $request)
     {
         $user = User::find($request->session()->get('id'));
+        if (!$user) {
+            abort(500, '该用户不存在');
+        }
         if (!Helper::multiPasswordVerify(
             $user->password_algo,
             $request->input('old_password'),
@@ -65,6 +68,9 @@ class UserController extends Controller
                 'telegram_id'
             ])
             ->first();
+        if (!$user) {
+            abort(500, '该用户不存在');
+        }
         $user['avatar_url'] = 'https://cdn.v2ex.com/gravatar/' . md5($user->email) . '?s=64&d=identicon';
         return response([
             'data' => $user
@@ -90,7 +96,20 @@ class UserController extends Controller
 
     public function getSubscribe(Request $request)
     {
-        $user = User::find($request->session()->get('id'));
+        $user = User::where('id', $request->session()->get('id'))
+            ->select([
+                'id',
+                'plan_id',
+                'token',
+                'expired_at',
+                'u',
+                'd',
+                'transfer_enable'
+            ])
+            ->first();
+        if (!$user) {
+            abort(500, '该用户不存在');
+        }
         if ($user->plan_id) {
             $user['plan'] = Plan::find($user->plan_id);
             if (!$user['plan']) {
@@ -107,6 +126,9 @@ class UserController extends Controller
     public function resetSecurity(Request $request)
     {
         $user = User::find($request->session()->get('id'));
+        if (!$user) {
+            abort(500, '该用户不存在');
+        }
         $user->uuid = Helper::guid(true);
         $user->token = Helper::guid();
         if (!$user->save()) {
