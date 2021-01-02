@@ -17,6 +17,16 @@ use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
+    public function resetSecret(Request $request)
+    {
+        $user = User::find($request->input('id'));
+        if (!$user) abort(500, '用户不存在');
+        $user->token = Helper::guid();
+        $user->uuid = Helper::guid(true);
+        return response([
+            'data' => $user->save()
+        ]);
+    }
 
     private function filter(Request $request, $builder)
     {
