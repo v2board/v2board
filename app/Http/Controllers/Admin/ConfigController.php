@@ -47,7 +47,8 @@ class ConfigController extends Controller
                     'invite_never_expire' => config('v2board.invite_never_expire', 0),
                     'commission_first_time_enable' => config('v2board.commission_first_time_enable', 1),
                     'commission_auto_check_enable' => config('v2board.commission_auto_check_enable', 1),
-                    'commission_withdraw_limit' => config('v2board.commission_withdraw_limit', 100)
+                    'commission_withdraw_limit' => config('v2board.commission_withdraw_limit', 100),
+                    'commission_withdraw_method' => config('v2board.commission_withdraw_method', Dict::WITHDRAW_METHOD_WHITELIST_DEFAULT)
                 ],
                 'site' => [
                     'safe_mode_enable' => (int)config('v2board.safe_mode_enable', 0),

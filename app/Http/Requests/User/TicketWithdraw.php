@@ -14,7 +14,7 @@ class TicketWithdraw  extends FormRequest
     public function rules()
     {
         return [
-            'withdraw_method' => 'required|in:alipay,paypal,usdt,btc',
+            'withdraw_method' => 'required',
             'withdraw_account' => 'required'
         ];
     }

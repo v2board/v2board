@@ -8,6 +8,7 @@ use App\Http\Requests\User\TicketWithdraw;
 use App\Jobs\SendTelegramJob;
 use App\Models\User;
 use App\Services\TelegramService;
+use App\Utils\Dict;
 use Illuminate\Http\Request;
 use App\Models\Ticket;
 use App\Models\TicketMessage;
@@ -152,6 +153,15 @@ class TicketController extends Controller
 
     public function withdraw(TicketWithdraw $request)
     {
+        if (!in_array(
+            $request->input('withdraw_method'),
+            config(
+                'v2board.commission_withdraw_method',
+                Dict::WITHDRAW_METHOD_WHITELIST_DEFAULT
+            )
+        )) {
+            abort(500, '不支持的提现方式');
+        }
         $user = User::find($request->session()->get('id'));
         $limit = config('v2board.commission_withdraw_limit', 100);
         if ($limit > ($user->commission_balance / 100)) {
@@ -169,13 +179,7 @@ class TicketController extends Controller
             DB::rollback();
             abort(500, '工单创建失败');
         }
-        $methodText = [
-            'alipay' => '支付宝',
-            'paypal' => '贝宝(Paypal)',
-            'usdt' => 'USDT',
-            'btc' => '比特币'
-        ];
-        $message = "提现方式：{$methodText[$request->input('withdraw_method')]}\r\n提现账号：{$request->input('withdraw_account')}\r\n";
+        $message = "提现方式：{$request->input('withdraw_method')}\r\n提现账号：{$request->input('withdraw_account')}\r\n";
         $ticketMessage = TicketMessage::create([
             'user_id' => $request->session()->get('id'),
             'ticket_id' => $ticket->id,
