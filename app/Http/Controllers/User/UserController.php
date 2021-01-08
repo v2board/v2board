@@ -104,7 +104,8 @@ class UserController extends Controller
                 'expired_at',
                 'u',
                 'd',
-                'transfer_enable'
+                'transfer_enable',
+                'email'
             ])
             ->first();
         if (!$user) {
