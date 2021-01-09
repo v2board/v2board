@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Models\Order;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class CheckCommission extends Command
 {
@@ -62,13 +63,20 @@ class CheckCommission extends Command
             ->where('invite_user_id', '!=', NULL)
             ->get();
         foreach ($order as $item) {
+            DB::beginTransaction();
             $inviter = User::find($item->invite_user_id);
             if (!$inviter) continue;
             $inviter->commission_balance = $inviter->commission_balance + $item->commission_balance;
-            if ($inviter->save()) {
-                $item->commission_status = 2;
-                $item->save();
+            if (!$inviter->save()) {
+                DB::rollBack();
+                continue;
             }
+            $item->commission_status = 2;
+            if (!$item->save()){
+                DB::rollBack();
+                continue;
+            }
+            DB::commit();
         }
     }
 

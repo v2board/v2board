@@ -126,7 +126,7 @@ class ServerService
             ->get();
     }
 
-    public function getVmessConfig(int $nodeId, int $localPort)
+    public function getV2RayConfig(int $nodeId, int $localPort)
     {
         $server = Server::find($nodeId);
         if (!$server) {
