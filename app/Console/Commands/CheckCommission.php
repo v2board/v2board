@@ -63,20 +63,18 @@ class CheckCommission extends Command
             ->where('invite_user_id', '!=', NULL)
             ->get();
         foreach ($order as $item) {
-            DB::beginTransaction();
             $inviter = User::find($item->invite_user_id);
             if (!$inviter) continue;
             $inviter->commission_balance = $inviter->commission_balance + $item->commission_balance;
-            if (!$inviter->save()) {
-                DB::rollBack();
-                continue;
+            DB::beginTransaction();
+            if ($inviter->save()) {
+                $item->commission_status = 2;
+                if (!$item->save()) {
+                    DB::rollBack();
+                    continue;
+                }
+                DB::commit();
             }
-            $item->commission_status = 2;
-            if (!$item->save()){
-                DB::rollBack();
-                continue;
-            }
-            DB::commit();
         }
     }
 
