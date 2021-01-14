@@ -95,7 +95,9 @@ class CouponController extends Controller
     {
         $coupons = [];
         $coupon = $request->validated();
-        $coupon['limit_plan_ids'] = json_encode($coupon['limit_plan_ids']);
+        if (isset($coupon['limit_plan_ids'])) {
+            $coupon['limit_plan_ids'] = json_encode($coupon['limit_plan_ids']);
+        }
         $coupon['created_at'] = $coupon['updated_at'] = time();
         unset($coupon['generate_count']);
         for ($i = 0;$i < $request->input('generate_count');$i++) {
