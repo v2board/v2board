@@ -118,7 +118,8 @@ class CouponController extends Controller
             $endTime = date('Y-m-d H:i:s', $coupon['ended_at']);
             $limitUse = $coupon['limit_use'] ?? '不限制';
             $createTime = date('Y-m-d H:i:s', $coupon['created_at']);
-            $data .= "{$coupon['name']},{$type},{$value},{$startTime},{$endTime},{$limitUse},{$coupon['limit_plan_ids']},{$coupon['code']},{$createTime}\r\n";
+            $limitPlanIds = $coupon['limit_plan_ids'] ?? '不限制';
+            $data .= "{$coupon['name']},{$type},{$value},{$startTime},{$endTime},{$limitUse},{$limitPlanIds},{$coupon['code']},{$createTime}\r\n";
         }
         echo $data;
     }
