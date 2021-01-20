@@ -23,7 +23,7 @@ class TicketController extends Controller
                 ->where('user_id', $request->session()->get('id'))
                 ->first();
             if (!$ticket) {
-                abort(500, '工单不存在');
+                abort(500, __('user.ticket.fetch.ticket_not_exist'));
             }
             $ticket['message'] = TicketMessage::where('ticket_id', $ticket->id)->get();
             for ($i = 0; $i < count($ticket['message']); $i++) {
@@ -56,7 +56,7 @@ class TicketController extends Controller
     {
         DB::beginTransaction();
         if ((int)Ticket::where('status', 0)->where('user_id', $request->session()->get('id'))->count()) {
-            abort(500, '存在其他工单尚未处理');
+            abort(500, __('user.ticket.save.exist_other_open_ticket'));
         }
         $ticket = Ticket::create(array_merge($request->only([
             'subject',
@@ -67,7 +67,7 @@ class TicketController extends Controller
         ]));
         if (!$ticket) {
             DB::rollback();
-            abort(500, '工单创建失败');
+            abort(500, __('user.ticket.save.ticket_create_failed'));
         }
         $ticketMessage = TicketMessage::create([
             'user_id' => $request->session()->get('id'),
@@ -76,7 +76,7 @@ class TicketController extends Controller
         ]);
         if (!$ticketMessage) {
             DB::rollback();
-            abort(500, '工单创建失败');
+            abort(500, __('user.ticket.save.ticket_create_failed'));
         }
         DB::commit();
         $this->sendNotify($ticket, $ticketMessage);
@@ -88,22 +88,22 @@ class TicketController extends Controller
     public function reply(Request $request)
     {
         if (empty($request->input('id'))) {
-            abort(500, '参数错误');
+            abort(500, __('user.ticket.reply.params_wrong'));
         }
         if (empty($request->input('message'))) {
-            abort(500, '消息不能为空');
+            abort(500, __('user.ticket.reply.message_not_empty'));
         }
         $ticket = Ticket::where('id', $request->input('id'))
             ->where('user_id', $request->session()->get('id'))
             ->first();
         if (!$ticket) {
-            abort(500, '工单不存在');
+            abort(500, __('user.ticket.reply.ticket_not_exist'));
         }
         if ($ticket->status) {
-            abort(500, '工单已关闭，无法回复');
+            abort(500, __('user.ticket.reply.ticket_close_not_reply'));
         }
         if ($request->session()->get('id') == $this->getLastMessage($ticket->id)->user_id) {
-            abort(500, '请等待技术支持回复');
+            abort(500, __('user.ticket.reply.wait_reply'));
         }
         DB::beginTransaction();
         $ticketMessage = TicketMessage::create([
@@ -114,7 +114,7 @@ class TicketController extends Controller
         $ticket->last_reply_user_id = $request->session()->get('id');
         if (!$ticketMessage || !$ticket->save()) {
             DB::rollback();
-            abort(500, '工单回复失败');
+            abort(500, __('user.ticket.reply.ticket_reply_failed'));
         }
         DB::commit();
         $this->sendNotify($ticket, $ticketMessage);
@@ -127,17 +127,17 @@ class TicketController extends Controller
     public function close(Request $request)
     {
         if (empty($request->input('id'))) {
-            abort(500, '参数错误');
+            abort(500, __('user.ticket.close.params_wrong'));
         }
         $ticket = Ticket::where('id', $request->input('id'))
             ->where('user_id', $request->session()->get('id'))
             ->first();
         if (!$ticket) {
-            abort(500, '工单不存在');
+            abort(500, __('user.ticket.close.ticket_not_exist'));
         }
         $ticket->status = 1;
         if (!$ticket->save()) {
-            abort(500, '关闭失败');
+            abort(500, __('user.ticket.close.close_failed'));
         }
         return response([
             'data' => true
@@ -160,15 +160,15 @@ class TicketController extends Controller
                 Dict::WITHDRAW_METHOD_WHITELIST_DEFAULT
             )
         )) {
-            abort(500, '不支持的提现方式');
+            abort(500, __('user.ticket.withdraw.not_support_withdraw_method'));
         }
         $user = User::find($request->session()->get('id'));
         $limit = config('v2board.commission_withdraw_limit', 100);
         if ($limit > ($user->commission_balance / 100)) {
-            abort(500, "当前系统要求的提现门槛佣金需为{$limit}CNY");
+            abort(500, __('user.ticket.withdraw.system_require_withdraw_limit', ['limit' => $limit]));
         }
         DB::beginTransaction();
-        $subject = '[提现申请]本工单由系统发出';
+        $subject = __('user.ticket.withdraw.ticket_subject');
         $ticket = Ticket::create([
             'subject' => $subject,
             'level' => 2,
@@ -177,9 +177,12 @@ class TicketController extends Controller
         ]);
         if (!$ticket) {
             DB::rollback();
-            abort(500, '工单创建失败');
+            abort(500, __('user.ticket.withdraw.ticket_create_failed'));
         }
-        $message = "提现方式：{$request->input('withdraw_method')}\r\n提现账号：{$request->input('withdraw_account')}\r\n";
+        $message = __('user.ticket.withdraw.ticket_message', [
+            'method' => $request->input('withdraw_method'),
+            'account' => $request->input('withdraw_account')
+        ]);
         $ticketMessage = TicketMessage::create([
             'user_id' => $request->session()->get('id'),
             'ticket_id' => $ticket->id,
@@ -187,7 +190,7 @@ class TicketController extends Controller
         ]);
         if (!$ticketMessage) {
             DB::rollback();
-            abort(500, '工单创建失败');
+            abort(500, __('user.ticket.withdraw.ticket_create_failed'));
         }
         DB::commit();
         $this->sendNotify($ticket, $ticketMessage);

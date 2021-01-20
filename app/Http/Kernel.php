@@ -43,6 +43,7 @@ class Kernel extends HttpKernel
             \Illuminate\Session\Middleware\StartSession::class,
             \App\Http\Middleware\ForceJson::class,
             \App\Http\Middleware\CORS::class,
+            \App\Http\Middleware\Language::class,
             'bindings',
         ],
     ];

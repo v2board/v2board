@@ -50,12 +50,12 @@ class OrderController extends Controller
             ->where('trade_no', $request->input('trade_no'))
             ->first();
         if (!$order) {
-            abort(500, '订单不存在');
+            abort(500, __('user.order.details.order_not_exist'));
         }
         $order['plan'] = Plan::find($order->plan_id);
         $order['try_out_plan_id'] = (int)config('v2board.try_out_plan_id');
         if (!$order['plan']) {
-            abort(500, '订阅不存在');
+            abort(500, __('user.order.details.plan_not_exist'));
         }
         return response([
             'data' => $order
@@ -66,38 +66,38 @@ class OrderController extends Controller
     {
         $userService = new UserService();
         if ($userService->isNotCompleteOrderByUserId($request->session()->get('id'))) {
-            abort(500, '您有未付款或开通中的订单，请稍后或取消再试');
+            abort(500, __('user.order.save.exist_open_order'));
         }
 
         $plan = Plan::find($request->input('plan_id'));
         $user = User::find($request->session()->get('id'));
 
         if (!$plan) {
-            abort(500, '该订阅不存在');
+            abort(500, __('user.order.save.plan_not_exist'));
         }
 
         if ((!$plan->show && !$plan->renew) || (!$plan->show && $user->plan_id !== $plan->id)) {
             if ($request->input('cycle') !== 'reset_price') {
-                abort(500, '该订阅已售罄，请更换其他订阅');
+                abort(500, __('user.order.save.plan_stop_sell'));
             }
         }
 
         if (!$plan->renew && $user->plan_id == $plan->id && $request->input('cycle') !== 'reset_price') {
-            abort(500, '该订阅无法续费，请更换其他订阅');
+            abort(500, __('user.order.save.plan_stop_renew'));
         }
 
         if ($plan[$request->input('cycle')] === NULL) {
-            abort(500, '该订阅周期无法进行购买，请选择其他周期');
+            abort(500, __('user.order.save.plan_stop'));
         }
 
         if ($request->input('cycle') === 'reset_price') {
             if ($user->expired_at <= time() || !$user->plan_id) {
-                abort(500, '订阅已过期或无有效订阅，无法购买重置包');
+                abort(500, __('user.order.save.plan_exist_not_buy_package'));
             }
         }
 
         if (!$plan->show && $plan->renew && !$userService->isAvailable($user)) {
-            abort(500, '订阅已过期，请更换其他订阅');
+            abort(500, __('user.order.save.plan_expired'));
         }
 
         DB::beginTransaction();
@@ -113,7 +113,7 @@ class OrderController extends Controller
             $couponService = new CouponService($request->input('coupon_code'));
             if (!$couponService->use($order)) {
                 DB::rollBack();
-                abort(500, '优惠券使用失败');
+                abort(500, __('user.order.save.coupon_use_failed'));
             }
             $order->coupon_id = $couponService->getId();
         }
@@ -128,14 +128,14 @@ class OrderController extends Controller
             if ($remainingBalance > 0) {
                 if (!$userService->addBalance($order->user_id, - $order->total_amount)) {
                     DB::rollBack();
-                    abort(500, '余额不足');
+                    abort(500, __('user.order.save.insufficient_balance'));
                 }
                 $order->balance_amount = $order->total_amount;
                 $order->total_amount = 0;
             } else {
                 if (!$userService->addBalance($order->user_id, - $user->balance)) {
                     DB::rollBack();
-                    abort(500, '余额不足');
+                    abort(500, __('user.order.save.insufficient_balance'));
                 }
                 $order->balance_amount = $user->balance;
                 $order->total_amount = $order->total_amount - $user->balance;
@@ -144,7 +144,7 @@ class OrderController extends Controller
 
         if (!$order->save()) {
             DB::rollback();
-            abort(500, '订单创建失败');
+            abort(500, __('user.order.save.order_create_failed'));
         }
 
         DB::commit();
@@ -163,7 +163,7 @@ class OrderController extends Controller
             ->where('status', 0)
             ->first();
         if (!$order) {
-            abort(500, '订单不存在或已支付');
+            abort(500, __('user.order.checkout.order_not_exist_or_paid'));
         }
         // free process
         if ($order->total_amount <= 0) {
@@ -180,7 +180,7 @@ class OrderController extends Controller
             case 0:
                 // alipayF2F
                 if (!(int)config('v2board.alipay_enable')) {
-                    abort(500, '支付方式不可用');
+                    abort(500, __('user.order.checkout.pay_method_not_use'));
                 }
                 return response([
                     'type' => 0,
@@ -189,7 +189,7 @@ class OrderController extends Controller
             case 2:
                 // stripeAlipay
                 if (!(int)config('v2board.stripe_alipay_enable')) {
-                    abort(500, '支付方式不可用');
+                    abort(500, __('user.order.checkout.pay_method_not_use'));
                 }
                 return response([
                     'type' => 1,
@@ -198,7 +198,7 @@ class OrderController extends Controller
             case 3:
                 // stripeWepay
                 if (!(int)config('v2board.stripe_wepay_enable')) {
-                    abort(500, '支付方式不可用');
+                    abort(500, __('user.order.checkout.pay_method_not_use'));
                 }
                 return response([
                     'type' => 0,
@@ -207,7 +207,7 @@ class OrderController extends Controller
             case 4:
                 // bitpayX
                 if (!(int)config('v2board.bitpayx_enable')) {
-                    abort(500, '支付方式不可用');
+                    abort(500, __('user.order.checkout.pay_method_not_use'));
                 }
                 return response([
                     'type' => 1,
@@ -215,7 +215,7 @@ class OrderController extends Controller
                 ]);
             case 5:
                 if (!(int)config('v2board.mgate_enable')) {
-                    abort(500, '支付方式不可用');
+                    abort(500, __('user.order.checkout.pay_method_not_use'));
                 }
                 return response([
                     'type' => 1,
@@ -223,7 +223,7 @@ class OrderController extends Controller
                 ]);
             case 6:
                 if (!(int)config('v2board.stripe_card_enable')) {
-                    abort(500, '支付方式不可用');
+                    abort(500, __('user.order.checkout.pay_method_not_use'));
                 }
                 return response([
                     'type' => 2,
@@ -231,14 +231,14 @@ class OrderController extends Controller
                 ]);
             case 7:
                 if (!(int)config('v2board.epay_enable')) {
-                    abort(500, '支付方式不可用');
+                    abort(500, __('user.order.checkout.pay_method_not_use'));
                 }
                 return response([
                     'type' => 1,
                     'data' => $this->epay($order)
                 ]);
             default:
-                abort(500, '支付方式不存在');
+                abort(500, __('user.order.checkout.pay_method_not_use'));
         }
     }
 
@@ -249,7 +249,7 @@ class OrderController extends Controller
             ->where('user_id', $request->session()->get('id'))
             ->first();
         if (!$order) {
-            abort(500, '订单不存在');
+            abort(500, __('user.order.check.order_not_exist'));
         }
         return response([
             'data' => $order->status
@@ -323,20 +323,20 @@ class OrderController extends Controller
     public function cancel(Request $request)
     {
         if (empty($request->input('trade_no'))) {
-            abort(500, '参数有误');
+            abort(500, __('user.order.cancel.params_wrong'));
         }
         $order = Order::where('trade_no', $request->input('trade_no'))
             ->where('user_id', $request->session()->get('id'))
             ->first();
         if (!$order) {
-            abort(500, '订单不存在');
+            abort(500, __('user.order.cancel.order_not_exist'));
         }
         if ($order->status !== 0) {
-            abort(500, '只可以取消待支付订单');
+            abort(500, __('user.order.cancel.only_cancel_pending_order'));
         }
         $orderService = new OrderService($order);
         if (!$orderService->cancel()) {
-            abort(500, '取消失败');
+            abort(500, __('user.order.cancel.cancel_failed'));
         }
         return response([
             'data' => true
@@ -372,7 +372,7 @@ class OrderController extends Controller
         $currency = config('v2board.stripe_currency', 'hkd');
         $exchange = Helper::exchange('CNY', strtoupper($currency));
         if (!$exchange) {
-            abort(500, '货币转换超时，请稍后再试');
+            abort(500, __('user.order.stripeAlipay.currency_convert_timeout'));
         }
         Stripe::setApiKey(config('v2board.stripe_sk_live'));
         $source = Source::create([
@@ -390,7 +390,7 @@ class OrderController extends Controller
             ]
         ]);
         if (!$source['redirect']['url']) {
-            abort(500, '支付网关请求失败');
+            abort(500, __('user.order.stripeAlipay.gateway_request_failed'));
         }
         return $source['redirect']['url'];
     }
@@ -400,7 +400,7 @@ class OrderController extends Controller
         $currency = config('v2board.stripe_currency', 'hkd');
         $exchange = Helper::exchange('CNY', strtoupper($currency));
         if (!$exchange) {
-            abort(500, '货币转换超时，请稍后再试');
+            abort(500, __('user.order.stripeWepay.currency_convert_timeout'));
         }
         Stripe::setApiKey(config('v2board.stripe_sk_live'));
         $source = Source::create([
@@ -417,7 +417,7 @@ class OrderController extends Controller
             ]
         ]);
         if (!$source['wechat']['qr_code_url']) {
-            abort(500, '支付网关请求失败');
+            abort(500, __('user.order.stripeWepay.gateway_request_failed'));
         }
         return $source['wechat']['qr_code_url'];
     }
@@ -427,7 +427,7 @@ class OrderController extends Controller
         $currency = config('v2board.stripe_currency', 'hkd');
         $exchange = Helper::exchange('CNY', strtoupper($currency));
         if (!$exchange) {
-            abort(500, '货币转换超时，请稍后再试');
+            abort(500, __('user.order.stripeCard.currency_convert_timeout'));
         }
         Stripe::setApiKey(config('v2board.stripe_sk_live'));
         try {
@@ -442,11 +442,11 @@ class OrderController extends Controller
                 ]
             ]);
         } catch (\Exception $e) {
-            abort(500, '遇到了点问题，请刷新页面稍后再试');
+            abort(500, __('user.order.stripeCard.was_problem'));
         }
         info($charge);
         if (!$charge->paid) {
-            abort(500, '扣款失败，请检查信用卡信息');
+            abort(500, __('user.order.stripeCard.deduction_failed'));
         }
         return $charge->paid;
     }

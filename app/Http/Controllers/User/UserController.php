@@ -28,19 +28,19 @@ class UserController extends Controller
     {
         $user = User::find($request->session()->get('id'));
         if (!$user) {
-            abort(500, '该用户不存在');
+            abort(500, __('user.user.changePassword.user_not_exist'));
         }
         if (!Helper::multiPasswordVerify(
             $user->password_algo,
             $request->input('old_password'),
             $user->password)
         ) {
-            abort(500, '旧密码有误');
+            abort(500, __('user.user.changePassword.old_password_wrong'));
         }
         $user->password = password_hash($request->input('new_password'), PASSWORD_DEFAULT);
         $user->password_algo = NULL;
         if (!$user->save()) {
-            abort(500, '保存失败');
+            abort(500, __('user.user.changePassword.save_failed'));
         }
         $request->session()->flush();
         return response([
@@ -69,7 +69,7 @@ class UserController extends Controller
             ])
             ->first();
         if (!$user) {
-            abort(500, '该用户不存在');
+            abort(500, __('user.user.info.user_not_exist'));
         }
         $user['avatar_url'] = 'https://cdn.v2ex.com/gravatar/' . md5($user->email) . '?s=64&d=identicon';
         return response([
@@ -109,12 +109,12 @@ class UserController extends Controller
             ])
             ->first();
         if (!$user) {
-            abort(500, '该用户不存在');
+            abort(500, __('user.user.getSubscribe.user_not_exist'));
         }
         if ($user->plan_id) {
             $user['plan'] = Plan::find($user->plan_id);
             if (!$user['plan']) {
-                abort(500, '订阅计划不存在');
+                abort(500, __('user.user.getSubscribe.plan_not_exist'));
             }
         }
         $user['subscribe_url'] = config('v2board.subscribe_url', config('v2board.app_url', env('APP_URL'))) . '/api/v1/client/subscribe?token=' . $user['token'];
@@ -128,12 +128,12 @@ class UserController extends Controller
     {
         $user = User::find($request->session()->get('id'));
         if (!$user) {
-            abort(500, '该用户不存在');
+            abort(500, __('user.user.resetSecurity.user_not_exist'));
         }
         $user->uuid = Helper::guid(true);
         $user->token = Helper::guid();
         if (!$user->save()) {
-            abort(500, '重置失败');
+            abort(500, __('user.user.resetSecurity.reset_failed'));
         }
         return response([
             'data' => config('v2board.subscribe_url', config('v2board.app_url', env('APP_URL'))) . '/api/v1/client/subscribe?token=' . $user->token
@@ -149,12 +149,12 @@ class UserController extends Controller
 
         $user = User::find($request->session()->get('id'));
         if (!$user) {
-            abort(500, '该用户不存在');
+            abort(500, __('user.user.update.user_not_exist'));
         }
         try {
             $user->update($updateData);
         } catch (\Exception $e) {
-            abort(500, '保存失败');
+            abort(500, __('user.user.update.save_failed'));
         }
 
         return response([
@@ -166,18 +166,18 @@ class UserController extends Controller
     {
         $user = User::find($request->session()->get('id'));
         if (!$user) {
-            abort(500, '该用户不存在');
+            abort(500, __('user.user.transfer.user_not_exist'));
         }
         if ($request->input('transfer_amount') <= 0) {
-            abort(500, '参数错误');
+            abort(500, __('user.user.transfer.params_wrong'));
         }
         if ($request->input('transfer_amount') > $user->commission_balance) {
-            abort(500, '推广佣金余额不足');
+            abort(500, __('user.user.transfer.insufficient_commission_balance'));
         }
         $user->commission_balance = $user->commission_balance - $request->input('transfer_amount');
         $user->balance = $user->balance + $request->input('transfer_amount');
         if (!$user->save()) {
-            abort(500, '划转失败');
+            abort(500, __('user.user.transfer.transfer_failed'));
         }
         return response([
             'data' => true

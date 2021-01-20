@@ -20,6 +20,7 @@ class AuthController extends Controller
 {
     public function register(AuthRegister $request)
     {
+        abort(500, __('passport.auth.register.verify_incorrect'));
         if ((int)config('v2board.recaptcha_enable', 0)) {
             $recaptcha = new ReCaptcha(config('v2board.recaptcha_key'));
             $recaptchaResp = $recaptcha->verify($request->input('recaptcha_data'));
