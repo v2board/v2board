@@ -391,3 +391,6 @@ CREATE TABLE `v2_stat_order` (
 
 ALTER TABLE `v2_user`
 DROP `enable`;
+
+ALTER TABLE `v2_user`
+    ADD `remarks` text COLLATE 'utf8_general_ci' NULL AFTER `token`;
