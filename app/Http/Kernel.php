@@ -46,6 +46,10 @@ class Kernel extends HttpKernel
             \App\Http\Middleware\Language::class,
             'bindings',
         ],
+
+        'static' => [
+            \App\Http\Middleware\ForceJson::class,
+        ],
     ];
 
     /**
