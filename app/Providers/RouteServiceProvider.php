@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Route;
 
 class RouteServiceProvider extends ServiceProvider
 {
+    protected $staticRoutes = ['ClientRoute', 'ServerRoute'];
+
     /**
      * This namespace is applied to your controller routes.
      *
@@ -70,7 +72,22 @@ class RouteServiceProvider extends ServiceProvider
             'namespace' => $this->namespace
         ], function ($router) {
             foreach (glob(app_path('Http//Routes') . '/*.php') as $file) {
-                $this->app->make('App\\Http\\Routes\\' . basename($file, '.php'))->map($router);
+                if (!in_array(($r = basename($file, '.php')), $this->staticRoutes)) {
+                    $this->app->make('App\\Http\\Routes\\' . $r)->map($router);
+                }
+            }
+        });
+    }
+
+    protected function mapStaticRoutes()
+    {
+        Route::group([
+            'prefix' => '/api/v1',
+            'middleware' => 'static',
+            'namespace' => $this->namespace
+        ], function ($router) {
+            foreach ($this->staticRoutes as $r) {
+                $this->app->make('App\\Http\\Routes\\' . $r)->map($router);
             }
         });
     }
