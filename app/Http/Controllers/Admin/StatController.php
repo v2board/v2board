@@ -54,7 +54,7 @@ class StatController extends Controller
     {
         $statistics = StatOrder::where('record_type', 'd')
             ->limit(31)
-            ->orderBy('record_at', 'ASC')
+            ->orderBy('record_at', 'DESC')
             ->get()
             ->toArray();
         $result = [];
