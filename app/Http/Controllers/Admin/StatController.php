@@ -103,6 +103,7 @@ class StatController extends Controller
             ->where('record_at', '>=', $timestamp)
             ->where('record_type', 'd')
             ->limit(10)
+            ->orderBy('record_at', 'DESC')
             ->get()
             ->toArray();
         foreach ($statistics as $k => $v) {
