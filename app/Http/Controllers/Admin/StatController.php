@@ -81,6 +81,7 @@ class StatController extends Controller
                 'value' => $statistic['commission_count']
             ]);
         }
+        $result = array_reverse($result);
         return response([
             'data' => $result
         ]);
@@ -120,3 +121,4 @@ class StatController extends Controller
         ]);
     }
 }
+
