@@ -5,7 +5,7 @@ return [
         'register' => [
             'verify_incorrect' => '验证码有误',
             'email_suffix_not_in_whitelist' => '邮箱后缀不处于白名单中',
-            'no_support_gmail_alias' => '不支持Gmail别名邮箱',
+            'no_support_gmail_alias' => '不支持 Gmail 别名邮箱',
             'close_register' => '本站已关闭注册',
             'must_use_invite_code' => '必须使用邀请码才可以注册',
             'email_code_not_empty' => '邮箱验证码不能为空',
@@ -29,7 +29,7 @@ return [
     ],
     'comm' => [
         'sendEmailVerify' => [
-            'verification_code_incorrect.' => '验证码有误',
+            'verification_code_incorrect' => '验证码有误',
             'code_sent_request_later' => '验证码已发送，请过一会再请求',
             'email_verification_code' => '邮箱验证码'
         ]

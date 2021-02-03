@@ -34,7 +34,7 @@ return [
             'ticket_not_exist' => '工单不存在',
         ],
         'save' => [
-            'exist_other_open_ticket' => '存在其他工单尚未处理',
+            'exist_other_open_ticket' => '存在其它工单尚未处理',
             'ticket_create_failed' => '工单创建失败',
         ],
         'reply' => [
@@ -52,8 +52,8 @@ return [
         ],
         'withdraw' => [
             'not_support_withdraw_method' => '不支持的提现方式',
-            'system_require_withdraw_limit' => '当前系统要求的提现门槛佣金需为:limitCNY',
-            'ticket_subject' => '[提现申请]本工单由系统发出',
+            'system_require_withdraw_limit' => '当前系统要求的最少提现佣金为：¥:limitCNY',
+            'ticket_subject' => '[提现申请] 本工单由系统发出',
             'ticket_create_failed' => '工单创建失败',
             'ticket_message' => "提现方式：:method\r\n提现账号：:account\r\n"
         ]
@@ -70,12 +70,12 @@ return [
         ],
         'save' => [
             'plan_not_exist' => '订阅计划不存在',
-            'exist_open_order' => '您有未付款或开通中的订单，请稍后或取消再试',
-            'plan_stop_sell' => '该订阅已售罄，请更换其他订阅',
-            'plan_stop_renew' => '该订阅无法续费，请更换其他订阅',
-            'plan_stop' => '该订阅周期无法进行购买，请选择其他周期',
+            'exist_open_order' => '您有未付款或开通中的订单，请稍后再试或将其取消',
+            'plan_stop_sell' => '该订阅已售罄，请更换其它订阅',
+            'plan_stop_renew' => '该订阅无法续费，请更换其它订阅',
+            'plan_stop' => '该订阅周期无法进行购买，请选择其它周期',
             'plan_exist_not_buy_package' => '订阅已过期或无有效订阅，无法购买重置包',
-            'plan_expired' => '订阅已过期，请更换其他订阅',
+            'plan_expired' => '订阅已过期，请更换其它订阅',
             'coupon_use_failed' => '优惠券使用失败',
             'insufficient_balance' => '余额不足',
             'order_create_failed' => '订单创建失败'
@@ -109,8 +109,8 @@ return [
     ],
     'knowledge' => [
         'fetch' => [
-            'knowledge_not_exist' => '知识不存在',
-            'apple_id_must_be_plan' => '没有有效订阅无法使用本站提供的AppleID'
+            'knowledge_not_exist' => '文章不存在',
+            'apple_id_must_be_plan' => '无有效订阅，无法使用本站提供的 AppleID'
         ]
     ],
     'invite' => [
@@ -120,12 +120,12 @@ return [
     ],
     'coupon' => [
         'check' => [
-            'coupon_not_empty' => '优惠券码不能为空',
+            'coupon_not_empty' => '优惠券不能为空',
             'coupon_invalid' => '优惠券无效',
             'coupon_not_available_by_number' => '优惠券已无可用次数',
             'coupon_not_available_by_time' => '优惠券还未到可用时间',
             'coupon_expired' => '优惠券已过期',
-            'coupon_limit_plan' => '这个计划无法使用该优惠码'
+            'coupon_limit_plan' => '该订阅无法使用此优惠码'
         ]
     ]
 ];
