@@ -195,6 +195,9 @@ class UserController extends Controller
             return $lastDay - $today;
         }
         if ((int)config('v2board.reset_traffic_method') === 1) {
+            if ((int)$day >= (int)$today && (int)$day >= (int)$lastDay) {
+                return $lastDay - $today;
+            }
             if ((int)$day >= (int)$today) {
                 return $day - $today;
             } else {
