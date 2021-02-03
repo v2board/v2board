@@ -55,7 +55,8 @@ return [
             'system_require_withdraw_limit' => '当前系统要求的最少提现佣金为：¥:limitCNY',
             'ticket_subject' => '[提现申请] 本工单由系统发出',
             'ticket_create_failed' => '工单创建失败',
-            'ticket_message' => "提现方式：:method\r\n提现账号：:account\r\n"
+            'ticket_message' => "提现方式：:method\r\n提现账号：:account\r\n",
+            'not_support_withdraw' => '不支持提现'
         ]
     ],
     'plan' => [

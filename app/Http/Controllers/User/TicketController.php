@@ -153,6 +153,9 @@ class TicketController extends Controller
 
     public function withdraw(TicketWithdraw $request)
     {
+        if ((int)config('v2board.withdraw_close_enable', 0)) {
+            abort(500, 'user.ticket.withdraw.not_support_withdraw');
+        }
         if (!in_array(
             $request->input('withdraw_method'),
             config(

@@ -55,7 +55,8 @@ return [
             'system_require_withdraw_limit' => 'The current required minimum withdrawal commission is: ¥:limitCNY',
             'ticket_subject' => '[Commission Withdrawal Request] This ticket is opened by the system',
             'ticket_create_failed' => 'Failed to open ticket',
-            'ticket_message' => "Withdrawal method: :method\r\nPayment account: :account\r\n"
+            'ticket_message' => "Withdrawal method: :method\r\nPayment account: :account\r\n",
+            'not_support_withdraw' => 'Unsupported withdrawal'
         ]
     ],
     'plan' => [

@@ -65,7 +65,11 @@ class CheckCommission extends Command
         foreach ($order as $item) {
             $inviter = User::find($item->invite_user_id);
             if (!$inviter) continue;
-            $inviter->commission_balance = $inviter->commission_balance + $item->commission_balance;
+            if ((int)config('v2board.withdraw_close_enable', 0)) {
+                $inviter->balance = $inviter->balance + $item->commission_balance;
+            } else {
+                $inviter->commission_balance = $inviter->commission_balance + $item->commission_balance;
+            }
             DB::beginTransaction();
             if ($inviter->save()) {
                 $item->commission_status = 2;
