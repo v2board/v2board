@@ -38,9 +38,6 @@ class SendTelegramJob implements ShouldQueue
     public function handle()
     {
         $telegramService = new TelegramService();
-        try {
-            $telegramService->sendMessage($this->telegramId, $this->text, 'markdown');
-        } catch (\Exception $e) {
-        }
+        $telegramService->sendMessage($this->telegramId, $this->text, 'markdown');
     }
 }
