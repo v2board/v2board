@@ -66,5 +66,9 @@ class SendEmailJob implements ShouldQueue
             'template_name' => $params['template_name'],
             'error' => isset($error) ? $error : NULL
         ]);
+
+        if (isset($error)) {
+            $this->fail();
+        }
     }
 }
