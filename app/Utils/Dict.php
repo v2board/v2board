@@ -15,4 +15,9 @@ class Dict
         'yeah.net',
         'foxmail.com'
     ];
+    CONST WITHDRAW_METHOD_WHITELIST_DEFAULT = [
+        '支付宝',
+        'USDT',
+        'Paypal'
+    ];
 }

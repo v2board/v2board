@@ -109,7 +109,7 @@ class DeepbworkController extends Controller
         }
         $serverService = new ServerService();
         try {
-            $json = $serverService->getVmessConfig($nodeId, $localPort);
+            $json = $serverService->getV2RayConfig($nodeId, $localPort);
         } catch (\Exception $e) {
             abort(500, $e->getMessage());
         }

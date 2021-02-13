@@ -73,8 +73,11 @@ class AdminRoute
             $router->post('/user/dumpCSV', 'Admin\\UserController@dumpCSV');
             $router->post('/user/sendMail', 'Admin\\UserController@sendMail');
             $router->post('/user/ban', 'Admin\\UserController@ban');
-            // Stat
+            $router->post('/user/resetSecret', 'Admin\\UserController@resetSecret');
+            // StatOrder
             $router->get ('/stat/getOverride', 'Admin\\StatController@getOverride');
+            $router->get ('/stat/getServerLastRank', 'Admin\\StatController@getServerLastRank');
+            $router->get ('/stat/getOrder', 'Admin\\StatController@getOrder');
             // Notice
             $router->get ('/notice/fetch', 'Admin\\NoticeController@fetch');
             $router->post('/notice/save', 'Admin\\NoticeController@save');

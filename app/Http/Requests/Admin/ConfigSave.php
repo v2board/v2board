@@ -23,6 +23,8 @@ class ConfigSave extends FormRequest
             'commission_first_time_enable' => 'in:0,1',
             'commission_auto_check_enable' => 'in:0,1',
             'commission_withdraw_limit' => 'nullable|numeric',
+            'commission_withdraw_method' => 'nullable|array',
+            'withdraw_close_enable' => 'in:0,1',
             // site
             'stop_register' => 'in:0,1',
             'email_verify' => 'in:0,1',
@@ -34,7 +36,7 @@ class ConfigSave extends FormRequest
             'try_out_plan_id' => 'integer',
             'try_out_hour' => 'numeric',
             'email_whitelist_enable' => 'in:0,1',
-            'email_whitelist_suffix' => '',
+            'email_whitelist_suffix' => 'nullable|array',
             'email_gmail_limit_enable' => 'in:0,1',
             'recaptcha_enable' => 'in:0,1',
             'recaptcha_key' => '',

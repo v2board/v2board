@@ -25,7 +25,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // v2board
-        $schedule->command('v2board:cache')->hourly();
+        $schedule->command('v2board:statistics')->daily();
         // check
         $schedule->command('check:order')->everyMinute();
         $schedule->command('check:commission')->everyMinute();
