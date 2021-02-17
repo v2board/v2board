@@ -17,8 +17,13 @@ class UserController extends Controller
         if (empty($request->input('id'))) {
             abort(500, '参数错误');
         }
+        $user = User::where('is_admin', 0)
+            ->where('id', $request->input('id'))
+            ->where('is_staff', 0)
+            ->first();
+        if (!$user) abort(500, '用户不存在');
         return response([
-            'data' => User::find($request->input('id'))
+            'data' => $user
         ]);
     }
 

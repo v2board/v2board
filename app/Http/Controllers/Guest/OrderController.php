@@ -18,6 +18,9 @@ class OrderController extends Controller
 {
     public function alipayNotify(Request $request)
     {
+        if (!(int)config('v2board.alipay_enable')) {
+            die('fail');
+        }
         // Log::info('alipayNotifyData: ' . json_encode($_POST));
         $gateway = Omnipay::create('Alipay_AopF2F');
         $gateway->setSignType('RSA2'); //RSA/RSA2
@@ -57,6 +60,9 @@ class OrderController extends Controller
     {
         // Log::info('stripeNotifyData: ' . json_encode($request->input()));
 
+        if (!(int)config('v2board.stripe_alipay_enable') && !(int)config('v2board.stripe_wepay_enable')) {
+            die('fail');
+        }
         \Stripe\Stripe::setApiKey(config('v2board.stripe_sk_live'));
         try {
             $event = \Stripe\Webhook::constructEvent(
@@ -99,6 +105,9 @@ class OrderController extends Controller
 
     public function bitpayXNotify(Request $request)
     {
+        if (!(int)config('v2board.bitpayx_enable')) {
+            die('fail');
+        }
         $inputString = file_get_contents('php://input', 'r');
         // Log::info('bitpayXNotifyData: ' . $inputString);
         $inputStripped = str_replace(array("\r", "\n", "\t", "\v"), '', $inputString);
@@ -132,6 +141,9 @@ class OrderController extends Controller
 
     public function mgateNotify(Request $request)
     {
+        if (!(int)config('v2board.mgate_enable')) {
+            die('fail');
+        }
         $mgate = new MGate(config('v2board.mgate_url'), config('v2board.mgate_app_id'), config('v2board.mgate_app_secret'));
         if (!$mgate->verify($request->input())) {
             abort(500, 'fail');
@@ -144,6 +156,9 @@ class OrderController extends Controller
 
     public function epayNotify(Request $request)
     {
+        if (!(int)config('v2board.epay_enable')) {
+            die('fail');
+        }
         $epay = new Epay(config('v2board.epay_url'), config('v2board.epay_pid'), config('v2board.epay_key'));
         if (!$epay->verify($request->input())) {
             abort(500, 'fail');

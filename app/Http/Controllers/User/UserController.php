@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\User\UserTransfer;
 use App\Http\Requests\User\UserUpdate;
 use App\Http\Requests\User\UserChangePassword;
 use Illuminate\Http\Request;
@@ -162,14 +163,11 @@ class UserController extends Controller
         ]);
     }
 
-    public function transfer(Request $request)
+    public function transfer(UserTransfer $request)
     {
         $user = User::find($request->session()->get('id'));
         if (!$user) {
             abort(500, __('user.user.transfer.user_not_exist'));
-        }
-        if ($request->input('transfer_amount') <= 0) {
-            abort(500, __('user.user.transfer.params_wrong'));
         }
         if ($request->input('transfer_amount') > $user->commission_balance) {
             abort(500, __('user.user.transfer.insufficient_commission_balance'));
