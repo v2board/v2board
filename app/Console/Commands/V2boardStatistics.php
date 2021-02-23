@@ -56,7 +56,7 @@ class V2BoardStatistics extends Command
         $orderCount = $builder->count();
         $orderAmount = $builder->sum('total_amount');
         $builder = $builder->where('commission_balance', '!=', NULL)
-            ->whereIn('commission_status', [1, 2]);
+            ->where('commission_status', 0);
         $commissionCount = $builder->count();
         $commissionAmount = $builder->sum('commission_balance');
         $data = [
