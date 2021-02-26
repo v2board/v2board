@@ -99,12 +99,13 @@ class StatController extends Controller
                 'server_id',
                 'server_type',
                 'u',
-                'd'
+                'd',
+                DB::raw('(u+d) as total')
             ])
             ->where('record_at', '>=', $timestamp)
             ->where('record_type', 'd')
             ->limit(10)
-            ->orderBy('record_at', 'DESC')
+            ->orderBy('total', 'DESC')
             ->get()
             ->toArray();
         foreach ($statistics as $k => $v) {
@@ -113,7 +114,7 @@ class StatController extends Controller
                     $statistics[$k]['server_name'] = $server['name'];
                 }
             }
-            $statistics[$k]['total'] = ($v['u'] + $v['d']) / 1073741824;
+            $statistics[$k]['total'] = $statistics[$k]['total'] / 1073741824;
         }
         array_multisort(array_column($statistics, 'total'), SORT_DESC, $statistics);
         return response([
