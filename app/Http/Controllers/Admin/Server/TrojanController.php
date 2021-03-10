@@ -3,21 +3,19 @@
 namespace App\Http\Controllers\Admin\Server;
 
 use App\Http\Requests\Admin\ServerTrojanSave;
-use App\Http\Requests\Admin\ServerTrojanSort;
 use App\Http\Requests\Admin\ServerTrojanUpdate;
 use App\Services\ServerService;
-use App\Utils\CacheKey;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\ServerTrojan;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
 
 class TrojanController extends Controller
 {
     public function save(ServerTrojanSave $request)
     {
         $params = $request->validated();
+        $serverService = new ServerService();
+        if ($serverService->serverIsExist($params['name'])) abort(500, '节点名称已存在，请更换名称再试');
         $params['group_id'] = json_encode($params['group_id']);
         if (isset($params['tags'])) {
             $params['tags'] = json_encode($params['tags']);

@@ -357,4 +357,18 @@ class ServerService
         }
         return $server->toArray();
     }
+
+    public function serverIsExist($name):bool
+    {
+        if (ServerShadowsocks::where('name', $name)->first()) {
+            return true;
+        }
+        if (ServerTrojan::where('name', $name)->first()) {
+            return true;
+        }
+        if (Server::where('name', $name)->first()) {
+            return true;
+        }
+        return false;
+    }
 }

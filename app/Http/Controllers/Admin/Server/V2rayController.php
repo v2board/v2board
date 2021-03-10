@@ -3,21 +3,20 @@
 namespace App\Http\Controllers\Admin\Server;
 
 use App\Http\Requests\Admin\ServerV2raySave;
-use App\Http\Requests\Admin\ServerV2raySort;
 use App\Http\Requests\Admin\ServerV2rayUpdate;
 use App\Services\ServerService;
-use App\Utils\CacheKey;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Server;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
 
 class V2rayController extends Controller
 {
     public function save(ServerV2raySave $request)
     {
         $params = $request->validated();
+        $serverService = new ServerService();
+        if ($serverService->serverIsExist($params['name'])) abort(500, '节点名称已存在，请更换名称再试');
+
         $params['group_id'] = json_encode($params['group_id']);
         if (isset($params['tags'])) {
             $params['tags'] = json_encode($params['tags']);

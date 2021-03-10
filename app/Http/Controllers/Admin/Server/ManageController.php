@@ -2,13 +2,9 @@
 
 namespace App\Http\Controllers\Admin\Server;
 
-use App\Http\Requests\Admin\ServerTrojanSort;
-use App\Models\Plan;
 use App\Models\Server;
-use App\Models\ServerGroup;
 use App\Models\ServerShadowsocks;
 use App\Models\ServerTrojan;
-use App\Models\User;
 use App\Services\ServerService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
