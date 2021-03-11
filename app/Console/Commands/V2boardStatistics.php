@@ -52,7 +52,7 @@ class V2BoardStatistics extends Command
         $startAt = strtotime('-1 day', $endAt);
         $builder = Order::where('created_at', '>=', $startAt)
             ->where('created_at', '<', $endAt)
-            ->whereIn('status', [3, 4]);
+            ->whereIn('status', '!=', [0, 2]);
         $orderCount = $builder->count();
         $orderAmount = $builder->sum('total_amount');
         $builder = $builder->where('commission_balance', '!=', 0)
