@@ -14,8 +14,7 @@ class ShadowsocksController extends Controller
     public function save(ServerShadowsocksSave $request)
     {
         $params = $request->validated();
-        $serverService = new ServerService();
-        if ($serverService->serverIsExist($params['name'])) abort(500, '节点名称已存在，请更换名称再试');
+
         $params['group_id'] = json_encode($params['group_id']);
         if (isset($params['tags'])) {
             $params['tags'] = json_encode($params['tags']);
@@ -34,6 +33,10 @@ class ShadowsocksController extends Controller
             return response([
                 'data' => true
             ]);
+        } else {
+            $serverService = new ServerService();
+            if ($serverService->serverIsExist($params['name']))
+                abort(500, '节点名称已存在，请更换名称再试');
         }
 
         if (!ServerShadowsocks::create($params)) {
