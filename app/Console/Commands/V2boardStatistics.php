@@ -9,7 +9,7 @@ use App\Models\StatOrder;
 use App\Models\ServerLog;
 use Illuminate\Support\Facades\DB;
 
-class V2BoardStatistics extends Command
+class V2boardStatistics extends Command
 {
     /**
      * The name and signature of the console command.
