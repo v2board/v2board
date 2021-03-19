@@ -360,13 +360,13 @@ class ServerService
 
     public function serverIsExist($name):bool
     {
-        if (ServerShadowsocks::where('name', $name)->first()) {
+        if (ServerShadowsocks::where('name', $name)->count() > 0) {
             return true;
         }
-        if (ServerTrojan::where('name', $name)->first()) {
+        if (ServerTrojan::where('name', $name)->count() > 0) {
             return true;
         }
-        if (Server::where('name', $name)->first()) {
+        if (Server::where('name', $name)->count() > 0) {
             return true;
         }
         return false;
