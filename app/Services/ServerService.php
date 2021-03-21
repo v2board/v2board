@@ -357,18 +357,4 @@ class ServerService
         }
         return $server->toArray();
     }
-
-    public function serverIsExist($name):bool
-    {
-        if (ServerShadowsocks::where('name', $name)->count() > 0) {
-            return true;
-        }
-        if (ServerTrojan::where('name', $name)->count() > 0) {
-            return true;
-        }
-        if (Server::where('name', $name)->count() > 0) {
-            return true;
-        }
-        return false;
-    }
 }
