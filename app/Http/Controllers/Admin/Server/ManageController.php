@@ -20,6 +20,7 @@ class ManageController extends Controller
             $serverService->getV2rayServers(),
             $serverService->getTrojanServers()
         );
+        $serverService->mergeData($servers);
         $tmp = array_column($servers, 'sort');
         array_multisort($tmp, SORT_ASC, $servers);
         return response([

@@ -40,6 +40,7 @@ class ShadowsocksTidalabController extends Controller
             abort(500, 'fail');
         }
         Cache::put(CacheKey::get('SERVER_SHADOWSOCKS_LAST_CHECK_AT', $server->id), time(), 3600);
+        Cache::put(CacheKey::get('SERVER_SHADOWSOCKS_LAST_PUSH_AT', $server->id), time(), 3600);
         $serverService = new ServerService();
         $users = $serverService->getAvailableUsers(json_decode($server->group_id));
         $result = [];
