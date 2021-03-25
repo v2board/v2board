@@ -12,5 +12,7 @@ window.settings = {
     color: 'default'
   },
   // 背景
-  background_url: ''
+  background_url: '',
+  // crisp
+  crisp_id: ''
 }
