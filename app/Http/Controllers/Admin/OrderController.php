@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\Admin\OrderAssign;
 use App\Http\Requests\Admin\OrderUpdate;
+use App\Http\Requests\Admin\OrderFetch;
 use App\Services\OrderService;
 use App\Utils\Helper;
 use Illuminate\Http\Request;
@@ -15,25 +16,36 @@ use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
-    public function fetch(Request $request)
+    private function filter(Request $request, &$builder)
+    {
+        if ($request->input('filter')) {
+            foreach ($request->input('filter') as $filter) {
+                if ($filter['key'] === 'email') {
+                    $user = User::where('email', "%{$filter['value']}%")->first();
+                    if (!$user) continue;
+                    $builder->where('user_id', $user->id);
+                    continue;
+                }
+                if ($filter['condition'] === '模糊') {
+                    $filter['condition'] = 'like';
+                    $filter['value'] = "%{$filter['value']}%";
+                }
+                $builder->where($filter['key'], $filter['condition'], $filter['value']);
+            }
+        }
+    }
+
+    public function fetch(OrderFetch $request)
     {
         $current = $request->input('current') ? $request->input('current') : 1;
         $pageSize = $request->input('pageSize') >= 10 ? $request->input('pageSize') : 10;
         $orderModel = Order::orderBy('created_at', 'DESC');
-        if ($request->input('trade_no')) {
-            $orderModel->where('trade_no', $request->input('trade_no'));
-        }
         if ($request->input('is_commission')) {
             $orderModel->where('invite_user_id', '!=', NULL);
             $orderModel->whereNotIn('status', [0, 2]);
             $orderModel->where('commission_balance', '>', 0);
         }
-        if ($request->input('id')) {
-            $orderModel->where('id', $request->input('id'));
-        }
-        if ($request->input('user_id')) {
-            $orderModel->where('user_id', $request->input('user_id'));
-        }
+        $this->filter($request, $orderModel);
         $total = $orderModel->count();
         $res = $orderModel->forPage($current, $pageSize)
             ->get();
