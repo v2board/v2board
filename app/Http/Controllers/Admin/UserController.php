@@ -265,4 +265,30 @@ class UserController extends Controller
             'data' => true
         ]);
     }
+
+    public function setInviteUser(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required|integer',
+            'invite_user' => 'required',
+        ], [
+            'user_id.required' => '用户ID不能为空',
+            'user_id.integer' => '用户ID参数有误',
+            'invite_user.required' => '邀请人不能为空'
+        ]);
+
+        $user = User::find($request->input('user_id'));
+        if (!$user) abort(500, '用户不存在');
+        if (strpos($request->input('invite_user'), '@') !== -1) {
+            $inviteUser = User::where('email', $request->input('invite_user'))->first();
+        } else {
+            $inviteUser = User::find($request->input('invite_user'));
+        }
+        if (!$inviteUser) abort(500, '邀请人不存在');
+        $user->invite_user_id = $inviteUser->id;
+
+        return response([
+            'data' => $user->save()
+        ]);
+    }
 }
