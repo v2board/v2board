@@ -104,7 +104,7 @@ return [
         ],
         'stripeCard' => [
             'currency_convert_timeout' => 'Currency conversion has timed out, please try again later',
-            'was_problem' => 'Oops, there's a problem... Please refresh the page and try again later',
+            'was_problem' => "Oops, there's a problem... Please refresh the page and try again later",
             'deduction_failed' => 'Payment failed. Please check your credit card information'
         ]
     ],

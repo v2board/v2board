@@ -14,9 +14,9 @@ class OrderFetch extends FormRequest
     public function rules()
     {
         return [
-            'filter.*.key' => 'required|in:email,trade_no,status,commission_status,user_id',
+            'filter.*.key' => 'required|in:email,trade_no,status,commission_status,user_id,invite_user_id',
             'filter.*.condition' => 'required|in:>,<,=,>=,<=,模糊,!=',
-            'filter.*.value' => 'required'
+            'filter.*.value' => ''
         ];
     }
 
@@ -27,7 +27,6 @@ class OrderFetch extends FormRequest
             'filter.*.key.in' => '过滤键参数有误',
             'filter.*.condition.required' => '过滤条件不能为空',
             'filter.*.condition.in' => '过滤条件参数有误',
-            'filter.*.value.required' => '过滤值不能为空'
         ];
     }
 }
