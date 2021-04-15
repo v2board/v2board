@@ -40,7 +40,7 @@ class OrderController extends Controller
             }
         }
         return response([
-            'data' => $order
+            'data' => $order->makeHidden(['id', 'user_id'])
         ]);
     }
 
