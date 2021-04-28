@@ -14,9 +14,11 @@ class PaymentService
         if (!class_exists($this->class)) abort(500, 'gate is not found');
         if ($id) $payment = Payment::find($id)->toArray();
         $this->config = [];
-        if (isset($payment) && $payment['config']) $this->config = json_decode($payment['config'], true);
-        $this->config['id'] = $id;
-        $this->config['enable'] = $payment['enable'];
+        if (isset($payment)) {
+            $this->config = json_decode($payment['config'], true);
+            $this->config['enable'] = $payment['enable'];
+            $this->config['id'] = $payment['id'];
+        };
         $this->payment = new $this->class($this->config);
     }
 
