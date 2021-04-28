@@ -13,13 +13,17 @@ class PaymentController extends Controller
 {
     public function notify($method, $id, Request $request)
     {
-        $paymentService = new PaymentService($method, $id);
-        $verify = $paymentService->notify($request->input());
-        if (!$verify) abort(500, 'verify error');
-        if (!$this->handle($verify['trade_no'], $verify['callback_no'])) {
-            abort(500, 'handle error');
+        try {
+            $paymentService = new PaymentService($method, $id);
+            $verify = $paymentService->notify($request->input());
+            if (!$verify) abort(500, 'verify error');
+            if (!$this->handle($verify['trade_no'], $verify['callback_no'])) {
+                abort(500, 'handle error');
+            }
+            die('success');
+        } catch (\Exception $e) {
+            abort(500, 'fail');
         }
-        die('success');
     }
 
     private function handle($tradeNo, $callbackNo)
