@@ -11,11 +11,11 @@ use App\Http\Controllers\Controller;
 
 class PaymentController extends Controller
 {
-    public function notify($method, Request $request)
+    public function notify($method, $id, Request $request)
     {
-        $paymentService = new PaymentService($method);
+        $paymentService = new PaymentService($method, $id);
         $verify = $paymentService->notify($request->input());
-        if ($verify) abort(500, 'verify error');
+        if (!$verify) abort(500, 'verify error');
         if (!$this->handle($verify['trade_no'], $verify['callback_no'])) {
             abort(500, 'handle error');
         }
@@ -25,10 +25,10 @@ class PaymentController extends Controller
     private function handle($tradeNo, $callbackNo)
     {
         $order = Order::where('trade_no', $tradeNo)->first();
-        if ($order->status === 1) return true;
         if (!$order) {
             abort(500, 'order is not found');
         }
+        if ($order->status === 1) return true;
         $orderService = new OrderService($order);
         if (!$orderService->success($callbackNo)) {
             return false;
