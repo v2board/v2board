@@ -61,7 +61,7 @@ class StripeWepay {
             abort(500, __('user.order.stripeWepay.gateway_request_failed'));
         }
         return [
-            'type' => 1,
+            'type' => 0,
             'data' => $source['wechat']['qr_code_url']
         ];
     }
