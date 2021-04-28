@@ -20,6 +20,8 @@ class GuestRoute
             $router->post('/order/epayNotify', 'Guest\\OrderController@epayNotify');
             // Telegram
             $router->post('/telegram/webhook', 'Guest\\TelegramController@webhook');
+            // Payment
+            $router->match(['get', 'post'], '/payment/{method}', 'Guest\\PaymentController@notify');
         });
     }
 }

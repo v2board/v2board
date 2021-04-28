@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Services\PaymentService;
 use Illuminate\Console\Command;
 
 class Test extends Command
@@ -37,5 +38,7 @@ class Test extends Command
      */
     public function handle()
     {
+        $paymentService = new PaymentService('MGate');
+        var_dump($paymentService->form());
     }
 }
