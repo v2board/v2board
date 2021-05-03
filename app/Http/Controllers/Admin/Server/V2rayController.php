@@ -3,15 +3,11 @@
 namespace App\Http\Controllers\Admin\Server;
 
 use App\Http\Requests\Admin\ServerV2raySave;
-use App\Http\Requests\Admin\ServerV2raySort;
 use App\Http\Requests\Admin\ServerV2rayUpdate;
 use App\Services\ServerService;
-use App\Utils\CacheKey;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Server;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
 
 class V2rayController extends Controller
 {
@@ -125,7 +121,7 @@ class V2rayController extends Controller
     public function viewConfig(Request $request)
     {
         $serverService = new ServerService();
-        $config = $serverService->getVmessConfig($request->input('node_id'), 23333);
+        $config = $serverService->getV2RayConfig($request->input('node_id'), 23333);
         return response([
             'data' => $config
         ]);

@@ -3,15 +3,11 @@
 namespace App\Http\Controllers\Admin\Server;
 
 use App\Http\Requests\Admin\ServerShadowsocksSave;
-use App\Http\Requests\Admin\ServerShadowsocksSort;
 use App\Http\Requests\Admin\ServerShadowsocksUpdate;
 use App\Models\ServerShadowsocks;
-use App\Utils\CacheKey;
+use App\Services\ServerService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Server;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
 
 class ShadowsocksController extends Controller
 {

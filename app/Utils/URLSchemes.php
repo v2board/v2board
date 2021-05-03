@@ -21,7 +21,7 @@ class URLSchemes
     {
         $config = [
             "id" => $server['id'],
-            "remark" => $server['name'],
+            "remarks" => $server['name'],
             "server" => $server['host'],
             "server_port" => $server['port'],
             "password" => $user['uuid'],
@@ -36,9 +36,9 @@ class URLSchemes
             "v" => "2",
             "ps" => $server['name'],
             "add" => $server['host'],
-            "port" => $server['port'],
+            "port" => (string)$server['port'],
             "id" => $user['uuid'],
-            "aid" => $server['alter_id'],
+            "aid" => (string)$server['alter_id'],
             "net" => $server['network'],
             "type" => "none",
             "host" => "",

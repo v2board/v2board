@@ -141,7 +141,7 @@ class OrderService
     private function haveValidOrder(User $user)
     {
         return Order::where('user_id', $user->id)
-            ->whereIn('status', [3, 4])
+            ->whereNotIn('status', [0, 2])
             ->first();
     }
 

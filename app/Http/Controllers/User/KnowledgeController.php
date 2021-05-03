@@ -17,11 +17,11 @@ class KnowledgeController extends Controller
                 ->where('show', 1)
                 ->first()
                 ->toArray();
-            if (!$knowledge) abort(500, '知识不存在');
+            if (!$knowledge) abort(500, __('user.knowledge.fetch.knowledge_not_exist'));
             $user = User::find($request->session()->get('id'));
             $userService = new UserService();
-            $appleId = $userService->isAvailable($user) ? config('v2board.apple_id') : '没有有效订阅无法使用本站提供的AppleID';
-            $appleIdPassword = $userService->isAvailable($user) ? config('v2board.apple_id_password') : '没有有效订阅无法使用本站提供的AppleID';
+            $appleId = $userService->isAvailable($user) ? config('v2board.apple_id') : __('user.knowledge.fetch.apple_id_must_be_plan');
+            $appleIdPassword = $userService->isAvailable($user) ? config('v2board.apple_id_password') : __('user.knowledge.fetch.apple_id_must_be_plan');
             $subscribeUrl = config('v2board.subscribe_url', config('v2board.app_url', env('APP_URL'))) . '/api/v1/client/subscribe?token=' . $user['token'];
             $knowledge['body'] = str_replace('{{siteName}}', config('v2board.app_name', 'V2Board'), $knowledge['body']);
             $knowledge['body'] = str_replace('{{appleId}}', $appleId, $knowledge['body']);

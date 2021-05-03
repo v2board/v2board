@@ -47,7 +47,9 @@ class ConfigController extends Controller
                     'invite_never_expire' => config('v2board.invite_never_expire', 0),
                     'commission_first_time_enable' => config('v2board.commission_first_time_enable', 1),
                     'commission_auto_check_enable' => config('v2board.commission_auto_check_enable', 1),
-                    'commission_withdraw_limit' => config('v2board.commission_withdraw_limit', 100)
+                    'commission_withdraw_limit' => config('v2board.commission_withdraw_limit', 100),
+                    'commission_withdraw_method' => config('v2board.commission_withdraw_method', Dict::WITHDRAW_METHOD_WHITELIST_DEFAULT),
+                    'withdraw_close_enable' => config('v2board.withdraw_close_enable', 0)
                 ],
                 'site' => [
                     'safe_mode_enable' => (int)config('v2board.safe_mode_enable', 0),
@@ -108,7 +110,9 @@ class ConfigController extends Controller
                     'frontend_theme_header' => config('v2board.frontend_theme_header', 'dark'),
                     'frontend_theme_color' => config('v2board.frontend_theme_color', 'default'),
                     'frontend_background_url' => config('v2board.frontend_background_url'),
-                    'frontend_admin_path' => config('v2board.frontend_admin_path', 'admin')
+                    'frontend_admin_path' => config('v2board.frontend_admin_path', 'admin'),
+                    'frontend_customer_service_method' => config('v2board.frontend_customer_service_method', 0),
+                    'frontend_customer_service_id' => config('v2board.frontend_customer_service_id'),
                 ],
                 'server' => [
                     'server_token' => config('v2board.server_token'),

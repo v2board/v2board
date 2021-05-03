@@ -92,7 +92,7 @@ class PoseidonController extends Controller
 
         $serverService = new ServerService();
         try {
-            $json = $serverService->getVmessConfig($nodeId, $localPort);
+            $json = $serverService->getV2RayConfig($nodeId, $localPort);
             $json->poseidon = [
               'license_key' => (string)config('v2board.server_license'),
             ];

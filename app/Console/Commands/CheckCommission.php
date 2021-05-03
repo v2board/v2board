@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Models\Order;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class CheckCommission extends Command
 {
@@ -48,7 +49,7 @@ class CheckCommission extends Command
         if ((int)config('v2board.commission_auto_check_enable', 1)) {
             Order::where('commission_status', 0)
                 ->where('invite_user_id', '!=', NULL)
-                ->whereIn('status', [3, 4])
+                ->whereNotIn('status', [0, 2])
                 ->where('updated_at', '<=', strtotime('-3 day', time()))
                 ->update([
                     'commission_status' => 1
@@ -64,10 +65,19 @@ class CheckCommission extends Command
         foreach ($order as $item) {
             $inviter = User::find($item->invite_user_id);
             if (!$inviter) continue;
-            $inviter->commission_balance = $inviter->commission_balance + $item->commission_balance;
+            if ((int)config('v2board.withdraw_close_enable', 0)) {
+                $inviter->balance = $inviter->balance + $item->commission_balance;
+            } else {
+                $inviter->commission_balance = $inviter->commission_balance + $item->commission_balance;
+            }
+            DB::beginTransaction();
             if ($inviter->save()) {
                 $item->commission_status = 2;
-                $item->save();
+                if (!$item->save()) {
+                    DB::rollBack();
+                    continue;
+                }
+                DB::commit();
             }
         }
     }

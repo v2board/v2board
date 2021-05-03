@@ -14,7 +14,7 @@ class InviteController extends Controller
     public function save(Request $request)
     {
         if (InviteCode::where('user_id', $request->session()->get('id'))->where('status', 0)->count() >= config('v2board.invite_gen_limit', 5)) {
-            abort(500, '已达到创建数量上限');
+            abort(500, __('user.invite.save.invite_create_limit'));
         }
         $inviteCode = new InviteCode();
         $inviteCode->user_id = $request->session()->get('id');

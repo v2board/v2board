@@ -11,25 +11,25 @@ class CouponController extends Controller
     public function check(Request $request)
     {
         if (empty($request->input('code'))) {
-            abort(500, '优惠券码不能为空');
+            abort(500, __('user.coupon.check.coupon_not_empty'));
         }
         $coupon = Coupon::where('code', $request->input('code'))->first();
         if (!$coupon) {
-            abort(500, '优惠券无效');
+            abort(500, __('user.coupon.check.coupon_invalid'));
         }
         if ($coupon->limit_use <= 0 && $coupon->limit_use !== NULL) {
-            abort(500, '优惠券已无可用次数');
+            abort(500, __('user.coupon.check.coupon_not_available_by_number'));
         }
         if (time() < $coupon->started_at) {
-            abort(500, '优惠券还未到可用时间');
+            abort(500, __('user.coupon.check.coupon_not_available_by_time'));
         }
         if (time() > $coupon->ended_at) {
-            abort(500, '优惠券已过期');
+            abort(500, __('user.coupon.check.coupon_expired'));
         }
         if ($coupon->limit_plan_ids) {
             $limitPlanIds = json_decode($coupon->limit_plan_ids);
             if (!in_array($request->input('plan_id'), $limitPlanIds)) {
-                abort(500, '这个计划无法使用该优惠码');
+                abort(500, __('user.coupon.check.coupon_limit_plan'));
             }
         }
         return response([

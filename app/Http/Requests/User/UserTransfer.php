@@ -4,7 +4,7 @@ namespace App\Http\Requests\User;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class TicketWithdraw  extends FormRequest
+class UserTransfer extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -14,17 +14,16 @@ class TicketWithdraw  extends FormRequest
     public function rules()
     {
         return [
-            'withdraw_method' => 'required',
-            'withdraw_account' => 'required'
+            'transfer_amount' => 'required|integer|min:1'
         ];
     }
 
     public function messages()
     {
         return [
-            'withdraw_method.required' => '提现方式不能为空',
-            'withdraw_method.in' => '提现方式不支持',
-            'withdraw_account.required' => '提现账号不能为空'
+            'transfer_amount.required' => '划转金额不能为空',
+            'transfer_amount.integer' => __('user.user.transfer.params_wrong'),
+            'transfer_amount.min' => __('user.user.transfer.params_wrong')
         ];
     }
 }

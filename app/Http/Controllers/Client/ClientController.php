@@ -61,7 +61,7 @@ class ClientController extends Controller
     private function quantumult($user, $servers = [])
     {
         $uri = '';
-        header('subscription-userinfo: upload=' . $user->u . '; download=' . $user->d . ';total=' . $user->transfer_enable);
+        header('subscription-userinfo: upload=' . $user['u'] . '; download=' . $user['d'] . ';total=' . $user['transfer_enable']);
         foreach ($servers as $item) {
             if ($item['type'] === 'v2ray') {
                 $str = '';
@@ -84,10 +84,10 @@ class ClientController extends Controller
     {
         $uri = '';
         //display remaining traffic and expire date
-        $upload = round($user->u / (1024*1024*1024), 2);
-        $download = round($user->d / (1024*1024*1024), 2);
-        $totalTraffic = round($user->transfer_enable / (1024*1024*1024), 2);
-        $expiredDate = date('Y-m-d', $user->expired_at);
+        $upload = round($user['u'] / (1024*1024*1024), 2);
+        $download = round($user['d'] / (1024*1024*1024), 2);
+        $totalTraffic = round($user['transfer_enable'] / (1024*1024*1024), 2);
+        $expiredDate = date('Y-m-d', $user['expired_at']);
         $uri .= "STATUS=🚀↑:{$upload}GB,↓:{$download}GB,TOT:{$totalTraffic}GB💡Expires:{$expiredDate}\r\n";
         foreach ($servers as $item) {
             if ($item['type'] === 'shadowsocks') {
@@ -106,7 +106,7 @@ class ClientController extends Controller
     private function quantumultX($user, $servers = [])
     {
         $uri = '';
-        header("subscription-userinfo: upload={$user->u}; download={$user->d}; total={$user->transfer_enable}; expire={$user->expired_at}");
+        header("subscription-userinfo: upload={$user['u']}; download={$user['d']}; total={$user['transfer_enable']}; expire={$user['expired_at']}");
         foreach ($servers as $item) {
             if ($item['type'] === 'shadowsocks') {
                 $uri .= QuantumultX::buildShadowsocks($user['uuid'], $item);
@@ -143,6 +143,11 @@ class ClientController extends Controller
         $configs = [];
         $subs = [];
         $subs['servers'] = [];
+        $subs['bytes_used'] = '';
+        $subs['bytes_remaining'] = '';
+
+        $bytesUsed = $user['u'] + $user['d'];
+        $bytesRemaining = $user['transfer_enable'] - $bytesUsed;
 
         foreach ($servers as $item) {
             if ($item['type'] === 'shadowsocks') {
@@ -151,7 +156,8 @@ class ClientController extends Controller
         }
 
         $subs['version'] = 1;
-        $subs['remark'] = config('v2board.app_name', 'V2Board');
+        $subs['bytes_used'] = $bytesUsed;
+        $subs['bytes_remaining'] = $bytesRemaining;
         $subs['servers'] = array_merge($subs['servers'] ? $subs['servers'] : [], $configs);
 
         return json_encode($subs, JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);

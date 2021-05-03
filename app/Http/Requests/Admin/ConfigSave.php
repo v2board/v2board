@@ -23,6 +23,8 @@ class ConfigSave extends FormRequest
             'commission_first_time_enable' => 'in:0,1',
             'commission_auto_check_enable' => 'in:0,1',
             'commission_withdraw_limit' => 'nullable|numeric',
+            'commission_withdraw_method' => 'nullable|array',
+            'withdraw_close_enable' => 'in:0,1',
             // site
             'stop_register' => 'in:0,1',
             'email_verify' => 'in:0,1',
@@ -34,7 +36,7 @@ class ConfigSave extends FormRequest
             'try_out_plan_id' => 'integer',
             'try_out_hour' => 'numeric',
             'email_whitelist_enable' => 'in:0,1',
-            'email_whitelist_suffix' => '',
+            'email_whitelist_suffix' => 'nullable|array',
             'email_gmail_limit_enable' => 'in:0,1',
             'recaptcha_enable' => 'in:0,1',
             'recaptcha_key' => '',
@@ -85,6 +87,8 @@ class ConfigSave extends FormRequest
             'frontend_theme_color' => 'in:default,darkblue,black',
             'frontend_background_url' => 'nullable|url',
             'frontend_admin_path' => '',
+            'frontend_customer_service_method' => '',
+            'frontend_customer_service_id' => '',
             // tutorial
             'apple_id' => 'nullable|email',
             'apple_id_password' => '',
@@ -116,7 +120,8 @@ class ConfigSave extends FormRequest
         // illiteracy prompt
         return [
             'app_url.url' => '站点URL格式不正确，必须携带http(s)://',
-            'subscribe_url.url' => '订阅URL格式不正确，必须携带http(s)://'
+            'subscribe_url.url' => '订阅URL格式不正确，必须携带http(s)://',
+            'server_token.min' => '通讯密钥长度必须大于16位'
         ];
     }
 }
