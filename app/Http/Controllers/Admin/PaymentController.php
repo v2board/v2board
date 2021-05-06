@@ -25,7 +25,7 @@ class PaymentController extends Controller
     {
         $payments = Payment::all();
         foreach ($payments as $k => $v) {
-            $payments[$k]['notify_url'] = url("/api/v1/guest/payment/notify/{$v->payment}/{$v->id}");
+            $payments[$k]['notify_url'] = url("/api/v1/guest/payment/notify/{$v->payment}/{$v->uuid}");
         }
         return response([
             'data' => $payments
