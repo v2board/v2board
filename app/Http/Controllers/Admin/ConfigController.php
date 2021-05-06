@@ -66,7 +66,8 @@ class ConfigController extends Controller
                     'email_gmail_limit_enable' => config('v2board.email_gmail_limit_enable', 0),
                     'recaptcha_enable' => (int)config('v2board.recaptcha_enable', 0),
                     'recaptcha_key' => config('v2board.recaptcha_key'),
-                    'recaptcha_site_key' => config('v2board.recaptcha_site_key')
+                    'recaptcha_site_key' => config('v2board.recaptcha_site_key'),
+                    'tos_url' => config('v2board.tos_url')
                 ],
                 'subscribe' => [
                     'plan_change_enable' => (int)config('v2board.plan_change_enable', 1),
