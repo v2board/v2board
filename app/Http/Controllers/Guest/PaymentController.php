@@ -11,10 +11,10 @@ use App\Http\Controllers\Controller;
 
 class PaymentController extends Controller
 {
-    public function notify($method, $id, Request $request)
+    public function notify($method, $uuid, Request $request)
     {
         try {
-            $paymentService = new PaymentService($method, $id);
+            $paymentService = new PaymentService($method, null, $uuid);
             $verify = $paymentService->notify($request->input());
             if (!$verify) abort(500, 'verify error');
             if (!$this->handle($verify['trade_no'], $verify['callback_no'])) {

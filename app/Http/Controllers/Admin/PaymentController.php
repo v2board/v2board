@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Services\PaymentService;
+use App\Utils\Helper;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Payment;
@@ -56,7 +57,8 @@ class PaymentController extends Controller
         if (!Payment::create([
             'name' => $request->input('name'),
             'payment' => $request->input('payment'),
-            'config' => $request->input('config')
+            'config' => $request->input('config'),
+            'uuid' => Helper::guid()
         ])) {
             abort(500, '保存失败');
         }

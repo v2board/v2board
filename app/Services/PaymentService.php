@@ -7,17 +7,19 @@ use App\Models\Payment;
 
 class PaymentService
 {
-    public function __construct($method, $id = NULL)
+    public function __construct($method, $id = NULL, $uuid = NULL)
     {
         $this->method = $method;
         $this->class = '\\App\\Payments\\' . $this->method;
         if (!class_exists($this->class)) abort(500, 'gate is not found');
         if ($id) $payment = Payment::find($id)->toArray();
+        if ($uuid) $payment = Payment::where('uuid', $uuid)->first()->toArray();
         $this->config = [];
         if (isset($payment)) {
             $this->config = json_decode($payment['config'], true);
             $this->config['enable'] = $payment['enable'];
             $this->config['id'] = $payment['id'];
+            $this->config['uuid'] = $payment['uuid'];
         };
         $this->payment = new $this->class($this->config);
     }
@@ -31,7 +33,7 @@ class PaymentService
     public function pay($order)
     {
         return $this->payment->pay([
-            'notify_url' => url("/api/v1/guest/payment/notify/{$this->method}/{$this->config['id']}"),
+            'notify_url' => url("/api/v1/guest/payment/notify/{$this->method}/{$this->config['uuid']}"),
             'return_url' => config('v2board.app_url', env('APP_URL')) . '/#/order/' . $order['trade_no'],
             'trade_no' => $order['trade_no'],
             'total_amount' => $order['total_amount'],

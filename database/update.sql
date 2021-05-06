@@ -408,3 +408,6 @@ CREATE TABLE `v2_payment` (
 
 ALTER TABLE `v2_order`
     ADD `payment_id` int(11) NULL AFTER `coupon_id`;
+
+ALTER TABLE `v2_payment`
+    ADD `uuid` char(32) NOT NULL AFTER `id`;
