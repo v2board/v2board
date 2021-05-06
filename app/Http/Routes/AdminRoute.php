@@ -104,6 +104,7 @@ class AdminRoute
             $router->get ('/payment/getPaymentMethods', 'Admin\\PaymentController@getPaymentMethods');
             $router->post('/payment/getPaymentForm', 'Admin\\PaymentController@getPaymentForm');
             $router->post('/payment/save', 'Admin\\PaymentController@save');
+            $router->post('/payment/drop', 'Admin\\PaymentController@drop');
         });
     }
 }

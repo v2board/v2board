@@ -64,4 +64,13 @@ class PaymentController extends Controller
             'data' => true
         ]);
     }
+
+    public function drop(Request $request)
+    {
+        $payment = Payment::find($request->input('id'));
+        if (!$payment) abort(500, '支付方式不存在');
+        return response([
+            'data' => $payment->delete()
+        ]);
+    }
 }
