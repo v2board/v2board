@@ -112,6 +112,9 @@ return [
         'fetch' => [
             'knowledge_not_exist' => '文章不存在',
             'apple_id_must_be_plan' => '无有效订阅，无法使用本站提供的 AppleID'
+        ],
+        'formatAccessData' => [
+            'no_access' => '你必须拥有有效的订阅才可以查看该区域的内容'
         ]
     ],
     'invite' => [

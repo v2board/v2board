@@ -112,6 +112,9 @@ return [
         'fetch' => [
             'knowledge_not_exist' => 'Article does not exist',
             'apple_id_must_be_plan' => 'No active subscription. Unable to use our provided Apple ID'
+        ],
+        'formatAccessData' => [
+            'no_access' => 'You must have a valid subscription to view content in this area'
         ]
     ],
     'invite' => [

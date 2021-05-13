@@ -20,8 +20,14 @@ class KnowledgeController extends Controller
             if (!$knowledge) abort(500, __('user.knowledge.fetch.knowledge_not_exist'));
             $user = User::find($request->session()->get('id'));
             $userService = new UserService();
-            $appleId = $userService->isAvailable($user) ? config('v2board.apple_id') : __('user.knowledge.fetch.apple_id_must_be_plan');
-            $appleIdPassword = $userService->isAvailable($user) ? config('v2board.apple_id_password') : __('user.knowledge.fetch.apple_id_must_be_plan');
+            if ($userService->isAvailable($user)) {
+                $appleId = config('v2board.apple_id');
+                $appleIdPassword = config('v2board.apple_id_password');
+            } else {
+                $appleId = __('user.knowledge.fetch.apple_id_must_be_plan');
+                $appleIdPassword = __('user.knowledge.fetch.apple_id_must_be_plan');
+                $this->formatAccessData($knowledge['body']);
+            }
             $subscribeUrl = config('v2board.subscribe_url', config('v2board.app_url', env('APP_URL'))) . '/api/v1/client/subscribe?token=' . $user['token'];
             $knowledge['body'] = str_replace('{{siteName}}', config('v2board.app_name', 'V2Board'), $knowledge['body']);
             $knowledge['body'] = str_replace('{{appleId}}', $appleId, $knowledge['body']);
@@ -50,5 +56,14 @@ class KnowledgeController extends Controller
         return response([
             'data' => $knowledges
         ]);
+    }
+
+    private function formatAccessData(&$body)
+    {
+        function getBetween($input, $start, $end){$substr = substr($input, strlen($start)+strpos($input, $start),(strlen($input) - strpos($input, $end))*(-1));return $substr;}
+        $accessData = getBetween($body, '<!--access start-->', '<!--access end-->');
+        if ($accessData) {
+            $body = str_replace($accessData, '<div class="v2board-no-access">'. __('user.knowledge.formatAccessData.no_access') .'</div>', $body);
+        }
     }
 }
