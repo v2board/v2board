@@ -131,7 +131,8 @@ class AuthController extends Controller
         }
 
         $data = [
-            'token' => $user->token
+            'token' => $user->token,
+            'auth_data' => base64_encode("{$user->email}:{$user->password}")
         ];
         $request->session()->put('email', $user->email);
         $request->session()->put('id', $user->id);
@@ -202,7 +203,10 @@ class AuthController extends Controller
 
     public function getQuickLoginUrl(Request $request)
     {
-        $user = User::where('token', $request->input('token'))->first();
+        $authData = explode(':', base64_decode($request->input('auth_data')));
+        $user = User::where('email', $authData[0])
+            ->where('password', $authData[1])
+            ->first();
         if (!$user) {
             abort(500, '令牌有误');
         }

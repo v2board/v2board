@@ -394,3 +394,20 @@ DROP `enable`;
 
 ALTER TABLE `v2_user`
     ADD `remarks` text COLLATE 'utf8_general_ci' NULL AFTER `token`;
+
+CREATE TABLE `v2_payment` (
+                              `id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                              `payment` varchar(16) NOT NULL,
+                              `name` varchar(255) NOT NULL,
+                              `config` text NOT NULL,
+                              `enable` tinyint(1) NOT NULL DEFAULT '0',
+                              `sort` int(11) DEFAULT NULL,
+                              `created_at` int(11) NOT NULL,
+                              `updated_at` int(11) NOT NULL
+) COLLATE 'utf8mb4_general_ci';
+
+ALTER TABLE `v2_order`
+    ADD `payment_id` int(11) NULL AFTER `coupon_id`;
+
+ALTER TABLE `v2_payment`
+    ADD `uuid` char(32) NOT NULL AFTER `id`;

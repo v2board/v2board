@@ -51,6 +51,7 @@ class UserRoute
             $router->get ('/telegram/getBotInfo', 'User\\TelegramController@getBotInfo');
             // Comm
             $router->get ('/comm/config', 'User\\CommController@config');
+            $router->Post('/comm/getStripePublicKey', 'User\\CommController@getStripePublicKey');
             // Knowledge
             $router->get ('/knowledge/fetch', 'User\\KnowledgeController@fetch');
             $router->get ('/knowledge/getCategory', 'User\\KnowledgeController@getCategory');

@@ -41,6 +41,7 @@ class ConfigSave extends FormRequest
             'recaptcha_enable' => 'in:0,1',
             'recaptcha_key' => '',
             'recaptcha_site_key' => '',
+            'tos_url' => 'nullable|url',
             // subscribe
             'plan_change_enable' => 'in:0,1',
             'reset_traffic_method' => 'in:0,1',
@@ -87,6 +88,8 @@ class ConfigSave extends FormRequest
             'frontend_theme_color' => 'in:default,darkblue,black',
             'frontend_background_url' => 'nullable|url',
             'frontend_admin_path' => '',
+            'frontend_customer_service_method' => '',
+            'frontend_customer_service_id' => '',
             // tutorial
             'apple_id' => 'nullable|email',
             'apple_id_password' => '',
@@ -118,7 +121,9 @@ class ConfigSave extends FormRequest
         // illiteracy prompt
         return [
             'app_url.url' => '站点URL格式不正确，必须携带http(s)://',
-            'subscribe_url.url' => '订阅URL格式不正确，必须携带http(s)://'
+            'subscribe_url.url' => '订阅URL格式不正确，必须携带http(s)://',
+            'server_token.min' => '通讯密钥长度必须大于16位',
+            'tos_url.url' => '服务条款URL格式不正确'
         ];
     }
 }

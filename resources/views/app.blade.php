@@ -20,7 +20,8 @@
             },
             verison: '{{$verison}}',
             background_url: '{{$backgroun_url}}',
-            description: '{{$description}}'
+            description: '{{$description}}',
+            crisp_id: '{{$crisp_id}}'
         }
     </script>
 </head>

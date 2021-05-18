@@ -15,7 +15,7 @@ class UserUpdate extends FormRequest
     {
         return [
             'email' => 'required|email',
-            'password' => 'nullable',
+            'password' => 'nullable|min:8',
             'transfer_enable' => 'numeric',
             'expired_at' => 'nullable|integer',
             'banned' => 'required|in:0,1',
@@ -57,7 +57,8 @@ class UserUpdate extends FormRequest
             'u.integer' => '上行流量格式不正确',
             'd.integer' => '下行流量格式不正确',
             'balance.integer' => '余额格式不正确',
-            'commission_balance.integer' => '佣金格式不正确'
+            'commission_balance.integer' => '佣金格式不正确',
+            'password.min' => '密码长度最小8位'
         ];
     }
 }

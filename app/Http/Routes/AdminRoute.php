@@ -74,6 +74,7 @@ class AdminRoute
             $router->post('/user/sendMail', 'Admin\\UserController@sendMail');
             $router->post('/user/ban', 'Admin\\UserController@ban');
             $router->post('/user/resetSecret', 'Admin\\UserController@resetSecret');
+            $router->post('/user/setInviteUser', 'Admin\\UserController@setInviteUser');
             // StatOrder
             $router->get ('/stat/getOverride', 'Admin\\StatController@getOverride');
             $router->get ('/stat/getServerLastRank', 'Admin\\StatController@getServerLastRank');
@@ -98,6 +99,12 @@ class AdminRoute
             $router->post('/knowledge/show', 'Admin\\KnowledgeController@show');
             $router->post('/knowledge/drop', 'Admin\\KnowledgeController@drop');
             $router->post('/knowledge/sort', 'Admin\\KnowledgeController@sort');
+            // Payment
+            $router->get ('/payment/fetch', 'Admin\\PaymentController@fetch');
+            $router->get ('/payment/getPaymentMethods', 'Admin\\PaymentController@getPaymentMethods');
+            $router->post('/payment/getPaymentForm', 'Admin\\PaymentController@getPaymentForm');
+            $router->post('/payment/save', 'Admin\\PaymentController@save');
+            $router->post('/payment/drop', 'Admin\\PaymentController@drop');
         });
     }
 }

@@ -298,13 +298,6 @@ class ServerService
                 $server[$i]['tags'] = json_decode($server[$i]['tags']);
             }
             $server[$i]['group_id'] = json_decode($server[$i]['group_id']);
-            $server[$i]['online'] = Cache::get(CacheKey::get('SERVER_SHADOWSOCKS_ONLINE_USER', $server[$i]['parent_id'] ? $server[$i]['parent_id'] : $server[$i]['id']));
-            if ($server[$i]['parent_id']) {
-                $server[$i]['last_check_at'] = Cache::get(CacheKey::get('SERVER_SHADOWSOCKS_LAST_CHECK_AT', $server[$i]['parent_id']));
-            } else {
-                $server[$i]['last_check_at'] = Cache::get(CacheKey::get('SERVER_SHADOWSOCKS_LAST_CHECK_AT', $server[$i]['id']));
-            }
-            $server[$i]['available'] = (time() - 300) < $server[$i]['last_check_at'];
         }
         return $server->toArray();
     }
@@ -327,13 +320,6 @@ class ServerService
                 $server[$i]['ruleSettings'] = json_decode($server[$i]['ruleSettings']);
             }
             $server[$i]['group_id'] = json_decode($server[$i]['group_id']);
-            $server[$i]['online'] = Cache::get(CacheKey::get('SERVER_V2RAY_ONLINE_USER', $server[$i]['parent_id'] ? $server[$i]['parent_id'] : $server[$i]['id']));
-            if ($server[$i]['parent_id']) {
-                $server[$i]['last_check_at'] = Cache::get(CacheKey::get('SERVER_V2RAY_LAST_CHECK_AT', $server[$i]['parent_id']));
-            } else {
-                $server[$i]['last_check_at'] = Cache::get(CacheKey::get('SERVER_V2RAY_LAST_CHECK_AT', $server[$i]['id']));
-            }
-            $server[$i]['available'] = (time() - 300) < $server[$i]['last_check_at'];
         }
         return $server->toArray();
     }
@@ -347,14 +333,29 @@ class ServerService
                 $server[$i]['tags'] = json_decode($server[$i]['tags']);
             }
             $server[$i]['group_id'] = json_decode($server[$i]['group_id']);
-            $server[$i]['online'] = Cache::get(CacheKey::get('SERVER_TROJAN_ONLINE_USER', $server[$i]['parent_id'] ? $server[$i]['parent_id'] : $server[$i]['id']));
-            if ($server[$i]['parent_id']) {
-                $server[$i]['last_check_at'] = Cache::get(CacheKey::get('SERVER_TROJAN_LAST_CHECK_AT', $server[$i]['parent_id']));
-            } else {
-                $server[$i]['last_check_at'] = Cache::get(CacheKey::get('SERVER_TROJAN_LAST_CHECK_AT', $server[$i]['id']));
-            }
-            $server[$i]['available'] = (time() - 300) < $server[$i]['last_check_at'];
         }
         return $server->toArray();
+    }
+
+    public function mergeData(&$servers)
+    {
+        foreach ($servers as $k => $v) {
+            $serverType = strtoupper($servers[$k]['type']);
+            $servers[$k]['online'] = Cache::get(CacheKey::get("SERVER_{$serverType}_ONLINE_USER", $servers[$k]['parent_id'] ? $servers[$k]['parent_id'] : $servers[$k]['id']));
+            if ($servers[$k]['parent_id']) {
+                $servers[$k]['last_check_at'] = Cache::get(CacheKey::get("SERVER_{$serverType}_LAST_CHECK_AT", $servers[$k]['parent_id']));
+                $servers[$k]['last_push_at'] = Cache::get(CacheKey::get("SERVER_{$serverType}_LAST_PUSH_AT", $servers[$k]['parent_id']));
+            } else {
+                $servers[$k]['last_check_at'] = Cache::get(CacheKey::get("SERVER_{$serverType}_LAST_CHECK_AT", $servers[$k]['id']));
+                $servers[$k]['last_push_at'] = Cache::get(CacheKey::get("SERVER_{$serverType}_LAST_PUSH_AT", $servers[$k]['id']));
+            }
+            if ((time() - 300) >= $servers[$k]['last_check_at']) {
+                $servers[$k]['available_status'] = 0;
+            } else if ((time() - 300) >= $servers[$k]['last_push_at']) {
+                $servers[$k]['available_status'] = 1;
+            } else {
+                $servers[$k]['available_status'] = 2;
+            }
+        }
     }
 }

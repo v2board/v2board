@@ -66,7 +66,8 @@ class ConfigController extends Controller
                     'email_gmail_limit_enable' => config('v2board.email_gmail_limit_enable', 0),
                     'recaptcha_enable' => (int)config('v2board.recaptcha_enable', 0),
                     'recaptcha_key' => config('v2board.recaptcha_key'),
-                    'recaptcha_site_key' => config('v2board.recaptcha_site_key')
+                    'recaptcha_site_key' => config('v2board.recaptcha_site_key'),
+                    'tos_url' => config('v2board.tos_url')
                 ],
                 'subscribe' => [
                     'plan_change_enable' => (int)config('v2board.plan_change_enable', 1),
@@ -110,7 +111,9 @@ class ConfigController extends Controller
                     'frontend_theme_header' => config('v2board.frontend_theme_header', 'dark'),
                     'frontend_theme_color' => config('v2board.frontend_theme_color', 'default'),
                     'frontend_background_url' => config('v2board.frontend_background_url'),
-                    'frontend_admin_path' => config('v2board.frontend_admin_path', 'admin')
+                    'frontend_admin_path' => config('v2board.frontend_admin_path', 'admin'),
+                    'frontend_customer_service_method' => config('v2board.frontend_customer_service_method', 0),
+                    'frontend_customer_service_id' => config('v2board.frontend_customer_service_id'),
                 ],
                 'server' => [
                     'server_token' => config('v2board.server_token'),

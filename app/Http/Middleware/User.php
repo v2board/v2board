@@ -15,8 +15,11 @@ class User
      */
     public function handle($request, Closure $next)
     {
-        if ($request->input('access_token')) {
-            $user = \App\Models\User::where('token', $request->input('access_token'))->first();
+        if ($request->input('auth_data')) {
+            $authData = explode(':', base64_decode($request->input('auth_data')));
+            $user = \App\Models\User::where('password', $authData[1])
+                ->where('email', $authData[0])
+                ->first();
             if ($user) {
                 $request->session()->put('email', $user->email);
                 $request->session()->put('id', $user->id);
