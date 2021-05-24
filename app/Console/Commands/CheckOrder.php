@@ -42,7 +42,8 @@ class CheckOrder extends Command
      */
     public function handle()
     {
-        $orders = Order::get();
+        $orders = Order::whereIn('status', [0, 1])
+            ->get();
         foreach ($orders as $item) {
             $orderService = new OrderService($item);
             switch ($item->status) {
