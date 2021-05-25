@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Payments\AlipayF2F;
 use App\Services\PaymentService;
 use Illuminate\Console\Command;
 
@@ -38,7 +39,5 @@ class Test extends Command
      */
     public function handle()
     {
-        $paymentService = new PaymentService('MGate');
-        var_dump($paymentService->form());
     }
 }

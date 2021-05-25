@@ -7,6 +7,12 @@ use App\Models\Payment;
 
 class PaymentService
 {
+    public $method;
+    public $customResult;
+    protected $class;
+    protected $config;
+    protected $payment;
+
     public function __construct($method, $id = NULL, $uuid = NULL)
     {
         $this->method = $method;
@@ -22,6 +28,7 @@ class PaymentService
             $this->config['uuid'] = $payment['uuid'];
         };
         $this->payment = new $this->class($this->config);
+        if (isset($this->payment->customResult)) $this->customResult = $this->payment->customResult;
     }
 
     public function notify($params)
