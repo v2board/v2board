@@ -358,4 +358,17 @@ class ServerService
             }
         }
     }
+
+    public function getAllServers()
+    {
+        $servers = array_merge(
+            $this->getShadowsocksServers(),
+            $this->getV2rayServers(),
+            $this->getTrojanServers()
+        );
+        $this->mergeData($servers);
+        $tmp = array_column($servers, 'sort');
+        array_multisort($tmp, SORT_ASC, $servers);
+        return $servers;
+    }
 }
