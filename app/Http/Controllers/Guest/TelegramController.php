@@ -193,6 +193,7 @@ class TelegramController extends Controller
         }
         $telegramService = new TelegramService();
         $telegramService->sendMessage($msg->chat_id, "#`{$ticketId}` 的工单已回复成功", 'markdown');
+        $telegramService->sendMessageWithAdmin("#`{$ticketId}` 的工单已由 {$user->email} 进行回复", true);
     }
 
 
