@@ -1,7 +1,6 @@
 <?php
 namespace App\Utils;
 
-use App\Models\Server;
 use App\Models\User;
 
 class URLSchemes
@@ -48,7 +47,10 @@ class URLSchemes
         if ((string)$server['network'] === 'ws') {
             $wsSettings = json_decode($server['networkSettings'], true);
             if (isset($wsSettings['path'])) $config['path'] = $wsSettings['path'];
-            if (isset($wsSettings['headers']['Host'])) $config['host'] = $wsSettings['headers']['Host'];
+            if (isset($wsSettings['headers']['Host'])) {
+                $config['host'] = $wsSettings['headers']['Host'];
+                $config['sni'] = $wsSettings['headers']['Host'];
+            }
         }
         return "vmess://" . base64_encode(json_encode($config)) . "\r\n";
     }
