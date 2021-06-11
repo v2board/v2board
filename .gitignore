@@ -18,3 +18,4 @@ composer.phar
 composer.lock
 yarn.lock
 docker-compose.yml
+.DS_Store
