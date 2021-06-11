@@ -23,10 +23,10 @@ class TicketSave extends FormRequest
     public function messages()
     {
         return [
-            'subject.required' => '工单主题不能为空',
-            'level.required' => '工单级别不能为空',
-            'level.in' => '工单级别格式不正确',
-            'message.required' => '消息不能为空'
+            'subject.required' => __('Ticket subject cannot be empty'),
+            'level.required' => __('Ticket level cannot be empty'),
+            'level.in' => __('Incorrect ticket level format'),
+            'message.required' => __('Message cannot be empty')
         ];
     }
 }

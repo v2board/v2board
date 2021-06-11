@@ -17,15 +17,15 @@ class KnowledgeController extends Controller
                 ->where('show', 1)
                 ->first()
                 ->toArray();
-            if (!$knowledge) abort(500, __('user.knowledge.fetch.knowledge_not_exist'));
+            if (!$knowledge) abort(500, __('Article does not exist'));
             $user = User::find($request->session()->get('id'));
             $userService = new UserService();
             if ($userService->isAvailable($user)) {
                 $appleId = config('v2board.apple_id');
                 $appleIdPassword = config('v2board.apple_id_password');
             } else {
-                $appleId = __('user.knowledge.fetch.apple_id_must_be_plan');
-                $appleIdPassword = __('user.knowledge.fetch.apple_id_must_be_plan');
+                $appleId = __('No active subscription. Unable to use our provided Apple ID');
+                $appleIdPassword = __('No active subscription. Unable to use our provided Apple ID');
                 $this->formatAccessData($knowledge['body']);
             }
             $subscribeUrl = config('v2board.subscribe_url', config('v2board.app_url', env('APP_URL'))) . '/api/v1/client/subscribe?token=' . $user['token'];
@@ -63,7 +63,7 @@ class KnowledgeController extends Controller
         function getBetween($input, $start, $end){$substr = substr($input, strlen($start)+strpos($input, $start),(strlen($input) - strpos($input, $end))*(-1));return $substr;}
         $accessData = getBetween($body, '<!--access start-->', '<!--access end-->');
         if ($accessData) {
-            $body = str_replace($accessData, '<div class="v2board-no-access">'. __('user.knowledge.formatAccessData.no_access') .'</div>', $body);
+            $body = str_replace($accessData, '<div class="v2board-no-access">'. __('You must have a valid subscription to view content in this area') .'</div>', $body);
         }
     }
 }

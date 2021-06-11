@@ -14,7 +14,7 @@ class PlanController extends Controller
             $plan = Plan::where('id', $request->input('id'))
                 ->first();
             if (!$plan) {
-                abort(500, __('user.plan.fetch.plan_not_exist'));
+                abort(500, __('Subscription plan does not exist'));
             }
             return response([
                 'data' => $plan
