@@ -44,6 +44,18 @@ class Shadowrocket
                     $config['obfsParam'] = $wsSettings['headers']['Host'];
             }
         }
+        if ($server['network'] === 'grpc') {
+            $config['obfs'] = "grpc";
+            if (isset($server['networkSettings'])) {
+                $grpcObject = json_decode($server['networkSettings'], true);
+                if (isset($grpcObject['serviceName'])) {
+                    $config['obfsParam'] = json_decode([
+                        'Host' => $grpcObject['serviceName']
+                    ]);
+                    $config['path'] = '/';
+                }
+            }
+        }
         $query = http_build_query($config, '', '&', PHP_QUERY_RFC3986);
         $uri = "vmess://{$userinfo}?{$query}";
         $uri .= "\r\n";

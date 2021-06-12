@@ -32,7 +32,7 @@ class Clash
 
         if ($server['tls']) {
             $array['tls'] = true;
-            if ($server['tlsSettings']) {
+            if (isset($server['tlsSettings'])) {
                 $tlsSettings = json_decode($server['tlsSettings'], true);
                 if (isset($tlsSettings['allowInsecure']) && !empty($tlsSettings['allowInsecure']))
                     $array['skip-cert-verify'] = ($tlsSettings['allowInsecure'] ? true : false);
@@ -42,12 +42,20 @@ class Clash
         }
         if ($server['network'] === 'ws') {
             $array['network'] = 'ws';
-            if ($server['networkSettings']) {
+            if (isset($server['networkSettings'])) {
                 $wsSettings = json_decode($server['networkSettings'], true);
                 if (isset($wsSettings['path']) && !empty($wsSettings['path']))
                     $array['ws-path'] = $wsSettings['path'];
                 if (isset($wsSettings['headers']['Host']) && !empty($wsSettings['headers']['Host']))
                     $array['ws-headers'] = ['Host' => $wsSettings['headers']['Host']];
+            }
+        }
+        if ($server['network'] === 'grpc') {
+            $array['network'] = 'grpc';
+            if (isset($server['networkSettings'])) {
+                $grpcObject = json_decode($server['networkSettings'], true);
+                $array['grpc-opts'] = [];
+                $array['grpc-opts']['grpc-service-name'] = $grpcObject['serviceName'];
             }
         }
 
