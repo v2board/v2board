@@ -15,17 +15,17 @@ class WechatPayNative {
     public function form()
     {
         return [
-            'currency' => [
+            'app_id' => [
                 'label' => 'APPID',
                 'description' => '绑定微信支付商户的APPID',
                 'type' => 'input',
             ],
-            'stripe_sk_live' => [
+            'mch_id' => [
                 'label' => '商户号',
                 'description' => '微信支付商户号',
                 'type' => 'input',
             ],
-            'stripe_webhook_key' => [
+            'api_key' => [
                 'label' => 'APIKEY(v1)',
                 'description' => '',
                 'type' => 'input',
