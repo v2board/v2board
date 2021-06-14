@@ -2,8 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Payments\AlipayF2F;
-use App\Services\PaymentService;
 use Illuminate\Console\Command;
 
 class Test extends Command
