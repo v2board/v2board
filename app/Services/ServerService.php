@@ -176,6 +176,7 @@ class ServerService
 
     private function setNetwork(Server $server, object $json)
     {
+
         if ($server->networkSettings) {
             switch ($server->network) {
                 case 'tcp':
@@ -195,6 +196,9 @@ class ServerService
                     break;
                 case 'quic':
                     $json->inbound->streamSettings->quicSettings = json_decode($server->networkSettings);
+                    break;
+                case 'grpc':
+                    $json->inbound->streamSettings->grpcSettings = json_decode($server->networkSettings);
                     break;
             }
         }
@@ -242,21 +246,23 @@ class ServerService
 
     private function setTls(Server $server, object $json)
     {
-        if ((int)$server->tls) {
-            $tlsSettings = json_decode($server->tlsSettings);
-            $json->inbound->streamSettings->security = 'tls';
-            $tls = (object)[
-                'certificateFile' => '/root/.cert/server.crt',
-                'keyFile' => '/root/.cert/server.key'
-            ];
-            $json->inbound->streamSettings->tlsSettings = new \StdClass();
-            if (isset($tlsSettings->serverName)) {
-                $json->inbound->streamSettings->tlsSettings->serverName = (string)$tlsSettings->serverName;
+        if ((int)$server->nodeTls) {
+            if ((int)$server->tls) {
+                $tlsSettings = json_decode($server->tlsSettings);
+                $json->inbound->streamSettings->security = 'tls';
+                $tls = (object)[
+                    'certificateFile' => '/root/.cert/server.crt',
+                    'keyFile' => '/root/.cert/server.key'
+                ];
+                $json->inbound->streamSettings->tlsSettings = new \StdClass();
+                if (isset($tlsSettings->serverName)) {
+                    $json->inbound->streamSettings->tlsSettings->serverName = (string)$tlsSettings->serverName;
+                }
+                if (isset($tlsSettings->allowInsecure)) {
+                    $json->inbound->streamSettings->tlsSettings->allowInsecure = (int)$tlsSettings->allowInsecure ? true : false;
+                }
+                $json->inbound->streamSettings->tlsSettings->certificates[0] = $tls;
             }
-            if (isset($tlsSettings->allowInsecure)) {
-                $json->inbound->streamSettings->tlsSettings->allowInsecure = (int)$tlsSettings->allowInsecure ? true : false;
-            }
-            $json->inbound->streamSettings->tlsSettings->certificates[0] = $tls;
         }
     }
 

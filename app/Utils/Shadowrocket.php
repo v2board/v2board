@@ -47,13 +47,13 @@ class Shadowrocket
         if ($server['network'] === 'grpc') {
             $config['obfs'] = "grpc";
             if (isset($server['networkSettings'])) {
-                $grpcObject = json_decode($server['networkSettings'], true);
-                if (isset($grpcObject['serviceName'])) {
-                    $config['obfsParam'] = json_decode([
-                        'Host' => $grpcObject['serviceName']
-                    ]);
-                    $config['path'] = '/';
-                }
+                $grpcSettings = json_decode($server['networkSettings'], true);
+                if (isset($grpcSettings['serviceName']) && !empty($grpcSettings['serviceName']))
+                    $config['path'] = $grpcSettings['serviceName'];
+                if (isset($grpcSettings['host']) && !empty($grpcSettings['host']))
+                    $config['obfsParam'] = $grpcSettings['host'];
+                if (!isset($grpcSettings['host']) && !empty($tlsSettings['serverName']))
+                    $config['obfsParam'] = $tlsSettings['serverName'];
             }
         }
         $query = http_build_query($config, '', '&', PHP_QUERY_RFC3986);
