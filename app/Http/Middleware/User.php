@@ -20,10 +20,9 @@ class User
             $user = \App\Models\User::where('password', $authData[1])
                 ->where('email', $authData[0])
                 ->first();
-            if ($user) {
-                $request->session()->put('email', $user->email);
-                $request->session()->put('id', $user->id);
-            }
+            if (!$user) abort(500, '鉴权失败，请重新登入');
+            $request->session()->put('email', $user->email);
+            $request->session()->put('id', $user->id);
         }
 //        if ($request->input('lang')) {
 //            $request->session()->put('lang', $request->input('lang'));
