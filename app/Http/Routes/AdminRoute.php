@@ -75,6 +75,7 @@ class AdminRoute
             $router->post('/user/ban', 'Admin\\UserController@ban');
             $router->post('/user/resetSecret', 'Admin\\UserController@resetSecret');
             $router->post('/user/setInviteUser', 'Admin\\UserController@setInviteUser');
+            $router->post('/user/drop', 'Admin\\UserController@drop');
             // StatOrder
             $router->get ('/stat/getOverride', 'Admin\\StatController@getOverride');
             $router->get ('/stat/getServerLastRank', 'Admin\\StatController@getServerLastRank');

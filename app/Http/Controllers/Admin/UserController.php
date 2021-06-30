@@ -277,4 +277,16 @@ class UserController extends Controller
             'data' => true
         ]);
     }
+
+    public function drop(Request $request)
+    {
+        $user = User::find($request->input('id'));
+        if (!$user) abort(500, '用户不存在');
+        if (!$user->delete()) {
+            abort(500, '删除失败');
+        }
+        return response([
+            'data' => true
+        ]);
+    }
 }
