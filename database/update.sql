@@ -413,7 +413,7 @@ ALTER TABLE `v2_payment`
     ADD `uuid` char(32) NOT NULL AFTER `id`;
 
 ALTER TABLE `v2_user`
-    ADD `deleted_at` int(11) NOT NULL AFTER `updated_at`;
+    ADD `deleted_at` int(11) NULL AFTER `updated_at`;
 
 ALTER TABLE `v2_user`
     ADD UNIQUE `email_deleted_at` (`email`, `deleted_at`),
