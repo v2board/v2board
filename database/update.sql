@@ -411,7 +411,7 @@ ALTER TABLE `v2_order`
 
 ALTER TABLE `v2_payment`
     ADD `uuid` char(32) NOT NULL AFTER `id`;
-
+-- 1.5.2
 ALTER TABLE `v2_user`
     ADD `deleted_at` int(11) NULL AFTER `updated_at`;
 

@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class ResetTraffic extends Command
 {
@@ -41,6 +42,7 @@ class ResetTraffic extends Command
      */
     public function handle()
     {
+        DB::beginTransaction();
         $resetTrafficMethod = config('v2board.reset_traffic_method', 0);
         switch ((int)$resetTrafficMethod) {
             // 1 a month
@@ -52,6 +54,7 @@ class ResetTraffic extends Command
                 $this->resetByExpireDay();
                 break;
         }
+        DB::commit();
     }
 
     private function resetByMonthFirstDay():void
