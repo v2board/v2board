@@ -2,9 +2,12 @@
 
 namespace App\Services;
 
+use App\Models\InviteCode;
 use App\Models\Order;
 use App\Models\Server;
+use App\Models\Ticket;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class UserService
 {

@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Order;
 use Illuminate\Console\Command;
 
 class Test extends Command
@@ -37,5 +38,6 @@ class Test extends Command
      */
     public function handle()
     {
+        dd(Order::where('user_id', 4)->delete());
     }
 }

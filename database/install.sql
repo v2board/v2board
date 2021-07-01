@@ -342,10 +342,9 @@ CREATE TABLE `v2_user` (
                            `expired_at` bigint(20) DEFAULT '0',
                            `created_at` int(11) NOT NULL,
                            `updated_at` int(11) NOT NULL,
-                           `deleted_at` int(11) DEFAULT NULL,
                            PRIMARY KEY (`id`),
-                           UNIQUE KEY `email_deleted_at` (`email`,`deleted_at`)
+                           UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2021-06-30 15:34:40
+-- 2021-07-01 11:00:48

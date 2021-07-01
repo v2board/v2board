@@ -7,10 +7,10 @@ use App\Http\Requests\Admin\UserGenerate;
 use App\Http\Requests\Admin\UserSendMail;
 use App\Http\Requests\Admin\UserUpdate;
 use App\Jobs\SendEmailJob;
+use App\Services\UserService;
 use App\Utils\Helper;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Order;
 use App\Models\User;
 use App\Models\Plan;
 use Illuminate\Support\Facades\DB;
@@ -273,18 +273,6 @@ class UserController extends Controller
             abort(500, '处理失败');
         }
 
-        return response([
-            'data' => true
-        ]);
-    }
-
-    public function drop(Request $request)
-    {
-        $user = User::find($request->input('id'));
-        if (!$user) abort(500, '用户不存在');
-        if (!$user->delete()) {
-            abort(500, '删除失败');
-        }
         return response([
             'data' => true
         ]);
