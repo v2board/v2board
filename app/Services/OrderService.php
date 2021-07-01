@@ -18,6 +18,7 @@ class OrderService
         'three_year_price' => 36
     ];
     public $order;
+    public $user;
 
     public function __construct(Order $order)
     {
@@ -27,11 +28,11 @@ class OrderService
     public function open()
     {
         $order = $this->order;
-        $user = User::find($order->user_id);
+        $this->user = User::find($order->user_id);
         $plan = Plan::find($order->plan_id);
 
         if ($order->refund_amount) {
-            $user->balance = $user->balance + $order->refund_amount;
+            $this->user->balance = $this->user->balance + $order->refund_amount;
         }
         DB::beginTransaction();
         if ($order->surplus_order_ids) {
@@ -46,18 +47,28 @@ class OrderService
         }
         switch ((string)$order->cycle) {
             case 'onetime_price':
-                $this->buyByOneTime($user, $plan);
+                $this->buyByOneTime($plan);
                 break;
             case 'reset_price':
-                $this->buyByResetTraffic($user);
+                $this->buyByResetTraffic();
                 break;
             default:
-                $this->buyByCycle($order, $user, $plan);
+                $this->buyByCycle($order, $plan);
         }
 
-        if ((int)config('v2board.renew_reset_traffic_enable', 0)) $this->buyByResetTraffic($user);
+        switch ((int)$order->type) {
+            case 1:
+                $this->openEvent(config('v2board.new_order_event_id', 0));
+                break;
+            case 2:
+                $this->openEvent(config('v2board.renew_order_event_id', 0));
+                break;
+            case 3:
+                $this->openEvent(config('v2board.change_order_event_id', 0));
+                break;
+        }
 
-        if (!$user->save()) {
+        if (!$this->user->save()) {
             DB::rollBack();
             abort(500, '开通失败');
         }
@@ -220,35 +231,35 @@ class OrderService
     }
 
 
-    private function buyByResetTraffic(User $user)
+    private function buyByResetTraffic()
     {
-        $user->u = 0;
-        $user->d = 0;
+        $this->user->u = 0;
+        $this->user->d = 0;
     }
 
-    private function buyByCycle(Order $order, User $user, Plan $plan)
+    private function buyByCycle(Order $order, Plan $plan)
     {
         // change plan process
         if ((int)$order->type === 3) {
-            $user->expired_at = time();
+            $this->user->expired_at = time();
         }
-        $user->transfer_enable = $plan->transfer_enable * 1073741824;
+        $this->user->transfer_enable = $plan->transfer_enable * 1073741824;
         // 从一次性转换到循环
-        if ($user->expired_at === NULL) $this->buyByResetTraffic($user);
+        if ($this->user->expired_at === NULL) $this->buyByResetTraffic();
         // 新购
-        if ($order->type === 1) $this->buyByResetTraffic($user);
-        $user->plan_id = $plan->id;
-        $user->group_id = $plan->group_id;
-        $user->expired_at = $this->getTime($order->cycle, $user->expired_at);
+        if ($order->type === 1) $this->buyByResetTraffic();
+        $this->user->plan_id = $plan->id;
+        $this->user->group_id = $plan->group_id;
+        $this->user->expired_at = $this->getTime($order->cycle, $this->user->expired_at);
     }
 
-    private function buyByOneTime(User $user, Plan $plan)
+    private function buyByOneTime(Plan $plan)
     {
-        $this->buyByResetTraffic($user);
-        $user->transfer_enable = $plan->transfer_enable * 1073741824;
-        $user->plan_id = $plan->id;
-        $user->group_id = $plan->group_id;
-        $user->expired_at = NULL;
+        $this->buyByResetTraffic();
+        $this->user->transfer_enable = $plan->transfer_enable * 1073741824;
+        $this->user->plan_id = $plan->id;
+        $this->user->group_id = $plan->group_id;
+        $this->user->expired_at = NULL;
     }
 
     private function getTime($str, $timestamp)
@@ -269,6 +280,17 @@ class OrderService
                 return strtotime('+24 month', $timestamp);
             case 'three_year_price':
                 return strtotime('+36 month', $timestamp);
+        }
+    }
+
+    private function openEvent($eventId)
+    {
+        switch ((int) $eventId) {
+            case 0:
+                break;
+            case 1:
+                $this->buyByResetTraffic();
+                break;
         }
     }
 }
