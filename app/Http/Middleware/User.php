@@ -17,11 +17,11 @@ class User
     {
         if ($request->input('auth_data')) {
             $authData = explode(':', base64_decode($request->input('auth_data')));
-            if (!isset($authData[1]) || !isset($authData[0])) abort(500, '鉴权失败，请重新登入');
+            if (!isset($authData[1]) || !isset($authData[0])) abort(403, '鉴权失败，请重新登入');
             $user = \App\Models\User::where('password', $authData[1])
                 ->where('email', $authData[0])
                 ->first();
-            if (!$user) abort(500, '鉴权失败，请重新登入');
+            if (!$user) abort(403, '鉴权失败，请重新登入');
             $request->session()->put('email', $user->email);
             $request->session()->put('id', $user->id);
         }
