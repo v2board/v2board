@@ -46,7 +46,7 @@ class Shadowrocket
         }
         if ($server['network'] === 'grpc') {
             $config['obfs'] = "grpc";
-            if (isset($server['networkSettings'])) {
+            if ($server['networkSettings']) {
                 $grpcSettings = json_decode($server['networkSettings'], true);
                 if (isset($grpcSettings['serviceName']) && !empty($grpcSettings['serviceName']))
                     $config['path'] = $grpcSettings['serviceName'];
