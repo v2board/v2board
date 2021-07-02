@@ -1,10 +1,66 @@
 <?php
 
-namespace App\Utils;
-
+namespace App\Http\Controllers\Client\Protocols;
 
 class Surge
 {
+    public $flag = 'surge';
+    private $servers;
+    private $user;
+
+    public function __construct($user, $servers)
+    {
+        $this->user = $user;
+        $this->servers = $servers;
+    }
+
+    public function handle()
+    {
+        $servers = $this->servers;
+        $user = $this->user;
+
+        $proxies = '';
+        $proxyGroup = '';
+
+        foreach ($servers as $item) {
+            if ($item['type'] === 'shadowsocks') {
+                // [Proxy]
+                $proxies .= self::buildShadowsocks($user['uuid'], $item);
+                // [Proxy Group]
+                $proxyGroup .= $item['name'] . ', ';
+            }
+            if ($item['type'] === 'v2ray') {
+                // [Proxy]
+                $proxies .= self::buildVmess($user['uuid'], $item);
+                // [Proxy Group]
+                $proxyGroup .= $item['name'] . ', ';
+            }
+            if ($item['type'] === 'trojan') {
+                // [Proxy]
+                $proxies .= self::buildTrojan($user['uuid'], $item);
+                // [Proxy Group]
+                $proxyGroup .= $item['name'] . ', ';
+            }
+        }
+
+        $defaultConfig = base_path() . '/resources/rules/default.surge.conf';
+        $customConfig = base_path() . '/resources/rules/custom.surge.conf';
+        if (\File::exists($customConfig)) {
+            $config = file_get_contents("$customConfig");
+        } else {
+            $config = file_get_contents("$defaultConfig");
+        }
+
+        // Subscription link
+        $subsURL = config('v2board.subscribe_url', config('v2board.app_url', env('APP_URL'))) . '/api/v1/client/subscribe?token=' . $user['token'];
+
+        $config = str_replace('$subs_link', $subsURL, $config);
+        $config = str_replace('$proxies', $proxies, $config);
+        $config = str_replace('$proxy_group', rtrim($proxyGroup, ', '), $config);
+        return $config;
+    }
+
+
     public static function buildShadowsocks($password, $server)
     {
         $config = [

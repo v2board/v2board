@@ -38,6 +38,10 @@ class Test extends Command
      */
     public function handle()
     {
-        dd(Order::where('user_id', 4)->delete());
+        foreach (glob(app_path('Http//Controllers//Client//Protocols') . '/*.php') as $file) {
+            $file = 'App\\Http\\Controllers\\Client\\Protocols' . basename($file, '.php');
+            new $file();
+            var_dump($file);
+        }
     }
 }
