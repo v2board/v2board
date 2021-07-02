@@ -7,12 +7,10 @@ use App\Services\ServerService;
 use App\Utils\Clash;
 use App\Utils\QuantumultX;
 use App\Utils\Shadowrocket;
+use App\Utils\Shadowsocks;
 use App\Utils\Surge;
 use App\Utils\Surfboard;
-use App\Utils\URLSchemes;
 use Illuminate\Http\Request;
-use App\Models\Server;
-use App\Utils\Helper;
 use Symfony\Component\Yaml\Yaml;
 use App\Services\UserService;
 
@@ -35,9 +33,6 @@ class ClientController extends Controller
                 if (strpos($flag, 'quantumult%20x') !== false) {
                     die($this->quantumultX($user, $servers));
                 }
-                if (strpos($flag, 'quantumult') !== false) {
-                    die($this->quantumult($user, $servers));
-                }
                 if (strpos($flag, 'clash') !== false) {
                     die($this->clash($user, $servers));
                 }
@@ -54,30 +49,8 @@ class ClientController extends Controller
                     die($this->shaodowsocksSIP008($user, $servers));
                 }
             }
-            die($this->origin($user, $servers));
+            die('当前客户端不支持获取配置');
         }
-    }
-    // TODO: Ready to stop support
-    private function quantumult($user, $servers = [])
-    {
-        $uri = '';
-        header('subscription-userinfo: upload=' . $user['u'] . '; download=' . $user['d'] . ';total=' . $user['transfer_enable']);
-        foreach ($servers as $item) {
-            if ($item['type'] === 'v2ray') {
-                $str = '';
-                $str .= $item['name'] . '= vmess, ' . $item['host'] . ', ' . $item['port'] . ', chacha20-ietf-poly1305, "' . $user['uuid'] . '", over-tls=' . ($item['tls'] ? "true" : "false") . ', certificate=0, group=' . config('v2board.app_name', 'V2Board');
-                if ($item['network'] === 'ws') {
-                    $str .= ', obfs=ws';
-                    if ($item['networkSettings']) {
-                        $wsSettings = json_decode($item['networkSettings'], true);
-                        if (isset($wsSettings['path'])) $str .= ', obfs-path="' . $wsSettings['path'] . '"';
-                        if (isset($wsSettings['headers']['Host'])) $str .= ', obfs-header="Host:' . $wsSettings['headers']['Host'] . '"';
-                    }
-                }
-                $uri .= "vmess://" . base64_encode($str) . "\r\n";
-            }
-        }
-        return base64_encode($uri);
     }
 
     private function shadowrocket($user, $servers = [])
@@ -121,23 +94,6 @@ class ClientController extends Controller
         return base64_encode($uri);
     }
 
-    private function origin($user, $servers = [])
-    {
-        $uri = '';
-        foreach ($servers as $item) {
-            if ($item['type'] === 'shadowsocks') {
-                $uri .= URLSchemes::buildShadowsocks($item, $user);
-            }
-            if ($item['type'] === 'v2ray') {
-                $uri .= URLSchemes::buildVmess($item, $user);
-            }
-            if ($item['type'] === 'trojan') {
-                $uri .= URLSchemes::buildTrojan($item, $user);
-            }
-        }
-        return base64_encode($uri);
-    }
-
     private function shaodowsocksSIP008($user, $servers = [])
     {
         $configs = [];
@@ -151,7 +107,7 @@ class ClientController extends Controller
 
         foreach ($servers as $item) {
             if ($item['type'] === 'shadowsocks') {
-                array_push($configs, URLSchemes::buildShadowsocksSIP008($item, $user));
+                array_push($configs, Shadowsocks::SIP008($item, $user));
             }
         }
 
