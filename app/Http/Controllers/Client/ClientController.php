@@ -50,7 +50,7 @@ class ClientController extends Controller
                     die($this->shaodowsocksSIP008($user, $servers));
                 }
             }
-            die($this->origin($user, $servers));
+            die('该客户端暂不支持进行订阅');
         }
     }
 
