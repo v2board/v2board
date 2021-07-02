@@ -49,7 +49,7 @@ class Shadowrocket
             if (isset($server['networkSettings'])) {
                 $grpcObject = json_decode($server['networkSettings'], true);
                 if (isset($grpcObject['serviceName'])) {
-                    $config['obfsParam'] = json_decode([
+                    $config['obfsParam'] = json_encode([
                         'Host' => $grpcObject['serviceName']
                     ]);
                     $config['path'] = '/';
