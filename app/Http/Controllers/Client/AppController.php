@@ -38,15 +38,15 @@ class AppController extends Controller
 
         foreach ($servers as $item) {
             if ($item['type'] === 'shadowsocks') {
-                array_push($proxy, Clash::buildShadowsocks($user['uuid'], $item));
+                array_push($proxy, Protocols\Clash::buildShadowsocks($user['uuid'], $item));
                 array_push($proxies, $item['name']);
             }
             if ($item['type'] === 'v2ray') {
-                array_push($proxy, Clash::buildVmess($user['uuid'], $item));
+                array_push($proxy, Protocols\Clash::buildVmess($user['uuid'], $item));
                 array_push($proxies, $item['name']);
             }
             if ($item['type'] === 'trojan') {
-                array_push($proxy, Clash::buildTrojan($user['uuid'], $item));
+                array_push($proxy, Protocols\Clash::buildTrojan($user['uuid'], $item));
                 array_push($proxies, $item['name']);
             }
         }
