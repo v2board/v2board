@@ -196,6 +196,9 @@ class ServerService
                 case 'quic':
                     $json->inbound->streamSettings->quicSettings = json_decode($server->networkSettings);
                     break;
+                case 'grpc':
+                    $json->inbound->streamSettings->grpcSettings = json_decode($server->networkSettings);
+                    break;
             }
         }
     }
