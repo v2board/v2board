@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Client;
 use App\Http\Controllers\Controller;
 use App\Services\ServerService;
 use App\Utils\Clash;
+use App\Utils\Origin;
 use App\Utils\QuantumultX;
 use App\Utils\Shadowrocket;
 use App\Utils\Shadowsocks;
@@ -49,8 +50,25 @@ class ClientController extends Controller
                     die($this->shaodowsocksSIP008($user, $servers));
                 }
             }
-            die('当前客户端不支持获取配置');
+            die($this->origin($user, $servers));
         }
+    }
+
+    private function origin($user, $servers = [])
+    {
+        $uri = '';
+        foreach ($servers as $item) {
+            if ($item['type'] === 'shadowsocks') {
+                $uri .= Origin::buildShadowsocks($item, $user);
+            }
+            if ($item['type'] === 'v2ray') {
+                $uri .= Origin::buildVmess($item, $user);
+            }
+            if ($item['type'] === 'trojan') {
+                $uri .= Origin::buildTrojan($item, $user);
+            }
+        }
+        return base64_encode($uri);
     }
 
     private function shadowrocket($user, $servers = [])
