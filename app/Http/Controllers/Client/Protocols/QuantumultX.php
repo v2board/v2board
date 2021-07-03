@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Client\Protocols;
 
 class QuantumultX
 {
-    public $flag = 'quantumult x';
+    public $flag = 'quantumult%20x';
     private $servers;
     private $user;
 
