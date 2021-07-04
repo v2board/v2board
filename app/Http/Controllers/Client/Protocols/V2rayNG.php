@@ -25,8 +25,25 @@ class V2rayNG
             if ($item['type'] === 'v2ray') {
                 $uri .= self::buildVmess($user['uuid'], $item);
             }
+            if ($item['type'] === 'shadowsocks') {
+                $uri .= self::buildShadowsocks($user['uuid'], $item);
+            }
+            if ($item['type'] === 'trojan') {
+                $uri .= self::buildTrojan($user['uuid'], $item);
+            }
         }
         return base64_encode($uri);
+    }
+
+    public static function buildShadowsocks($password, $server)
+    {
+        $name = rawurlencode($server['name']);
+        $str = str_replace(
+            ['+', '/', '='],
+            ['-', '_', ''],
+            base64_encode("{$server['cipher']}:{$password}")
+        );
+        return "ss://{$str}@{$server['host']}:{$server['port']}#{$name}\r\n";
     }
 
     public static function buildVmess($uuid, $server)
@@ -56,5 +73,19 @@ class V2rayNG
         }
         return "vmess://" . base64_encode(json_encode($config)) . "\r\n";
     }
+
+    public static function buildTrojan($password, $server)
+    {
+        $name = rawurlencode($server['name']);
+        $query = http_build_query([
+            'allowInsecure' => $server['allow_insecure'],
+            'peer' => $server['server_name'],
+            'sni' => $server['server_name']
+        ]);
+        $uri = "trojan://{$password}@{$server['host']}:{$server['port']}?{$query}#{$name}";
+        $uri .= "\r\n";
+        return $uri;
+    }
+
 
 }
