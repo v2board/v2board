@@ -22,11 +22,11 @@ class Passwall
         $uri = '';
 
         foreach ($servers as $item) {
-            if ($item['type'] === 'shadowsocks') {
-                $uri .= self::buildShadowsocks($user['uuid'], $item);
-            }
             if ($item['type'] === 'v2ray') {
                 $uri .= self::buildVmess($user['uuid'], $item);
+            }
+            if ($item['type'] === 'shadowsocks') {
+                $uri .= self::buildShadowsocks($user['uuid'], $item);
             }
             if ($item['type'] === 'trojan') {
                 $uri .= self::buildTrojan($user['uuid'], $item);
@@ -34,7 +34,6 @@ class Passwall
         }
         return base64_encode($uri);
     }
-
 
     public static function buildShadowsocks($password, $server)
     {
@@ -61,8 +60,14 @@ class Passwall
             "host" => "",
             "path" => "",
             "tls" => $server['tls'] ? "tls" : "",
-            "sni" => $server['tls'] ? isset(json_decode($server['tlsSettings'], true)['serverName']) : ""
         ];
+        if ($server['tls']) {
+            if ($server['tlsSettings']) {
+                $tlsSettings = json_decode($server['tlsSettings'], true);
+                if (isset($tlsSettings['serverName']) && !empty($tlsSettings['serverName']))
+                    $config['sni'] = $tlsSettings['serverName'];
+            }
+        }
         if ((string)$server['network'] === 'ws') {
             $wsSettings = json_decode($server['networkSettings'], true);
             if (isset($wsSettings['path'])) $config['path'] = $wsSettings['path'];
