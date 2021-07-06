@@ -118,7 +118,12 @@ class UserController extends Controller
                 abort(500, __('Subscription plan does not exist'));
             }
         }
-        $user['subscribe_url'] = config('v2board.subscribe_url', config('v2board.app_url', env('APP_URL'))) . '/api/v1/client/subscribe?token=' . $user['token'];
+        $subscribeUrl = config('v2board.app_url', env('APP_URL'));
+        $subscribeUrls = explode(',', config('v2board.subscribe_url'));
+        if ($subscribeUrls) {
+            $subscribeUrl = $subscribeUrls[rand(0, count($subscribeUrls) - 1)];
+        }
+        $user['subscribe_url'] = "{$subscribeUrl}/api/v1/client/subscribe?token={$user['token']}";
         $user['reset_day'] = $this->getResetDay($user);
         return response([
             'data' => $user

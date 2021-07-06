@@ -28,7 +28,11 @@ class KnowledgeController extends Controller
                 $appleIdPassword = __('No active subscription. Unable to use our provided Apple ID');
                 $this->formatAccessData($knowledge['body']);
             }
-            $subscribeUrl = config('v2board.subscribe_url', config('v2board.app_url', env('APP_URL'))) . '/api/v1/client/subscribe?token=' . $user['token'];
+            $subscribeUrl = config('v2board.app_url', env('APP_URL'));
+            $subscribeUrls = explode(',', config('v2board.subscribe_url'));
+            if ($subscribeUrls) {
+                $subscribeUrl = $subscribeUrls[rand(0, count($subscribeUrls) - 1)];
+            }
             $knowledge['body'] = str_replace('{{siteName}}', config('v2board.app_name', 'V2Board'), $knowledge['body']);
             $knowledge['body'] = str_replace('{{appleId}}', $appleId, $knowledge['body']);
             $knowledge['body'] = str_replace('{{appleIdPassword}}', $appleIdPassword, $knowledge['body']);
