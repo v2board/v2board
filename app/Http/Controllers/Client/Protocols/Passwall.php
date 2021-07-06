@@ -70,7 +70,7 @@ class Passwall
         }
         if ((string)$server['network'] === 'grpc') {
             $grpcSettings = json_decode($server['networkSettings'], true);
-            if (isset($grpcSettings['path'])) $config['path'] = $grpcSettings['serviceName'];
+            if (isset($grpcSettings['serviceName'])) $config['path'] = $grpcSettings['serviceName'];
         }
         return "vmess://" . base64_encode(json_encode($config)) . "\r\n";
     }
