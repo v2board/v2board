@@ -61,7 +61,7 @@ class SSRPlus
             "host" => "",
             "path" => "",
             "tls" => $server['tls'] ? "tls" : "",
-            "sni" => $server['tls'] ? json_decode($server['tlsSettings'], true)['serverName'] : ""
+            "sni" => ($server['tls'] && isset(json_decode($server['tlsSettings'], true)['serverName'])) ? json_decode($server['tlsSettings'], true)['serverName'] : ""
         ];
         if ((string)$server['network'] === 'ws') {
             $wsSettings = json_decode($server['networkSettings'], true);

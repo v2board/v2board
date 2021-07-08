@@ -64,7 +64,7 @@ class AnXray
             "encryption" => "none",
             "type" => urlencode($server['network']),
             "security" => $server['tls'] ? "tls" : "",
-            "sni" => $server['tls'] ? urlencode(json_decode($server['tlsSettings'], true)['serverName']) : ""
+            "sni" => ($server['tls'] && isset(json_decode($server['tlsSettings'], true)['serverName'])) ? urlencode(json_decode($server['tlsSettings'], true)['serverName']) : ""
         ];
         if ((string)$server['network'] === 'ws') {
             $wsSettings = json_decode($server['networkSettings'], true);
