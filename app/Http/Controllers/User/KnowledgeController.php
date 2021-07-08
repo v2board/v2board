@@ -33,6 +33,7 @@ class KnowledgeController extends Controller
             if ($subscribeUrls) {
                 $subscribeUrl = $subscribeUrls[rand(0, count($subscribeUrls) - 1)];
             }
+            $subscribeUrl = "{$subscribeUrl}/api/v1/client/subscribe?token={$user['token']}";
             $knowledge['body'] = str_replace('{{siteName}}', config('v2board.app_name', 'V2Board'), $knowledge['body']);
             $knowledge['body'] = str_replace('{{appleId}}', $appleId, $knowledge['body']);
             $knowledge['body'] = str_replace('{{appleIdPassword}}', $appleIdPassword, $knowledge['body']);
