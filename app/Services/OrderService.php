@@ -202,7 +202,7 @@ class OrderService
             if ($item->cycle === 'onetime_price') continue;
             if ($this->orderIsUsed($item)) continue;
             $orderSurplusMonth = $orderSurplusMonth + self::STR_TO_TIME[$item->cycle];
-            $orderSurplusAmount = $orderSurplusAmount + ($item['total_amount'] + $item['balance_amount']);
+            $orderSurplusAmount = $orderSurplusAmount + ($item['total_amount'] + $item['balance_amount'] + $item['surplus_amount']);
         }
         if (!$orderSurplusMonth || !$orderSurplusAmount) return;
         $monthUnitPrice = $orderSurplusAmount / $orderSurplusMonth;

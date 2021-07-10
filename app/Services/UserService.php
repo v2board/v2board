@@ -55,7 +55,7 @@ class UserService
 
     public function addBalance(int $userId, int $balance):bool
     {
-        $user = User::find($userId);
+        $user = User::lockForUpdate()->find($userId);
         if (!$user) {
             return false;
         }
