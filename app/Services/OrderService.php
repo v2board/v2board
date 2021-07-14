@@ -132,13 +132,26 @@ class OrderService
         $order->total_amount = $order->total_amount - $order->discount_amount;
     }
 
-    public function setInvite(User $user)
+    public function setInvite(User $user):void
     {
         $order = $this->order;
         if ($user->invite_user_id && $order->total_amount > 0) {
             $order->invite_user_id = $user->invite_user_id;
-            $commissionFirstTime = (int)config('v2board.commission_first_time_enable', 1);
-            if (!$commissionFirstTime || ($commissionFirstTime && !$this->haveValidOrder($user))) {
+            $isCommission = false;
+            switch ((int)$user->commission_type) {
+                case 0:
+                    $commissionFirstTime = (int)config('v2board.commission_first_time_enable', 1);
+                    $isCommission = (!$commissionFirstTime || ($commissionFirstTime && !$this->haveValidOrder($user)));
+                    break;
+                case 1:
+                    $isCommission = true;
+                    break;
+                case 2:
+                    $isCommission = !$this->haveValidOrder($user);
+                    break;
+            }
+
+            if ($isCommission) {
                 $inviter = User::find($user->invite_user_id);
                 if ($inviter && $inviter->commission_rate) {
                     $order->commission_balance = $order->total_amount * ($inviter->commission_rate / 100);

@@ -27,6 +27,7 @@ class UserUpdate extends FormRequest
             'u' => 'integer',
             'd' => 'integer',
             'balance' => 'integer',
+            'commission_type' => 'integer',
             'commission_balance' => 'integer',
             'remarks' => 'nullable'
         ];
