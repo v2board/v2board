@@ -79,7 +79,7 @@ class KnowledgeController extends Controller
         DB::beginTransaction();
         try {
             foreach ($request->input('knowledge_ids') as $k => $v) {
-                $knowledge = new Knowledge();
+                $knowledge = Knowledge::find($v);
                 $knowledge->timestamps = false;
                 $knowledge->update(['sort' => $k + 1]);
             }
