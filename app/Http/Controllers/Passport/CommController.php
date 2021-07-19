@@ -17,6 +17,7 @@ use ReCaptcha\ReCaptcha;
 
 class CommController extends Controller
 {
+    // TODO: remove on 1.5.5
     public function config()
     {
         return response([
