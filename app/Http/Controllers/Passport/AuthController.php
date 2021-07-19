@@ -204,6 +204,7 @@ class AuthController extends Controller
     public function getQuickLoginUrl(Request $request)
     {
         $authData = explode(':', base64_decode($request->input('auth_data')));
+        if (!isset($authData[0])) abort(403, __('Token error'));
         $user = User::where('email', $authData[0])
             ->where('password', $authData[1])
             ->first();
