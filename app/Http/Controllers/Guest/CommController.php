@@ -18,7 +18,7 @@ class CommController extends Controller
                     ? $this->getEmailSuffix()
                     : 0,
                 'is_recaptcha' => (int)config('v2board.recaptcha_enable', 0) ? 1 : 0,
-                'recaptcha_siteKey' => config('v2board.recaptcha_site_key'),
+                'recaptcha_site_key' => config('v2board.recaptcha_site_key'),
                 'app_description' => config('v2board.app_description'),
                 'app_url' => config('v2board.app_url')
             ]
