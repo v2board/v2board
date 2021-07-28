@@ -2,9 +2,9 @@
 <html>
 
 <head>
-    <link rel="stylesheet" href="/theme/v2board/assets/components.chunk.css?v={{$verison}}">
-    <link rel="stylesheet" href="/theme/v2board/assets/umi.css?v={{$verison}}">
-    <link rel="stylesheet" href="/theme/v2board/assets/custom.css?v={{$verison}}">
+    <link rel="stylesheet" href="/theme/{{$theme}}/assets/components.chunk.css?v={{$verison}}">
+    <link rel="stylesheet" href="/theme/{{$theme}}/assets/umi.css?v={{$verison}}">
+    <link rel="stylesheet" href="/theme/{{$theme}}/assets/custom.css?v={{$verison}}">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
     <title>{{$title}}</title>
@@ -28,9 +28,9 @@
 
 <body>
 <div id="root"></div>
-<script src="/theme/v2board/assets/vendors.async.js?v={{$verison}}"></script>
-<script src="/theme/v2board/assets/components.async.js?v={{$verison}}"></script>
-<script src="/theme/v2board/assets/umi.js?v={{$verison}}"></script>
+<script src="/theme/{{$theme}}/assets/vendors.async.js?v={{$verison}}"></script>
+<script src="/theme/{{$theme}}/assets/components.async.js?v={{$verison}}"></script>
+<script src="/theme/{{$theme}}/assets/umi.js?v={{$verison}}"></script>
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-P1E9Z5LRRK"></script>
 <script>
