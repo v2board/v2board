@@ -21,6 +21,17 @@ class ConfigController extends Controller
         ]);
     }
 
+    public function getThemeTemplate()
+    {
+        $path = public_path('theme/');
+        $files = array_map(function ($item) use ($path) {
+            return str_replace($path, '', $item);
+        }, glob($path . '*'));
+        return response([
+            'data' => $files
+        ]);
+    }
+
     public function setTelegramWebhook(Request $request)
     {
         $telegramService = new TelegramService($request->input('telegram_bot_token'));
@@ -109,6 +120,7 @@ class ConfigController extends Controller
                     'epay_key' => config('v2board.epay_key'),
                 ],
                 'frontend' => [
+                    'frontend_theme' => config('v2board.frontend_theme', 'v2board'),
                     'frontend_theme_sidebar' => config('v2board.frontend_theme_sidebar', 'light'),
                     'frontend_theme_header' => config('v2board.frontend_theme_header', 'dark'),
                     'frontend_theme_color' => config('v2board.frontend_theme_color', 'default'),
