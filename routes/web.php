@@ -19,7 +19,7 @@ Route::get('/', function (Request $request) {
             abort(403);
         }
     }
-    return view('app', [
+    return view('theme::v2board.index', [
         'title' => config('v2board.app_name', 'V2Board'),
         'theme_sidebar' => config('v2board.frontend_theme_sidebar', 'light'),
         'theme_header' => config('v2board.frontend_theme_header', 'dark'),
