@@ -42,7 +42,9 @@ class CheckOrder extends Command
      */
     public function handle()
     {
-        $orders = Order::get();
+        ini_set('memory_limit', -1);
+        $orders = Order::whereIn('status', [0, 1])
+            ->get();
         foreach ($orders as $item) {
             $orderService = new OrderService($item);
             switch ($item->status) {

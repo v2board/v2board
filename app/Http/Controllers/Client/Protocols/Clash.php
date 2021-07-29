@@ -1,10 +1,61 @@
 <?php
 
-namespace App\Utils;
+namespace App\Http\Controllers\Client\Protocols;
 
+use Symfony\Component\Yaml\Yaml;
 
 class Clash
 {
+    public $flag = 'clash';
+    private $servers;
+    private $user;
+
+    public function __construct($user, $servers)
+    {
+        $this->user = $user;
+        $this->servers = $servers;
+    }
+
+    public function handle()
+    {
+        $servers = $this->servers;
+        $user = $this->user;
+        header("subscription-userinfo: upload={$user['u']}; download={$user['d']}; total={$user['transfer_enable']}; expire={$user['expired_at']}");
+        $defaultConfig = base_path() . '/resources/rules/default.clash.yaml';
+        $customConfig = base_path() . '/resources/rules/custom.clash.yaml';
+        if (\File::exists($customConfig)) {
+            $config = Yaml::parseFile($customConfig);
+        } else {
+            $config = Yaml::parseFile($defaultConfig);
+        }
+        $proxy = [];
+        $proxies = [];
+
+        foreach ($servers as $item) {
+            if ($item['type'] === 'shadowsocks') {
+                array_push($proxy, self::buildShadowsocks($user['uuid'], $item));
+                array_push($proxies, $item['name']);
+            }
+            if ($item['type'] === 'v2ray') {
+                array_push($proxy, self::buildVmess($user['uuid'], $item));
+                array_push($proxies, $item['name']);
+            }
+            if ($item['type'] === 'trojan') {
+                array_push($proxy, self::buildTrojan($user['uuid'], $item));
+                array_push($proxies, $item['name']);
+            }
+        }
+
+        $config['proxies'] = array_merge($config['proxies'] ? $config['proxies'] : [], $proxy);
+        foreach ($config['proxy-groups'] as $k => $v) {
+            if (!is_array($config['proxy-groups'][$k]['proxies'])) continue;
+            $config['proxy-groups'][$k]['proxies'] = array_merge($config['proxy-groups'][$k]['proxies'], $proxies);
+        }
+        $yaml = Yaml::dump($config);
+        $yaml = str_replace('$app_name', config('v2board.app_name', 'V2Board'), $yaml);
+        return $yaml;
+    }
+
     public static function buildShadowsocks($uuid, $server)
     {
         $array = [];
@@ -48,6 +99,14 @@ class Clash
                     $array['ws-path'] = $wsSettings['path'];
                 if (isset($wsSettings['headers']['Host']) && !empty($wsSettings['headers']['Host']))
                     $array['ws-headers'] = ['Host' => $wsSettings['headers']['Host']];
+            }
+        }
+        if ($server['network'] === 'grpc') {
+            $array['network'] = 'grpc';
+            if ($server['networkSettings']) {
+                $grpcObject = json_decode($server['networkSettings'], true);
+                $array['grpc-opts'] = [];
+                $array['grpc-opts']['grpc-service-name'] = $grpcObject['serviceName'];
             }
         }
 

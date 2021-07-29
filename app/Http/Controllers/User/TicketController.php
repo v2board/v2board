@@ -23,7 +23,7 @@ class TicketController extends Controller
                 ->where('user_id', $request->session()->get('id'))
                 ->first();
             if (!$ticket) {
-                abort(500, __('user.ticket.fetch.ticket_not_exist'));
+                abort(500, __('Ticket does not exist'));
             }
             $ticket['message'] = TicketMessage::where('ticket_id', $ticket->id)->get();
             for ($i = 0; $i < count($ticket['message']); $i++) {
@@ -56,7 +56,7 @@ class TicketController extends Controller
     {
         DB::beginTransaction();
         if ((int)Ticket::where('status', 0)->where('user_id', $request->session()->get('id'))->count()) {
-            abort(500, __('user.ticket.save.exist_other_open_ticket'));
+            abort(500, __('There are other unresolved tickets'));
         }
         $ticket = Ticket::create(array_merge($request->only([
             'subject',
@@ -67,7 +67,7 @@ class TicketController extends Controller
         ]));
         if (!$ticket) {
             DB::rollback();
-            abort(500, __('user.ticket.save.ticket_create_failed'));
+            abort(500, __('Failed to open ticket'));
         }
         $ticketMessage = TicketMessage::create([
             'user_id' => $request->session()->get('id'),
@@ -76,7 +76,7 @@ class TicketController extends Controller
         ]);
         if (!$ticketMessage) {
             DB::rollback();
-            abort(500, __('user.ticket.save.ticket_create_failed'));
+            abort(500, __('Failed to open ticket'));
         }
         DB::commit();
         $this->sendNotify($ticket, $ticketMessage);
@@ -88,22 +88,22 @@ class TicketController extends Controller
     public function reply(Request $request)
     {
         if (empty($request->input('id'))) {
-            abort(500, __('user.ticket.reply.params_wrong'));
+            abort(500, __('Invalid parameter'));
         }
         if (empty($request->input('message'))) {
-            abort(500, __('user.ticket.reply.message_not_empty'));
+            abort(500, __('Message cannot be empty'));
         }
         $ticket = Ticket::where('id', $request->input('id'))
             ->where('user_id', $request->session()->get('id'))
             ->first();
         if (!$ticket) {
-            abort(500, __('user.ticket.reply.ticket_not_exist'));
+            abort(500, __('Ticket does not exist'));
         }
         if ($ticket->status) {
-            abort(500, __('user.ticket.reply.ticket_close_not_reply'));
+            abort(500, __('The ticket is closed and cannot be replied'));
         }
         if ($request->session()->get('id') == $this->getLastMessage($ticket->id)->user_id) {
-            abort(500, __('user.ticket.reply.wait_reply'));
+            abort(500, __('Please wait for the technical enginneer to reply'));
         }
         DB::beginTransaction();
         $ticketMessage = TicketMessage::create([
@@ -114,7 +114,7 @@ class TicketController extends Controller
         $ticket->last_reply_user_id = $request->session()->get('id');
         if (!$ticketMessage || !$ticket->save()) {
             DB::rollback();
-            abort(500, __('user.ticket.reply.ticket_reply_failed'));
+            abort(500, __('Ticket reply failed'));
         }
         DB::commit();
         $this->sendNotify($ticket, $ticketMessage);
@@ -127,17 +127,17 @@ class TicketController extends Controller
     public function close(Request $request)
     {
         if (empty($request->input('id'))) {
-            abort(500, __('user.ticket.close.params_wrong'));
+            abort(500, __('Invalid parameter'));
         }
         $ticket = Ticket::where('id', $request->input('id'))
             ->where('user_id', $request->session()->get('id'))
             ->first();
         if (!$ticket) {
-            abort(500, __('user.ticket.close.ticket_not_exist'));
+            abort(500, __('Ticket does not exist'));
         }
         $ticket->status = 1;
         if (!$ticket->save()) {
-            abort(500, __('user.ticket.close.close_failed'));
+            abort(500, __('Close failed'));
         }
         return response([
             'data' => true
@@ -163,15 +163,15 @@ class TicketController extends Controller
                 Dict::WITHDRAW_METHOD_WHITELIST_DEFAULT
             )
         )) {
-            abort(500, __('user.ticket.withdraw.not_support_withdraw_method'));
+            abort(500, __('Unsupported withdrawal method'));
         }
         $user = User::find($request->session()->get('id'));
         $limit = config('v2board.commission_withdraw_limit', 100);
         if ($limit > ($user->commission_balance / 100)) {
-            abort(500, __('user.ticket.withdraw.system_require_withdraw_limit', ['limit' => $limit]));
+            abort(500, __('The current required minimum withdrawal commission is', ['limit' => $limit]));
         }
         DB::beginTransaction();
-        $subject = __('user.ticket.withdraw.ticket_subject');
+        $subject = __('[Commission Withdrawal Request] This ticket is opened by the system');
         $ticket = Ticket::create([
             'subject' => $subject,
             'level' => 2,
@@ -180,12 +180,12 @@ class TicketController extends Controller
         ]);
         if (!$ticket) {
             DB::rollback();
-            abort(500, __('user.ticket.withdraw.ticket_create_failed'));
+            abort(500, __('Failed to open ticket'));
         }
-        $message = __('user.ticket.withdraw.ticket_message', [
-            'method' => $request->input('withdraw_method'),
-            'account' => $request->input('withdraw_account')
-        ]);
+        $message = sprintf("%s\r\n%s",
+            __('Withdrawal method') . "：" . $request->input('withdraw_method'),
+            __('Withdrawal account') . "：" . $request->input('withdraw_account')
+        );
         $ticketMessage = TicketMessage::create([
             'user_id' => $request->session()->get('id'),
             'ticket_id' => $ticket->id,
@@ -193,7 +193,7 @@ class TicketController extends Controller
         ]);
         if (!$ticketMessage) {
             DB::rollback();
-            abort(500, __('user.ticket.withdraw.ticket_create_failed'));
+            abort(500, __('Failed to open ticket'));
         }
         DB::commit();
         $this->sendNotify($ticket, $ticketMessage);

@@ -21,6 +21,17 @@ class ConfigController extends Controller
         ]);
     }
 
+    public function getThemeTemplate()
+    {
+        $path = public_path('theme/');
+        $files = array_map(function ($item) use ($path) {
+            return str_replace($path, '', $item);
+        }, glob($path . '*'));
+        return response([
+            'data' => $files
+        ]);
+    }
+
     public function setTelegramWebhook(Request $request)
     {
         $telegramService = new TelegramService($request->input('telegram_bot_token'));
@@ -72,8 +83,10 @@ class ConfigController extends Controller
                 'subscribe' => [
                     'plan_change_enable' => (int)config('v2board.plan_change_enable', 1),
                     'reset_traffic_method' => (int)config('v2board.reset_traffic_method', 0),
-                    'renew_reset_traffic_enable' => (int)config('v2board.renew_reset_traffic_enable', 0),
-                    'surplus_enable' => (int)config('v2board.surplus_enable', 1)
+                    'surplus_enable' => (int)config('v2board.surplus_enable', 1),
+                    'new_order_event_id' => (int)config('v2board.new_order_event_id', 0),
+                    'renew_order_event_id' => (int)config('v2board.renew_order_event_id', 0),
+                    'change_order_event_id' => (int)config('v2board.change_order_event_id', 0),
                 ],
                 'pay' => [
                     // alipay
@@ -107,6 +120,7 @@ class ConfigController extends Controller
                     'epay_key' => config('v2board.epay_key'),
                 ],
                 'frontend' => [
+                    'frontend_theme' => config('v2board.frontend_theme', 'v2board'),
                     'frontend_theme_sidebar' => config('v2board.frontend_theme_sidebar', 'light'),
                     'frontend_theme_header' => config('v2board.frontend_theme_header', 'dark'),
                     'frontend_theme_color' => config('v2board.frontend_theme_color', 'default'),

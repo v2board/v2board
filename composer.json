@@ -15,6 +15,7 @@
         "laravel/framework": "^6.0",
         "laravel/tinker": "^1.0",
         "lokielse/omnipay-alipay": "3.0.6",
+        "lokielse/omnipay-wechatpay": "^3.0",
         "php-curl-class/php-curl-class": "^8.6",
         "stripe/stripe-php": "^7.36.1",
         "symfony/yaml": "^4.3"
@@ -64,11 +65,5 @@
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"
         ]
-    },
-    "repositories": {
-        "packagist": {
-            "type": "composer",
-            "url": "https://mirrors.aliyun.com/composer/"
-        }
     }
 }

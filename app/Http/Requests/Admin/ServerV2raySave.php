@@ -25,7 +25,7 @@ class ServerV2raySave extends FormRequest
             'tags' => 'nullable|array',
             'rate' => 'required|numeric',
             'alter_id' => 'required|integer',
-            'network' => 'required|in:tcp,kcp,ws,http,domainsocket,quic',
+            'network' => 'required|in:tcp,kcp,ws,http,domainsocket,quic,grpc',
             'networkSettings' => '',
             'ruleSettings' => '',
             'tlsSettings' => '',

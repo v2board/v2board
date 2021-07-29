@@ -77,11 +77,15 @@ class KnowledgeController extends Controller
     public function sort(KnowledgeSort $request)
     {
         DB::beginTransaction();
-        foreach ($request->input('knowledge_ids') as $k => $v) {
-            if (!Knowledge::find($v)->update(['sort' => $k + 1])) {
-                DB::rollBack();
-                abort(500, '保存失败');
+        try {
+            foreach ($request->input('knowledge_ids') as $k => $v) {
+                $knowledge = Knowledge::find($v);
+                $knowledge->timestamps = false;
+                $knowledge->update(['sort' => $k + 1]);
             }
+        } catch (\Exception $e) {
+            DB::rollBack();
+            abort(500, '保存失败');
         }
         DB::commit();
         return response([

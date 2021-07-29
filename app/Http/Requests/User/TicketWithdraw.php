@@ -22,9 +22,8 @@ class TicketWithdraw  extends FormRequest
     public function messages()
     {
         return [
-            'withdraw_method.required' => '提现方式不能为空',
-            'withdraw_method.in' => '提现方式不支持',
-            'withdraw_account.required' => '提现账号不能为空'
+            'withdraw_method.required' => __('The withdrawal method cannot be empty'),
+            'withdraw_account.required' => __('The withdrawal account cannot be empty')
         ];
     }
 }

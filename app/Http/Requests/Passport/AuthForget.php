@@ -23,11 +23,11 @@ class AuthForget extends FormRequest
     public function messages()
     {
         return [
-            'email.required' => '邮箱不能为空',
-            'email.email' => '邮箱格式不正确',
-            'password.required' => '密码不能为空',
-            'password.min' => '密码必须大于8位数',
-            'email_code.required' => '邮箱验证码不能为空'
+            'email.required' => __('Email can not be empty'),
+            'email.email' => __('Email format is incorrect'),
+            'password.required' => __('Password can not be empty'),
+            'password.min' => __('Password must be greater than 8 digits'),
+            'email_code.required' => __('Email verification code cannot be empty')
         ];
     }
 }

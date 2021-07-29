@@ -1,10 +1,46 @@
 <?php
 
-namespace App\Utils;
-
+namespace App\Http\Controllers\Client\Protocols;
 
 class Shadowrocket
 {
+    public $flag = 'shadowrocket';
+    private $servers;
+    private $user;
+
+    public function __construct($user, $servers)
+    {
+        $this->user = $user;
+        $this->servers = $servers;
+    }
+
+    public function handle()
+    {
+        $servers = $this->servers;
+        $user = $this->user;
+
+        $uri = '';
+        //display remaining traffic and expire date
+        $upload = round($user['u'] / (1024*1024*1024), 2);
+        $download = round($user['d'] / (1024*1024*1024), 2);
+        $totalTraffic = round($user['transfer_enable'] / (1024*1024*1024), 2);
+        $expiredDate = date('Y-m-d', $user['expired_at']);
+        $uri .= "STATUS=🚀↑:{$upload}GB,↓:{$download}GB,TOT:{$totalTraffic}GB💡Expires:{$expiredDate}\r\n";
+        foreach ($servers as $item) {
+            if ($item['type'] === 'shadowsocks') {
+                $uri .= self::buildShadowsocks($user['uuid'], $item);
+            }
+            if ($item['type'] === 'v2ray') {
+                $uri .= self::buildVmess($user['uuid'], $item);
+            }
+            if ($item['type'] === 'trojan') {
+                $uri .= self::buildTrojan($user['uuid'], $item);
+            }
+        }
+        return base64_encode($uri);
+    }
+
+
     public static function buildShadowsocks($password, $server)
     {
         $name = rawurlencode($server['name']);
@@ -42,6 +78,19 @@ class Shadowrocket
                     $config['path'] = $wsSettings['path'];
                 if (isset($wsSettings['headers']['Host']) && !empty($wsSettings['headers']['Host']))
                     $config['obfsParam'] = $wsSettings['headers']['Host'];
+            }
+        }
+        if ($server['network'] === 'grpc') {
+            $config['obfs'] = "grpc";
+            if ($server['networkSettings']) {
+                $grpcSettings = json_decode($server['networkSettings'], true);
+                if (isset($grpcSettings['serviceName']) && !empty($grpcSettings['serviceName']))
+                    $config['path'] = $grpcSettings['serviceName'];
+            }
+            if (isset($tlsSettings)) {
+                $config['host'] = $tlsSettings['serverName'];
+            } else {
+                $config['host'] = $server['host'];
             }
         }
         $query = http_build_query($config, '', '&', PHP_QUERY_RFC3986);

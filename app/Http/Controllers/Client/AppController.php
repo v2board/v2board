@@ -8,6 +8,7 @@ use App\Services\UserService;
 use App\Utils\Clash;
 use Illuminate\Http\Request;
 use App\Models\Server;
+use Illuminate\Support\Facades\File;
 use Symfony\Component\Yaml\Yaml;
 
 class AppController extends Controller
@@ -25,21 +26,27 @@ class AppController extends Controller
             $serverService = new ServerService();
             $servers = $serverService->getAvailableServers($user);
         }
-        $config = Yaml::parseFile(base_path() . '/resources/rules/app.clash.yaml');
+        $defaultConfig = base_path() . '/resources/rules/app.clash.yaml';
+        $customConfig = base_path() . '/resources/rules/custom.app.clash.yaml';
+        if (File::exists($customConfig)) {
+            $config = Yaml::parseFile($customConfig);
+        } else {
+            $config = Yaml::parseFile($defaultConfig);
+        }
         $proxy = [];
         $proxies = [];
 
         foreach ($servers as $item) {
             if ($item['type'] === 'shadowsocks') {
-                array_push($proxy, Clash::buildShadowsocks($user['uuid'], $item));
+                array_push($proxy, Protocols\Clash::buildShadowsocks($user['uuid'], $item));
                 array_push($proxies, $item['name']);
             }
             if ($item['type'] === 'v2ray') {
-                array_push($proxy, Clash::buildVmess($user['uuid'], $item));
+                array_push($proxy, Protocols\Clash::buildVmess($user['uuid'], $item));
                 array_push($proxies, $item['name']);
             }
             if ($item['type'] === 'trojan') {
-                array_push($proxy, Clash::buildTrojan($user['uuid'], $item));
+                array_push($proxy, Protocols\Clash::buildTrojan($user['uuid'], $item));
                 array_push($proxies, $item['name']);
             }
         }
@@ -83,63 +90,5 @@ class AppController extends Controller
                 'android_download_url' => config('v2board.android_download_url')
             ]
         ]);
-    }
-
-    public function config(Request $request)
-    {
-        if (empty($request->input('server_id'))) {
-            abort(500, '参数错误');
-        }
-        $user = $request->user;
-        if ($user->expired_at < time() && $user->expired_at !== NULL) {
-            abort(500, '订阅计划已过期');
-        }
-        $server = Server::where('show', 1)
-            ->where('id', $request->input('server_id'))
-            ->first();
-        if (!$server) {
-            abort(500, '服务器不存在');
-        }
-        $json = json_decode(self::CLIENT_CONFIG);
-        //socks
-        $json->inbound->port = (int)self::SOCKS_PORT;
-        //http
-        $json->inboundDetour[0]->port = (int)self::HTTP_PORT;
-        //other
-        $json->outbound->settings->vnext[0]->address = (string)$server->host;
-        $json->outbound->settings->vnext[0]->port = (int)$server->port;
-        $json->outbound->settings->vnext[0]->users[0]->id = (string)$user->uuid;
-        $json->outbound->settings->vnext[0]->users[0]->alterId = (int)$server->alter_id;
-        $json->outbound->settings->vnext[0]->remark = (string)$server->name;
-        $json->outbound->streamSettings->network = $server->network;
-        if ($server->networkSettings) {
-            switch ($server->network) {
-                case 'tcp':
-                    $json->outbound->streamSettings->tcpSettings = json_decode($server->networkSettings);
-                    break;
-                case 'kcp':
-                    $json->outbound->streamSettings->kcpSettings = json_decode($server->networkSettings);
-                    break;
-                case 'ws':
-                    $json->outbound->streamSettings->wsSettings = json_decode($server->networkSettings);
-                    break;
-                case 'http':
-                    $json->outbound->streamSettings->httpSettings = json_decode($server->networkSettings);
-                    break;
-                case 'domainsocket':
-                    $json->outbound->streamSettings->dsSettings = json_decode($server->networkSettings);
-                    break;
-                case 'quic':
-                    $json->outbound->streamSettings->quicSettings = json_decode($server->networkSettings);
-                    break;
-            }
-        }
-        if ($request->input('is_global')) {
-            $json->routing->settings->rules[0]->outboundTag = 'proxy';
-        }
-        if ($server->tls) {
-            $json->outbound->streamSettings->security = "tls";
-        }
-        die(json_encode($json, JSON_UNESCAPED_UNICODE));
     }
 }

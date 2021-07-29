@@ -31,7 +31,7 @@ class ConfigSave extends FormRequest
             'app_name' => '',
             'app_description' => '',
             'app_url' => 'nullable|url',
-            'subscribe_url' => 'nullable|url',
+            'subscribe_url' => 'nullable',
             'try_out_enable' => 'in:0,1',
             'try_out_plan_id' => 'integer',
             'try_out_hour' => 'numeric',
@@ -45,8 +45,10 @@ class ConfigSave extends FormRequest
             // subscribe
             'plan_change_enable' => 'in:0,1',
             'reset_traffic_method' => 'in:0,1',
-            'renew_reset_traffic_enable' => 'in:0,1',
             'surplus_enable' => 'in:0,1',
+            'new_order_event_id' => 'in:0,1',
+            'renew_order_event_id' => 'in:0,1',
+            'change_order_event_id' => 'in:0,1',
             // server
             'server_token' => 'nullable|min:16',
             'server_license' => 'nullable',
@@ -83,6 +85,7 @@ class ConfigSave extends FormRequest
             'epay_pid' => '',
             'epay_key' => '',
             // frontend
+            'frontend_theme' => '',
             'frontend_theme_sidebar' => 'in:dark,light',
             'frontend_theme_header' => 'in:dark,light',
             'frontend_theme_color' => 'in:default,darkblue,black',

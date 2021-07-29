@@ -23,6 +23,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        $this->app['view']->addNamespace('theme', public_path() . '/theme');
     }
 }

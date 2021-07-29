@@ -21,8 +21,8 @@ class CommSendEmailVerify extends FormRequest
     public function messages()
     {
         return [
-            'email.required' => '邮箱不能为空',
-            'email.email' => '邮箱格式不正确'
+            'email.required' => __('Email can not be empty'),
+            'email.email' => __('Email format is incorrect')
         ];
     }
 }

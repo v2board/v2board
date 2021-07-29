@@ -11,25 +11,25 @@ class CouponController extends Controller
     public function check(Request $request)
     {
         if (empty($request->input('code'))) {
-            abort(500, __('user.coupon.check.coupon_not_empty'));
+            abort(500, __('Coupon cannot be empty'));
         }
         $coupon = Coupon::where('code', $request->input('code'))->first();
         if (!$coupon) {
-            abort(500, __('user.coupon.check.coupon_invalid'));
+            abort(500, __('Invalid coupon'));
         }
         if ($coupon->limit_use <= 0 && $coupon->limit_use !== NULL) {
-            abort(500, __('user.coupon.check.coupon_not_available_by_number'));
+            abort(500, __('This coupon is no longer available'));
         }
         if (time() < $coupon->started_at) {
-            abort(500, __('user.coupon.check.coupon_not_available_by_time'));
+            abort(500, __('This coupon has not yet started'));
         }
         if (time() > $coupon->ended_at) {
-            abort(500, __('user.coupon.check.coupon_expired'));
+            abort(500, __('This coupon has expired'));
         }
         if ($coupon->limit_plan_ids) {
             $limitPlanIds = json_decode($coupon->limit_plan_ids);
             if (!in_array($request->input('plan_id'), $limitPlanIds)) {
-                abort(500, __('user.coupon.check.coupon_limit_plan'));
+                abort(500, __('The coupon code cannot be used for this subscription'));
             }
         }
         return response([

@@ -7,10 +7,10 @@ use App\Http\Requests\Admin\UserGenerate;
 use App\Http\Requests\Admin\UserSendMail;
 use App\Http\Requests\Admin\UserUpdate;
 use App\Jobs\SendEmailJob;
+use App\Services\UserService;
 use App\Utils\Helper;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Order;
 use App\Models\User;
 use App\Models\Plan;
 use Illuminate\Support\Facades\DB;
@@ -81,8 +81,12 @@ class UserController extends Controller
         if (empty($request->input('id'))) {
             abort(500, '参数错误');
         }
+        $user = User::find($request->input('id'));
+        if ($user->invite_user_id) {
+            $user['invite_user'] = User::find($user->invite_user_id);
+        }
         return response([
-            'data' => User::find($request->input('id'))
+            'data' => $user
         ]);
     }
 
@@ -108,6 +112,14 @@ class UserController extends Controller
                 abort(500, '订阅计划不存在');
             }
             $params['group_id'] = $plan->group_id;
+        }
+        if ($request->input('invite_user_email')) {
+            $inviteUser = User::where('email', $request->input('invite_user_email'))->first();
+            if ($inviteUser) {
+                $params['invite_user_id'] = $inviteUser->id;
+            }
+        } else {
+            $params['invite_user_id'] = null;
         }
 
         try {
@@ -263,32 +275,6 @@ class UserController extends Controller
 
         return response([
             'data' => true
-        ]);
-    }
-
-    public function setInviteUser(Request $request)
-    {
-        $request->validate([
-            'user_id' => 'required|integer',
-            'invite_user' => 'required',
-        ], [
-            'user_id.required' => '用户ID不能为空',
-            'user_id.integer' => '用户ID参数有误',
-            'invite_user.required' => '邀请人不能为空'
-        ]);
-
-        $user = User::find($request->input('user_id'));
-        if (!$user) abort(500, '用户不存在');
-        if (strpos($request->input('invite_user'), '@') !== -1) {
-            $inviteUser = User::where('email', $request->input('invite_user'))->first();
-        } else {
-            $inviteUser = User::find($request->input('invite_user'));
-        }
-        if (!$inviteUser) abort(500, '邀请人不存在');
-        $user->invite_user_id = $inviteUser->id;
-
-        return response([
-            'data' => $user->save()
         ]);
     }
 }

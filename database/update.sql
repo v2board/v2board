@@ -411,3 +411,17 @@ ALTER TABLE `v2_order`
 
 ALTER TABLE `v2_payment`
     ADD `uuid` char(32) NOT NULL AFTER `id`;
+
+ALTER TABLE `v2_user`
+    ADD UNIQUE `email_deleted_at` (`email`, `deleted_at`),
+DROP INDEX `email`;
+
+ALTER TABLE `v2_user`
+DROP `deleted_at`;
+
+ALTER TABLE `v2_user`
+    ADD UNIQUE `email` (`email`),
+DROP INDEX `email_deleted_at`;
+
+ALTER TABLE `v2_user`
+    ADD `commission_type` tinyint NOT NULL DEFAULT '0' COMMENT '0: system 1: cycle 2: onetime' AFTER `discount`;

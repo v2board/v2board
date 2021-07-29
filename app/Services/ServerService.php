@@ -8,8 +8,6 @@ use App\Models\User;
 use App\Models\Server;
 use App\Models\ServerTrojan;
 use App\Utils\CacheKey;
-use App\Utils\Helper;
-use App\Utils\URLSchemes;
 use Illuminate\Support\Facades\Cache;
 
 class ServerService
@@ -29,7 +27,6 @@ class ServerService
             $v2ray[$i]['type'] = 'v2ray';
             $groupId = json_decode($v2ray[$i]['group_id']);
             if (in_array($user->group_id, $groupId)) {
-                $v2ray[$i]['link'] = URLSchemes::buildVmess($v2ray[$i], $user);
                 if ($v2ray[$i]['parent_id']) {
                     $v2ray[$i]['last_check_at'] = Cache::get(CacheKey::get('SERVER_V2RAY_LAST_CHECK_AT', $v2ray[$i]['parent_id']));
                 } else {
@@ -54,7 +51,6 @@ class ServerService
         for ($i = 0; $i < count($trojan); $i++) {
             $trojan[$i]['type'] = 'trojan';
             $groupId = json_decode($trojan[$i]['group_id']);
-            $trojan[$i]['link'] = URLSchemes::buildTrojan($trojan[$i], $user);
             if (in_array($user->group_id, $groupId)) {
                 if ($trojan[$i]['parent_id']) {
                     $trojan[$i]['last_check_at'] = Cache::get(CacheKey::get('SERVER_TROJAN_LAST_CHECK_AT', $trojan[$i]['parent_id']));
@@ -78,7 +74,6 @@ class ServerService
         for ($i = 0; $i < count($shadowsocks); $i++) {
             $shadowsocks[$i]['type'] = 'shadowsocks';
             $groupId = json_decode($shadowsocks[$i]['group_id']);
-            $shadowsocks[$i]['link'] = URLSchemes::buildShadowsocks($shadowsocks[$i], $user);
             if (in_array($user->group_id, $groupId)) {
                 if ($shadowsocks[$i]['parent_id']) {
                     $shadowsocks[$i]['last_check_at'] = Cache::get(CacheKey::get('SERVER_SHADOWSOCKS_LAST_CHECK_AT', $shadowsocks[$i]['parent_id']));
@@ -195,6 +190,9 @@ class ServerService
                     break;
                 case 'quic':
                     $json->inbound->streamSettings->quicSettings = json_decode($server->networkSettings);
+                    break;
+                case 'grpc':
+                    $json->inbound->streamSettings->grpcSettings = json_decode($server->networkSettings);
                     break;
             }
         }
@@ -357,5 +355,18 @@ class ServerService
                 $servers[$k]['available_status'] = 2;
             }
         }
+    }
+
+    public function getAllServers()
+    {
+        $servers = array_merge(
+            $this->getShadowsocksServers(),
+            $this->getV2rayServers(),
+            $this->getTrojanServers()
+        );
+        $this->mergeData($servers);
+        $tmp = array_column($servers, 'sort');
+        array_multisort($tmp, SORT_ASC, $servers);
+        return $servers;
     }
 }

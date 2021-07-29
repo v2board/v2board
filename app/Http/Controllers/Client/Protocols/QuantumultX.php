@@ -1,10 +1,40 @@
 <?php
 
-namespace App\Utils;
+namespace App\Http\Controllers\Client\Protocols;
 
 
 class QuantumultX
 {
+    public $flag = 'quantumult%20x';
+    private $servers;
+    private $user;
+
+    public function __construct($user, $servers)
+    {
+        $this->user = $user;
+        $this->servers = $servers;
+    }
+
+    public function handle()
+    {
+        $servers = $this->servers;
+        $user = $this->user;
+        $uri = '';
+        header("subscription-userinfo: upload={$user['u']}; download={$user['d']}; total={$user['transfer_enable']}; expire={$user['expired_at']}");
+        foreach ($servers as $item) {
+            if ($item['type'] === 'shadowsocks') {
+                $uri .= self::buildShadowsocks($user['uuid'], $item);
+            }
+            if ($item['type'] === 'v2ray') {
+                $uri .= self::buildVmess($user['uuid'], $item);
+            }
+            if ($item['type'] === 'trojan') {
+                $uri .= self::buildTrojan($user['uuid'], $item);
+            }
+        }
+        return base64_encode($uri);
+    }
+
     public static function buildShadowsocks($password, $server)
     {
         $config = [

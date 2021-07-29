@@ -15,16 +15,8 @@ class ManageController extends Controller
     public function getNodes(Request $request)
     {
         $serverService = new ServerService();
-        $servers = array_merge(
-            $serverService->getShadowsocksServers(),
-            $serverService->getV2rayServers(),
-            $serverService->getTrojanServers()
-        );
-        $serverService->mergeData($servers);
-        $tmp = array_column($servers, 'sort');
-        array_multisort($tmp, SORT_ASC, $servers);
         return response([
-            'data' => $servers
+            'data' => $serverService->getAllServers()
         ]);
     }
 

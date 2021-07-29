@@ -29,19 +29,19 @@ class UserController extends Controller
     {
         $user = User::find($request->session()->get('id'));
         if (!$user) {
-            abort(500, __('user.user.changePassword.user_not_exist'));
+            abort(500, __('The user does not exist'));
         }
         if (!Helper::multiPasswordVerify(
             $user->password_algo,
             $request->input('old_password'),
             $user->password)
         ) {
-            abort(500, __('user.user.changePassword.old_password_wrong'));
+            abort(500, __('The old password is wrong'));
         }
         $user->password = password_hash($request->input('new_password'), PASSWORD_DEFAULT);
         $user->password_algo = NULL;
         if (!$user->save()) {
-            abort(500, __('user.user.changePassword.save_failed'));
+            abort(500, __('Save failed'));
         }
         $request->session()->flush();
         return response([
@@ -70,7 +70,7 @@ class UserController extends Controller
             ])
             ->first();
         if (!$user) {
-            abort(500, __('user.user.info.user_not_exist'));
+            abort(500, __('The user does not exist'));
         }
         $user['avatar_url'] = 'https://cdn.v2ex.com/gravatar/' . md5($user->email) . '?s=64&d=identicon';
         return response([
@@ -110,15 +110,20 @@ class UserController extends Controller
             ])
             ->first();
         if (!$user) {
-            abort(500, __('user.user.getSubscribe.user_not_exist'));
+            abort(500, __('The user does not exist'));
         }
         if ($user->plan_id) {
             $user['plan'] = Plan::find($user->plan_id);
             if (!$user['plan']) {
-                abort(500, __('user.user.getSubscribe.plan_not_exist'));
+                abort(500, __('Subscription plan does not exist'));
             }
         }
-        $user['subscribe_url'] = config('v2board.subscribe_url', config('v2board.app_url', env('APP_URL'))) . '/api/v1/client/subscribe?token=' . $user['token'];
+        $subscribeUrl = config('v2board.app_url', env('APP_URL'));
+        $subscribeUrls = explode(',', config('v2board.subscribe_url'));
+        if ($subscribeUrls) {
+            $subscribeUrl = $subscribeUrls[rand(0, count($subscribeUrls) - 1)];
+        }
+        $user['subscribe_url'] = "{$subscribeUrl}/api/v1/client/subscribe?token={$user['token']}";
         $user['reset_day'] = $this->getResetDay($user);
         return response([
             'data' => $user
@@ -129,12 +134,12 @@ class UserController extends Controller
     {
         $user = User::find($request->session()->get('id'));
         if (!$user) {
-            abort(500, __('user.user.resetSecurity.user_not_exist'));
+            abort(500, __('The user does not exist'));
         }
         $user->uuid = Helper::guid(true);
         $user->token = Helper::guid();
         if (!$user->save()) {
-            abort(500, __('user.user.resetSecurity.reset_failed'));
+            abort(500, __('Reset failed'));
         }
         return response([
             'data' => config('v2board.subscribe_url', config('v2board.app_url', env('APP_URL'))) . '/api/v1/client/subscribe?token=' . $user->token
@@ -150,12 +155,12 @@ class UserController extends Controller
 
         $user = User::find($request->session()->get('id'));
         if (!$user) {
-            abort(500, __('user.user.update.user_not_exist'));
+            abort(500, __('The user does not exist'));
         }
         try {
             $user->update($updateData);
         } catch (\Exception $e) {
-            abort(500, __('user.user.update.save_failed'));
+            abort(500, __('Save failed'));
         }
 
         return response([
@@ -167,15 +172,15 @@ class UserController extends Controller
     {
         $user = User::find($request->session()->get('id'));
         if (!$user) {
-            abort(500, __('user.user.transfer.user_not_exist'));
+            abort(500, __('The user does not exist'));
         }
         if ($request->input('transfer_amount') > $user->commission_balance) {
-            abort(500, __('user.user.transfer.insufficient_commission_balance'));
+            abort(500, __('Insufficient commission balance'));
         }
         $user->commission_balance = $user->commission_balance - $request->input('transfer_amount');
         $user->balance = $user->balance + $request->input('transfer_amount');
         if (!$user->save()) {
-            abort(500, __('user.user.transfer.transfer_failed'));
+            abort(500, __('Transfer failed'));
         }
         return response([
             'data' => true

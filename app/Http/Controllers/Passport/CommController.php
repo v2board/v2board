@@ -17,6 +17,7 @@ use ReCaptcha\ReCaptcha;
 
 class CommController extends Controller
 {
+    // TODO: remove on 1.5.5
     public function config()
     {
         return response([
@@ -47,15 +48,15 @@ class CommController extends Controller
             $recaptcha = new ReCaptcha(config('v2board.recaptcha_key'));
             $recaptchaResp = $recaptcha->verify($request->input('recaptcha_data'));
             if (!$recaptchaResp->isSuccess()) {
-                abort(500, '验证码有误');
+                abort(500, __('Invalid code is incorrect'));
             }
         }
         $email = $request->input('email');
         if (Cache::get(CacheKey::get('LAST_SEND_EMAIL_VERIFY_TIMESTAMP', $email))) {
-            abort(500, '验证码已发送，请过一会再请求');
+            abort(500, __('Email verification code has been sent, please request again later'));
         }
         $code = rand(100000, 999999);
-        $subject = config('v2board.app_name', 'V2Board') . '邮箱验证码';
+        $subject = config('v2board.app_name', 'V2Board') . __('Email verification code');
 
         SendEmailJob::dispatch([
             'email' => $email,

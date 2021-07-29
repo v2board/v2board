@@ -52,12 +52,12 @@ class OrderController extends Controller
             ->where('trade_no', $request->input('trade_no'))
             ->first();
         if (!$order) {
-            abort(500, __('user.order.details.order_not_exist'));
+            abort(500, __('Order does not exist or has been paid'));
         }
         $order['plan'] = Plan::find($order->plan_id);
         $order['try_out_plan_id'] = (int)config('v2board.try_out_plan_id');
         if (!$order['plan']) {
-            abort(500, __('user.order.details.plan_not_exist'));
+            abort(500, __('Subscription plan does not exist'));
         }
         return response([
             'data' => $order
@@ -68,38 +68,38 @@ class OrderController extends Controller
     {
         $userService = new UserService();
         if ($userService->isNotCompleteOrderByUserId($request->session()->get('id'))) {
-            abort(500, __('user.order.save.exist_open_order'));
+            abort(500, __('You have an unpaid or pending order, please try again later or cancel it'));
         }
 
         $plan = Plan::find($request->input('plan_id'));
         $user = User::find($request->session()->get('id'));
 
         if (!$plan) {
-            abort(500, __('user.order.save.plan_not_exist'));
+            abort(500, __('Subscription plan does not exist'));
         }
 
         if ((!$plan->show && !$plan->renew) || (!$plan->show && $user->plan_id !== $plan->id)) {
             if ($request->input('cycle') !== 'reset_price') {
-                abort(500, __('user.order.save.plan_stop_sell'));
+                abort(500, __('This subscription has been sold out, please choose another subscription'));
             }
         }
 
         if (!$plan->renew && $user->plan_id == $plan->id && $request->input('cycle') !== 'reset_price') {
-            abort(500, __('user.order.save.plan_stop_renew'));
+            abort(500, __('This subscription cannot be renewed, please change to another subscription'));
         }
 
         if ($plan[$request->input('cycle')] === NULL) {
-            abort(500, __('user.order.save.plan_stop'));
+            abort(500, __('This payment cycle cannot be purchased, please choose another cycle'));
         }
 
         if ($request->input('cycle') === 'reset_price') {
             if ($user->expired_at <= time() || !$user->plan_id) {
-                abort(500, __('user.order.save.plan_exist_not_buy_package'));
+                abort(500, __('Subscription has expired or no active subscription, unable to purchase Data Reset Package'));
             }
         }
 
         if (!$plan->show && $plan->renew && !$userService->isAvailable($user)) {
-            abort(500, __('user.order.save.plan_expired'));
+            abort(500, __('This subscription has expired, please change to another subscription'));
         }
 
         DB::beginTransaction();
@@ -115,7 +115,7 @@ class OrderController extends Controller
             $couponService = new CouponService($request->input('coupon_code'));
             if (!$couponService->use($order)) {
                 DB::rollBack();
-                abort(500, __('user.order.save.coupon_use_failed'));
+                abort(500, __('Coupon failed'));
             }
             $order->coupon_id = $couponService->getId();
         }
@@ -130,14 +130,14 @@ class OrderController extends Controller
             if ($remainingBalance > 0) {
                 if (!$userService->addBalance($order->user_id, - $order->total_amount)) {
                     DB::rollBack();
-                    abort(500, __('user.order.save.insufficient_balance'));
+                    abort(500, __('Insufficient balance'));
                 }
                 $order->balance_amount = $order->total_amount;
                 $order->total_amount = 0;
             } else {
                 if (!$userService->addBalance($order->user_id, - $user->balance)) {
                     DB::rollBack();
-                    abort(500, __('user.order.save.insufficient_balance'));
+                    abort(500, __('Insufficient balance'));
                 }
                 $order->balance_amount = $user->balance;
                 $order->total_amount = $order->total_amount - $user->balance;
@@ -146,7 +146,7 @@ class OrderController extends Controller
 
         if (!$order->save()) {
             DB::rollback();
-            abort(500, __('user.order.save.order_create_failed'));
+            abort(500, __('Failed to create order'));
         }
 
         DB::commit();
@@ -165,7 +165,7 @@ class OrderController extends Controller
             ->where('status', 0)
             ->first();
         if (!$order) {
-            abort(500, __('user.order.checkout.order_not_exist_or_paid'));
+            abort(500, __('Order does not exist or has been paid'));
         }
         // free process
         if ($order->total_amount <= 0) {
@@ -178,7 +178,7 @@ class OrderController extends Controller
             ]);
         }
         $payment = Payment::find($method);
-        if (!$payment || $payment->enable !== 1) abort(500, __('user.order.checkout.pay_method_not_use'));
+        if (!$payment || $payment->enable !== 1) abort(500, __('Payment method is not available'));
         $paymentService = new PaymentService($payment->payment, $payment->id);
         $result = $paymentService->pay([
             'trade_no' => $tradeNo,
@@ -200,7 +200,7 @@ class OrderController extends Controller
             ->where('user_id', $request->session()->get('id'))
             ->first();
         if (!$order) {
-            abort(500, __('user.order.check.order_not_exist'));
+            abort(500, __('Order does not exist'));
         }
         return response([
             'data' => $order->status
@@ -224,20 +224,20 @@ class OrderController extends Controller
     public function cancel(Request $request)
     {
         if (empty($request->input('trade_no'))) {
-            abort(500, __('user.order.cancel.params_wrong'));
+            abort(500, __('Invalid parameter'));
         }
         $order = Order::where('trade_no', $request->input('trade_no'))
             ->where('user_id', $request->session()->get('id'))
             ->first();
         if (!$order) {
-            abort(500, __('user.order.cancel.order_not_exist'));
+            abort(500, __('Order does not exist'));
         }
         if ($order->status !== 0) {
-            abort(500, __('user.order.cancel.only_cancel_pending_order'));
+            abort(500, __('You can only cancel pending orders'));
         }
         $orderService = new OrderService($order);
         if (!$orderService->cancel()) {
-            abort(500, __('user.order.cancel.cancel_failed'));
+            abort(500, __('Cancel failed'));
         }
         return response([
             'data' => true

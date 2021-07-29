@@ -17,20 +17,14 @@ class User
     {
         if ($request->input('auth_data')) {
             $authData = explode(':', base64_decode($request->input('auth_data')));
+            if (!isset($authData[1]) || !isset($authData[0])) abort(403, '鉴权失败，请重新登入');
             $user = \App\Models\User::where('password', $authData[1])
                 ->where('email', $authData[0])
                 ->first();
-            if ($user) {
-                $request->session()->put('email', $user->email);
-                $request->session()->put('id', $user->id);
-            }
+            if (!$user) abort(403, '鉴权失败，请重新登入');
+            $request->session()->put('email', $user->email);
+            $request->session()->put('id', $user->id);
         }
-//        if ($request->input('lang')) {
-//            $request->session()->put('lang', $request->input('lang'));
-//        }
-//        if ($request->session()->get('lang')) {
-//            App::setLocale($request->session()->get('lang'));
-//        }
         if (!$request->session()->get('id')) {
             abort(403, '未登录或登陆已过期');
         }
