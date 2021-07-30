@@ -239,6 +239,7 @@ class OrderService
             return true;
         }
         $order->status = 1;
+        $order->paid_at = time();
         $order->callback_no = $callbackNo;
         return $order->save();
     }

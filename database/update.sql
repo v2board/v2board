@@ -425,3 +425,6 @@ DROP INDEX `email_deleted_at`;
 
 ALTER TABLE `v2_user`
     ADD `commission_type` tinyint NOT NULL DEFAULT '0' COMMENT '0: system 1: cycle 2: onetime' AFTER `discount`;
+
+ALTER TABLE `v2_order`
+    ADD `paid_at` int(11) NULL AFTER `commission_balance`;

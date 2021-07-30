@@ -110,6 +110,7 @@ CREATE TABLE `v2_order` (
                             `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0待支付1开通中2已取消3已完成4已折抵',
                             `commission_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0待确认1发放中2有效3无效',
                             `commission_balance` int(11) NOT NULL DEFAULT '0',
+                            `paid_at` int(11) DEFAULT NULL,
                             `created_at` int(11) NOT NULL,
                             `updated_at` int(11) NOT NULL,
                             PRIMARY KEY (`id`)
@@ -348,4 +349,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2021-07-13 13:50:52
+-- 2021-07-30 17:19:01
