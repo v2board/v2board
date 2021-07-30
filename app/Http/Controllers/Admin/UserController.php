@@ -68,7 +68,7 @@ class UserController extends Controller
                     $res[$i]['plan_name'] = $plan[$k]['name'];
                 }
             }
-            $res[$i]['subscribe_url'] = config('v2board.subscribe_url', config('v2board.app_url', env('APP_URL'))) . '/api/v1/client/subscribe?token=' . $res[$i]['token'];
+            $res[$i]['subscribe_url'] = Helper::getSubscribeHost() . '/api/v1/client/subscribe?token=' . $res[$i]['token'];
         }
         return response([
             'data' => $res,

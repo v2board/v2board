@@ -95,4 +95,14 @@ class Helper
             return round($byte, 2) . ' B';
         }
     }
+
+    public static function getSubscribeHost()
+    {
+        $subscribeUrl = config('v2board.app_url');
+        $subscribeUrls = explode(',', config('v2board.subscribe_url'));
+        if ($subscribeUrls && $subscribeUrls[0]) {
+            $subscribeUrl = $subscribeUrls[rand(0, count($subscribeUrls) - 1)];
+        }
+        return $subscribeUrl;
+    }
 }
