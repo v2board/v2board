@@ -166,7 +166,7 @@ class ConfigController extends Controller
 
     public function save(ConfigSave $request)
     {
-        $data = $request->input();
+        $data = $request->validated();
         $array = \Config::get('v2board');
         foreach ($data as $k => $v) {
             if (!in_array($k, array_keys($request->validated()))) {
