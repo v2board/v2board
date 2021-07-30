@@ -42,7 +42,7 @@ class PaymentController extends Controller
 
     public function save(Request $request)
     {
-        if (!config('v2board.site.app_url')) {
+        if (!config('v2board.app_url')) {
             abort(500, '请在站点配置中配置站点地址');
         }
         if ($request->input('id')) {
