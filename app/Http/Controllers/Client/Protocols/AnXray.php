@@ -64,8 +64,14 @@ class AnXray
             "encryption" => "none",
             "type" => urlencode($server['network']),
             "security" => $server['tls'] ? "tls" : "",
-            "sni" => $server['tls'] ? urlencode(json_decode($server['tlsSettings'], true)['serverName']) : ""
         ];
+        if ($server['tls']) {
+            if ($server['tlsSettings']) {
+                $tlsSettings = json_decode($server['tlsSettings'], true);
+                if (isset($tlsSettings['serverName']) && !empty($tlsSettings['serverName']))
+                    $config['sni'] = urlencode($tlsSettings['serverName']);
+            }
+        }
         if ((string)$server['network'] === 'ws') {
             $wsSettings = json_decode($server['networkSettings'], true);
             if (isset($wsSettings['path'])) $config['path'] = urlencode($wsSettings['path']);
