@@ -36,16 +36,16 @@ class ServerController extends Controller
         $current = $request->input('current') ? $request->input('current') : 1;
         $pageSize = $request->input('pageSize') >= 10 ? $request->input('pageSize') : 10;
         $serverLogModel = ServerLog::where('user_id', $request->session()->get('id'))
-            ->orderBy('created_at', 'DESC');
+            ->orderBy('log_at', 'DESC');
         switch ($type) {
             case 0:
-                $serverLogModel->where('created_at', '>=', strtotime(date('Y-m-d')));
+                $serverLogModel->where('log_at', '>=', strtotime(date('Y-m-d')));
                 break;
             case 1:
-                $serverLogModel->where('created_at', '>=', strtotime(date('Y-m-d')) - 604800);
+                $serverLogModel->where('log_at', '>=', strtotime(date('Y-m-d')) - 604800);
                 break;
             case 2:
-                $serverLogModel->where('created_at', '>=', strtotime(date('Y-m-1')));
+                $serverLogModel->where('log_at', '>=', strtotime(date('Y-m-1')));
         }
         $total = $serverLogModel->count();
         $res = $serverLogModel->forPage($current, $pageSize)

@@ -428,3 +428,7 @@ ALTER TABLE `v2_user`
 
 ALTER TABLE `v2_order`
     ADD `paid_at` int(11) NULL AFTER `commission_balance`;
+
+ALTER TABLE `v2_server_log`
+    ADD INDEX `user_id` (`user_id`),
+ADD INDEX `server_id` (`server_id`);
