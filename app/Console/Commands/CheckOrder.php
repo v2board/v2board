@@ -50,7 +50,7 @@ class CheckOrder extends Command
             switch ($item->status) {
                 // cancel
                 case 0:
-                    if (strtotime($item->created_at) <= (time() - 1800)) {
+                    if ($item->created_at <= (time() - 1800)) {
                         $orderService->cancel();
                     }
                     break;
