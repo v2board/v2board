@@ -42,6 +42,7 @@ class ResetTraffic extends Command
      */
     public function handle()
     {
+        ini_set('memory_limit', -1);
         DB::beginTransaction();
         $resetTrafficMethod = config('v2board.reset_traffic_method', 0);
         switch ((int)$resetTrafficMethod) {
