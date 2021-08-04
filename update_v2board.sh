@@ -3,6 +3,7 @@
 path="$( cd "$( dirname "$0"  )" && pwd  )"
 cd ${path}
 
+instances=4
 version() {
     echo -e "V2Board version: $(cat ${path}/config/app.php | grep -w 'version' | grep -vwi 'V2board' | awk '{print $3}' | sed $'s:\'::g')"
     echo -e "shell bash updated date: 2021-08-02"
@@ -56,51 +57,41 @@ update(){
         ${php_path} ${path}/composer.phar update -vvv
         ${php_path} ${path}/artisan v2board:update
         ${php_path} ${path}/artisan config:cache
-        pm2_path=$(which pm2)
+        v2board_queue_check=$(systemctl list-unit-files | grep -w "v2board@")
         if [ $? -eq 0 ]; then
-            pm2_root_check=$(systemctl list-unit-files | grep -w "pm2-root")
-            if [ $? -eq 0 ]; then
-                systemctl restart pm2-root
-                systemctl status pm2-root
-            else
-                cat > ${path}/pm2.yaml<<-EOF
-apps:
-  - name     : 'V2Board'
-    script   : '${php_path} ${path}/artisan queue:work --queue=send_email,send_telegram,stat_server'
-    instances: 4
-    out_file : '${path}/storage/logs/queue/queue.log'
-EOF
-                ${pm2_path} restart ${path}/pm2.yaml
-                ${pm2_path} startup
-                ${pm2_path} save
-                systemctl restart pm2-root
-                systemctl status pm2-root
-            fi
+            echo -e "\n正在重启队列服务"
+            for ((num=1; num<=${instances}; num ++))
+            do
+                systemctl restart v2board@queue${num}
+            done
+            echo -e "队列服务启动完成"
+            echo -e "检查队列服务启动状态"
+            systemctl status v2board@queue*| grep -Ew "Service|Active|Main PID" | grep -vw "systemd"
         else
-            v2board_queue_check=$(systemctl list-unit-files | grep -w "v2board-queue")
-            if [ $? -eq 0 ]; then
-                systemctl restart v2board-queue
-                systemctl status v2board-queue
-            else
-                cat > /etc/systemd/system/v2board-queue.service<<-EOF
+            cat > /etc/systemd/system/v2board@.service<<-EOF
 [Unit]
-Description=V2Board Queue Service
+Description=V2Board %i Service
 After=network.target
 Wants=network.target
 
 [Service]
 Type=simple
-PIDFile=/run/v2board-queue.pid
 ExecStart=${php_path} ${path}/artisan queue:work --queue=send_email,send_telegram,stat_server
 Restart=on-failure
 
 [Install]
 WantedBy=multi-user.target
 EOF
-                systemctl enable v2board-queue
-                systemctl restart v2board-queue
-                systemctl status v2board-queue
-            fi
+            systemctl daemon-reload
+            echo -e "\n正在启动队列服务"
+            for ((num=1; num<=${instances}; num ++))
+            do
+                systemctl enable v2board@queue${num}
+                systemctl restart v2board@queue${num}
+            done
+            echo -e "队列服务启动完成"
+            echo -e "检查队列服务启动状态"
+            systemctl status v2board@queue*| grep -Ew "Service|Active|Main PID" | grep -vw "systemd"
         fi
     else
         echo -e "\033[1;33mNot Found PHP, please install first\033[0m"
