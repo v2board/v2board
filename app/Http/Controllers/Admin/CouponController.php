@@ -24,10 +24,6 @@ class CouponController extends Controller
         $total = $builder->count();
         $coupons = $builder->forPage($current, $pageSize)
             ->get();
-
-        foreach ($coupons as $k => $v) {
-            if ($coupons[$k]['limit_plan_ids']) $coupons[$k]['limit_plan_ids'] = json_decode($coupons[$k]['limit_plan_ids']);
-        }
         return response([
             'data' => $coupons,
             'total' => $total
@@ -37,9 +33,6 @@ class CouponController extends Controller
     public function save(CouponSave $request)
     {
         $params = $request->validated();
-        if (isset($params['limit_plan_ids'])) {
-            $params['limit_plan_ids'] = json_encode($params['limit_plan_ids']);
-        }
         if (!$request->input('id')) {
             if (!isset($params['code'])) {
                 $params['code'] = Helper::randomChar(8);
@@ -68,9 +61,6 @@ class CouponController extends Controller
         }
 
         $params = $request->validated();
-        if (isset($params['limit_plan_ids'])) {
-            $params['limit_plan_ids'] = json_encode($params['limit_plan_ids']);
-        }
         if (!$request->input('id')) {
             if (!isset($params['code'])) {
                 $params['code'] = Helper::randomChar(8);
@@ -95,10 +85,8 @@ class CouponController extends Controller
     {
         $coupons = [];
         $coupon = $request->validated();
-        if (isset($coupon['limit_plan_ids'])) {
-            $coupon['limit_plan_ids'] = json_encode($coupon['limit_plan_ids']);
-        }
         $coupon['created_at'] = $coupon['updated_at'] = time();
+        $coupon['limit_plan_ids'] = json_encode($coupon['limit_plan_ids']);
         unset($coupon['generate_count']);
         for ($i = 0;$i < $request->input('generate_count');$i++) {
             $coupon['code'] = Helper::randomChar(8);
@@ -118,7 +106,7 @@ class CouponController extends Controller
             $endTime = date('Y-m-d H:i:s', $coupon['ended_at']);
             $limitUse = $coupon['limit_use'] ?? '不限制';
             $createTime = date('Y-m-d H:i:s', $coupon['created_at']);
-            $limitPlanIds = $coupon['limit_plan_ids'] ?? '不限制';
+            $limitPlanIds = implode("/", json_decode($coupon['limit_plan_ids'], true)) ?? '不限制';
             $data .= "{$coupon['name']},{$type},{$value},{$startTime},{$endTime},{$limitUse},{$limitPlanIds},{$coupon['code']},{$createTime}\r\n";
         }
         echo $data;

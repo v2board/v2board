@@ -11,6 +11,12 @@ class Server extends Model
     protected $guarded = ['id'];
     protected $casts = [
         'created_at' => 'timestamp',
-        'updated_at' => 'timestamp'
+        'updated_at' => 'timestamp',
+        'group_id' => 'array',
+        'tlsSettings' => 'array',
+        'networkSettings' => 'array',
+        'dnsSettings' => 'array',
+        'ruleSettings' => 'array',
+        'tag' => 'array'
     ];
 }

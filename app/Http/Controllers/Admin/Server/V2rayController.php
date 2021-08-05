@@ -14,11 +14,6 @@ class V2rayController extends Controller
     public function save(ServerV2raySave $request)
     {
         $params = $request->validated();
-        $params['group_id'] = json_encode($params['group_id']);
-        if (isset($params['tags'])) {
-            $params['tags'] = json_encode($params['tags']);
-        }
-
         if (isset($params['dnsSettings'])) {
             if (!is_object(json_decode($params['dnsSettings']))) {
                 abort(500, 'DNS规则配置格式不正确');

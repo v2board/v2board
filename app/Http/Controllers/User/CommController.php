@@ -27,9 +27,8 @@ class CommController extends Controller
             ->where('payment', 'StripeCredit')
             ->first();
         if (!$payment) abort(500, 'payment is not found');
-        $config = json_decode($payment->config, true);
         return response([
-            'data' => $config['stripe_pk_live']
+            'data' => $payment->config['stripe_pk_live']
         ]);
     }
 }

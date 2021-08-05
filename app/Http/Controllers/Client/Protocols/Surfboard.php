@@ -88,7 +88,7 @@ class Surfboard
         if ($server['tls']) {
             array_push($config, 'tls=true');
             if ($server['tlsSettings']) {
-                $tlsSettings = json_decode($server['tlsSettings'], true);
+                $tlsSettings = $server['tlsSettings'];
                 if (isset($tlsSettings['allowInsecure']) && !empty($tlsSettings['allowInsecure']))
                     array_push($config, 'skip-cert-verify=' . ($tlsSettings['allowInsecure'] ? 'true' : 'false'));
                 if (isset($tlsSettings['serverName']) && !empty($tlsSettings['serverName']))
@@ -98,7 +98,7 @@ class Surfboard
         if ($server['network'] === 'ws') {
             array_push($config, 'ws=true');
             if ($server['networkSettings']) {
-                $wsSettings = json_decode($server['networkSettings'], true);
+                $wsSettings = $server['networkSettings'];
                 if (isset($wsSettings['path']) && !empty($wsSettings['path']))
                     array_push($config, "ws-path={$wsSettings['path']}");
                 if (isset($wsSettings['headers']['Host']) && !empty($wsSettings['headers']['Host']))

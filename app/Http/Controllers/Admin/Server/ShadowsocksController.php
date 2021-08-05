@@ -14,11 +14,6 @@ class ShadowsocksController extends Controller
     public function save(ServerShadowsocksSave $request)
     {
         $params = $request->validated();
-        $params['group_id'] = json_encode($params['group_id']);
-        if (isset($params['tags'])) {
-            $params['tags'] = json_encode($params['tags']);
-        }
-
         if ($request->input('id')) {
             $server = ServerShadowsocks::find($request->input('id'));
             if (!$server) {
