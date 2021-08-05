@@ -50,11 +50,13 @@ class V2boardUpdate extends Command
             abort(500, '数据库文件格式有误');
         }
         $this->info('正在导入数据库请稍等...');
-        try {
-            foreach ($sql as $item) {
+        foreach ($sql as $item) {
+            if (!$item) continue;
+            try {
                 DB::select(DB::raw($item));
+            } catch (\Exception $e) {
+                echo $e->getMessage() . PHP_EOL;
             }
-        } catch (\Exception $e) {
         }
         $this->info('更新完毕');
     }
