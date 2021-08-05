@@ -136,9 +136,6 @@ class ConfigController extends Controller
                     'server_v2ray_domain' => config('v2board.server_v2ray_domain'),
                     'server_v2ray_protocol' => config('v2board.server_v2ray_protocol'),
                 ],
-                'tutorial' => [
-                    'apple_id' => config('v2board.apple_id')
-                ],
                 'email' => [
                     'email_template' => config('v2board.email_template', 'default'),
                     'email_host' => config('v2board.email_host'),

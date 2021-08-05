@@ -15,8 +15,9 @@ class User
      */
     public function handle($request, Closure $next)
     {
-        if ($request->input('auth_data')) {
-            $authData = explode(':', base64_decode($request->input('auth_data')));
+        $authorization = $request->input('auth_data') ?? $request->header('authorization');
+        if ($authorization) {
+            $authData = explode(':', base64_decode($authorization));
             if (!isset($authData[1]) || !isset($authData[0])) abort(403, '鉴权失败，请重新登入');
             $user = \App\Models\User::where('password', $authData[1])
                 ->where('email', $authData[0])
