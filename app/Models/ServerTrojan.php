@@ -12,6 +12,6 @@ class ServerTrojan extends Model
     protected $casts = [
         'created_at' => 'timestamp',
         'updated_at' => 'timestamp',
-        'tag' => 'array'
+        'tags' => 'array'
     ];
 }

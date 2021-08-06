@@ -17,6 +17,6 @@ class Server extends Model
         'networkSettings' => 'array',
         'dnsSettings' => 'array',
         'ruleSettings' => 'array',
-        'tag' => 'array'
+        'tags' => 'array'
     ];
 }
