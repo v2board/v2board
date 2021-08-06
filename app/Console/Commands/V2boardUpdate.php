@@ -55,7 +55,6 @@ class V2boardUpdate extends Command
             try {
                 DB::select(DB::raw($item));
             } catch (\Exception $e) {
-                echo $e->getMessage() . PHP_EOL;
             }
         }
         $this->info('更新完毕');
