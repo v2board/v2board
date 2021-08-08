@@ -37,7 +37,7 @@ class OrderService
         DB::beginTransaction();
         if ($order->surplus_order_ids) {
             try {
-                Order::whereIn('id', json_decode($order->surplus_order_ids))->update([
+                Order::whereIn('id', $order->surplus_order_ids)->update([
                     'status' => 4
                 ]);
             } catch (\Exception $e) {
@@ -190,7 +190,7 @@ class OrderService
         $result = $trafficUnitPrice * $notUsedTraffic;
         $orderModel = Order::where('user_id', $user->id)->where('cycle', '!=', 'reset_price')->where('status', 3);
         $order->surplus_amount = $result > 0 ? $result : 0;
-        $order->surplus_order_ids = json_encode(array_column($orderModel->get()->toArray(), 'id'));
+        $order->surplus_order_ids = array_column($orderModel->get()->toArray(), 'id');
     }
 
     private function orderIsUsed(Order $order):bool
@@ -229,7 +229,7 @@ class OrderService
             return;
         }
         $order->surplus_amount = $orderSurplusAmount > 0 ? $orderSurplusAmount : 0;
-        $order->surplus_order_ids = json_encode(array_column($orders->toArray(), 'id'));
+        $order->surplus_order_ids = array_column($orders->toArray(), 'id');
     }
 
     public function success(string $callbackNo)

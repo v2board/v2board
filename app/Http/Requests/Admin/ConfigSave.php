@@ -93,9 +93,6 @@ class ConfigSave extends FormRequest
             'frontend_admin_path' => '',
             'frontend_customer_service_method' => '',
             'frontend_customer_service_id' => '',
-            // tutorial
-            'apple_id' => 'nullable|email',
-            'apple_id_password' => '',
             // email
             'email_template' => '',
             'email_host' => '',

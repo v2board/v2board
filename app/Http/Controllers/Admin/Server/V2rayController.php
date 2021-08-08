@@ -14,34 +14,6 @@ class V2rayController extends Controller
     public function save(ServerV2raySave $request)
     {
         $params = $request->validated();
-        $params['group_id'] = json_encode($params['group_id']);
-        if (isset($params['tags'])) {
-            $params['tags'] = json_encode($params['tags']);
-        }
-
-        if (isset($params['dnsSettings'])) {
-            if (!is_object(json_decode($params['dnsSettings']))) {
-                abort(500, 'DNS规则配置格式不正确');
-            }
-        }
-
-        if (isset($params['ruleSettings'])) {
-            if (!is_object(json_decode($params['ruleSettings']))) {
-                abort(500, '审计规则配置格式不正确');
-            }
-        }
-
-        if (isset($params['networkSettings'])) {
-            if (!is_object(json_decode($params['networkSettings']))) {
-                abort(500, '传输协议配置格式不正确');
-            }
-        }
-
-        if (isset($params['tlsSettings'])) {
-            if (!is_object(json_decode($params['tlsSettings']))) {
-                abort(500, 'TLS配置格式不正确');
-            }
-        }
 
         if ($request->input('id')) {
             $server = Server::find($request->input('id'));

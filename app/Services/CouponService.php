@@ -44,8 +44,7 @@ class CouponService
             }
         }
         if ($this->coupon->limit_plan_ids) {
-            $limitPlanIds = json_decode($this->coupon->limit_plan_ids);
-            if (!in_array($order->plan_id, $limitPlanIds)) {
+            if (!in_array($order->plan_id, $this->coupon->limit_plan_ids)) {
                 return false;
             }
         }

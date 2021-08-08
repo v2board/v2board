@@ -27,8 +27,7 @@ class CouponController extends Controller
             abort(500, __('This coupon has expired'));
         }
         if ($coupon->limit_plan_ids) {
-            $limitPlanIds = json_decode($coupon->limit_plan_ids);
-            if (!in_array($request->input('plan_id'), $limitPlanIds)) {
+            if (!in_array($request->input('plan_id'), $coupon->limit_plan_ids)) {
                 abort(500, __('The coupon code cannot be used for this subscription'));
             }
         }

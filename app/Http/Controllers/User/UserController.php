@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\User\UserTransfer;
 use App\Http\Requests\User\UserUpdate;
 use App\Http\Requests\User\UserChangePassword;
+use App\Utils\CacheKey;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Plan;
@@ -14,6 +15,7 @@ use App\Models\Ticket;
 use App\Utils\Helper;
 use App\Models\Order;
 use App\Models\ServerLog;
+use Illuminate\Support\Facades\Cache;
 
 class UserController extends Controller
 {
@@ -203,5 +205,27 @@ class UserController extends Controller
             }
         }
         return null;
+    }
+
+
+    public function getQuickLoginUrl(Request $request)
+    {
+        $user = User::find($request->session()->get('id'));
+        if (!$user) {
+            abort(500, __('The user does not exist'));
+        }
+
+        $code = Helper::guid();
+        $key = CacheKey::get('TEMP_TOKEN', $code);
+        Cache::put($key, $user->id, 60);
+        $redirect = '/#/login?verify=' . $code . '&redirect=' . ($request->input('redirect') ? $request->input('redirect') : 'dashboard');
+        if (config('v2board.app_url')) {
+            $url = config('v2board.app_url') . $redirect;
+        } else {
+            $url = url($redirect);
+        }
+        return response([
+            'data' => $url
+        ]);
     }
 }

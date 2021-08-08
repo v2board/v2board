@@ -63,7 +63,7 @@ class Shadowrocket
         if ($server['tls']) {
             $config['tls'] = 1;
             if ($server['tlsSettings']) {
-                $tlsSettings = json_decode($server['tlsSettings'], true);
+                $tlsSettings = $server['tlsSettings'];
                 if (isset($tlsSettings['allowInsecure']) && !empty($tlsSettings['allowInsecure']))
                     $config['allowInsecure'] = (int)$tlsSettings['allowInsecure'];
                 if (isset($tlsSettings['serverName']) && !empty($tlsSettings['serverName']))
@@ -73,7 +73,7 @@ class Shadowrocket
         if ($server['network'] === 'ws') {
             $config['obfs'] = "websocket";
             if ($server['networkSettings']) {
-                $wsSettings = json_decode($server['networkSettings'], true);
+                $wsSettings = $server['networkSettings'];
                 if (isset($wsSettings['path']) && !empty($wsSettings['path']))
                     $config['path'] = $wsSettings['path'];
                 if (isset($wsSettings['headers']['Host']) && !empty($wsSettings['headers']['Host']))
@@ -83,7 +83,7 @@ class Shadowrocket
         if ($server['network'] === 'grpc') {
             $config['obfs'] = "grpc";
             if ($server['networkSettings']) {
-                $grpcSettings = json_decode($server['networkSettings'], true);
+                $grpcSettings = $server['networkSettings'];
                 if (isset($grpcSettings['serviceName']) && !empty($grpcSettings['serviceName']))
                     $config['path'] = $grpcSettings['serviceName'];
             }

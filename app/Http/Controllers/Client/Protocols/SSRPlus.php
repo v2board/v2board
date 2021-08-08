@@ -63,18 +63,18 @@ class SSRPlus
         ];
         if ($server['tls']) {
             if ($server['tlsSettings']) {
-                $tlsSettings = json_decode($server['tlsSettings'], true);
+                $tlsSettings = $server['tlsSettings'];
                 if (isset($tlsSettings['serverName']) && !empty($tlsSettings['serverName']))
                     $config['sni'] = $tlsSettings['serverName'];
             }
         }
         if ((string)$server['network'] === 'ws') {
-            $wsSettings = json_decode($server['networkSettings'], true);
+            $wsSettings = $server['networkSettings'];
             if (isset($wsSettings['path'])) $config['path'] = $wsSettings['path'];
             if (isset($wsSettings['headers']['Host'])) $config['host'] = $wsSettings['headers']['Host'];
         }
         if ((string)$server['network'] === 'grpc') {
-            $grpcSettings = json_decode($server['networkSettings'], true);
+            $grpcSettings = $server['networkSettings'];
             if (isset($grpcSettings['serviceName'])) $config['path'] = $grpcSettings['serviceName'];
         }
         return "vmess://" . base64_encode(json_encode($config)) . "\r\n";

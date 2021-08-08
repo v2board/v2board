@@ -22,7 +22,7 @@ class PaymentService
         if ($uuid) $payment = Payment::where('uuid', $uuid)->first()->toArray();
         $this->config = [];
         if (isset($payment)) {
-            $this->config = json_decode($payment['config'], true);
+            $this->config = $payment['config'];
             $this->config['enable'] = $payment['enable'];
             $this->config['id'] = $payment['id'];
             $this->config['uuid'] = $payment['uuid'];
