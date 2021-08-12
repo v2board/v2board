@@ -88,7 +88,7 @@ class ConfigSave extends FormRequest
             'frontend_theme' => '',
             'frontend_theme_sidebar' => 'in:dark,light',
             'frontend_theme_header' => 'in:dark,light',
-            'frontend_theme_color' => 'in:default,darkblue,black',
+            'frontend_theme_color' => 'in:default,darkblue,black,green',
             'frontend_background_url' => 'nullable|url',
             'frontend_admin_path' => '',
             'frontend_customer_service_method' => '',
