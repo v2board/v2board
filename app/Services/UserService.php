@@ -95,18 +95,15 @@ class UserService
         }
         $mailService = new MailService();
         $serverService = new ServerService();
-        try {
-            $mailService->remindTraffic($user);
-            $serverService->log(
-                $userId,
-                $server->id,
-                $u,
-                $d,
-                $server->rate,
-                $protocol
-            );
-        } catch (\Exception $e) {
-        }
+        $mailService->remindTraffic($user);
+        $serverService->log(
+            $userId,
+            $server->id,
+            $u,
+            $d,
+            $server->rate,
+            $protocol
+        );
         return true;
     }
 }

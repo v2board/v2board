@@ -17,13 +17,13 @@ class CacheKey
         'SERVER_SHADOWSOCKS_LAST_CHECK_AT' => 'ss节点最后检查时间',
         'SERVER_SHADOWSOCKS_LAST_PUSH_AT' => 'ss节点最后推送时间',
         'TEMP_TOKEN' => '临时令牌',
-        'LAST_SEND_EMAIL_REMIND_TRAFFIC'
+        'LAST_SEND_EMAIL_REMIND_TRAFFIC' => ''
     ];
 
     public static function get(string $key, $uniqueValue)
     {
         if (!in_array($key, array_keys(self::KEYS))) {
-            abort(500, 'key is not in cache key list');
+            throw new \Exception('key is not in cache key list');
         }
         return $key . '_' . $uniqueValue;
     }

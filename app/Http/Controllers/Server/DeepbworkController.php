@@ -81,12 +81,11 @@ class DeepbworkController extends Controller
             foreach ($data as $item) {
                 $u = $item['u'] * $server->rate;
                 $d = $item['d'] * $server->rate;
-                if (!$userService->trafficFetch($u, $d, $item['user_id'], $server, 'vmess')) {
-                    continue;
-                }
+                $userService->trafficFetch($u, $d, $item['user_id'], $server, 'vmess');
             }
         } catch (\Exception $e) {
             DB::rollBack();
+            error_log($e);
             return response([
                 'ret' => 0,
                 'msg' => 'user fetch fail'
