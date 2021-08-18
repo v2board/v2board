@@ -26,13 +26,19 @@ class Surfboard
         foreach ($servers as $item) {
             if ($item['type'] === 'shadowsocks') {
                 // [Proxy]
-                $proxies .= Surfboard::buildShadowsocks($user['uuid'], $item);
+                $proxies .= self::buildShadowsocks($user['uuid'], $item);
                 // [Proxy Group]
                 $proxyGroup .= $item['name'] . ', ';
             }
             if ($item['type'] === 'v2ray') {
                 // [Proxy]
-                $proxies .= Surfboard::buildVmess($user['uuid'], $item);
+                $proxies .= self::buildVmess($user['uuid'], $item);
+                // [Proxy Group]
+                $proxyGroup .= $item['name'] . ', ';
+            }
+            if ($item['type'] === 'trojan') {
+                // [Proxy]
+                $proxies .= self::buildTrojan($user['uuid'], $item);
                 // [Proxy Group]
                 $proxyGroup .= $item['name'] . ', ';
             }
@@ -106,6 +112,26 @@ class Surfboard
             }
         }
 
+        $uri = implode(',', $config);
+        $uri .= "\r\n";
+        return $uri;
+    }
+
+    public static function buildTrojan($password, $server)
+    {
+        $config = [
+            "{$server['name']}=trojan",
+            "{$server['host']}",
+            "{$server['port']}",
+            "password={$password}",
+            $server['server_name'] ? "sni={$server['server_name']}" : "",
+            'tfo=true',
+            'udp-relay=true'
+        ];
+        if (!empty($server['allow_insecure'])) {
+            array_push($config, $server['allow_insecure'] ? 'skip-cert-verify=true' : 'skip-cert-verify=false');
+        }
+        $config = array_filter($config);
         $uri = implode(',', $config);
         $uri .= "\r\n";
         return $uri;
