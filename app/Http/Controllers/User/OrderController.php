@@ -108,7 +108,7 @@ class OrderController extends Controller
         $order->user_id = $request->session()->get('id');
         $order->plan_id = $plan->id;
         $order->cycle = $request->input('cycle');
-        $order->trade_no = Helper::guid();
+        $order->trade_no = Helper::generateOrderNo();
         $order->total_amount = $plan[$request->input('cycle')];
 
         if ($request->input('coupon_code')) {

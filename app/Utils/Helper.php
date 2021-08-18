@@ -23,6 +23,12 @@ class Helper
         return md5(vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4)) . '-' . time());
     }
 
+    public static function generateOrderNo(): string
+    {
+        $randomChar = rand(10000, 99999);
+        return date('YmdHms') . $randomChar;
+    }
+
     public static function exchange($from, $to)
     {
         $result = file_get_contents('https://api.exchangerate.host/latest?symbols=' . $to . '&base=' . $from);

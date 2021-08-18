@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Order;
+use App\Utils\Helper;
 use Illuminate\Console\Command;
 
 class Test extends Command
@@ -38,5 +39,6 @@ class Test extends Command
      */
     public function handle()
     {
+        dd(Helper::generateOrderNo());
     }
 }
