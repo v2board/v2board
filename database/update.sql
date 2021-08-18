@@ -432,3 +432,6 @@ ALTER TABLE `v2_order`
 ALTER TABLE `v2_server_log`
     ADD INDEX `user_id` (`user_id`),
 ADD INDEX `server_id` (`server_id`);
+
+ALTER TABLE `v2_ticket_message`
+    CHANGE `message` `message` text COLLATE 'utf8mb4_general_ci' NOT NULL AFTER `ticket_id`;

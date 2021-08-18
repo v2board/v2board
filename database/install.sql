@@ -207,7 +207,9 @@ CREATE TABLE `v2_server_log` (
                                  `created_at` int(11) NOT NULL,
                                  `updated_at` int(11) NOT NULL,
                                  PRIMARY KEY (`id`),
-                                 KEY `log_at` (`log_at`)
+                                 KEY `log_at` (`log_at`),
+                                 KEY `user_id` (`user_id`),
+                                 KEY `server_id` (`server_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -305,7 +307,7 @@ CREATE TABLE `v2_ticket_message` (
                                      `id` int(11) NOT NULL AUTO_INCREMENT,
                                      `user_id` int(11) NOT NULL,
                                      `ticket_id` int(11) NOT NULL,
-                                     `message` varchar(255) NOT NULL,
+                                     `message` text CHARACTER SET utf8mb4 NOT NULL,
                                      `created_at` int(11) NOT NULL,
                                      `updated_at` int(11) NOT NULL,
                                      PRIMARY KEY (`id`)
@@ -349,4 +351,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2021-07-30 17:19:01
+-- 2021-08-18 12:22:48
