@@ -11,6 +11,7 @@ use App\Utils\Helper;
 use Illuminate\Support\Facades\Cache;
 use App\Jobs\SendEmailJob;
 use App\Models\InviteCode;
+use App\Models\User;
 use App\Utils\Dict;
 use App\Utils\CacheKey;
 use ReCaptcha\ReCaptcha;
@@ -51,7 +52,28 @@ class CommController extends Controller
                 abort(500, __('Invalid code is incorrect'));
             }
         }
+        if ((int)config('v2board.email_whitelist_enable', 0)) {
+            if (!Helper::emailSuffixVerify(
+                $request->input('email'),
+                config('v2board.email_whitelist_suffix', Dict::EMAIL_WHITELIST_SUFFIX_DEFAULT))
+            ) {
+                abort(500, __('Email suffix is not in the Whitelist'));
+            }
+        }
+        if ((int)config('v2board.email_gmail_limit_enable', 0)) {
+            $prefix = explode('@', $request->input('email'))[0];
+            if (strpos($prefix, '.') !== false || strpos($prefix, '+') !== false) {
+                abort(500, __('Gmail alias is not supported'));
+            }
+        }
+        if ((int)config('v2board.stop_register', 0)) {
+            abort(500, __('Registration has closed'));
+        }
         $email = $request->input('email');
+        $exist = User::where('email', $email)->first();
+        if ($exist) {
+            abort(500, __('Email already exists'));
+        }
         if (Cache::get(CacheKey::get('LAST_SEND_EMAIL_VERIFY_TIMESTAMP', $email))) {
             abort(500, __('Email verification code has been sent, please request again later'));
         }
