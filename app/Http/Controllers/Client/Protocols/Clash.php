@@ -18,41 +18,69 @@ class Clash
 
     public function handle()
     {
-        $servers = $this->servers;
         $user = $this->user;
-        header("subscription-userinfo: upload={$user['u']}; download={$user['d']}; total={$user['transfer_enable']}; expire={$user['expired_at']}");
-        $defaultConfig = base_path() . '/resources/rules/default.clash.yaml';
-        $customConfig = base_path() . '/resources/rules/custom.clash.yaml';
-        if (\File::exists($customConfig)) {
-            $config = Yaml::parseFile($customConfig);
+        if (empty($_REQUEST['getsubscribe'])) {
+            $app_name = config('v2board.app_name', 'V2Board');
+            header("subscription-userinfo: upload={$user['u']}; download={$user['d']}; total={$user['transfer_enable']}; expire={$user['expired_at']}");
+            header("profile-update-interval: 1");
+            header("content-disposition: filename={$app_name}");
+            $defaultConfig = base_path() . '/resources/rules/default.clash.yaml';
+            $customConfig = base_path() . '/resources/rules/custom.clash.yaml';
+            if (\File::exists($customConfig)) {
+                $config = Yaml::parseFile($customConfig);
+            } else {
+                $config = Yaml::parseFile($defaultConfig);
+            }
+            $args = array(
+                'token' => $user['token'],
+                'flag' => 'clash',
+                'getsubscribe' => 'true'
+            );
+            $proxy = array(
+                $app_name => array(
+                    'type' => 'http',
+                    'url' => config('v2board.subscribe_url') . '/api/v1/client/subscribe?' . http_build_query($args),
+                    'interval' => 3600,
+                    'path' => './Proxy/' . $app_name . '.yaml',
+                    'health-check' => array(
+                        'enable' => true,
+                        'interval' => 900,
+                        'url' => 'http://www.gstatic.com/generate_204'
+                    )
+                ) 
+            );
+            $config['proxy-providers'] = array_merge($config['proxy-providers'] ? $config['proxy-providers'] : [], $proxy);
+            foreach ($config['proxy-groups'] as $k => $v) {
+                if ( isset($config['proxy-groups'][$k]['use']) ) {
+                    if ( !is_array($config['proxy-groups'][$k]['use']) ) continue;
+                    $config['proxy-groups'][$k]['use'] = [$app_name];
+                }
+            }
+            $yaml = Yaml::dump($config);
+            $yaml = str_replace('$app_name', $app_name, $yaml);
         } else {
-            $config = Yaml::parseFile($defaultConfig);
-        }
-        $proxy = [];
-        $proxies = [];
+            $servers = $this->servers;
+            $proxy = [];
+            $proxies = [];
 
-        foreach ($servers as $item) {
-            if ($item['type'] === 'shadowsocks') {
-                array_push($proxy, self::buildShadowsocks($user['uuid'], $item));
-                array_push($proxies, $item['name']);
+            foreach ($servers as $item) {
+                if ($item['type'] === 'shadowsocks') {
+                    array_push($proxy, self::buildShadowsocks($user['uuid'], $item));
+                    array_push($proxies, $item['name']);
+                }
+                if ($item['type'] === 'v2ray') {
+                    array_push($proxy, self::buildVmess($user['uuid'], $item));
+                    array_push($proxies, $item['name']);
+                }
+                if ($item['type'] === 'trojan') {
+                    array_push($proxy, self::buildTrojan($user['uuid'], $item));
+                    array_push($proxies, $item['name']);
+                }
             }
-            if ($item['type'] === 'v2ray') {
-                array_push($proxy, self::buildVmess($user['uuid'], $item));
-                array_push($proxies, $item['name']);
-            }
-            if ($item['type'] === 'trojan') {
-                array_push($proxy, self::buildTrojan($user['uuid'], $item));
-                array_push($proxies, $item['name']);
-            }
-        }
 
-        $config['proxies'] = array_merge($config['proxies'] ? $config['proxies'] : [], $proxy);
-        foreach ($config['proxy-groups'] as $k => $v) {
-            if (!is_array($config['proxy-groups'][$k]['proxies'])) continue;
-            $config['proxy-groups'][$k]['proxies'] = array_merge($config['proxy-groups'][$k]['proxies'], $proxies);
+            $config['proxies'] = array_merge($proxy);
+            $yaml = Yaml::dump($config);
         }
-        $yaml = Yaml::dump($config);
-        $yaml = str_replace('$app_name', config('v2board.app_name', 'V2Board'), $yaml);
         return $yaml;
     }
 
@@ -84,7 +112,7 @@ class Clash
         if ($server['tls']) {
             $array['tls'] = true;
             if ($server['tlsSettings']) {
-                $tlsSettings = $server['tlsSettings'];
+                $tlsSettings = json_decode($server['tlsSettings'], true);
                 if (isset($tlsSettings['allowInsecure']) && !empty($tlsSettings['allowInsecure']))
                     $array['skip-cert-verify'] = ($tlsSettings['allowInsecure'] ? true : false);
                 if (isset($tlsSettings['serverName']) && !empty($tlsSettings['serverName']))
@@ -94,7 +122,7 @@ class Clash
         if ($server['network'] === 'ws') {
             $array['network'] = 'ws';
             if ($server['networkSettings']) {
-                $wsSettings = $server['networkSettings'];
+                $wsSettings = json_decode($server['networkSettings'], true);
                 if (isset($wsSettings['path']) && !empty($wsSettings['path']))
                     $array['ws-path'] = $wsSettings['path'];
                 if (isset($wsSettings['headers']['Host']) && !empty($wsSettings['headers']['Host']))
@@ -104,7 +132,7 @@ class Clash
         if ($server['network'] === 'grpc') {
             $array['network'] = 'grpc';
             if ($server['networkSettings']) {
-                $grpcObject = $server['networkSettings'];
+                $grpcObject = json_decode($server['networkSettings'], true);
                 $array['grpc-opts'] = [];
                 $array['grpc-opts']['grpc-service-name'] = $grpcObject['serviceName'];
             }
