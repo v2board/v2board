@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Client\Protocols;
 
 class AnXray
 {
-    public $flag = 'anxray';
+    public $flag = 'axxray';
     private $servers;
     private $user;
 
