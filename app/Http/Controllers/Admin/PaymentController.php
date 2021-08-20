@@ -61,7 +61,7 @@ class PaymentController extends Controller
             'name' => $request->input('name'),
             'payment' => $request->input('payment'),
             'config' => $request->input('config'),
-            'uuid' => Helper::guid()
+            'uuid' => Helper::randomChar(8)
         ])) {
             abort(500, '保存失败');
         }
