@@ -53,7 +53,7 @@ done
 update(){
     php_path=$(which php)
     if [ $? -eq 0 ]; then
-	rm -rf ${path}/composer.lock ${path}/composer.phar
+        rm -rf ${path}/composer.lock ${path}/composer.phar
         wget "https://getcomposer.org/download/2.0.13/composer.phar" -O ${path}/composer.phar
         ${php_path} ${path}/composer.phar update -vvv
         ${php_path} ${path}/artisan v2board:update
