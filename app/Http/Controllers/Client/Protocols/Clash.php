@@ -22,7 +22,7 @@ class Clash
         if (empty($_REQUEST['getsubscribe'])) {
             $app_name = config('v2board.app_name', 'V2Board');
             header("subscription-userinfo: upload={$user['u']}; download={$user['d']}; total={$user['transfer_enable']}; expire={$user['expired_at']}");
-            header("profile-update-interval: 1");
+            header("profile-update-interval: 24");
             header("content-disposition: filename={$app_name}");
             $defaultConfig = base_path() . '/resources/rules/default.clash.yaml';
             $customConfig = base_path() . '/resources/rules/custom.clash.yaml';
@@ -40,7 +40,7 @@ class Clash
                 $app_name => array(
                     'type' => 'http',
                     'url' => config('v2board.subscribe_url') . '/api/v1/client/subscribe?' . http_build_query($args),
-                    'interval' => 3600,
+                    'interval' => 7200,
                     'path' => './Proxy/' . $app_name . '.yaml',
                     'health-check' => array(
                         'enable' => true,
