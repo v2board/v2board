@@ -15,7 +15,7 @@
 [Click](https://docs.v2board.com)
 
 ## Donation
-ETH&(USDT-ERC20): 0x84F85A89105B93F74c3b5db6410Ee8630F01063f
+[![Donate with Ethereum](https://en.cryptobadges.io/badge/big/0x41dea6134d6Bf4f78cD88C71666144315573c9d3?showBalance=true)](https://en.cryptobadges.io/donate/0x41dea6134d6Bf4f78cD88C71666144315573c9d3)
 
 ## Sponsors
 Thanks to the open source project license provided by [Jetbrains](https://www.jetbrains.com/)
