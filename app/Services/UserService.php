@@ -82,8 +82,7 @@ class UserService
 
     public function trafficFetch(int $u, int $d, int $userId, object $server, string $protocol):bool
     {
-        $user = User::lockForUpdate()
-            ->find($userId);
+        $user = User::find($userId);
         if (!$user) {
             return true;
         }

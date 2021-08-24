@@ -8,6 +8,8 @@ namespace App\Payments;
 use \Curl\Curl;
 
 class MGate {
+    private $config;
+
     public function __construct($config)
     {
         $this->config = $config;
@@ -47,6 +49,7 @@ class MGate {
         $str = http_build_query($params) . $this->config['mgate_app_secret'];
         $params['sign'] = md5($str);
         $curl = new Curl();
+        $curl->setUserAgent('MGate');
         $curl->post($this->config['mgate_url'] . '/v1/gateway/fetch', http_build_query($params));
         $result = $curl->response;
         if (!$result) {
