@@ -82,17 +82,15 @@ class UserService
 
     public function trafficFetch(int $u, int $d, int $userId, object $server, string $protocol):bool
     {
-        $user = User::find($userId);
+        $user = User::lockForUpdate()
+            ->find($userId);
         if (!$user) {
             return true;
         }
-        try {
-            $user->update([
-                't' => time(),
-                'u' => DB::raw("u + {$u}"),
-                'd' => DB::raw("d + {$d}")
-            ]);
-        } catch (\Exception $e) {
+        $user->t = time();
+        $user->u = $user->u + $u;
+        $user->d = $user->d + $d;
+        if (!$user->save()) {
             return false;
         }
         $mailService = new MailService();
