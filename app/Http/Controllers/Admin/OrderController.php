@@ -83,6 +83,7 @@ class OrderController extends Controller
                     if (!$orderService->success(time())) {
                         abort(500, '更新失败');
                     }
+                    break;
                 }
                 case 2: {
                     if (!$orderService->cancel()) {
