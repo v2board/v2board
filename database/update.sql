@@ -435,3 +435,6 @@ ADD INDEX `server_id` (`server_id`);
 
 ALTER TABLE `v2_ticket_message`
     CHANGE `message` `message` text COLLATE 'utf8mb4_general_ci' NOT NULL AFTER `ticket_id`;
+
+ALTER TABLE `v2_coupon`
+    ADD `limit_use_with_user` int(11) NULL AFTER `limit_use`;

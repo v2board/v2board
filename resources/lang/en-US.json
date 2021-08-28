@@ -84,5 +84,6 @@
     "Email format is incorrect": "Email format is incorrect",
     "Password can not be empty": "Password can not be empty",
     "The traffic usage in :app_name has reached 80%": "The traffic usage in :app_name has reached 80%",
-    "The service in :app_name is about to expire": "The service in :app_name is about to expire"
+    "The service in :app_name is about to expire": "The service in :app_name is about to expire",
+    "The coupon can only be used :limit_use_with_user per person": "The coupon can only be used :limit_use_with_user per person"
 }

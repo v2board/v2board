@@ -27,6 +27,7 @@ CREATE TABLE `v2_coupon` (
                              `type` tinyint(1) NOT NULL,
                              `value` int(11) NOT NULL,
                              `limit_use` int(11) DEFAULT NULL,
+                             `limit_use_with_user` int(11) DEFAULT NULL,
                              `limit_plan_ids` varchar(255) DEFAULT NULL,
                              `started_at` int(11) NOT NULL,
                              `ended_at` int(11) NOT NULL,
@@ -351,4 +352,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2021-08-18 12:22:48
+-- 2021-08-28 06:53:57

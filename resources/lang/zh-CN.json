@@ -84,5 +84,6 @@
     "Email format is incorrect": "邮箱格式不正确",
     "Password can not be empty": "密码不能为空",
     "The traffic usage in :app_name has reached 80%": "在:app_name的流量使用已达到80%",
-    "The service in :app_name is about to expire": "在:app_name的服务即将到期"
+    "The service in :app_name is about to expire": "在:app_name的服务即将到期",
+    "The coupon can only be used :limit_use_with_user per person": "该优惠券每人只能用:limit_use_with_user次"
 }

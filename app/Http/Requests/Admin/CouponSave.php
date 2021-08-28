@@ -20,6 +20,7 @@ class CouponSave extends FormRequest
             'started_at' => 'required|integer',
             'ended_at' => 'required|integer',
             'limit_use' => 'nullable|integer',
+            'limit_use_with_user' => 'nullable|integer',
             'limit_plan_ids' => 'nullable|array',
             'code' => ''
         ];
