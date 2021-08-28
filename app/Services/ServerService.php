@@ -260,7 +260,6 @@ class ServerService
 
     public function log(int $userId, int $serverId, int $u, int $d, float $rate, string $method)
     {
-        if (($u + $d) <= 10240) return;
         $timestamp = strtotime(date('Y-m-d H:0'));
         $serverLog = ServerLog::where('log_at', '>=', $timestamp)
             ->where('log_at', '<', $timestamp + 3600)
