@@ -38,7 +38,8 @@ class CouponSave extends FormRequest
             'started_at.integer' => '开始时间格式有误',
             'ended_at.required' => '结束时间不能为空',
             'ended_at.integer' => '结束时间格式有误',
-            'limit_use.integer' => '使用次数格式有误',
+            'limit_use.integer' => '最大使用次数格式有误',
+            'limit_use_with_user.integer' => '限制用户使用次数格式有误',
             'limit_plan_ids.array' => '指定订阅格式有误'
         ];
     }
