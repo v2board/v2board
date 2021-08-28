@@ -63,10 +63,45 @@ class OrderController extends Controller
         ]);
     }
 
+    public function paid(Request $request)
+    {
+        $order = Order::where('trade_no', $request->input('trade_no'))
+            ->first();
+        if (!$order) {
+            abort(500, '订单不存在');
+        }
+        if ($order->status !== 0) abort(500, '只能对待支付的订单进行操作');
+
+        $orderService = new OrderService($order);
+        if (!$orderService->paid('manual_operation')) {
+            abort(500, '更新失败');
+        }
+        return response([
+            'data' => true
+        ]);
+    }
+
+    public function cancel(Request $request)
+    {
+        $order = Order::where('trade_no', $request->input('trade_no'))
+            ->first();
+        if (!$order) {
+            abort(500, '订单不存在');
+        }
+        if ($order->status !== 0) abort(500, '只能对待支付的订单进行操作');
+
+        $orderService = new OrderService($order);
+        if (!$orderService->cancel()) {
+            abort(500, '更新失败');
+        }
+        return response([
+            'data' => true
+        ]);
+    }
+
     public function update(OrderUpdate $request)
     {
         $params = $request->only([
-            'status',
             'commission_status'
         ]);
 
@@ -76,53 +111,12 @@ class OrderController extends Controller
             abort(500, '订单不存在');
         }
 
-        if (isset($params['status'])) {
-            $orderService = new OrderService($order);
-            switch ((int)$params['status']) {
-                case 1: {
-                    if (!$orderService->success(time())) {
-                        abort(500, '更新失败');
-                    }
-                    break;
-                }
-                case 2: {
-                    if (!$orderService->cancel()) {
-                        abort(500, '更新失败');
-                    }
-                    break;
-                }
-            }
-            return response([
-                'data' => true
-            ]);
-        }
-
         try {
             $order->update($params);
         } catch (\Exception $e) {
             abort(500, '更新失败');
         }
 
-        return response([
-            'data' => true
-        ]);
-    }
-
-    public function repair(Request $request)
-    {
-        if (empty($request->input('trade_no'))) {
-            abort(500, '参数错误');
-        }
-        $order = Order::where('trade_no', $request->input('trade_no'))
-            ->where('status', 0)
-            ->first();
-        if (!$order) {
-            abort(500, '订单不存在或订单已支付');
-        }
-        $order->status = 1;
-        if (!$order->save()) {
-            abort(500, '保存失败');
-        }
         return response([
             'data' => true
         ]);

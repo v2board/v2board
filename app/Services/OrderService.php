@@ -81,25 +81,6 @@ class OrderService
         DB::commit();
     }
 
-    public function cancel():bool
-    {
-        $order = $this->order;
-        DB::beginTransaction();
-        $order->status = 2;
-        if (!$order->save()) {
-            DB::rollBack();
-            return false;
-        }
-        if ($order->balance_amount) {
-            $userService = new UserService();
-            if (!$userService->addBalance($order->user_id, $order->balance_amount)) {
-                DB::rollBack();
-                return false;
-            }
-        }
-        DB::commit();
-        return true;
-    }
 
     public function setOrderType(User $user)
     {
@@ -232,18 +213,35 @@ class OrderService
         $order->surplus_order_ids = array_column($orders->toArray(), 'id');
     }
 
-    public function success(string $callbackNo)
+    public function paid(string $callbackNo)
     {
         $order = $this->order;
-        if ($order->status !== 0) {
-            return true;
-        }
+        if ($order->status !== 0) return true;
         $order->status = 1;
         $order->paid_at = time();
         $order->callback_no = $callbackNo;
         return $order->save();
     }
 
+    public function cancel():bool
+    {
+        $order = $this->order;
+        DB::beginTransaction();
+        $order->status = 2;
+        if (!$order->save()) {
+            DB::rollBack();
+            return false;
+        }
+        if ($order->balance_amount) {
+            $userService = new UserService();
+            if (!$userService->addBalance($order->user_id, $order->balance_amount)) {
+                DB::rollBack();
+                return false;
+            }
+        }
+        DB::commit();
+        return true;
+    }
 
     private function buyByResetTraffic()
     {
