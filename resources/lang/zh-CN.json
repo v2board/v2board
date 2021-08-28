@@ -83,5 +83,6 @@
     "Email can not be empty": "邮箱不能为空",
     "Email format is incorrect": "邮箱格式不正确",
     "Password can not be empty": "密码不能为空",
-    "The traffic usage in :app_name has reached 80%": "在:app的流量使用已达到80%"
+    "The traffic usage in :app_name has reached 80%": "在:app_name的流量使用已达到80%",
+    "The service in :app_name is about to expire": "在:app_name的服务即将到期"
 }

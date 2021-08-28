@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Services\MailService;
 use Illuminate\Console\Command;
 use App\Models\User;
 use App\Models\MailLog;
@@ -41,23 +42,9 @@ class SendRemindMail extends Command
     public function handle()
     {
         $users = User::all();
+        $mailService = new MailService();
         foreach ($users as $user) {
-            if ($user->remind_expire) $this->remindExpire($user);
-        }
-    }
-
-    private function remindExpire($user)
-    {
-        if ($user->expired_at !== NULL && ($user->expired_at - 86400) < time() && $user->expired_at > time()) {
-            SendEmailJob::dispatch([
-                'email' => $user->email,
-                'subject' => '在' . config('v2board.app_name', 'V2board') . '的服务即将到期',
-                'template_name' => 'remindExpire',
-                'template_value' => [
-                    'name' => config('v2board.app_name', 'V2Board'),
-                    'url' => config('v2board.app_url')
-                ]
-            ]);
+            if ($user->remind_expire) $mailService->remindExpire($user);
         }
     }
 }

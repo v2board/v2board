@@ -29,6 +29,22 @@ class MailService
         ]);
     }
 
+    public function remindExpire(User $user)
+    {
+        if ($user->expired_at !== NULL && ($user->expired_at - 86400) < time() && $user->expired_at > time()) return;
+        SendEmailJob::dispatch([
+            'email' => $user->email,
+            'subject' => __('The service in :app_name is about to expire', [
+               'app_name' =>  config('v2board.app_name', 'V2board')
+            ]),
+            'template_name' => 'remindExpire',
+            'template_value' => [
+                'name' => config('v2board.app_name', 'V2Board'),
+                'url' => config('v2board.app_url')
+            ]
+        ]);
+    }
+
     private function remindTrafficIsWarnValue($u, $d, $transfer_enable)
     {
         $ud = $u + $d;
