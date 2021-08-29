@@ -17,7 +17,7 @@ class CouponService
         $this->coupon = Coupon::where('code', $code)->first();
     }
 
-    public function use(Order $order)
+    public function use(Order $order):bool
     {
         $this->setPlanId($order->plan_id);
         $this->setUserId($order->user_id);
@@ -59,7 +59,7 @@ class CouponService
         $this->userId = $userId;
     }
 
-    public function checkLimitUseWithUser()
+    public function checkLimitUseWithUser():bool
     {
         $usedCount = Order::where('coupon_id', $this->coupon->id)
             ->where('user_id', $this->userId)

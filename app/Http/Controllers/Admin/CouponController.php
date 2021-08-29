@@ -30,29 +30,6 @@ class CouponController extends Controller
         ]);
     }
 
-    public function save(CouponSave $request)
-    {
-        $params = $request->validated();
-        if (!$request->input('id')) {
-            if (!isset($params['code'])) {
-                $params['code'] = Helper::randomChar(8);
-            }
-            if (!Coupon::create($params)) {
-                abort(500, '创建失败');
-            }
-        } else {
-            try {
-                Coupon::find($request->input('id'))->update($params);
-            } catch (\Exception $e) {
-                abort(500, '保存失败');
-            }
-        }
-
-        return response([
-            'data' => true
-        ]);
-    }
-
     public function generate(CouponGenerate $request)
     {
         if ($request->input('generate_count')) {
