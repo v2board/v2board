@@ -18,69 +18,43 @@ class Clash
 
     public function handle()
     {
+        $servers = $this->servers;
         $user = $this->user;
-        if (empty($_REQUEST['getsubscribe'])) {
-            $app_name = config('v2board.app_name', 'V2Board');
-            header("subscription-userinfo: upload={$user['u']}; download={$user['d']}; total={$user['transfer_enable']}; expire={$user['expired_at']}");
-            header("profile-update-interval: 24");
-            header("content-disposition: filename={$app_name}");
-            $defaultConfig = base_path() . '/resources/rules/default.clash.yaml';
-            $customConfig = base_path() . '/resources/rules/custom.clash.yaml';
-            if (\File::exists($customConfig)) {
-                $config = Yaml::parseFile($customConfig);
-            } else {
-                $config = Yaml::parseFile($defaultConfig);
-            }
-            $args = array(
-                'token' => $user['token'],
-                'flag' => 'clash',
-                'getsubscribe' => 'true'
-            );
-            $proxy = array(
-                $app_name => array(
-                    'type' => 'http',
-                    'url' => config('v2board.subscribe_url') . '/api/v1/client/subscribe?' . http_build_query($args),
-                    'interval' => 7200,
-                    'path' => './Proxy/' . $app_name . '.yaml',
-                    'health-check' => array(
-                        'enable' => true,
-                        'interval' => 900,
-                        'url' => 'http://www.gstatic.com/generate_204'
-                    )
-                ) 
-            );
-            $config['proxy-providers'] = array_merge($config['proxy-providers'] ? $config['proxy-providers'] : [], $proxy);
-            foreach ($config['proxy-groups'] as $k => $v) {
-                if ( isset($config['proxy-groups'][$k]['use']) ) {
-                    if ( !is_array($config['proxy-groups'][$k]['use']) ) continue;
-                    $config['proxy-groups'][$k]['use'] = [$app_name];
-                }
-            }
-            $yaml = Yaml::dump($config);
-            $yaml = str_replace('$app_name', $app_name, $yaml);
+        header("subscription-userinfo: upload={$user['u']}; download={$user['d']}; total={$user['transfer_enable']}; expire={$user['expired_at']}");
+        header('profile-update-interval: 24');
+        header("content-disposition: filename={$app_name}");
+        $defaultConfig = base_path() . '/resources/rules/default.clash.yaml';
+        $customConfig = base_path() . '/resources/rules/custom.clash.yaml';
+        if (\File::exists($customConfig)) {
+            $config = Yaml::parseFile($customConfig);
         } else {
-            $servers = $this->servers;
-            $proxy = [];
-            $proxies = [];
-
-            foreach ($servers as $item) {
-                if ($item['type'] === 'shadowsocks') {
-                    array_push($proxy, self::buildShadowsocks($user['uuid'], $item));
-                    array_push($proxies, $item['name']);
-                }
-                if ($item['type'] === 'v2ray') {
-                    array_push($proxy, self::buildVmess($user['uuid'], $item));
-                    array_push($proxies, $item['name']);
-                }
-                if ($item['type'] === 'trojan') {
-                    array_push($proxy, self::buildTrojan($user['uuid'], $item));
-                    array_push($proxies, $item['name']);
-                }
-            }
-
-            $config['proxies'] = array_merge($proxy);
-            $yaml = Yaml::dump($config);
+            $config = Yaml::parseFile($defaultConfig);
         }
+        $proxy = [];
+        $proxies = [];
+
+        foreach ($servers as $item) {
+            if ($item['type'] === 'shadowsocks') {
+                array_push($proxy, self::buildShadowsocks($user['uuid'], $item));
+                array_push($proxies, $item['name']);
+            }
+            if ($item['type'] === 'v2ray') {
+                array_push($proxy, self::buildVmess($user['uuid'], $item));
+                array_push($proxies, $item['name']);
+            }
+            if ($item['type'] === 'trojan') {
+                array_push($proxy, self::buildTrojan($user['uuid'], $item));
+                array_push($proxies, $item['name']);
+            }
+        }
+
+        $config['proxies'] = array_merge($config['proxies'] ? $config['proxies'] : [], $proxy);
+        foreach ($config['proxy-groups'] as $k => $v) {
+            if (!is_array($config['proxy-groups'][$k]['proxies'])) continue;
+            $config['proxy-groups'][$k]['proxies'] = array_merge($config['proxy-groups'][$k]['proxies'], $proxies);
+        }
+        $yaml = Yaml::dump($config);
+        $yaml = str_replace('$app_name', config('v2board.app_name', 'V2Board'), $yaml);
         return $yaml;
     }
 
