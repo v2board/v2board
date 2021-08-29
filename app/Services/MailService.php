@@ -31,7 +31,7 @@ class MailService
 
     public function remindExpire(User $user)
     {
-        if ($user->expired_at !== NULL && ($user->expired_at - 86400) < time() && $user->expired_at > time()) return;
+        if (!($user->expired_at !== NULL && ($user->expired_at - 86400) < time() && $user->expired_at > time())) return;
         SendEmailJob::dispatch([
             'email' => $user->email,
             'subject' => __('The service in :app_name is about to expire', [
