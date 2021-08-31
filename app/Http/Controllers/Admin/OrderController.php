@@ -6,6 +6,7 @@ use App\Http\Requests\Admin\OrderAssign;
 use App\Http\Requests\Admin\OrderUpdate;
 use App\Http\Requests\Admin\OrderFetch;
 use App\Services\OrderService;
+use App\Services\UserService;
 use App\Utils\Helper;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -133,6 +134,11 @@ class OrderController extends Controller
 
         if (!$plan) {
             abort(500, '该订阅不存在');
+        }
+
+        $userService = new UserService();
+        if ($userService->isNotCompleteOrderByUserId($user->id)) {
+            abort(500, '该用户还有待支付的订单，无法分配');
         }
 
         DB::beginTransaction();
