@@ -272,7 +272,7 @@ class ServerService
         if ($serverLog) {
             $serverLog->u = $serverLog->u + $u;
             $serverLog->d = $serverLog->d + $d;
-            $serverLog->save();
+            return $serverLog->save();
         } else {
             $serverLog = new ServerLog();
             $serverLog->user_id = $userId;
@@ -282,7 +282,7 @@ class ServerService
             $serverLog->rate = $rate;
             $serverLog->log_at = $timestamp;
             $serverLog->method = $method;
-            $serverLog->save();
+            return $serverLog->save();
         }
     }
 
