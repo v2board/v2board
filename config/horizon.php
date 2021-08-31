@@ -70,7 +70,7 @@ return [
     |
     */
 
-    'middleware' => ['web'],
+    'middleware' => ['web', 'admin'],
 
     /*
     |--------------------------------------------------------------------------
@@ -168,9 +168,16 @@ return [
         'production' => [
             'supervisor-1' => [
                 'connection' => 'redis',
-                'queue' => ['default'],
-                'balance' => 'simple',
-                'processes' => 10,
+                'queue' => [
+                    'traffic_fetch',
+                    'server_log',
+                    'send_email',
+                    'send_telegram',
+                    'stat_server'
+                ],
+                'balance' => 'auto',
+                'minProcesses' => 8,
+                'maxProcesses' => 16,
                 'tries' => 1,
                 'nice' => 0,
             ],
@@ -187,8 +194,8 @@ return [
                     'stat_server'
                 ],
                 'balance' => 'auto',
-                'minProcesses' => 1,
-                'maxProcesses' => 10,
+                'minProcesses' => 8,
+                'maxProcesses' => 16,
                 'tries' => 1,
                 'nice' => 0,
             ],
