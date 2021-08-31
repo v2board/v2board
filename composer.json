@@ -17,6 +17,7 @@
         "guzzlehttp/guzzle": "^6.3.1|^7.0.1",
         "laravel/framework": "^7.29",
         "laravel/tinker": "^2.5",
+        "laravel/horizon": "^4.3.5",
         "google/recaptcha": "^1.2",
         "lokielse/omnipay-alipay": "3.1.2",
         "lokielse/omnipay-wechatpay": "^3.0",
