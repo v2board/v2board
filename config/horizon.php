@@ -151,7 +151,7 @@ return [
     |
     */
 
-    'memory_limit' => 64,
+    'memory_limit' => 32,
 
     /*
     |--------------------------------------------------------------------------
@@ -166,7 +166,7 @@ return [
 
     'environments' => [
         'production' => [
-            'supervisor-1' => [
+            'V2board' => [
                 'connection' => 'redis',
                 'queue' => [
                     'traffic_fetch',
@@ -176,15 +176,15 @@ return [
                     'stat_server'
                 ],
                 'balance' => 'auto',
-                'minProcesses' => 8,
-                'maxProcesses' => 16,
+                'minProcesses' => 1,
+                'maxProcesses' => 64,
                 'tries' => 1,
                 'nice' => 0,
             ],
         ],
 
         'local' => [
-            'supervisor-1' => [
+            'V2board' => [
                 'connection' => 'redis',
                 'queue' => [
                     'traffic_fetch',
@@ -194,8 +194,8 @@ return [
                     'stat_server'
                 ],
                 'balance' => 'auto',
-                'minProcesses' => 8,
-                'maxProcesses' => 16,
+                'minProcesses' => 1,
+                'maxProcesses' => 64,
                 'tries' => 1,
                 'nice' => 0,
             ],
