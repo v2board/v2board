@@ -268,12 +268,15 @@ class ServerService
             ->where('user_id', $userId)
             ->where('rate', $rate)
             ->where('method', $method)
-            ->lockForUpdate()
             ->first();
         if ($serverLog) {
-            $serverLog->u = $serverLog->u + $u;
-            $serverLog->d = $serverLog->d + $d;
-            return $serverLog->save();
+            try {
+                $serverLog->increment('u', $u);
+                $serverLog->increment('d', $d);
+                return true;
+            } catch (\Exception $e) {
+                return false;
+            }
         } else {
             $serverLog = new ServerLog();
             $serverLog->user_id = $userId;
