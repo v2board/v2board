@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Order;
+use App\Models\User;
 use App\Utils\Helper;
 use Illuminate\Console\Command;
 
