@@ -9,7 +9,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\DB;
 
 class TrafficFetchJob implements ShouldQueue
 {
@@ -45,18 +44,14 @@ class TrafficFetchJob implements ShouldQueue
      */
     public function handle()
     {
-        $user = User::find($this->userId);
+        $user = User::lockForUpdate()->find($this->userId);
         if (!$user) return;
-        try {
-            $user->update([
-                't' => time(),
-                'u' => DB::raw("u+{$this->u}"),
-                'd' => DB::raw("d+{$this->d}")
-            ]);
-        } catch (\Exception $e) {
-            throw new \Exception('流量更新失败');
-        }
+        
+        $user->t = time();
+        $user->u = $user->u + $this->u;
+        $user->d = $user->d + $this->d;
+        if (!$user->save()) throw new \Exception('流量更新失败');
         $mailService = new MailService();
-        $mailService->remindTraffic($user->first());
+        $mailService->remindTraffic($user);
     }
 }

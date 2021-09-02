@@ -9,7 +9,6 @@ use App\Models\Server;
 use App\Models\ServerTrojan;
 use App\Utils\CacheKey;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
 
 class ServerService
 {
@@ -269,18 +268,12 @@ class ServerService
             ->where('user_id', $userId)
             ->where('rate', $rate)
             ->where('method', $method)
+            ->lockForUpdate()
             ->first();
         if ($serverLog) {
-            try {
-                $serverLog->update([
-                    'u' => DB::raw("u+{$u}"),
-                    'd' => DB::raw("d+{$d}")
-                ]);
-                return true;
-            } catch (\Exception $e) {
-                info($e);
-                return false;
-            }
+            $serverLog->u = $serverLog->u + $u;
+            $serverLog->d = $serverLog->d + $d;
+            return $serverLog->save();
         } else {
             $serverLog = new ServerLog();
             $serverLog->user_id = $userId;
