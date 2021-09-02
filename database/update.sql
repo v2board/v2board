@@ -438,3 +438,4 @@ ALTER TABLE `v2_ticket_message`
 
 ALTER TABLE `v2_coupon`
     ADD `limit_use_with_user` int(11) NULL AFTER `limit_use`;
+
