@@ -78,16 +78,14 @@ class V2boardStatistics extends Command
 
     private function statServer()
     {
-        $endAt = strtotime(date('Y-m-d'));
-        $startAt = strtotime('-1 day', $endAt);
+        $startAt = strtotime(date('Y-m-d'));
         $statistics = ServerLog::select([
             'server_id',
             'method as server_type',
             DB::raw("sum(u) as u"),
             DB::raw("sum(d) as d"),
         ])
-            ->where('log_at', '>=', $startAt)
-            ->where('log_at', '<', $endAt)
+            ->where('log_at', $startAt)
             ->groupBy('server_id', 'method')
             ->get()
             ->toArray();

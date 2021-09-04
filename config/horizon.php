@@ -165,24 +165,6 @@ return [
     */
 
     'environments' => [
-        'production' => [
-            'V2board' => [
-                'connection' => 'redis',
-                'queue' => [
-                    'traffic_fetch',
-                    'server_log',
-                    'send_email',
-                    'send_telegram',
-                    'stat_server'
-                ],
-                'balance' => 'auto',
-                'minProcesses' => 1,
-                'maxProcesses' => 64,
-                'tries' => 1,
-                'nice' => 0,
-            ],
-        ],
-
         'local' => [
             'V2board' => [
                 'connection' => 'redis',
@@ -191,7 +173,8 @@ return [
                     'server_log',
                     'send_email',
                     'send_telegram',
-                    'stat_server'
+                    'stat_server',
+                    'order_handle'
                 ],
                 'balance' => 'auto',
                 'minProcesses' => 1,

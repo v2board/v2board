@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Jobs\OrderHandleJob;
 use App\Models\Order;
 use App\Models\Plan;
 use App\Models\User;
@@ -220,7 +221,9 @@ class OrderService
         $order->status = 1;
         $order->paid_at = time();
         $order->callback_no = $callbackNo;
-        return $order->save();
+        if (!$order->save()) return false;
+        OrderHandleJob::dispatch($order->trade_no);
+        return true;
     }
 
     public function cancel():bool
