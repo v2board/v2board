@@ -102,10 +102,15 @@ class AuthController extends Controller
         if ((int)config('v2board.email_verify', 0)) {
             Cache::forget(CacheKey::get('EMAIL_VERIFY_CODE', $request->input('email')));
         }
+
+        $data = [
+            'token' => $user->token,
+            'auth_data' => base64_encode("{$user->email}:{$user->password}")
+        ];
         $request->session()->put('email', $user->email);
         $request->session()->put('id', $user->id);
         return response()->json([
-            'data' => true
+            'data' => $data
         ]);
     }
 
