@@ -1,6 +1,10 @@
 <?php
 
 use Illuminate\Support\Str;
+use Linfo\Linfo;
+
+$lInfo = new Linfo();
+$parser = $lInfo->getParser();
 
 return [
 
@@ -178,7 +182,7 @@ return [
                 ],
                 'balance' => 'auto',
                 'minProcesses' => 1,
-                'maxProcesses' => 64,
+                'maxProcesses' => (int)ceil($parser->getRam()['total'] / 1024 / 1024 / 1024 * 12),
                 'tries' => 1,
                 'nice' => 0,
             ],
