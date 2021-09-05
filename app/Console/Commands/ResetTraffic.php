@@ -54,6 +54,9 @@ class ResetTraffic extends Command
             case 1:
                 $this->resetByExpireDay();
                 break;
+            // no action
+            case 2:
+                break;
         }
         DB::commit();
     }
