@@ -71,7 +71,7 @@ class ShadowsocksTidalabController extends Controller
         foreach ($data as $item) {
             $u = $item['u'] * $server->rate;
             $d = $item['d'] * $server->rate;
-            $userService->trafficFetch($u, $d, $item['user_id'], $server, 'trojan');
+            $userService->trafficFetch($u, $d, $item['user_id'], $server, 'shadowsocks');
         }
 
         return response([
