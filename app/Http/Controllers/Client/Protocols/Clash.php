@@ -20,10 +20,10 @@ class Clash
     {
         $servers = $this->servers;
         $user = $this->user;
-        $app_name = config('v2board.app_name', 'V2Board');
+        $appName = config('v2board.app_name', 'V2Board');
         header("subscription-userinfo: upload={$user['u']}; download={$user['d']}; total={$user['transfer_enable']}; expire={$user['expired_at']}");
         header('profile-update-interval: 24');
-        header("content-disposition: filename={$app_name}");
+        header("content-disposition: filename={$appName}");
         $defaultConfig = base_path() . '/resources/rules/default.clash.yaml';
         $customConfig = base_path() . '/resources/rules/custom.clash.yaml';
         if (\File::exists($customConfig)) {
