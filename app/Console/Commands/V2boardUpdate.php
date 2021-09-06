@@ -57,6 +57,6 @@ class V2boardUpdate extends Command
             } catch (\Exception $e) {
             }
         }
-        $this->info('更新完毕');
+        $this->info('更新完毕，请重新启动队列服务。');
     }
 }
