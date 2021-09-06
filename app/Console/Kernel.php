@@ -34,6 +34,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('reset:serverLog')->quarterly();
         // send
         $schedule->command('send:remindMail')->dailyAt('11:30');
+        // horizon metrics
+        $schedule->command('horizon:snapshot')->everyFiveMinutes();
     }
 
     /**
