@@ -42,8 +42,8 @@ class V2boardStatistics extends Command
      */
     public function handle()
     {
-         $this->statOrder();
-         $this->statServer();
+        $this->statOrder();
+        $this->statServer();
     }
 
     private function statOrder()
@@ -78,14 +78,16 @@ class V2boardStatistics extends Command
 
     private function statServer()
     {
-        $startAt = strtotime(date('Y-m-d'));
+        $endAt = strtotime(date('Y-m-d'));
+        $startAt = strtotime('-1 day', $endAt);
         $statistics = ServerLog::select([
             'server_id',
             'method as server_type',
             DB::raw("sum(u) as u"),
             DB::raw("sum(d) as d"),
         ])
-            ->where('log_at', $startAt)
+            ->where('log_at', '>=', $startAt)
+            ->where('log_at', '<', $endAt)
             ->groupBy('server_id', 'method')
             ->get()
             ->toArray();
