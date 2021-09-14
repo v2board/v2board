@@ -125,6 +125,7 @@ class AuthController extends Controller
         }
         if (!Helper::multiPasswordVerify(
             $user->password_algo,
+            $user->password_salt,
             $password,
             $user->password)
         ) {

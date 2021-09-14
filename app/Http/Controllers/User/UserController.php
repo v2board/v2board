@@ -35,6 +35,7 @@ class UserController extends Controller
         }
         if (!Helper::multiPasswordVerify(
             $user->password_algo,
+            $user->password_salt,
             $request->input('old_password'),
             $user->password)
         ) {

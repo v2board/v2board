@@ -323,6 +323,7 @@ CREATE TABLE `v2_user` (
                            `email` varchar(64) NOT NULL,
                            `password` varchar(64) NOT NULL,
                            `password_algo` char(10) DEFAULT NULL,
+                           `password_salt` char(10) DEFAULT NULL,
                            `balance` int(11) NOT NULL DEFAULT '0',
                            `discount` int(11) DEFAULT NULL,
                            `commission_type` tinyint(4) NOT NULL DEFAULT '0' COMMENT '0: system 1: cycle 2: onetime',
@@ -352,4 +353,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2021-08-28 06:53:57
+-- 2021-09-14 04:09:49

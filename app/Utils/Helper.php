@@ -64,12 +64,12 @@ class Helper
         return $str;
     }
 
-    public static function multiPasswordVerify($algo, $password, $hash)
+    public static function multiPasswordVerify($algo, $salt, $password, $hash)
     {
         switch($algo) {
             case 'md5': return md5($password) === $hash;
             case 'sha256': return hash('sha256', $password) === $hash;
-            case 'mws': return md5(hash('sha256', $password)) === $hash;
+            case 'mws': return md5($password . $salt) === $hash;
             default: return password_verify($password, $hash);
         }
     }
