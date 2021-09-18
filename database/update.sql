@@ -441,3 +441,14 @@ ALTER TABLE `v2_coupon`
 
 ALTER TABLE `v2_user`
     ADD `password_salt` char(10) COLLATE 'utf8_general_ci' NULL AFTER `password_algo`;
+
+CREATE TABLE `v2_commission_log` (
+                                     `id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                                     `invite_user_id` int(11) NOT NULL,
+                                     `user_id` int(11) NOT NULL,
+                                     `trade_no` char(36) NOT NULL,
+                                     `order_amount` int(11) NOT NULL,
+                                     `get_amount` int(11) NOT NULL,
+                                     `created_at` int(11) NOT NULL,
+                                     `updated_at` int(11) NOT NULL
+) COLLATE 'utf8mb4_general_ci';

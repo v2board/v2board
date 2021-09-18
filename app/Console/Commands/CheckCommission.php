@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\CommissionLog;
 use Illuminate\Console\Command;
 use App\Models\Order;
 use App\Models\User;
@@ -96,13 +97,23 @@ class CheckCommission extends Command
             $inviter = User::find($inviteUserId);
             if (!$inviter) continue;
             if (!$commissionShareLevels[$l]) continue;
-            $commissionBalance = $order->commission_balance * $commissionShareLevels[$l];
+            $commissionBalance = $order->commission_balance * ($commissionShareLevels[$l] / 100);
             if ((int)config('v2board.withdraw_close_enable', 0)) {
                 $inviter->balance = $inviter->balance + $commissionBalance;
             } else {
                 $inviter->commission_balance = $inviter->commission_balance + $commissionBalance;
             }
             if (!$inviter->save()) {
+                DB::rollBack();
+                return false;
+            }
+            if (!CommissionLog::create([
+                'invite_user_id' => $inviteUserId,
+                'user_id' => $order->user_id,
+                'trade_no' => $order->trade_no,
+                'order_amount' => $order->total_amount,
+                'get_amount' => $commissionBalance
+            ])) {
                 DB::rollBack();
                 return false;
             }

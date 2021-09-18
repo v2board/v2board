@@ -19,6 +19,20 @@ CREATE TABLE `failed_jobs` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
+DROP TABLE IF EXISTS `v2_commission_log`;
+CREATE TABLE `v2_commission_log` (
+                                     `id` int(11) NOT NULL AUTO_INCREMENT,
+                                     `invite_user_id` int(11) NOT NULL,
+                                     `user_id` int(11) NOT NULL,
+                                     `trade_no` char(36) NOT NULL,
+                                     `order_amount` int(11) NOT NULL,
+                                     `get_amount` int(11) NOT NULL,
+                                     `created_at` int(11) NOT NULL,
+                                     `updated_at` int(11) NOT NULL,
+                                     PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
 DROP TABLE IF EXISTS `v2_coupon`;
 CREATE TABLE `v2_coupon` (
                              `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -353,4 +367,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2021-09-14 04:09:49
+-- 2021-09-18 12:00:43
