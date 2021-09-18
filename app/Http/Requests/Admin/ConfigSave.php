@@ -25,6 +25,10 @@ class ConfigSave extends FormRequest
             'commission_withdraw_limit' => 'nullable|numeric',
             'commission_withdraw_method' => 'nullable|array',
             'withdraw_close_enable' => 'in:0,1',
+            'commission_distribution_enable' => 'in:0,1',
+            'commission_distribution_l1' => 'nullable|numeric',
+            'commission_distribution_l2' => 'nullable|numeric',
+            'commission_distribution_l3' => 'nullable|numeric',
             // site
             'stop_register' => 'in:0,1',
             'email_verify' => 'in:0,1',
