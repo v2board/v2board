@@ -156,7 +156,7 @@ class ServerService
         return $json;
     }
 
-    private function setDns(Server $server, object $json)
+    private function setDns(ServerV2ray $server, object $json)
     {
         if ($server->dnsSettings) {
             $dns = $server->dnsSettings;
@@ -169,7 +169,7 @@ class ServerService
         }
     }
 
-    private function setNetwork(Server $server, object $json)
+    private function setNetwork(ServerV2ray $server, object $json)
     {
         if ($server->networkSettings) {
             switch ($server->network) {
@@ -198,7 +198,7 @@ class ServerService
         }
     }
 
-    private function setRule(Server $server, object $json)
+    private function setRule(ServerV2ray $server, object $json)
     {
         $domainRules = array_filter(explode(PHP_EOL, config('v2board.server_v2ray_domain')));
         $protocolRules = array_filter(explode(PHP_EOL, config('v2board.server_v2ray_protocol')));
@@ -238,7 +238,7 @@ class ServerService
         }
     }
 
-    private function setTls(Server $server, object $json)
+    private function setTls(ServerV2ray $server, object $json)
     {
         if ((int)$server->tls) {
             $tlsSettings = $server->tlsSettings;
