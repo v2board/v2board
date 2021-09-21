@@ -455,3 +455,10 @@ CREATE TABLE `v2_commission_log` (
 
 ALTER TABLE `v2_plan`
     ADD `reset_traffic_method` tinyint(1) NULL AFTER `reset_price`;
+
+ALTER TABLE `v2_server`
+    RENAME TO `v2_server_v2ray`;
+
+ALTER TABLE `v2_user`
+    CHANGE `remind_expire` `remind_expire` tinyint(4) NULL DEFAULT '0' AFTER `plan_id`,
+    CHANGE `remind_traffic` `remind_traffic` tinyint(4) NULL DEFAULT '0' AFTER `remind_expire`;

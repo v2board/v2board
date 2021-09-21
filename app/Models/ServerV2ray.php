@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Server extends Model
+class ServerV2ray extends Model
 {
-    protected $table = 'v2_server';
+    protected $table = 'v2_server_v2ray';
     protected $dateFormat = 'U';
     protected $guarded = ['id'];
     protected $casts = [

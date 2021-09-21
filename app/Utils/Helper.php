@@ -2,7 +2,7 @@
 
 namespace App\Utils;
 
-use App\Models\Server;
+use App\Models\ServerV2ray;
 use App\Models\ServerShadowsocks;
 use App\Models\ServerTrojan;
 use App\Models\User;

@@ -6,7 +6,7 @@ use App\Jobs\ServerLogJob;
 use App\Jobs\TrafficFetchJob;
 use App\Models\InviteCode;
 use App\Models\Order;
-use App\Models\Server;
+use App\Models\ServerV2ray;
 use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;

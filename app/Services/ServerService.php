@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Models\ServerLog;
 use App\Models\ServerShadowsocks;
 use App\Models\User;
-use App\Models\Server;
+use App\Models\ServerV2ray;
 use App\Models\ServerTrojan;
 use App\Utils\CacheKey;
 use Illuminate\Support\Facades\Cache;
@@ -18,7 +18,7 @@ class ServerService
     public function getV2ray(User $user, $all = false):array
     {
         $servers = [];
-        $model = Server::orderBy('sort', 'ASC');
+        $model = ServerV2ray::orderBy('sort', 'ASC');
         if (!$all) {
             $model->where('show', 1);
         }
@@ -123,7 +123,7 @@ class ServerService
 
     public function getV2RayConfig(int $nodeId, int $localPort)
     {
-        $server = Server::find($nodeId);
+        $server = ServerV2ray::find($nodeId);
         if (!$server) {
             abort(500, '节点不存在');
         }
@@ -301,7 +301,7 @@ class ServerService
 
     public function getV2rayServers()
     {
-        $server = Server::orderBy('sort', 'ASC')->get();
+        $server = ServerV2ray::orderBy('sort', 'ASC')->get();
         for ($i = 0; $i < count($server); $i++) {
             $server[$i]['type'] = 'v2ray';
         }

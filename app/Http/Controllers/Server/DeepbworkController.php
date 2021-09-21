@@ -8,7 +8,7 @@ use App\Utils\CacheKey;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Models\Server;
+use App\Models\ServerV2ray;
 use App\Models\ServerLog;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -35,7 +35,7 @@ class DeepbworkController extends Controller
     public function user(Request $request)
     {
         $nodeId = $request->input('node_id');
-        $server = Server::find($nodeId);
+        $server = ServerV2ray::find($nodeId);
         if (!$server) {
             abort(500, 'fail');
         }
@@ -64,7 +64,7 @@ class DeepbworkController extends Controller
     public function submit(Request $request)
     {
 //         Log::info('serverSubmitData:' . $request->input('node_id') . ':' . file_get_contents('php://input'));
-        $server = Server::find($request->input('node_id'));
+        $server = ServerV2ray::find($request->input('node_id'));
         if (!$server) {
             return response([
                 'ret' => 0,

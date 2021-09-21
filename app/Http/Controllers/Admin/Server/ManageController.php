@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin\Server;
 
-use App\Models\Server;
+use App\Models\ServerV2ray;
 use App\Models\ServerShadowsocks;
 use App\Models\ServerTrojan;
 use App\Services\ServerService;
@@ -32,7 +32,7 @@ class ManageController extends Controller
                     }
                     break;
                 case 'v2ray':
-                    if (!Server::find($v['value'])->update(['sort' => $k + 1])) {
+                    if (!ServerV2ray::find($v['value'])->update(['sort' => $k + 1])) {
                         DB::rollBack();
                         abort(500, '保存失败');
                     }

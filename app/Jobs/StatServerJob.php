@@ -36,7 +36,7 @@ class StatServerJob implements ShouldQueue
     public function handle()
     {
         $statistic = $this->statistic;
-        $data = StatServer::where('record_at', $statistic['record_at'])
+        $data = StatServerV2ray::where('record_at', $statistic['record_at'])
             ->where('server_id', $statistic['server_id'])
             ->first();
         if ($data) {
@@ -46,7 +46,7 @@ class StatServerJob implements ShouldQueue
                 abort(500, '节点统计数据更新失败');
             }
         } else {
-            if (!StatServer::create($statistic)) {
+            if (!StatServerV2ray::create($statistic)) {
                 abort(500, '节点统计数据创建失败');
             }
         }

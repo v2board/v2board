@@ -172,34 +172,6 @@ CREATE TABLE `v2_plan` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-DROP TABLE IF EXISTS `v2_server`;
-CREATE TABLE `v2_server` (
-                             `id` int(11) NOT NULL AUTO_INCREMENT,
-                             `group_id` varchar(255) NOT NULL,
-                             `name` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
-                             `parent_id` int(11) DEFAULT NULL,
-                             `host` varchar(255) NOT NULL,
-                             `port` int(11) NOT NULL,
-                             `server_port` int(11) NOT NULL,
-                             `tls` tinyint(4) NOT NULL DEFAULT '0',
-                             `tags` varchar(255) DEFAULT NULL,
-                             `rate` varchar(11) NOT NULL,
-                             `network` text NOT NULL,
-                             `alter_id` int(11) NOT NULL DEFAULT '1',
-                             `settings` text,
-                             `rules` text,
-                             `networkSettings` text,
-                             `tlsSettings` text,
-                             `ruleSettings` text,
-                             `dnsSettings` text,
-                             `show` tinyint(1) NOT NULL DEFAULT '0',
-                             `sort` int(11) DEFAULT NULL,
-                             `created_at` int(11) NOT NULL,
-                             `updated_at` int(11) NOT NULL,
-                             PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
 DROP TABLE IF EXISTS `v2_server_group`;
 CREATE TABLE `v2_server_group` (
                                    `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -268,6 +240,34 @@ CREATE TABLE `v2_server_trojan` (
                                     `updated_at` int(11) NOT NULL,
                                     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='trojan伺服器表';
+
+
+DROP TABLE IF EXISTS `v2_server_v2ray`;
+CREATE TABLE `v2_server_v2ray` (
+                                   `id` int(11) NOT NULL AUTO_INCREMENT,
+                                   `group_id` varchar(255) NOT NULL,
+                                   `name` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
+                                   `parent_id` int(11) DEFAULT NULL,
+                                   `host` varchar(255) NOT NULL,
+                                   `port` int(11) NOT NULL,
+                                   `server_port` int(11) NOT NULL,
+                                   `tls` tinyint(4) NOT NULL DEFAULT '0',
+                                   `tags` varchar(255) DEFAULT NULL,
+                                   `rate` varchar(11) NOT NULL,
+                                   `network` text NOT NULL,
+                                   `alter_id` int(11) NOT NULL DEFAULT '1',
+                                   `settings` text,
+                                   `rules` text,
+                                   `networkSettings` text,
+                                   `tlsSettings` text,
+                                   `ruleSettings` text,
+                                   `dnsSettings` text,
+                                   `show` tinyint(1) NOT NULL DEFAULT '0',
+                                   `sort` int(11) DEFAULT NULL,
+                                   `created_at` int(11) NOT NULL,
+                                   `updated_at` int(11) NOT NULL,
+                                   PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS `v2_stat_order`;
@@ -356,8 +356,8 @@ CREATE TABLE `v2_user` (
                            `uuid` varchar(36) NOT NULL,
                            `group_id` int(11) DEFAULT NULL,
                            `plan_id` int(11) DEFAULT NULL,
-                           `remind_expire` tinyint(4) DEFAULT '1',
-                           `remind_traffic` tinyint(4) DEFAULT '1',
+                           `remind_expire` tinyint(4) DEFAULT '0',
+                           `remind_traffic` tinyint(4) DEFAULT '0',
                            `token` char(32) NOT NULL,
                            `remarks` text,
                            `expired_at` bigint(20) DEFAULT '0',
@@ -368,4 +368,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2021-09-20 15:35:06
+-- 2021-09-21 10:07:22
