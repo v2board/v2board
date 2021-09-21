@@ -20,6 +20,11 @@
 ## Sponsors
 Thanks to the open source project license provided by [Jetbrains](https://www.jetbrains.com/)
 
-## Other
+## Community
 Telegram Channel: [@v2board](https://t.me/v2board)  
-We have closed issue. If you want to find us, please contact us through the telegram group.
+
+## Rules
+1.We have closed issue. If you want to find us, please contact us through the telegram group.  
+2.Forward, Please indicate the original repo.  
+3.This repo is v2board api interface open source.  
+4.Due to the copyright problem, we have no plan to open source the front-end, but the front-end code is still readable.
