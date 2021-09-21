@@ -95,7 +95,7 @@ class StatController extends Controller
             'trojan' => ServerTrojan::where('parent_id', null)->get()->toArray()
         ];
         $timestamp = strtotime('-1 day', strtotime(date('Y-m-d')));
-        $statistics = StatServerV2ray::select([
+        $statistics = StatServer::select([
                 'server_id',
                 'server_type',
                 'u',
