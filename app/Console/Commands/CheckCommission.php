@@ -96,7 +96,7 @@ class CheckCommission extends Command
         for ($l = 0; $l < $level; $l++) {
             $inviter = User::find($inviteUserId);
             if (!$inviter) continue;
-            if (!$commissionShareLevels[$l]) continue;
+            if (!isset($commissionShareLevels[$l])) continue;
             $commissionBalance = $order->commission_balance * ($commissionShareLevels[$l] / 100);
             if ((int)config('v2board.withdraw_close_enable', 0)) {
                 $inviter->balance = $inviter->balance + $commissionBalance;
