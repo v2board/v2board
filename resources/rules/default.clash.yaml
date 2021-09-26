@@ -44,6 +44,10 @@ rules:
   # 自定义规则
   ## 您可以在此处插入您补充的自定义规则（请注意保持缩进）
 
+  # Google 中国服务
+  - DOMAIN-SUFFIX,services.googleapis.cn,$app_name
+  - DOMAIN-SUFFIX,xn--ngstr-lra8j.com,$app_name
+
   # Apple
   - DOMAIN,safebrowsing.urlsec.qq.com,DIRECT # 如果您并不信任此服务提供商或防止其下载消耗过多带宽资源，可以进入 Safari 设置，关闭 Fraudulent Website Warning 功能，并使用 REJECT 策略。
   - DOMAIN,safebrowsing.googleapis.com,DIRECT # 如果您并不信任此服务提供商或防止其下载消耗过多带宽资源，可以进入 Safari 设置，关闭 Fraudulent Website Warning 功能，并使用 REJECT 策略。
@@ -536,6 +540,26 @@ rules:
   - IP-CIDR6,2001:67c:4e8::/48,$app_name,no-resolve
   - IP-CIDR6,2001:b28:f23d::/48,$app_name,no-resolve
   - IP-CIDR6,2001:b28:f23f::/48,$app_name,no-resolve
+
+  # Google 中国服务 services.googleapis.cn
+  - IP-CIDR,120.232.181.162/32,$app_name,no-resolve
+  - IP-CIDR,120.241.147.226/32,$app_name,no-resolve
+  - IP-CIDR,120.253.253.226/32,$app_name,no-resolve
+  - IP-CIDR,120.253.255.162/32,$app_name,no-resolve
+  - IP-CIDR,120.253.255.34/32,$app_name,no-resolve
+  - IP-CIDR,120.253.255.98/32,$app_name,no-resolve
+  - IP-CIDR,180.163.150.162/32,$app_name,no-resolve
+  - IP-CIDR,180.163.150.34/32,$app_name,no-resolve
+  - IP-CIDR,180.163.151.162/32,$app_name,no-resolve
+  - IP-CIDR,180.163.151.34/32,$app_name,no-resolve
+  - IP-CIDR,203.208.39.0/24,$app_name,no-resolve
+  - IP-CIDR,203.208.40.0/24,$app_name,no-resolve
+  - IP-CIDR,203.208.41.0/24,$app_name,no-resolve
+  - IP-CIDR,203.208.43.0/24,$app_name,no-resolve
+  - IP-CIDR,203.208.50.0/24,$app_name,no-resolve
+  - IP-CIDR,220.181.174.162/32,$app_name,no-resolve
+  - IP-CIDR,220.181.174.226/32,$app_name,no-resolve
+  - IP-CIDR,220.181.174.34/32,$app_name,no-resolve
 
   # LAN
   - DOMAIN,injections.adguard.org,DIRECT
