@@ -2,7 +2,7 @@
 
 namespace App\Utils;
 
-use App\Models\Server;
+use App\Models\ServerV2ray;
 use App\Models\ServerShadowsocks;
 use App\Models\ServerTrojan;
 use App\Models\User;
@@ -21,6 +21,12 @@ class Helper
             return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
         }
         return md5(vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4)) . '-' . time());
+    }
+
+    public static function generateOrderNo(): string
+    {
+        $randomChar = rand(10000, 99999);
+        return date('YmdHms') . $randomChar;
     }
 
     public static function exchange($from, $to)
@@ -58,11 +64,12 @@ class Helper
         return $str;
     }
 
-    public static function multiPasswordVerify($algo, $password, $hash)
+    public static function multiPasswordVerify($algo, $salt, $password, $hash)
     {
         switch($algo) {
             case 'md5': return md5($password) === $hash;
             case 'sha256': return hash('sha256', $password) === $hash;
+            case 'md5salt': return md5($password . $salt) === $hash;
             default: return password_verify($password, $hash);
         }
     }
@@ -94,5 +101,15 @@ class Helper
         } else {
             return round($byte, 2) . ' B';
         }
+    }
+
+    public static function getSubscribeHost()
+    {
+        $subscribeUrl = config('v2board.app_url');
+        $subscribeUrls = explode(',', config('v2board.subscribe_url'));
+        if ($subscribeUrls && $subscribeUrls[0]) {
+            $subscribeUrl = $subscribeUrls[rand(0, count($subscribeUrls) - 1)];
+        }
+        return $subscribeUrl;
     }
 }

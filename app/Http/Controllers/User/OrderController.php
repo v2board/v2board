@@ -108,7 +108,7 @@ class OrderController extends Controller
         $order->user_id = $request->session()->get('id');
         $order->plan_id = $plan->id;
         $order->cycle = $request->input('cycle');
-        $order->trade_no = Helper::guid();
+        $order->trade_no = Helper::generateOrderNo();
         $order->total_amount = $plan[$request->input('cycle')];
 
         if ($request->input('coupon_code')) {
@@ -169,9 +169,8 @@ class OrderController extends Controller
         }
         // free process
         if ($order->total_amount <= 0) {
-            $order->total_amount = 0;
-            $order->status = 1;
-            $order->save();
+            $orderService = new OrderService($order);
+            if (!$orderService->paid($order->trade_no)) abort(500, '');
             return response([
                 'type' => -1,
                 'data' => true

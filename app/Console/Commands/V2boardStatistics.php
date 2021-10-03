@@ -42,16 +42,16 @@ class V2boardStatistics extends Command
      */
     public function handle()
     {
-         $this->statOrder();
-         $this->statServer();
+        $this->statOrder();
+        $this->statServer();
     }
 
     private function statOrder()
     {
         $endAt = strtotime(date('Y-m-d'));
         $startAt = strtotime('-1 day', $endAt);
-        $builder = Order::where('created_at', '>=', $startAt)
-            ->where('created_at', '<', $endAt)
+        $builder = Order::where('paid_at', '>=', $startAt)
+            ->where('paid_at', '<', $endAt)
             ->whereNotIn('status', [0, 2]);
         $orderCount = $builder->count();
         $orderAmount = $builder->sum('total_amount');

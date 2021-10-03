@@ -8,7 +8,7 @@ use App\Services\ServerService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\ServerGroup;
-use App\Models\Server;
+use App\Models\ServerV2ray;
 use App\Models\Plan;
 use App\Models\User;
 use App\Models\Ticket;
@@ -91,7 +91,7 @@ class StatController extends Controller
     {
         $servers = [
             'shadowsocks' => ServerShadowsocks::where('parent_id', null)->get()->toArray(),
-            'vmess' => Server::where('parent_id', null)->get()->toArray(),
+            'vmess' => ServerV2ray::where('parent_id', null)->get()->toArray(),
             'trojan' => ServerTrojan::where('parent_id', null)->get()->toArray()
         ];
         $timestamp = strtotime('-1 day', strtotime(date('Y-m-d')));

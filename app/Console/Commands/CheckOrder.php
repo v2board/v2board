@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Jobs\OrderHandleJob;
 use App\Services\OrderService;
 use Illuminate\Console\Command;
 use App\Models\Order;
@@ -45,20 +46,8 @@ class CheckOrder extends Command
         ini_set('memory_limit', -1);
         $orders = Order::whereIn('status', [0, 1])
             ->get();
-        foreach ($orders as $item) {
-            $orderService = new OrderService($item);
-            switch ($item->status) {
-                // cancel
-                case 0:
-                    if (strtotime($item->created_at) <= (time() - 1800)) {
-                        $orderService->cancel();
-                    }
-                    break;
-                case 1:
-                    $orderService->open();
-                    break;
-            }
-
+        foreach ($orders as $order) {
+            OrderHandleJob::dispatch($order->trade_no);
         }
     }
 }

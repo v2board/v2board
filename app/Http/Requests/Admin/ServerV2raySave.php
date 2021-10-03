@@ -26,10 +26,10 @@ class ServerV2raySave extends FormRequest
             'rate' => 'required|numeric',
             'alter_id' => 'required|integer',
             'network' => 'required|in:tcp,kcp,ws,http,domainsocket,quic,grpc',
-            'networkSettings' => '',
-            'ruleSettings' => '',
-            'tlsSettings' => '',
-            'dnsSettings' => ''
+            'networkSettings' => 'nullable|array',
+            'ruleSettings' => 'nullable|array',
+            'tlsSettings' => 'nullable|array',
+            'dnsSettings' => 'nullable|array'
         ];
     }
 
@@ -48,7 +48,11 @@ class ServerV2raySave extends FormRequest
             'rate.required' => '倍率不能为空',
             'rate.numeric' => '倍率格式不正确',
             'network.required' => '传输协议不能为空',
-            'network.in' => '传输协议格式不正确'
+            'network.in' => '传输协议格式不正确',
+            'networkSettings.array' => '传输协议配置有误',
+            'ruleSettings.array' => '规则配置有误',
+            'tlsSettings.array' => 'tls配置有误',
+            'dnsSettings.array' => 'dns配置有误'
         ];
     }
 }

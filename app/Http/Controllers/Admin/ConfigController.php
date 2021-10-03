@@ -60,7 +60,11 @@ class ConfigController extends Controller
                     'commission_auto_check_enable' => config('v2board.commission_auto_check_enable', 1),
                     'commission_withdraw_limit' => config('v2board.commission_withdraw_limit', 100),
                     'commission_withdraw_method' => config('v2board.commission_withdraw_method', Dict::WITHDRAW_METHOD_WHITELIST_DEFAULT),
-                    'withdraw_close_enable' => config('v2board.withdraw_close_enable', 0)
+                    'withdraw_close_enable' => config('v2board.withdraw_close_enable', 0),
+                    'commission_distribution_enable' => config('v2board.commission_distribution_enable', 0),
+                    'commission_distribution_l1' => config('v2board.commission_distribution_l1'),
+                    'commission_distribution_l2' => config('v2board.commission_distribution_l2'),
+                    'commission_distribution_l3' => config('v2board.commission_distribution_l3')
                 ],
                 'site' => [
                     'safe_mode_enable' => (int)config('v2board.safe_mode_enable', 0),
@@ -136,9 +140,6 @@ class ConfigController extends Controller
                     'server_v2ray_domain' => config('v2board.server_v2ray_domain'),
                     'server_v2ray_protocol' => config('v2board.server_v2ray_protocol'),
                 ],
-                'tutorial' => [
-                    'apple_id' => config('v2board.apple_id')
-                ],
                 'email' => [
                     'email_template' => config('v2board.email_template', 'default'),
                     'email_host' => config('v2board.email_host'),
@@ -166,7 +167,7 @@ class ConfigController extends Controller
 
     public function save(ConfigSave $request)
     {
-        $data = $request->input();
+        $data = $request->validated();
         $array = \Config::get('v2board');
         foreach ($data as $k => $v) {
             if (!in_array($k, array_keys($request->validated()))) {

@@ -25,7 +25,8 @@ class PlanSave extends FormRequest
             'two_year_price' => 'nullable|integer',
             'three_year_price' => 'nullable|integer',
             'onetime_price' => 'nullable|integer',
-            'reset_price' => 'nullable|integer'
+            'reset_price' => 'nullable|integer',
+            'reset_traffic_method' => 'nullable|integer|in:0,1,2'
         ];
     }
 
@@ -44,7 +45,9 @@ class PlanSave extends FormRequest
             'two_year_price.integer' => '两年付金额格式有误',
             'three_year_price.integer' => '三年付金额格式有误',
             'onetime_price.integer' => '一次性金额有误',
-            'reset_price.integer' => '流量重置包金额有误'
+            'reset_price.integer' => '流量重置包金额有误',
+            'reset_traffic_method.integer' => '流量重置方式格式有误',
+            'reset_traffic_method.in' => '流量重置方式格式有误'
         ];
     }
 }

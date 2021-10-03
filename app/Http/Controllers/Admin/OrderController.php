@@ -6,6 +6,7 @@ use App\Http\Requests\Admin\OrderAssign;
 use App\Http\Requests\Admin\OrderUpdate;
 use App\Http\Requests\Admin\OrderFetch;
 use App\Services\OrderService;
+use App\Services\UserService;
 use App\Utils\Helper;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -63,10 +64,45 @@ class OrderController extends Controller
         ]);
     }
 
+    public function paid(Request $request)
+    {
+        $order = Order::where('trade_no', $request->input('trade_no'))
+            ->first();
+        if (!$order) {
+            abort(500, '订单不存在');
+        }
+        if ($order->status !== 0) abort(500, '只能对待支付的订单进行操作');
+
+        $orderService = new OrderService($order);
+        if (!$orderService->paid('manual_operation')) {
+            abort(500, '更新失败');
+        }
+        return response([
+            'data' => true
+        ]);
+    }
+
+    public function cancel(Request $request)
+    {
+        $order = Order::where('trade_no', $request->input('trade_no'))
+            ->first();
+        if (!$order) {
+            abort(500, '订单不存在');
+        }
+        if ($order->status !== 0) abort(500, '只能对待支付的订单进行操作');
+
+        $orderService = new OrderService($order);
+        if (!$orderService->cancel()) {
+            abort(500, '更新失败');
+        }
+        return response([
+            'data' => true
+        ]);
+    }
+
     public function update(OrderUpdate $request)
     {
         $params = $request->only([
-            'status',
             'commission_status'
         ]);
 
@@ -76,42 +112,12 @@ class OrderController extends Controller
             abort(500, '订单不存在');
         }
 
-        if (isset($params['status']) && (int)$params['status'] === 2) {
-            $orderService = new OrderService($order);
-            if (!$orderService->cancel()) {
-                abort(500, '更新失败');
-            }
-            return response([
-                'data' => true
-            ]);
-        }
-
         try {
             $order->update($params);
         } catch (\Exception $e) {
             abort(500, '更新失败');
         }
 
-        return response([
-            'data' => true
-        ]);
-    }
-
-    public function repair(Request $request)
-    {
-        if (empty($request->input('trade_no'))) {
-            abort(500, '参数错误');
-        }
-        $order = Order::where('trade_no', $request->input('trade_no'))
-            ->where('status', 0)
-            ->first();
-        if (!$order) {
-            abort(500, '订单不存在或订单已支付');
-        }
-        $order->status = 1;
-        if (!$order->save()) {
-            abort(500, '保存失败');
-        }
         return response([
             'data' => true
         ]);
@@ -128,6 +134,11 @@ class OrderController extends Controller
 
         if (!$plan) {
             abort(500, '该订阅不存在');
+        }
+
+        $userService = new UserService();
+        if ($userService->isNotCompleteOrderByUserId($user->id)) {
+            abort(500, '该用户还有待支付的订单，无法分配');
         }
 
         DB::beginTransaction();

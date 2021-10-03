@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Client\Protocols;
 
 class AnXray
 {
-    public $flag = 'anxray';
+    public $flag = 'axxray';
     private $servers;
     private $user;
 
@@ -64,15 +64,21 @@ class AnXray
             "encryption" => "none",
             "type" => urlencode($server['network']),
             "security" => $server['tls'] ? "tls" : "",
-            "sni" => $server['tls'] ? urlencode(json_decode($server['tlsSettings'], true)['serverName']) : ""
         ];
+        if ($server['tls']) {
+            if ($server['tlsSettings']) {
+                $tlsSettings = $server['tlsSettings'];
+                if (isset($tlsSettings['serverName']) && !empty($tlsSettings['serverName']))
+                    $config['sni'] = urlencode($tlsSettings['serverName']);
+            }
+        }
         if ((string)$server['network'] === 'ws') {
-            $wsSettings = json_decode($server['networkSettings'], true);
+            $wsSettings = $server['networkSettings'];
             if (isset($wsSettings['path'])) $config['path'] = urlencode($wsSettings['path']);
             if (isset($wsSettings['headers']['Host'])) $config['host'] = urlencode($wsSettings['headers']['Host']);
         }
         if ((string)$server['network'] === 'grpc') {
-            $grpcSettings = json_decode($server['networkSettings'], true);
+            $grpcSettings = $server['networkSettings'];
             if (isset($grpcSettings['serviceName'])) $config['serviceName'] = urlencode($grpcSettings['serviceName']);
         }
         return "vmess://" . $uuid . "@" . $server['host'] . ":" . $server['port'] . "?" . http_build_query($config) . "#" . urlencode($server['name']) . "\r\n";

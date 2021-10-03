@@ -1,5 +1,5 @@
 apps:
   - name     : 'V2Board'
-    script   : 'php artisan queue:work --queue=send_email,send_telegram,stat_server'
-    instances: 4
+    script   : 'php artisan horizon'
+    instances: 1
     out_file : './storage/logs/queue/queue.log'

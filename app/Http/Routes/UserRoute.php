@@ -20,6 +20,7 @@ class UserRoute
             $router->get ('/getSubscribe', 'User\\UserController@getSubscribe');
             $router->get ('/getStat', 'User\\UserController@getStat');
             $router->post('/transfer', 'User\\UserController@transfer');
+            $router->post('/getQuickLoginUrl', 'User\\UserController@getQuickLoginUrl');
             // Order
             $router->post('/order/save', 'User\\OrderController@save');
             $router->post('/order/checkout', 'User\\OrderController@checkout');

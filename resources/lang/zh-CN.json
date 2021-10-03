@@ -16,7 +16,7 @@
     "Ticket reply failed": "工单回复失败",
     "Close failed": "关闭失败",
     "Unsupported withdrawal method": "不支持的提现方式",
-    "The current required minimum withdrawal commission is": "当前系统要求的最少提现佣金为：¥:limitCNY",
+    "The current required minimum withdrawal commission is :limit": "当前系统要求的最少提现佣金为：¥:limitCNY",
     "[Commission Withdrawal Request] This ticket is opened by the system": "[提现申请] 本工单由系统发出",
     "Withdrawal method": "提现方式",
     "Withdrawal account": "提现账号",
@@ -82,5 +82,8 @@
     "Incorrect traffic alert format": "流量提醒参数有误",
     "Email can not be empty": "邮箱不能为空",
     "Email format is incorrect": "邮箱格式不正确",
-    "Password can not be empty": "密码不能为空"
+    "Password can not be empty": "密码不能为空",
+    "The traffic usage in :app_name has reached 80%": "在:app_name的流量使用已达到80%",
+    "The service in :app_name is about to expire": "在:app_name的服务即将到期",
+    "The coupon can only be used :limit_use_with_user per person": "该优惠券每人只能用:limit_use_with_user次"
 }

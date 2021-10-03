@@ -173,6 +173,7 @@ return [
         App\Providers\AuthServiceProvider::class,
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
+        App\Providers\HorizonServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
     ],
@@ -236,5 +237,5 @@ return [
     | The only modification by laravel config
     |
     */
-    'version' => '1.5.2.1627559775390'
+    'version' => '1.5.3.1628409393360'
 ];

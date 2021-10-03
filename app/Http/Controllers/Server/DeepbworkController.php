@@ -8,7 +8,7 @@ use App\Utils\CacheKey;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Models\Server;
+use App\Models\ServerV2ray;
 use App\Models\ServerLog;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -35,13 +35,13 @@ class DeepbworkController extends Controller
     public function user(Request $request)
     {
         $nodeId = $request->input('node_id');
-        $server = Server::find($nodeId);
+        $server = ServerV2ray::find($nodeId);
         if (!$server) {
             abort(500, 'fail');
         }
         Cache::put(CacheKey::get('SERVER_V2RAY_LAST_CHECK_AT', $server->id), time(), 3600);
         $serverService = new ServerService();
-        $users = $serverService->getAvailableUsers(json_decode($server->group_id));
+        $users = $serverService->getAvailableUsers($server->group_id);
         $result = [];
         foreach ($users as $user) {
             $user->v2ray_user = [
@@ -64,7 +64,7 @@ class DeepbworkController extends Controller
     public function submit(Request $request)
     {
 //         Log::info('serverSubmitData:' . $request->input('node_id') . ':' . file_get_contents('php://input'));
-        $server = Server::find($request->input('node_id'));
+        $server = ServerV2ray::find($request->input('node_id'));
         if (!$server) {
             return response([
                 'ret' => 0,
@@ -76,23 +76,11 @@ class DeepbworkController extends Controller
         Cache::put(CacheKey::get('SERVER_V2RAY_ONLINE_USER', $server->id), count($data), 3600);
         Cache::put(CacheKey::get('SERVER_V2RAY_LAST_PUSH_AT', $server->id), time(), 3600);
         $userService = new UserService();
-        DB::beginTransaction();
-        try {
-            foreach ($data as $item) {
-                $u = $item['u'] * $server->rate;
-                $d = $item['d'] * $server->rate;
-                if (!$userService->trafficFetch($u, $d, $item['user_id'], $server, 'vmess')) {
-                    continue;
-                }
-            }
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return response([
-                'ret' => 0,
-                'msg' => 'user fetch fail'
-            ]);
+        foreach ($data as $item) {
+            $u = $item['u'] * $server->rate;
+            $d = $item['d'] * $server->rate;
+            $userService->trafficFetch($u, $d, $item['user_id'], $server, 'vmess');
         }
-        DB::commit();
 
         return response([
             'ret' => 1,

@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Plan;
 use Illuminate\Console\Command;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -42,24 +43,45 @@ class ResetTraffic extends Command
      */
     public function handle()
     {
-        DB::beginTransaction();
-        $resetTrafficMethod = config('v2board.reset_traffic_method', 0);
-        switch ((int)$resetTrafficMethod) {
-            // 1 a month
-            case 0:
-                $this->resetByMonthFirstDay();
-                break;
-            // expire day
-            case 1:
-                $this->resetByExpireDay();
-                break;
+        ini_set('memory_limit', -1);
+        foreach (Plan::get() as $plan) {
+            switch ($plan->reset_traffic_method) {
+                case null: {
+                    $resetTrafficMethod = config('v2board.reset_traffic_method', 0);
+                    switch ((int)$resetTrafficMethod) {
+                        // month first day
+                        case 0:
+                            $this->resetByMonthFirstDay($this->builder);
+                            break;
+                        // expire day
+                        case 1:
+                            $this->resetByExpireDay($this->builder);
+                            break;
+                        // no action
+                        case 2:
+                            break;
+                    }
+                    break;
+                }
+                case 0: {
+                    $builder = $this->builder->where('plan_id', $plan->id);
+                    $this->resetByMonthFirstDay($builder);
+                    break;
+                }
+                case 1: {
+                    $builder = $this->builder->where('plan_id', $plan->id);
+                    $this->resetByExpireDay($builder);
+                    break;
+                }
+                case 2: {
+                    break;
+                }
+            }
         }
-        DB::commit();
     }
 
-    private function resetByMonthFirstDay():void
+    private function resetByMonthFirstDay($builder):void
     {
-        $builder = $this->builder;
         if ((string)date('d') === '01') {
             $builder->update([
                 'u' => 0,
@@ -68,9 +90,8 @@ class ResetTraffic extends Command
         }
     }
 
-    private function resetByExpireDay():void
+    private function resetByExpireDay($builder):void
     {
-        $builder = $this->builder;
         $lastDay = date('d', strtotime('last day of +0 months'));
         $users = [];
         foreach ($builder->get() as $item) {

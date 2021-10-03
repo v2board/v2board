@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 class TicketService {
     public function replyByAdmin($ticketId, $message, $userId):void
     {
+        if ($message)
         $ticket = Ticket::where('id', $ticketId)
             ->first();
         if (!$ticket) {

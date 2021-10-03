@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin\Server;
 
 use App\Models\Plan;
-use App\Models\Server;
+use App\Models\ServerV2ray;
 use App\Models\ServerGroup;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -50,10 +50,9 @@ class GroupController extends Controller
             }
         }
 
-        $servers = Server::all();
+        $servers = ServerV2ray::all();
         foreach ($servers as $server) {
-            $groupId = json_decode($server->group_id);
-            if (in_array($request->input('id'), $groupId)) {
+            if (in_array($request->input('id'), $server->group_id)) {
                 abort(500, '该组已被节点所使用，无法删除');
             }
         }

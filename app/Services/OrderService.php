@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Jobs\OrderHandleJob;
 use App\Models\Order;
 use App\Models\Plan;
 use App\Models\User;
@@ -37,7 +38,7 @@ class OrderService
         DB::beginTransaction();
         if ($order->surplus_order_ids) {
             try {
-                Order::whereIn('id', json_decode($order->surplus_order_ids))->update([
+                Order::whereIn('id', $order->surplus_order_ids)->update([
                     'status' => 4
                 ]);
             } catch (\Exception $e) {
@@ -81,25 +82,6 @@ class OrderService
         DB::commit();
     }
 
-    public function cancel():bool
-    {
-        $order = $this->order;
-        DB::beginTransaction();
-        $order->status = 2;
-        if (!$order->save()) {
-            DB::rollBack();
-            return false;
-        }
-        if ($order->balance_amount) {
-            $userService = new UserService();
-            if (!$userService->addBalance($order->user_id, $order->balance_amount)) {
-                DB::rollBack();
-                return false;
-            }
-        }
-        DB::commit();
-        return true;
-    }
 
     public function setOrderType(User $user)
     {
@@ -190,13 +172,13 @@ class OrderService
         $result = $trafficUnitPrice * $notUsedTraffic;
         $orderModel = Order::where('user_id', $user->id)->where('cycle', '!=', 'reset_price')->where('status', 3);
         $order->surplus_amount = $result > 0 ? $result : 0;
-        $order->surplus_order_ids = json_encode(array_column($orderModel->get()->toArray(), 'id'));
+        $order->surplus_order_ids = array_column($orderModel->get()->toArray(), 'id');
     }
 
     private function orderIsUsed(Order $order):bool
     {
         $month = self::STR_TO_TIME[$order->cycle];
-        $orderExpireDay = strtotime('+' . $month . ' month', $order->created_at->timestamp);
+        $orderExpireDay = strtotime('+' . $month . ' month', $order->created_at);
         if ($orderExpireDay < time()) return true;
         return false;
     }
@@ -229,20 +211,40 @@ class OrderService
             return;
         }
         $order->surplus_amount = $orderSurplusAmount > 0 ? $orderSurplusAmount : 0;
-        $order->surplus_order_ids = json_encode(array_column($orders->toArray(), 'id'));
+        $order->surplus_order_ids = array_column($orders->toArray(), 'id');
     }
 
-    public function success(string $callbackNo)
+    public function paid(string $callbackNo)
     {
         $order = $this->order;
-        if ($order->status !== 0) {
-            return true;
-        }
+        if ($order->status !== 0) return true;
         $order->status = 1;
+        $order->paid_at = time();
         $order->callback_no = $callbackNo;
-        return $order->save();
+        if (!$order->save()) return false;
+        OrderHandleJob::dispatch($order->trade_no);
+        return true;
     }
 
+    public function cancel():bool
+    {
+        $order = $this->order;
+        DB::beginTransaction();
+        $order->status = 2;
+        if (!$order->save()) {
+            DB::rollBack();
+            return false;
+        }
+        if ($order->balance_amount) {
+            $userService = new UserService();
+            if (!$userService->addBalance($order->user_id, $order->balance_amount)) {
+                DB::rollBack();
+                return false;
+            }
+        }
+        DB::commit();
+        return true;
+    }
 
     private function buyByResetTraffic()
     {

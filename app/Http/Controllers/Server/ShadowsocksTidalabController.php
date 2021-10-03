@@ -8,10 +8,6 @@ use App\Services\UserService;
 use App\Utils\CacheKey;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\User;
-use App\Models\ServerLog;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 
 /*
@@ -41,7 +37,7 @@ class ShadowsocksTidalabController extends Controller
         }
         Cache::put(CacheKey::get('SERVER_SHADOWSOCKS_LAST_CHECK_AT', $server->id), time(), 3600);
         $serverService = new ServerService();
-        $users = $serverService->getAvailableUsers(json_decode($server->group_id));
+        $users = $serverService->getAvailableUsers($server->group_id);
         $result = [];
         foreach ($users as $user) {
             array_push($result, [
@@ -72,23 +68,11 @@ class ShadowsocksTidalabController extends Controller
         Cache::put(CacheKey::get('SERVER_SHADOWSOCKS_ONLINE_USER', $server->id), count($data), 3600);
         Cache::put(CacheKey::get('SERVER_SHADOWSOCKS_LAST_PUSH_AT', $server->id), time(), 3600);
         $userService = new UserService();
-        DB::beginTransaction();
-        try {
-            foreach ($data as $item) {
-                $u = $item['u'] * $server->rate;
-                $d = $item['d'] * $server->rate;
-                if (!$userService->trafficFetch((float)$u, (float)$d, (int)$item['user_id'], $server, 'shadowsocks')) {
-                    continue;
-                }
-            }
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return response([
-                'ret' => 0,
-                'msg' => 'user fetch fail'
-            ]);
+        foreach ($data as $item) {
+            $u = $item['u'] * $server->rate;
+            $d = $item['d'] * $server->rate;
+            $userService->trafficFetch($u, $d, $item['user_id'], $server, 'shadowsocks');
         }
-        DB::commit();
 
         return response([
             'ret' => 1,

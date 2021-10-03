@@ -8,27 +8,20 @@ use Illuminate\Support\Facades\DB;
 
 class CouponService
 {
-    public $order;
+    public $coupon;
+    public $planId;
+    public $userId;
 
     public function __construct($code)
     {
         $this->coupon = Coupon::where('code', $code)->first();
-        if (!$this->coupon) {
-            abort(500, '优惠券无效');
-        }
-        if ($this->coupon->limit_use <= 0 && $this->coupon->limit_use !== NULL) {
-            abort(500, '优惠券已无可用次数');
-        }
-        if (time() < $this->coupon->started_at) {
-            abort(500, '优惠券还未到可用时间');
-        }
-        if (time() > $this->coupon->ended_at) {
-            abort(500, '优惠券已过期');
-        }
     }
 
-    public function use(Order $order)
+    public function use(Order $order):bool
     {
+        $this->setPlanId($order->plan_id);
+        $this->setUserId($order->user_id);
+        $this->check();
         switch ($this->coupon->type) {
             case 1:
                 $order->discount_amount = $this->coupon->value;
@@ -43,17 +36,64 @@ class CouponService
                 return false;
             }
         }
-        if ($this->coupon->limit_plan_ids) {
-            $limitPlanIds = json_decode($this->coupon->limit_plan_ids);
-            if (!in_array($order->plan_id, $limitPlanIds)) {
-                return false;
-            }
-        }
         return true;
     }
 
     public function getId()
     {
         return $this->coupon->id;
+    }
+
+    public function getCoupon()
+    {
+        return $this->coupon;
+    }
+
+    public function setPlanId($planId)
+    {
+        $this->planId = $planId;
+    }
+
+    public function setUserId($userId)
+    {
+        $this->userId = $userId;
+    }
+
+    public function checkLimitUseWithUser():bool
+    {
+        $usedCount = Order::where('coupon_id', $this->coupon->id)
+            ->where('user_id', $this->userId)
+            ->whereNotIn('status', [0, 2])
+            ->count();
+        if ($usedCount >= $this->coupon->limit_use_with_user) return false;
+        return true;
+    }
+
+    public function check()
+    {
+        if (!$this->coupon) {
+            abort(500, __('Invalid coupon'));
+        }
+        if ($this->coupon->limit_use <= 0 && $this->coupon->limit_use !== NULL) {
+            abort(500, __('This coupon is no longer available'));
+        }
+        if (time() < $this->coupon->started_at) {
+            abort(500, __('This coupon has not yet started'));
+        }
+        if (time() > $this->coupon->ended_at) {
+            abort(500, __('This coupon has expired'));
+        }
+        if ($this->coupon->limit_plan_ids && $this->planId) {
+            if (!in_array($this->planId, $this->coupon->limit_plan_ids)) {
+                abort(500, __('The coupon code cannot be used for this subscription'));
+            }
+        }
+        if ($this->coupon->limit_use_with_user !== NULL && $this->userId) {
+            if (!$this->checkLimitUseWithUser()) {
+                abort(500, __('The coupon can only be used :limit_use_with_user per person', [
+                    'limit_use_with_user' => $this->coupon->limit_use_with_user
+                ]));
+            }
+        }
     }
 }

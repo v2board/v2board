@@ -102,10 +102,15 @@ class AuthController extends Controller
         if ((int)config('v2board.email_verify', 0)) {
             Cache::forget(CacheKey::get('EMAIL_VERIFY_CODE', $request->input('email')));
         }
+
+        $data = [
+            'token' => $user->token,
+            'auth_data' => base64_encode("{$user->email}:{$user->password}")
+        ];
         $request->session()->put('email', $user->email);
         $request->session()->put('id', $user->id);
         return response()->json([
-            'data' => true
+            'data' => $data
         ]);
     }
 
@@ -120,6 +125,7 @@ class AuthController extends Controller
         }
         if (!Helper::multiPasswordVerify(
             $user->password_algo,
+            $user->password_salt,
             $password,
             $user->password)
         ) {
@@ -250,6 +256,7 @@ class AuthController extends Controller
         }
         $user->password = password_hash($request->input('password'), PASSWORD_DEFAULT);
         $user->password_algo = NULL;
+        $user->password_salt = NULL;
         if (!$user->save()) {
             abort(500, __('Reset failed'));
         }

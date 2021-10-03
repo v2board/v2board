@@ -17,7 +17,7 @@ class CacheKey
         'SERVER_SHADOWSOCKS_LAST_CHECK_AT' => 'ss节点最后检查时间',
         'SERVER_SHADOWSOCKS_LAST_PUSH_AT' => 'ss节点最后推送时间',
         'TEMP_TOKEN' => '临时令牌',
-        'LAST_SEND_EMAIL_REMIND_TRAFFIC'
+        'LAST_SEND_EMAIL_REMIND_TRAFFIC' => '最后发送流量邮件提醒'
     ];
 
     public static function get(string $key, $uniqueValue)

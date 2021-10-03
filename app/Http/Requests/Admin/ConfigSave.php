@@ -25,6 +25,10 @@ class ConfigSave extends FormRequest
             'commission_withdraw_limit' => 'nullable|numeric',
             'commission_withdraw_method' => 'nullable|array',
             'withdraw_close_enable' => 'in:0,1',
+            'commission_distribution_enable' => 'in:0,1',
+            'commission_distribution_l1' => 'nullable|numeric',
+            'commission_distribution_l2' => 'nullable|numeric',
+            'commission_distribution_l3' => 'nullable|numeric',
             // site
             'stop_register' => 'in:0,1',
             'email_verify' => 'in:0,1',
@@ -44,7 +48,7 @@ class ConfigSave extends FormRequest
             'tos_url' => 'nullable|url',
             // subscribe
             'plan_change_enable' => 'in:0,1',
-            'reset_traffic_method' => 'in:0,1',
+            'reset_traffic_method' => 'in:0,1,2',
             'surplus_enable' => 'in:0,1',
             'new_order_event_id' => 'in:0,1',
             'renew_order_event_id' => 'in:0,1',
@@ -88,14 +92,11 @@ class ConfigSave extends FormRequest
             'frontend_theme' => '',
             'frontend_theme_sidebar' => 'in:dark,light',
             'frontend_theme_header' => 'in:dark,light',
-            'frontend_theme_color' => 'in:default,darkblue,black',
+            'frontend_theme_color' => 'in:default,darkblue,black,green',
             'frontend_background_url' => 'nullable|url',
             'frontend_admin_path' => '',
             'frontend_customer_service_method' => '',
             'frontend_customer_service_id' => '',
-            // tutorial
-            'apple_id' => 'nullable|email',
-            'apple_id_password' => '',
             // email
             'email_template' => '',
             'email_host' => '',

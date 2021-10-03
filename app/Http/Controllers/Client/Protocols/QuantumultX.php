@@ -66,7 +66,7 @@ class QuantumultX
             if ($server['network'] === 'tcp')
                 array_push($config, 'obfs=over-tls');
             if ($server['tlsSettings']) {
-                $tlsSettings = json_decode($server['tlsSettings'], true);
+                $tlsSettings = $server['tlsSettings'];
                 if (isset($tlsSettings['allowInsecure']) && !empty($tlsSettings['allowInsecure']))
                     array_push($config, 'tls-verification=' . ($tlsSettings['allowInsecure'] ? 'false' : 'true'));
                 if (isset($tlsSettings['serverName']) && !empty($tlsSettings['serverName']))
@@ -79,7 +79,7 @@ class QuantumultX
             else
                 array_push($config, 'obfs=ws');
             if ($server['networkSettings']) {
-                $wsSettings = json_decode($server['networkSettings'], true);
+                $wsSettings = $server['networkSettings'];
                 if (isset($wsSettings['path']) && !empty($wsSettings['path']))
                     array_push($config, "obfs-uri={$wsSettings['path']}");
                 if (isset($wsSettings['headers']['Host']) && !empty($wsSettings['headers']['Host']) && !isset($host))

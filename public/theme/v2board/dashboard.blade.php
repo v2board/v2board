@@ -7,6 +7,14 @@
     <link rel="stylesheet" href="/theme/{{$theme}}/assets/custom.css?v={{$verison}}">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
+    @php ($colors = [
+        'darkblue' => '#3b5998',
+        'black' => '#343a40',
+        'default' => '#0665d0',
+        'green' => '#319795'
+    ])
+    <meta name="theme-color" content="{{$colors[$theme_color]}}">
+
     <title>{{$title}}</title>
     <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito+Sans:300,400,400i,600,700"> -->
     <script>window.routerBase = "/";</script>

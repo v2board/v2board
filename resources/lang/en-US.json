@@ -37,7 +37,7 @@
     "Subscription has expired or no active subscription, unable to purchase Data Reset Package": "Subscription has expired or no active subscription, unable to purchase Data Reset Package",
     "Subscription plan does not exist": "Subscription plan does not exist",
     "The coupon code cannot be used for this subscription": "The coupon code cannot be used for this subscription",
-    "The current required minimum withdrawal commission is": "The current required minimum withdrawal commission is",
+    "The current required minimum withdrawal commission is :limit": "The current required minimum withdrawal commission is :limit",
     "The maximum number of creations has been reached": "The maximum number of creations has been reached",
     "The old password is wrong": "The old password is wrong",
     "The ticket is closed and cannot be replied": "The ticket is closed and cannot be replied",
@@ -82,5 +82,8 @@
     "Incorrect traffic alert format": "Incorrect traffic alert format",
     "Email can not be empty": "Email can not be empty",
     "Email format is incorrect": "Email format is incorrect",
-    "Password can not be empty": "Password can not be empty"
+    "Password can not be empty": "Password can not be empty",
+    "The traffic usage in :app_name has reached 80%": "The traffic usage in :app_name has reached 80%",
+    "The service in :app_name is about to expire": "The service in :app_name is about to expire",
+    "The coupon can only be used :limit_use_with_user per person": "The coupon can only be used :limit_use_with_user per person"
 }

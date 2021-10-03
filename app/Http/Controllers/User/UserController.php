@@ -6,14 +6,16 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\User\UserTransfer;
 use App\Http\Requests\User\UserUpdate;
 use App\Http\Requests\User\UserChangePassword;
+use App\Utils\CacheKey;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Plan;
-use App\Models\Server;
+use App\Models\ServerV2ray;
 use App\Models\Ticket;
 use App\Utils\Helper;
 use App\Models\Order;
 use App\Models\ServerLog;
+use Illuminate\Support\Facades\Cache;
 
 class UserController extends Controller
 {
@@ -33,6 +35,7 @@ class UserController extends Controller
         }
         if (!Helper::multiPasswordVerify(
             $user->password_algo,
+            $user->password_salt,
             $request->input('old_password'),
             $user->password)
         ) {
@@ -40,6 +43,7 @@ class UserController extends Controller
         }
         $user->password = password_hash($request->input('new_password'), PASSWORD_DEFAULT);
         $user->password_algo = NULL;
+        $user->password_salt = NULL;
         if (!$user->save()) {
             abort(500, __('Save failed'));
         }
@@ -118,12 +122,7 @@ class UserController extends Controller
                 abort(500, __('Subscription plan does not exist'));
             }
         }
-        $subscribeUrl = config('v2board.app_url', env('APP_URL'));
-        $subscribeUrls = explode(',', config('v2board.subscribe_url'));
-        if ($subscribeUrls) {
-            $subscribeUrl = $subscribeUrls[rand(0, count($subscribeUrls) - 1)];
-        }
-        $user['subscribe_url'] = "{$subscribeUrl}/api/v1/client/subscribe?token={$user['token']}";
+        $user['subscribe_url'] = Helper::getSubscribeHost() . "/api/v1/client/subscribe?token={$user['token']}";
         $user['reset_day'] = $this->getResetDay($user);
         return response([
             'data' => $user
@@ -208,5 +207,27 @@ class UserController extends Controller
             }
         }
         return null;
+    }
+
+
+    public function getQuickLoginUrl(Request $request)
+    {
+        $user = User::find($request->session()->get('id'));
+        if (!$user) {
+            abort(500, __('The user does not exist'));
+        }
+
+        $code = Helper::guid();
+        $key = CacheKey::get('TEMP_TOKEN', $code);
+        Cache::put($key, $user->id, 60);
+        $redirect = '/#/login?verify=' . $code . '&redirect=' . ($request->input('redirect') ? $request->input('redirect') : 'dashboard');
+        if (config('v2board.app_url')) {
+            $url = config('v2board.app_url') . $redirect;
+        } else {
+            $url = url($redirect);
+        }
+        return response([
+            'data' => $url
+        ]);
     }
 }

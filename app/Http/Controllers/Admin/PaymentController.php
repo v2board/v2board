@@ -42,6 +42,9 @@ class PaymentController extends Controller
 
     public function save(Request $request)
     {
+        if (!config('v2board.app_url')) {
+            abort(500, '请在站点配置中配置站点地址');
+        }
         if ($request->input('id')) {
             $payment = Payment::find($request->input('id'));
             if (!$payment) abort(500, '支付方式不存在');
@@ -58,7 +61,7 @@ class PaymentController extends Controller
             'name' => $request->input('name'),
             'payment' => $request->input('payment'),
             'config' => $request->input('config'),
-            'uuid' => Helper::guid()
+            'uuid' => Helper::randomChar(8)
         ])) {
             abort(500, '保存失败');
         }

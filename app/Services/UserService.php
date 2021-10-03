@@ -2,9 +2,11 @@
 
 namespace App\Services;
 
+use App\Jobs\ServerLogJob;
+use App\Jobs\TrafficFetchJob;
 use App\Models\InviteCode;
 use App\Models\Order;
-use App\Models\Server;
+use App\Models\ServerV2ray;
 use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -80,33 +82,9 @@ class UserService
         return true;
     }
 
-    public function trafficFetch(int $u, int $d, int $userId, object $server, string $protocol):bool
+    public function trafficFetch(int $u, int $d, int $userId, object $server, string $protocol)
     {
-        $user = User::lockForUpdate()
-            ->find($userId);
-        if (!$user) {
-            return true;
-        }
-        $user->t = time();
-        $user->u = $user->u + $u;
-        $user->d = $user->d + $d;
-        if (!$user->save()) {
-            return false;
-        }
-        $mailService = new MailService();
-        $serverService = new ServerService();
-        try {
-            $mailService->remindTraffic($user);
-            $serverService->log(
-                $userId,
-                $server->id,
-                $u,
-                $d,
-                $server->rate,
-                $protocol
-            );
-        } catch (\Exception $e) {
-        }
-        return true;
+        TrafficFetchJob::dispatch($u, $d, $userId, $server, $protocol);
+        ServerLogJob::dispatch($u, $d, $userId, $server, $protocol);
     }
 }

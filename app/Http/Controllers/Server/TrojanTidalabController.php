@@ -41,7 +41,7 @@ class TrojanTidalabController extends Controller
         }
         Cache::put(CacheKey::get('SERVER_TROJAN_LAST_CHECK_AT', $server->id), time(), 3600);
         $serverService = new ServerService();
-        $users = $serverService->getAvailableUsers(json_decode($server->group_id));
+        $users = $serverService->getAvailableUsers($server->group_id);
         $result = [];
         foreach ($users as $user) {
             $user->trojan_user = [
@@ -73,23 +73,11 @@ class TrojanTidalabController extends Controller
         Cache::put(CacheKey::get('SERVER_TROJAN_ONLINE_USER', $server->id), count($data), 3600);
         Cache::put(CacheKey::get('SERVER_TROJAN_LAST_PUSH_AT', $server->id), time(), 3600);
         $userService = new UserService();
-        DB::beginTransaction();
-        try {
-            foreach ($data as $item) {
-                $u = $item['u'] * $server->rate;
-                $d = $item['d'] * $server->rate;
-                if (!$userService->trafficFetch($u, $d, $item['user_id'], $server, 'trojan')) {
-                    continue;
-                }
-            }
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return response([
-                'ret' => 0,
-                'msg' => 'user fetch fail'
-            ]);
+        foreach ($data as $item) {
+            $u = $item['u'] * $server->rate;
+            $d = $item['d'] * $server->rate;
+            $userService->trafficFetch($u, $d, $item['user_id'], $server, 'trojan');
         }
-        DB::commit();
 
         return response([
             'ret' => 1,
