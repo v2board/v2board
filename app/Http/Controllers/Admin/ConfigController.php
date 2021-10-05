@@ -7,6 +7,7 @@ use App\Services\TelegramService;
 use Illuminate\Http\Request;
 use App\Utils\Dict;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Mail;
 
 class ConfigController extends Controller
 {
@@ -29,6 +30,25 @@ class ConfigController extends Controller
         }, glob($path . '*'));
         return response([
             'data' => $files
+        ]);
+    }
+
+    public function testSendEmail(Request $request)
+    {
+        $email = $request->session()->get('email');
+        $subject = 'Test Message';
+        try {
+            Mail::raw(
+                'Test Message',
+                function ($message) use ($email, $subject) {
+                    $message->to($email)->subject($subject);
+                }
+            );
+        } catch (\Exception $e) {
+            abort(500, $e->getMessage());
+        }
+        return response([
+            'data' => true
         ]);
     }
 
