@@ -33,13 +33,13 @@ class ConfigController extends Controller
         ]);
     }
 
-    public function testSendEmail(Request $request)
+    public function testSendMail(Request $request)
     {
         $email = $request->session()->get('email');
-        $subject = 'Test Message';
+        $subject = 'This is v2board test email';
         try {
             Mail::raw(
-                'Test Message',
+                'This is v2board test email',
                 function ($message) use ($email, $subject) {
                     $message->to($email)->subject($subject);
                 }
