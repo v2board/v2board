@@ -70,7 +70,8 @@ class UserController extends Controller
                 'plan_id',
                 'discount',
                 'commission_rate',
-                'telegram_id'
+                'telegram_id',
+                'uuid'
             ])
             ->first();
         if (!$user) {
