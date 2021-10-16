@@ -19,7 +19,7 @@ class CouponController extends Controller
         $current = $request->input('current') ? $request->input('current') : 1;
         $pageSize = $request->input('pageSize') >= 10 ? $request->input('pageSize') : 10;
         $sortType = in_array($request->input('sort_type'), ['ASC', 'DESC']) ? $request->input('sort_type') : 'DESC';
-        $sort = $request->input('sort') ? $request->input('sort') : 'created_at';
+        $sort = $request->input('sort') ? $request->input('sort') : 'id';
         $builder = Coupon::orderBy($sort, $sortType);
         $total = $builder->count();
         $coupons = $builder->forPage($current, $pageSize)

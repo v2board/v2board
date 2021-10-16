@@ -32,18 +32,17 @@ class UserController extends Controller
     {
         if ($request->input('filter')) {
             foreach ($request->input('filter') as $filter) {
-                if ($filter['key'] === 'invite_by_email') {
-                    $user = User::where('email', $filter['value'])->first();
-                    if (!$user) continue;
-                    $builder->where('invite_user_id', $user->id);
-                    continue;
+                if ($filter['condition'] === '模糊') {
+                    $filter['condition'] = 'like';
+                    $filter['value'] = "%{$filter['value']}%";
                 }
                 if ($filter['key'] === 'd' || $filter['key'] === 'transfer_enable') {
                     $filter['value'] = $filter['value'] * 1073741824;
                 }
-                if ($filter['condition'] === '模糊') {
-                    $filter['condition'] = 'like';
-                    $filter['value'] = "%{$filter['value']}%";
+                if ($filter['key'] === 'invite_by_email') {
+                    $user = User::where('email', $filter['value'])->first();
+                    $inviteUserId = isset($user->id) ? $user->id : 0;
+                    $builder->where('invite_user_id', $inviteUserId);
                 }
                 $builder->where($filter['key'], $filter['condition'], $filter['value']);
             }
