@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Requests\Admin\PaymentSave;
 use App\Services\PaymentService;
 use App\Utils\Helper;
 use Illuminate\Http\Request;
@@ -40,7 +41,7 @@ class PaymentController extends Controller
         ]);
     }
 
-    public function save(Request $request)
+    public function save(PaymentSave $request)
     {
         if (!config('v2board.app_url')) {
             abort(500, '请在站点配置中配置站点地址');
