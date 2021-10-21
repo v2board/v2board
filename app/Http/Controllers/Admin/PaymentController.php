@@ -41,7 +41,7 @@ class PaymentController extends Controller
         ]);
     }
 
-    public function save(PaymentSave $request)
+    public function save(Request $request)
     {
         if (!config('v2board.app_url')) {
             abort(500, '请在站点配置中配置站点地址');
@@ -58,6 +58,15 @@ class PaymentController extends Controller
                 'data' => true
             ]);
         }
+        $request->validate([
+            'name' => 'required',
+            'payment' => 'required',
+            'config' => 'required'
+        ], [
+            'name.required' => '显示名称不能为空',
+            'payment.required' => '网关参数不能为空',
+            'config.required' => '配置参数不能为空'
+        ]);
         if (!Payment::create([
             'name' => $request->input('name'),
             'payment' => $request->input('payment'),
