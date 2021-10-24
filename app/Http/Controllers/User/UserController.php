@@ -104,7 +104,6 @@ class UserController extends Controller
     {
         $user = User::where('id', $request->session()->get('id'))
             ->select([
-                'id',
                 'plan_id',
                 'token',
                 'expired_at',
