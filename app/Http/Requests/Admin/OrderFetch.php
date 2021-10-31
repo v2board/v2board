@@ -14,7 +14,7 @@ class OrderFetch extends FormRequest
     public function rules()
     {
         return [
-            'filter.*.key' => 'required|in:email,trade_no,status,commission_status,user_id,invite_user_id',
+            'filter.*.key' => 'required|in:email,trade_no,status,commission_status,user_id,invite_user_id,callback_no',
             'filter.*.condition' => 'required|in:>,<,=,>=,<=,模糊,!=',
             'filter.*.value' => ''
         ];
