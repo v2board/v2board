@@ -46,6 +46,8 @@ class ConfigSave extends FormRequest
             'recaptcha_key' => '',
             'recaptcha_site_key' => '',
             'tos_url' => 'nullable|url',
+            'currency' => '',
+            'currency_symbol' => '',
             // subscribe
             'plan_change_enable' => 'in:0,1',
             'reset_traffic_method' => 'in:0,1,2',
