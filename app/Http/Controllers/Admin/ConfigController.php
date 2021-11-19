@@ -170,10 +170,9 @@ class ConfigController extends Controller
         $data = $request->validated();
         $array = \Config::get('v2board');
         foreach ($data as $k => $v) {
-            if (!in_array($k, array_keys($request->validated()))) {
-                abort(500, '参数' . $k . '不在规则内，禁止修改');
+            if (in_array($k, array_keys($request->validated()))) {
+                $array[$k] = $v;
             }
-            $array[$k] = $v;
         }
         $data = var_export($array, 1);
         if (!\File::put(base_path() . '/config/v2board.php', "<?php\n return $data ;")) {
