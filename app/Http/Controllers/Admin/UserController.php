@@ -30,8 +30,9 @@ class UserController extends Controller
 
     private function filter(Request $request, $builder)
     {
-        if ($request->input('filter')) {
-            foreach ($request->input('filter') as $filter) {
+        $filters = $request->input('filter');
+        if ($filters) {
+            foreach ($filters as $k => $filter) {
                 if ($filter['condition'] === '模糊') {
                     $filter['condition'] = 'like';
                     $filter['value'] = "%{$filter['value']}%";
@@ -40,9 +41,11 @@ class UserController extends Controller
                     $filter['value'] = $filter['value'] * 1073741824;
                 }
                 if ($filter['key'] === 'invite_by_email') {
-                    $user = User::where('email', $filter['value'])->first();
+                    $user = User::where('email', $filter['condition'], $filter['value'])->first();
                     $inviteUserId = isset($user->id) ? $user->id : 0;
                     $builder->where('invite_user_id', $inviteUserId);
+                    unset($filters[$k]);
+                    continue;
                 }
                 $builder->where($filter['key'], $filter['condition'], $filter['value']);
             }
