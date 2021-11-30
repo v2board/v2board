@@ -60,11 +60,15 @@ class SendEmailJob implements ShouldQueue
             $error = $e->getMessage();
         }
 
-        MailLog::create([
+        $log = [
             'email' => $params['email'],
             'subject' => $params['subject'],
             'template_name' => $params['template_name'],
             'error' => isset($error) ? $error : NULL
-        ]);
+        ];
+
+        MailLog::create($log);
+        $log['config'] = config('mail');
+        return $log;
     }
 }

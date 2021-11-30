@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\Admin\ConfigSave;
+use App\Jobs\SendEmailJob;
 use App\Services\TelegramService;
 use Illuminate\Http\Request;
 use App\Utils\Dict;
@@ -35,20 +36,19 @@ class ConfigController extends Controller
 
     public function testSendMail(Request $request)
     {
-        $email = $request->session()->get('email');
-        $subject = 'This is v2board test email';
-        try {
-            Mail::raw(
-                'This is v2board test email',
-                function ($message) use ($email, $subject) {
-                    $message->to($email)->subject($subject);
-                }
-            );
-        } catch (\Exception $e) {
-            abort(500, $e->getMessage());
-        }
+        $obj = new SendEmailJob([
+            'email' => $request->session()->get('email'),
+            'subject' => 'This is v2board test email',
+            'template_name' => 'notify',
+            'template_value' => [
+                'name' => config('v2board.app_name', 'V2Board'),
+                'content' => 'This is v2board test email',
+                'url' => config('v2board.app_url')
+            ]
+        ]);
         return response([
-            'data' => true
+            'data' => true,
+            'log' => $obj->handle()
         ]);
     }
 
