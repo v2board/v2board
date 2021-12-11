@@ -52,8 +52,8 @@ class Surge
         }
 
         // Subscription link
-        $subsURL = config('v2board.subscribe_url', config('v2board.app_url', env('APP_URL'))) . '/api/v1/client/subscribe?token=' . $user['token'];
         $subsDomain = $_SERVER['SERVER_NAME'];
+        $subsURL = 'https://' . $subsDomain . '/api/v1/client/subscribe?token=' . $user['token'];
 
         $config = str_replace('$subs_link', $subsURL, $config);
         $config = str_replace('$subs_domain', $subsDomain, $config);
