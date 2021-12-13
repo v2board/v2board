@@ -52,7 +52,19 @@ class Clash
         $config['proxies'] = array_merge($config['proxies'] ? $config['proxies'] : [], $proxy);
         foreach ($config['proxy-groups'] as $k => $v) {
             if (!is_array($config['proxy-groups'][$k]['proxies'])) continue;
-            $config['proxy-groups'][$k]['proxies'] = array_merge($config['proxy-groups'][$k]['proxies'], $proxies);
+            $isFilter = false;
+            foreach ($config['proxy-groups'][$k]['proxies'] as $srcProxie) {
+                foreach ($proxies as $dstProxie) {
+                    if ($this->isMatch($srcProxie, $dstProxie)) {
+                        $isFilter = true;
+                        $config['proxy-groups'][$k]['proxies'] = array_diff($config['proxy-groups'][$k]['proxies'], [$srcProxie]);
+                        array_push($config['proxy-groups'][$k]['proxies'], $dstProxie);
+                    }
+                }
+            }
+            if (!$isFilter) {
+                $config['proxy-groups'][$k]['proxies'] = array_merge($config['proxy-groups'][$k]['proxies'], $proxies);
+            }
         }
         // Force the current subscription domain to be a direct rule
         $subsDomain = $_SERVER['SERVER_NAME'];
@@ -133,5 +145,14 @@ class Clash
         if (!empty($server['server_name'])) $array['sni'] = $server['server_name'];
         if (!empty($server['allow_insecure'])) $array['skip-cert-verify'] = ($server['allow_insecure'] ? true : false);
         return $array;
+    }
+
+    private function isMatch($exp, $str)
+    {
+        try {
+            return preg_match($exp, $str);
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 }
