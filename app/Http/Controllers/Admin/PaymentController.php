@@ -69,6 +69,7 @@ class PaymentController extends Controller
         ]);
         if (!Payment::create([
             'name' => $request->input('name'),
+            'icon' => $request->input('icon'),
             'payment' => $request->input('payment'),
             'config' => $request->input('config'),
             'uuid' => Helper::randomChar(8)

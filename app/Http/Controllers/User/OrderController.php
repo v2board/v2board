@@ -211,7 +211,8 @@ class OrderController extends Controller
         $methods = Payment::select([
             'id',
             'name',
-            'payment'
+            'payment',
+            'icon'
         ])
             ->where('enable', 1)->get();
 

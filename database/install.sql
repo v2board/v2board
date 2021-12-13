@@ -138,6 +138,7 @@ CREATE TABLE `v2_payment` (
                               `uuid` char(32) NOT NULL,
                               `payment` varchar(16) NOT NULL,
                               `name` varchar(255) NOT NULL,
+                              `icon` varchar(255) DEFAULT NULL,
                               `config` text NOT NULL,
                               `enable` tinyint(1) NOT NULL DEFAULT '0',
                               `sort` int(11) DEFAULT NULL,
@@ -368,4 +369,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2021-09-21 10:07:22
+-- 2021-12-13 06:14:37
