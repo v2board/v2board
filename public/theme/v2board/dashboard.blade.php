@@ -32,6 +32,7 @@
             crisp_id: '{{$crisp_id}}'
         }
     </script>
+    <script src="/theme/{{$theme}}/assets/i18n.js"></script>
 </head>
 
 <body>
