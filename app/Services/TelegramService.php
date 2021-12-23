@@ -17,7 +17,7 @@ class TelegramService {
     public function sendMessage(int $chatId, string $text, string $parseMode = '')
     {
         if ($parseMode === 'markdown') {
-            $text = Markdown::parse($text);
+            $text = str_replace('_', '\_', $text);
         }
         $this->request('sendMessage', [
             'chat_id' => $chatId,
