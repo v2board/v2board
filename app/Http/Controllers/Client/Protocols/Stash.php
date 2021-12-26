@@ -54,12 +54,12 @@ class Stash
         foreach ($config['proxy-groups'] as $k => $v) {
             if (!is_array($config['proxy-groups'][$k]['proxies'])) continue;
             $isFilter = false;
-            foreach ($config['proxy-groups'][$k]['proxies'] as $srcProxie) {
-                foreach ($proxies as $dstProxie) {
-                    if ($this->isMatch($srcProxie, $dstProxie)) {
+            foreach ($config['proxy-groups'][$k]['proxies'] as $src) {
+                foreach ($proxies as $dst) {
+                    if ($this->isMatch($src, $dst)) {
                         $isFilter = true;
-                        $config['proxy-groups'][$k]['proxies'] = array_diff($config['proxy-groups'][$k]['proxies'], [$srcProxie]);
-                        array_push($config['proxy-groups'][$k]['proxies'], $dstProxie);
+                        $config['proxy-groups'][$k]['proxies'] = array_diff($config['proxy-groups'][$k]['proxies'], [$src]);
+                        array_push($config['proxy-groups'][$k]['proxies'], $dst);
                     }
                 }
             }
