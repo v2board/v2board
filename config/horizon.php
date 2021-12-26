@@ -176,9 +176,10 @@ return [
                     'traffic_fetch',
                     'server_log',
                     'send_email',
+                    'send_email_mass',
                     'send_telegram',
                     'stat_server',
-                    'order_handle'
+                    'order_handle',
                 ],
                 'balance' => 'auto',
                 'minProcesses' => 1,
