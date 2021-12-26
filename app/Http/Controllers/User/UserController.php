@@ -189,6 +189,8 @@ class UserController extends Controller
     private function getResetDay(User $user)
     {
         if ($user->expired_at <= time() || $user->expired_at === NULL) return null;
+        // if reset method is not reset
+        if (isset($user->plan->reset_traffic_method) && $user->plan->reset_traffic_method === 2) return null;
         $day = date('d', $user->expired_at);
         $today = date('d');
         $lastDay = date('d', strtotime('last day of +0 months'));
