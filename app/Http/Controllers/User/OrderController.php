@@ -79,20 +79,20 @@ class OrderController extends Controller
         }
 
         if ((!$plan->show && !$plan->renew) || (!$plan->show && $user->plan_id !== $plan->id)) {
-            if ($request->input('cycle') !== 'reset_price') {
+            if ($request->input('period') !== 'reset_price') {
                 abort(500, __('This subscription has been sold out, please choose another subscription'));
             }
         }
 
-        if (!$plan->renew && $user->plan_id == $plan->id && $request->input('cycle') !== 'reset_price') {
+        if (!$plan->renew && $user->plan_id == $plan->id && $request->input('period') !== 'reset_price') {
             abort(500, __('This subscription cannot be renewed, please change to another subscription'));
         }
 
-        if ($plan[$request->input('cycle')] === NULL) {
-            abort(500, __('This payment cycle cannot be purchased, please choose another cycle'));
+        if ($plan[$request->input('period')] === NULL) {
+            abort(500, __('This payment period cannot be purchased, please choose another period'));
         }
 
-        if ($request->input('cycle') === 'reset_price') {
+        if ($request->input('period') === 'reset_price') {
             if ($user->expired_at <= time() || !$user->plan_id) {
                 abort(500, __('Subscription has expired or no active subscription, unable to purchase Data Reset Package'));
             }
@@ -107,9 +107,9 @@ class OrderController extends Controller
         $orderService = new OrderService($order);
         $order->user_id = $request->session()->get('id');
         $order->plan_id = $plan->id;
-        $order->cycle = $request->input('cycle');
+        $order->period = $request->input('period');
         $order->trade_no = Helper::generateOrderNo();
-        $order->total_amount = $plan[$request->input('cycle')];
+        $order->total_amount = $plan[$request->input('period')];
 
         if ($request->input('coupon_code')) {
             $couponService = new CouponService($request->input('coupon_code'));

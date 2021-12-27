@@ -22,6 +22,7 @@ class ManageController extends Controller
 
     public function sort(Request $request)
     {
+        ini_set('post_max_size', '1m');
         DB::beginTransaction();
         foreach ($request->input('sorts') as $k => $v) {
             switch ($v['key']) {

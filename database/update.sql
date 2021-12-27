@@ -465,3 +465,6 @@ ALTER TABLE `v2_user`
 
 ALTER TABLE `v2_payment`
     ADD `icon` varchar(255) COLLATE 'utf8mb4_general_ci' NULL AFTER `name`;
+
+ALTER TABLE `v2_coupon`
+    ADD `limit_period` varchar(255) COLLATE 'utf8_general_ci' NULL AFTER `limit_plan_ids`;

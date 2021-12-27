@@ -46,7 +46,7 @@ class OrderService
                 abort(500, '开通失败');
             }
         }
-        switch ((string)$order->cycle) {
+        switch ((string)$order->period) {
             case 'onetime_price':
                 $this->buyByOneTime($plan);
                 break;
@@ -54,7 +54,7 @@ class OrderService
                 $this->buyByResetTraffic();
                 break;
             default:
-                $this->buyByCycle($order, $plan);
+                $this->buyByPeriod($order, $plan);
         }
 
         switch ((int)$order->type) {
@@ -86,7 +86,7 @@ class OrderService
     public function setOrderType(User $user)
     {
         $order = $this->order;
-        if ($order->cycle === 'reset_price') {
+        if ($order->period === 'reset_price') {
             $order->type = 4;
         } else if ($user->plan_id !== NULL && $order->plan_id !== $user->plan_id && ($user->expired_at > time() || $user->expired_at === NULL)) {
             if (!(int)config('v2board.plan_change_enable', 1)) abort(500, '目前不允许更改订阅，请联系客服或提交工单操作');
@@ -156,7 +156,7 @@ class OrderService
         if ($user->expired_at === NULL) {
             $this->getSurplusValueByOneTime($user, $order);
         } else {
-            $this->getSurplusValueByCycle($user, $order);
+            $this->getSurplusValueByPeriod($user, $order);
         }
     }
 
@@ -170,23 +170,23 @@ class OrderService
         }
         $notUsedTraffic = $plan->transfer_enable - (($user->u + $user->d) / 1073741824);
         $result = $trafficUnitPrice * $notUsedTraffic;
-        $orderModel = Order::where('user_id', $user->id)->where('cycle', '!=', 'reset_price')->where('status', 3);
+        $orderModel = Order::where('user_id', $user->id)->where('period', '!=', 'reset_price')->where('status', 3);
         $order->surplus_amount = $result > 0 ? $result : 0;
         $order->surplus_order_ids = array_column($orderModel->get()->toArray(), 'id');
     }
 
     private function orderIsUsed(Order $order):bool
     {
-        $month = self::STR_TO_TIME[$order->cycle];
+        $month = self::STR_TO_TIME[$order->period];
         $orderExpireDay = strtotime('+' . $month . ' month', $order->created_at);
         if ($orderExpireDay < time()) return true;
         return false;
     }
 
-    private function getSurplusValueByCycle(User $user, Order $order)
+    private function getSurplusValueByPeriod(User $user, Order $order)
     {
         $orderModel = Order::where('user_id', $user->id)
-            ->where('cycle', '!=', 'reset_price')
+            ->where('period', '!=', 'reset_price')
             ->where('status', 3);
         $orders = $orderModel->get();
         $orderSurplusMonth = 0;
@@ -194,9 +194,9 @@ class OrderService
         $userSurplusMonth = ($user->expired_at - time()) / 2678400;
         foreach ($orders as $k => $item) {
             // 兼容历史余留问题
-            if ($item->cycle === 'onetime_price') continue;
+            if ($item->period === 'onetime_price') continue;
             if ($this->orderIsUsed($item)) continue;
-            $orderSurplusMonth = $orderSurplusMonth + self::STR_TO_TIME[$item->cycle];
+            $orderSurplusMonth = $orderSurplusMonth + self::STR_TO_TIME[$item->period];
             $orderSurplusAmount = $orderSurplusAmount + ($item['total_amount'] + $item['balance_amount'] + $item['surplus_amount'] - $item['refund_amount']);
         }
         if (!$orderSurplusMonth || !$orderSurplusAmount) return;
@@ -252,7 +252,7 @@ class OrderService
         $this->user->d = 0;
     }
 
-    private function buyByCycle(Order $order, Plan $plan)
+    private function buyByPeriod(Order $order, Plan $plan)
     {
         // change plan process
         if ((int)$order->type === 3) {
@@ -265,7 +265,7 @@ class OrderService
         if ($order->type === 1) $this->buyByResetTraffic();
         $this->user->plan_id = $plan->id;
         $this->user->group_id = $plan->group_id;
-        $this->user->expired_at = $this->getTime($order->cycle, $this->user->expired_at);
+        $this->user->expired_at = $this->getTime($order->period, $this->user->expired_at);
     }
 
     private function buyByOneTime(Plan $plan)
