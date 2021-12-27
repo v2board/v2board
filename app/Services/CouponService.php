@@ -11,6 +11,7 @@ class CouponService
     public $coupon;
     public $planId;
     public $userId;
+    public $period;
 
     public function __construct($code)
     {
@@ -21,6 +22,7 @@ class CouponService
     {
         $this->setPlanId($order->plan_id);
         $this->setUserId($order->user_id);
+        $this->setPeriod($order->period);
         $this->check();
         switch ($this->coupon->type) {
             case 1:
@@ -62,6 +64,11 @@ class CouponService
         $this->userId = $userId;
     }
 
+    public function setPeriod($period)
+    {
+        $this->period = $period;
+    }
+
     public function checkLimitUseWithUser():bool
     {
         $usedCount = Order::where('coupon_id', $this->coupon->id)
@@ -89,6 +96,11 @@ class CouponService
         if ($this->coupon->limit_plan_ids && $this->planId) {
             if (!in_array($this->planId, $this->coupon->limit_plan_ids)) {
                 abort(500, __('The coupon code cannot be used for this subscription'));
+            }
+        }
+        if ($this->coupon->limit_period && $this->period) {
+            if (!in_array($this->period, $this->coupon->limit_period)) {
+                abort(500, __('The coupon code cannot be used for this period'));
             }
         }
         if ($this->coupon->limit_use_with_user !== NULL && $this->userId) {
