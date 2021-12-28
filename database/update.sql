@@ -468,3 +468,6 @@ ALTER TABLE `v2_payment`
 
 ALTER TABLE `v2_coupon`
     ADD `limit_period` varchar(255) COLLATE 'utf8_general_ci' NULL AFTER `limit_plan_ids`;
+
+ALTER TABLE `v2_order`
+    CHANGE `cycle` `period` varchar(255) COLLATE 'utf8_general_ci' NOT NULL AFTER `type`;
