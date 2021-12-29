@@ -280,7 +280,9 @@ window.settings.locales = {
     'Reset flow after {reset_day} day': 'Reset flow after {reset_day} day',
     'Due on {date}, {day} days before expiration': 'Due on {date}, {day} days before expiration. ',
     'Telegram discuss': 'Telegram discuss',
-    'Join now': 'Join now'
+    'Join now': 'Join now',
+    'Renew': 'Renew',
+    'Buy': 'Buy'
   },
   'zh-CN': {
     'request.error': '请求失败',
@@ -595,7 +597,9 @@ window.settings.locales = {
     'Node name': '节点名称',
     'Due on {date}, {day} days before expiration': '于 {date} 到期，距离到期还有 {day} 天。',
     'Telegram discuss': 'Telegram 讨论组',
-    'Join now': '立即加入'
+    'Join now': '立即加入',
+    'Renew': '续费',
+    'Buy': '购买'
   },
   'ja-JP': {
     'request.error': 'リクエストエラー',
@@ -908,7 +912,9 @@ window.settings.locales = {
     'Reset flow after {reset_day} day': '{reset_day} 日後にリセットされます',
     'Due on {date}, {day} days before expiration': '{date} の期限が切れるまで、あと {day} 日あります。',
     'Telegram discuss': 'Telegram グループ',
-    'Join now': '参加する'
+    'Join now': '参加する',
+    'Renew': '継続料金のお支払い',
+    'Buy': '買う'
   },
   'vi-VN': {
     'request.error': 'Yêu Cầu Thất Bại',
@@ -1221,6 +1227,8 @@ window.settings.locales = {
     'Reset flow after {reset_day} day': 'Sau ngày {reset_day} dung lượng sẽ được làm mới.',
     'Due on {date}, {day} days before expiration': 'Năm {date} đến hạn，Thời gian đến hạn còn {day} ngày.',
     'Telegram discuss': 'Telegram thảo luận',
-    'Join now': 'Tham gia ngay'
-  }
+    'Join now': 'Tham gia ngay',
+    'Renew': 'Gia hạn',
+    'Buy': 'Mua'
+  },
 }
