@@ -19,7 +19,7 @@ class CouponController extends Controller
         $current = $request->input('current') ? $request->input('current') : 1;
         $pageSize = $request->input('pageSize') >= 10 ? $request->input('pageSize') : 10;
         $sortType = in_array($request->input('sort_type'), ['ASC', 'DESC']) ? $request->input('sort_type') : 'DESC';
-        $sort = $request->input('sort') ? $request->input('sort') : 'created_at';
+        $sort = $request->input('sort') ? $request->input('sort') : 'id';
         $builder = Coupon::orderBy($sort, $sortType);
         $total = $builder->count();
         $coupons = $builder->forPage($current, $pageSize)
@@ -64,6 +64,7 @@ class CouponController extends Controller
         $coupon = $request->validated();
         $coupon['created_at'] = $coupon['updated_at'] = time();
         $coupon['limit_plan_ids'] = json_encode($coupon['limit_plan_ids']);
+        $coupon['limit_period'] = json_encode($coupon['limit_period']);
         unset($coupon['generate_count']);
         for ($i = 0;$i < $request->input('generate_count');$i++) {
             $coupon['code'] = Helper::randomChar(8);

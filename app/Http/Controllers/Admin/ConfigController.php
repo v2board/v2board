@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\Admin\ConfigSave;
+use App\Jobs\SendEmailJob;
 use App\Services\TelegramService;
 use Illuminate\Http\Request;
 use App\Utils\Dict;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Mail;
 
 class ConfigController extends Controller
 {
@@ -29,6 +31,24 @@ class ConfigController extends Controller
         }, glob($path . '*'));
         return response([
             'data' => $files
+        ]);
+    }
+
+    public function testSendMail(Request $request)
+    {
+        $obj = new SendEmailJob([
+            'email' => $request->session()->get('email'),
+            'subject' => 'This is v2board test email',
+            'template_name' => 'notify',
+            'template_value' => [
+                'name' => config('v2board.app_name', 'V2Board'),
+                'content' => 'This is v2board test email',
+                'url' => config('v2board.app_url')
+            ]
+        ]);
+        return response([
+            'data' => true,
+            'log' => $obj->handle()
         ]);
     }
 
@@ -82,7 +102,9 @@ class ConfigController extends Controller
                     'recaptcha_enable' => (int)config('v2board.recaptcha_enable', 0),
                     'recaptcha_key' => config('v2board.recaptcha_key'),
                     'recaptcha_site_key' => config('v2board.recaptcha_site_key'),
-                    'tos_url' => config('v2board.tos_url')
+                    'tos_url' => config('v2board.tos_url'),
+                    'currency' => config('v2board.currency', 'CNY'),
+                    'currency_symbol' => config('v2board.currency_symbol', '¥')
                 ],
                 'subscribe' => [
                     'plan_change_enable' => (int)config('v2board.plan_change_enable', 1),
@@ -151,7 +173,8 @@ class ConfigController extends Controller
                 ],
                 'telegram' => [
                     'telegram_bot_enable' => config('v2board.telegram_bot_enable', 0),
-                    'telegram_bot_token' => config('v2board.telegram_bot_token')
+                    'telegram_bot_token' => config('v2board.telegram_bot_token'),
+                    'telegram_discuss_link' => config('v2board.telegram_discuss_link')
                 ],
                 'app' => [
                     'windows_version' => config('v2board.windows_version'),

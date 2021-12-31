@@ -21,10 +21,9 @@ class SendEmailJob implements ShouldQueue
      *
      * @return void
      */
-    public function __construct($params)
+    public function __construct($params, $queue = 'send_email')
     {
-        $this->delay(now()->addSecond(2));
-        $this->onQueue('send_email');
+        $this->onQueue($queue);
         $this->params = $params;
     }
 
@@ -60,11 +59,15 @@ class SendEmailJob implements ShouldQueue
             $error = $e->getMessage();
         }
 
-        MailLog::create([
+        $log = [
             'email' => $params['email'],
             'subject' => $params['subject'],
             'template_name' => $params['template_name'],
             'error' => isset($error) ? $error : NULL
-        ]);
+        ];
+
+        MailLog::create($log);
+        $log['config'] = config('mail');
+        return $log;
     }
 }

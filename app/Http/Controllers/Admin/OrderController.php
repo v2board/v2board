@@ -146,11 +146,11 @@ class OrderController extends Controller
         $orderService = new OrderService($order);
         $order->user_id = $user->id;
         $order->plan_id = $plan->id;
-        $order->cycle = $request->input('cycle');
+        $order->period = $request->input('period');
         $order->trade_no = Helper::guid();
         $order->total_amount = $request->input('total_amount');
 
-        if ($order->cycle === 'reset_price') {
+        if ($order->period === 'reset_price') {
             $order->type = 4;
         } else if ($user->plan_id !== NULL && $order->plan_id !== $user->plan_id) {
             $order->type = 3;

@@ -462,3 +462,12 @@ ALTER TABLE `v2_server`
 ALTER TABLE `v2_user`
     CHANGE `remind_expire` `remind_expire` tinyint(4) NULL DEFAULT '0' AFTER `plan_id`,
     CHANGE `remind_traffic` `remind_traffic` tinyint(4) NULL DEFAULT '0' AFTER `remind_expire`;
+
+ALTER TABLE `v2_payment`
+    ADD `icon` varchar(255) COLLATE 'utf8mb4_general_ci' NULL AFTER `name`;
+
+ALTER TABLE `v2_coupon`
+    ADD `limit_period` varchar(255) COLLATE 'utf8_general_ci' NULL AFTER `limit_plan_ids`;
+
+ALTER TABLE `v2_order`
+    CHANGE `cycle` `period` varchar(255) COLLATE 'utf8_general_ci' NOT NULL AFTER `type`;

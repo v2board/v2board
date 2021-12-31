@@ -25,7 +25,7 @@
     "You have an unpaid or pending order, please try again later or cancel it": "您有未付款或开通中的订单，请稍后再试或将其取消",
     "This subscription has been sold out, please choose another subscription": "该订阅已售罄，请更换其它订阅",
     "This subscription cannot be renewed, please change to another subscription": "该订阅无法续费，请更换其它订阅",
-    "This payment cycle cannot be purchased, please choose another cycle": "该订阅周期无法进行购买，请选择其它周期",
+    "This payment period cannot be purchased, please choose another period": "该订阅周期无法进行购买，请选择其它周期",
     "Subscription has expired or no active subscription, unable to purchase Data Reset Package": "订阅已过期或无有效订阅，无法购买重置包",
     "This subscription has expired, please change to another subscription": "订阅已过期，请更换其它订阅",
     "Coupon failed": "优惠券使用失败",
@@ -66,8 +66,8 @@
     "Email verification code has been sent, please request again later": "验证码已发送，请过一会再请求",
     "Email verification code": "邮箱验证码",
     "Plan ID cannot be empty": "套餐ID不能为空",
-    "Plan cycle cannot be empty": "套餐周期不能为空",
-    "Wrong plan cycle": "套餐周期参数有误",
+    "Plan period cannot be empty": "套餐周期不能为空",
+    "Wrong plan period": "套餐周期参数有误",
     "Ticket subject cannot be empty": "工单主题不能为空",
     "Ticket level cannot be empty": "工单等级不能为空",
     "Incorrect ticket level format": "工单等级参数有误",
@@ -85,5 +85,6 @@
     "Password can not be empty": "密码不能为空",
     "The traffic usage in :app_name has reached 80%": "在:app_name的流量使用已达到80%",
     "The service in :app_name is about to expire": "在:app_name的服务即将到期",
-    "The coupon can only be used :limit_use_with_user per person": "该优惠券每人只能用:limit_use_with_user次"
+    "The coupon can only be used :limit_use_with_user per person": "该优惠券每人只能用:limit_use_with_user次",
+    "The coupon code cannot be used for this period": "该优惠券无法用于这个付款周期"
 }

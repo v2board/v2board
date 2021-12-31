@@ -1,4 +1,4 @@
--- Adminer 4.8.0 MySQL 5.7.29 dump
+-- Adminer 4.8.1 MySQL 5.7.29 dump
 
 SET NAMES utf8;
 SET time_zone = '+00:00';
@@ -43,6 +43,7 @@ CREATE TABLE `v2_coupon` (
                              `limit_use` int(11) DEFAULT NULL,
                              `limit_use_with_user` int(11) DEFAULT NULL,
                              `limit_plan_ids` varchar(255) DEFAULT NULL,
+                             `limit_period` varchar(255) DEFAULT NULL,
                              `started_at` int(11) NOT NULL,
                              `ended_at` int(11) NOT NULL,
                              `created_at` int(11) NOT NULL,
@@ -113,7 +114,7 @@ CREATE TABLE `v2_order` (
                             `coupon_id` int(11) DEFAULT NULL,
                             `payment_id` int(11) DEFAULT NULL,
                             `type` int(11) NOT NULL COMMENT '1新购2续费3升级',
-                            `cycle` varchar(255) NOT NULL,
+                            `period` varchar(255) NOT NULL,
                             `trade_no` varchar(36) NOT NULL,
                             `callback_no` varchar(255) DEFAULT NULL,
                             `total_amount` int(11) NOT NULL,
@@ -138,6 +139,7 @@ CREATE TABLE `v2_payment` (
                               `uuid` char(32) NOT NULL,
                               `payment` varchar(16) NOT NULL,
                               `name` varchar(255) NOT NULL,
+                              `icon` varchar(255) DEFAULT NULL,
                               `config` text NOT NULL,
                               `enable` tinyint(1) NOT NULL DEFAULT '0',
                               `sort` int(11) DEFAULT NULL,
@@ -368,4 +370,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2021-09-21 10:07:22
+-- 2021-12-27 17:37:09

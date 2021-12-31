@@ -4,6 +4,7 @@ namespace App\Services;
 use App\Jobs\SendTelegramJob;
 use App\Models\User;
 use \Curl\Curl;
+use Illuminate\Mail\Markdown;
 
 class TelegramService {
     protected $api;
@@ -15,6 +16,9 @@ class TelegramService {
 
     public function sendMessage(int $chatId, string $text, string $parseMode = '')
     {
+        if ($parseMode === 'markdown') {
+            $text = str_replace('_', '\_', $text);
+        }
         $this->request('sendMessage', [
             'chat_id' => $chatId,
             'text' => $text,

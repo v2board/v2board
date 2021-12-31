@@ -30,20 +30,22 @@ class UserController extends Controller
 
     private function filter(Request $request, $builder)
     {
-        if ($request->input('filter')) {
-            foreach ($request->input('filter') as $filter) {
-                if ($filter['key'] === 'invite_by_email') {
-                    $user = User::where('email', $filter['value'])->first();
-                    if (!$user) continue;
-                    $builder->where('invite_user_id', $user->id);
-                    continue;
+        $filters = $request->input('filter');
+        if ($filters) {
+            foreach ($filters as $k => $filter) {
+                if ($filter['condition'] === '模糊') {
+                    $filter['condition'] = 'like';
+                    $filter['value'] = "%{$filter['value']}%";
                 }
                 if ($filter['key'] === 'd' || $filter['key'] === 'transfer_enable') {
                     $filter['value'] = $filter['value'] * 1073741824;
                 }
-                if ($filter['condition'] === '模糊') {
-                    $filter['condition'] = 'like';
-                    $filter['value'] = "%{$filter['value']}%";
+                if ($filter['key'] === 'invite_by_email') {
+                    $user = User::where('email', $filter['condition'], $filter['value'])->first();
+                    $inviteUserId = isset($user->id) ? $user->id : 0;
+                    $builder->where('invite_user_id', $inviteUserId);
+                    unset($filters[$k]);
+                    continue;
                 }
                 $builder->where($filter['key'], $filter['condition'], $filter['value']);
             }
@@ -179,6 +181,9 @@ class UserController extends Controller
                 'uuid' => Helper::guid(true),
                 'token' => Helper::guid()
             ];
+            if (User::where('email', $user['email'])->first()) {
+                abort(500, '邮箱已存在于系统中');
+            }
             $user['password'] = password_hash($request->input('password') ?? $user['email'], PASSWORD_DEFAULT);
             if (!User::create($user)) {
                 abort(500, '生成失败');
@@ -251,7 +256,8 @@ class UserController extends Controller
                     'url' => config('v2board.app_url'),
                     'content' => $request->input('content')
                 ]
-            ]);
+            ],
+            'send_email_mass');
         }
 
         return response([

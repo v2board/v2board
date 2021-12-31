@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Client\Protocols;
 
 use Symfony\Component\Yaml\Yaml;
 
-class Clash
+class Stash
 {
-    public $flag = 'clash';
+    public $flag = 'stash';
     private $servers;
     private $user;
 
@@ -24,6 +24,7 @@ class Clash
         header("subscription-userinfo: upload={$user['u']}; download={$user['d']}; total={$user['transfer_enable']}; expire={$user['expired_at']}");
         header('profile-update-interval: 24');
         header("content-disposition: filename={$appName}");
+        // 暂时使用clash配置文件，后续根据Stash更新情况更新
         $defaultConfig = base_path() . '/resources/rules/default.clash.yaml';
         $customConfig = base_path() . '/resources/rules/custom.clash.yaml';
         if (\File::exists($customConfig)) {

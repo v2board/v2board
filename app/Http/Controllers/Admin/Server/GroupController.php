@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Admin\Server;
 
 use App\Models\Plan;
+use App\Models\ServerShadowsocks;
+use App\Models\ServerTrojan;
 use App\Models\ServerV2ray;
 use App\Models\ServerGroup;
 use App\Models\User;
+use App\Services\ServerService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -18,8 +21,20 @@ class GroupController extends Controller
                 'data' => [ServerGroup::find($request->input('group_id'))]
             ]);
         }
+        $serverGroups = ServerGroup::get();
+        $serverService = new ServerService();
+        $servers = $serverService->getAllServers();
+        foreach ($serverGroups as $k => $v) {
+            $serverGroups[$k]['user_count'] = User::where('group_id', $v['id'])->count();
+            $serverGroups[$k]['server_count'] = 0;
+            foreach ($servers as $server) {
+                if (in_array($v['id'], $server['group_id'])) {
+                    $serverGroups[$k]['server_count'] = $serverGroups[$k]['server_count']+1;
+                }
+            }
+        }
         return response([
-            'data' => ServerGroup::get()
+            'data' => $serverGroups
         ]);
     }
 

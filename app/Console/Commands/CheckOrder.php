@@ -45,6 +45,7 @@ class CheckOrder extends Command
     {
         ini_set('memory_limit', -1);
         $orders = Order::whereIn('status', [0, 1])
+            ->orderBy('created_at', 'ASC')
             ->get();
         foreach ($orders as $order) {
             OrderHandleJob::dispatch($order->trade_no);

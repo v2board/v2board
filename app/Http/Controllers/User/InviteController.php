@@ -29,7 +29,7 @@ class InviteController extends Controller
         return response([
             'data' => Order::where('invite_user_id', $request->session()->get('id'))
                 ->where('commission_balance', '>', 0)
-                ->where('status', 3)
+                ->whereIn('status', [3, 4])
                 ->select([
                     'id',
                     'commission_status',

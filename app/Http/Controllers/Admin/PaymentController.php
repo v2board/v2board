@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Requests\Admin\PaymentSave;
 use App\Services\PaymentService;
 use App\Utils\Helper;
 use Illuminate\Http\Request;
@@ -57,8 +58,18 @@ class PaymentController extends Controller
                 'data' => true
             ]);
         }
+        $request->validate([
+            'name' => 'required',
+            'payment' => 'required',
+            'config' => 'required'
+        ], [
+            'name.required' => '显示名称不能为空',
+            'payment.required' => '网关参数不能为空',
+            'config.required' => '配置参数不能为空'
+        ]);
         if (!Payment::create([
             'name' => $request->input('name'),
+            'icon' => $request->input('icon'),
             'payment' => $request->input('payment'),
             'config' => $request->input('config'),
             'uuid' => Helper::randomChar(8)

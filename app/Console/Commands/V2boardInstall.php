@@ -48,7 +48,7 @@ class V2boardInstall extends Command
             $this->info("  \ V /  / __/| |_) | (_) | (_| | | | (_| | ");
             $this->info("   \_/  |_____|____/ \___/ \__,_|_|  \__,_| ");
             if (\File::exists(base_path() . '/.env')) {
-                abort(500, 'V2board 已安装，如需重新安装请删除目录下.lock文件');
+                abort(500, 'V2board 已安装，如需重新安装请删除目录下.env文件');
             }
 
             if (!copy(base_path() . '/.env.example', base_path() . '/.env')) {
@@ -99,7 +99,6 @@ class V2boardInstall extends Command
 
             $this->info('一切就绪');
             $this->info('访问 http(s)://你的站点/admin 进入管理面板');
-            \File::put(base_path() . '/.lock', time());
         } catch (\Exception $e) {
             $this->error($e->getMessage());
         }
