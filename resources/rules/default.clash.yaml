@@ -141,7 +141,6 @@ rules:
   - DOMAIN-SUFFIX,lecloud.com,DIRECT
   - DOMAIN-SUFFIX,lemicp.com,DIRECT
   - DOMAIN-SUFFIX,licdn.com,DIRECT
-  - DOMAIN-SUFFIX,linkedin.com,DIRECT
   - DOMAIN-SUFFIX,luoo.net,DIRECT
   - DOMAIN-SUFFIX,meituan.com,DIRECT
   - DOMAIN-SUFFIX,meituan.net,DIRECT
@@ -390,6 +389,7 @@ rules:
   - DOMAIN-SUFFIX,kat.cr,$app_name
   - DOMAIN-SUFFIX,klip.me,$app_name
   - DOMAIN-SUFFIX,libsyn.com,$app_name
+  - DOMAIN-SUFFIX,linkedin.com,$app_name
   - DOMAIN-SUFFIX,linode.com,$app_name
   - DOMAIN-SUFFIX,lithium.com,$app_name
   - DOMAIN-SUFFIX,littlehj.com,$app_name
