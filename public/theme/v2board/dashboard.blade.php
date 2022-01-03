@@ -4,7 +4,9 @@
 <head>
     <link rel="stylesheet" href="/theme/{{$theme}}/assets/components.chunk.css?v={{$verison}}">
     <link rel="stylesheet" href="/theme/{{$theme}}/assets/umi.css?v={{$verison}}">
-    <link rel="stylesheet" href="/theme/{{$theme}}/assets/custom.css?v={{$verison}}">
+    @if (file_exists(public_path("/theme/{$theme}/assets/custom.css")))
+        <link rel="stylesheet" href="/theme/{{$theme}}/assets/custom.css?v={{$verison}}">
+    @endif
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
     @php ($colors = [
@@ -57,6 +59,9 @@
 
     gtag('config', 'G-P1E9Z5LRRK');
 </script>
+@if (file_exists(public_path("/theme/{$theme}/assets/custom.js")))
+    <script src="/theme/{{$theme}}/assets/custom.js?v={{$verison}}"></script>
+@endif
 </body>
 
 </html>
