@@ -115,18 +115,19 @@ class Clash
             $array['network'] = 'ws';
             if ($server['networkSettings']) {
                 $wsSettings = $server['networkSettings'];
+                $array['ws-opts'] = [];
                 if (isset($wsSettings['path']) && !empty($wsSettings['path']))
-                    $array['ws-path'] = $wsSettings['path'];
+                    $array['ws-opts']['path'] = $wsSettings['path'];
                 if (isset($wsSettings['headers']['Host']) && !empty($wsSettings['headers']['Host']))
-                    $array['ws-headers'] = ['Host' => $wsSettings['headers']['Host']];
+                    $array['ws-opts']['headers'] = ['Host' => $wsSettings['headers']['Host']];
             }
         }
         if ($server['network'] === 'grpc') {
             $array['network'] = 'grpc';
             if ($server['networkSettings']) {
-                $grpcObject = $server['networkSettings'];
+                $grpcSettings = $server['networkSettings'];
                 $array['grpc-opts'] = [];
-                $array['grpc-opts']['grpc-service-name'] = $grpcObject['serviceName'];
+                $array['grpc-opts']['grpc-service-name'] = $grpcSettings['serviceName'];
             }
         }
 
