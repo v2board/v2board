@@ -97,7 +97,7 @@ class Clash
         $array['server'] = $server['host'];
         $array['port'] = $server['port'];
         $array['uuid'] = $uuid;
-        $array['alterId'] = $server['alter_id'];
+        $array['alterId'] = 0;
         $array['cipher'] = 'auto';
         $array['udp'] = true;
 
