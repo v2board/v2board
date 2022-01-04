@@ -314,5 +314,6 @@ window.settings.i18n['zh-CN'] = {
   'Join now': '立即加入',
   'Renew': '续费',
   'Buy': '购买',
-  'This subscription cannot be renewed. Only new users are allowed to purchase it': '该订阅无法续费，仅允许新用户购买'
+  'This subscription cannot be renewed. Only new users are allowed to purchase it': '该订阅无法续费，仅允许新用户购买',
+  'Reset current month flow': '重置当月流量'
 }

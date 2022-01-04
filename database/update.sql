@@ -474,3 +474,6 @@ ALTER TABLE `v2_order`
 
 ALTER TABLE `v2_server_v2ray`
 DROP `alter_id`;
+
+ALTER TABLE `v2_user`
+    CHANGE `commission_type` `commission_type` tinyint(4) NOT NULL DEFAULT '0' COMMENT '0: system 1: period 2: onetime' AFTER `discount`;

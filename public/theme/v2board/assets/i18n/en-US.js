@@ -282,5 +282,6 @@ window.settings.i18n['en-US'] = {
   'Join now': 'Join now',
   'Renew': 'Renew',
   'Buy': 'Buy',
-  'This subscription cannot be renewed. Only new users are allowed to purchase it': 'This subscription cannot be renewed. Only new users are allowed to purchase it'
+  'This subscription cannot be renewed. Only new users are allowed to purchase it': 'This subscription cannot be renewed. Only new users are allowed to purchase it',
+  'Reset current month flow': 'Reset current month flow'
 }

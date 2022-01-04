@@ -342,7 +342,7 @@ CREATE TABLE `v2_user` (
                            `password_salt` char(10) DEFAULT NULL,
                            `balance` int(11) NOT NULL DEFAULT '0',
                            `discount` int(11) DEFAULT NULL,
-                           `commission_type` tinyint(4) NOT NULL DEFAULT '0' COMMENT '0: system 1: cycle 2: onetime',
+                           `commission_type` tinyint(4) NOT NULL DEFAULT '0' COMMENT '0: system 1: period 2: onetime',
                            `commission_rate` int(11) DEFAULT NULL,
                            `commission_balance` int(11) NOT NULL DEFAULT '0',
                            `t` int(11) NOT NULL DEFAULT '0',
@@ -369,4 +369,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2022-01-04 05:39:52
+-- 2022-01-04 16:20:42

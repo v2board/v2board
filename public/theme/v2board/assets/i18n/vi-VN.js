@@ -312,5 +312,6 @@ window.settings.i18n['vi-VN'] = {
   'Join now': 'Tham gia ngay',
   'Renew': 'Gia hạn',
   'Buy': 'Mua',
-  'This subscription cannot be renewed. Only new users are allowed to purchase it': 'Không thể thay đổi bản đăng ký này. Chỉ có người dùng mới được phép mua nó.'
+  'This subscription cannot be renewed. Only new users are allowed to purchase it': 'Không thể thay đổi bản đăng ký này. Chỉ có người dùng mới được phép mua nó.',
+  'Reset current month flow': 'Làm lại dòng tháng hiện tại'
 }

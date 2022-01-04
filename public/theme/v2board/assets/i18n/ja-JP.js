@@ -312,5 +312,6 @@ window.settings.i18n['ja-JP'] = {
   'Join now': '参加する',
   'Renew': '継続料金のお支払い',
   'Buy': '買う',
-  'This subscription cannot be renewed. Only new users are allowed to purchase it': 'このサブスクリプションは更新できません。新しいユーザだけがそれを購入できます。'
+  'This subscription cannot be renewed. Only new users are allowed to purchase it': 'このサブスクリプションは更新できません。新しいユーザだけがそれを購入できます。',
+  'Reset current month flow': 'リセット月フロー'
 }
