@@ -471,3 +471,6 @@ ALTER TABLE `v2_coupon`
 
 ALTER TABLE `v2_order`
     CHANGE `cycle` `period` varchar(255) COLLATE 'utf8_general_ci' NOT NULL AFTER `type`;
+
+ALTER TABLE `v2_server_v2ray`
+DROP `alter_id`;

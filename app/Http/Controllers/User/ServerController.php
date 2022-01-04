@@ -13,6 +13,7 @@ use App\Models\ServerLog;
 use App\Models\User;
 
 use App\Utils\Helper;
+use Illuminate\Support\Facades\DB;
 
 class ServerController extends Controller
 {
@@ -35,7 +36,15 @@ class ServerController extends Controller
         $type = $request->input('type') ? $request->input('type') : 0;
         $current = $request->input('current') ? $request->input('current') : 1;
         $pageSize = $request->input('pageSize') >= 10 ? $request->input('pageSize') : 10;
-        $serverLogModel = ServerLog::where('user_id', $request->session()->get('id'))
+        $serverLogModel = ServerLog::select([
+            DB::raw('sum(u) as u'),
+            DB::raw('sum(d) as d'),
+            'log_at',
+            'user_id',
+            'updated_at'
+        ])
+            ->where('user_id', $request->session()->get('id'))
+            ->groupBy('log_at', 'user_id')
             ->orderBy('log_at', 'DESC');
         switch ($type) {
             case 0:
