@@ -195,10 +195,14 @@ class UserController extends Controller
         $today = date('d');
         $lastDay = date('d', strtotime('last day of +0 months'));
 
-        if ((int)config('v2board.reset_traffic_method') === 0) {
+        if ((int)config('v2board.reset_traffic_method') === 0 ||
+            (isset($user->plan->reset_traffic_method) && $user->plan->reset_traffic_method === 0))
+        {
             return $lastDay - $today;
         }
-        if ((int)config('v2board.reset_traffic_method') === 1) {
+        if ((int)config('v2board.reset_traffic_method') === 1 ||
+            (isset($user->plan->reset_traffic_method) && $user->plan->reset_traffic_method === 1))
+        {
             if ((int)$day >= (int)$today && (int)$day >= (int)$lastDay) {
                 return $lastDay - $today;
             }
