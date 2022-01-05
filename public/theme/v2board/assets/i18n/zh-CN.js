@@ -315,5 +315,7 @@ window.settings.i18n['zh-CN'] = {
   'Renew': '续费',
   'Buy': '购买',
   'This subscription cannot be renewed. Only new users are allowed to purchase it': '该订阅无法续费，仅允许新用户购买',
-  'Reset current month flow': '重置当月流量'
+  'Reset current month flow': '重置当月流量',
+  'The flow details only retain the data of recent months for query.': '流量明细仅保留近月数据以供查询。',
+  'Average rate': '平均倍率'
 }

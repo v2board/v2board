@@ -283,5 +283,7 @@ window.settings.i18n['en-US'] = {
   'Renew': 'Renew',
   'Buy': 'Buy',
   'This subscription cannot be renewed. Only new users are allowed to purchase it': 'This subscription cannot be renewed. Only new users are allowed to purchase it',
-  'Reset current month flow': 'Reset current month flow'
+  'Reset current month flow': 'Reset current month flow',
+  'The flow details only retain the data of recent months for query.': 'The flow details only retain the data of recent months for query.',
+  'Average rate': 'Average rate'
 }

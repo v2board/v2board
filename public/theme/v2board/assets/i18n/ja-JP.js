@@ -313,5 +313,7 @@ window.settings.i18n['ja-JP'] = {
   'Renew': '継続料金のお支払い',
   'Buy': '買う',
   'This subscription cannot be renewed. Only new users are allowed to purchase it': 'このサブスクリプションは更新できません。新しいユーザだけがそれを購入できます。',
-  'Reset current month flow': 'リセット月フロー'
+  'Reset current month flow': 'リセット月フロー',
+  'The flow details only retain the data of recent months for query.': 'トラフィック詳細は、クエリー用に近月データのみを保持します。',
+  'Average rate': '平均レート'
 }
