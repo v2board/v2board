@@ -45,7 +45,7 @@ class UserRoute
             $router->post('/ticket/withdraw', 'User\\TicketController@withdraw');
             // Server
             $router->get ('/server/fetch', 'User\\ServerController@fetch');
-            $router->get ('/server/log/fetch', 'User\\ServerController@logFetch');
+            $router->get ('/server/getServerLogs', 'User\\ServerController@getServerLogs');
             // Coupon
             $router->post('/coupon/check', 'User\\CouponController@check');
             // Telegram

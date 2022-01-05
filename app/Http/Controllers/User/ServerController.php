@@ -31,37 +31,21 @@ class ServerController extends Controller
         ]);
     }
 
-    public function logFetch(Request $request)
+    public function getServerLogs(Request $request)
     {
-        $type = $request->input('type') ? $request->input('type') : 0;
-        $current = $request->input('current') ? $request->input('current') : 1;
-        $pageSize = $request->input('pageSize') >= 10 ? $request->input('pageSize') : 10;
         $serverLogModel = ServerLog::select([
             DB::raw('sum(u) as u'),
             DB::raw('sum(d) as d'),
             'log_at',
             'user_id',
-            'updated_at'
+            DB::raw('avg(rate) as rate'),
         ])
             ->where('user_id', $request->session()->get('id'))
+            ->where('log_at', '>=', strtotime(date('Y-m-1')))
             ->groupBy('log_at', 'user_id')
             ->orderBy('log_at', 'DESC');
-        switch ($type) {
-            case 0:
-                $serverLogModel->where('log_at', '>=', strtotime(date('Y-m-d')));
-                break;
-            case 1:
-                $serverLogModel->where('log_at', '>=', strtotime(date('Y-m-d')) - 604800);
-                break;
-            case 2:
-                $serverLogModel->where('log_at', '>=', strtotime(date('Y-m-1')));
-        }
-        $total = $serverLogModel->count();
-        $res = $serverLogModel->forPage($current, $pageSize)
-            ->get();
         return response([
-            'data' => $res,
-            'total' => $total
+            'data' => $serverLogModel->get()
         ]);
     }
 }
