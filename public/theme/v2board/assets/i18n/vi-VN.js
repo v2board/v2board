@@ -315,5 +315,5 @@ window.settings.i18n['vi-VN'] = {
   'This subscription cannot be renewed. Only new users are allowed to purchase it': 'Không thể thay đổi bản đăng ký này. Chỉ có người dùng mới được phép mua nó.',
   'Reset current month flow': 'Làm lại dòng tháng hiện tại',
   'The flow details only retain the data of recent months for query.': 'Các chi tiết dòng chảy chỉ lưu lại dữ liệu của tháng gần đây để truy vấn.',
-  'Average rate': 'Tỷ lệ trung bình'
+  'Average rate': 'Tỷ lệ khấu trừ'
 }
