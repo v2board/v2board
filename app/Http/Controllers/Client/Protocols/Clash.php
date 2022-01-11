@@ -55,16 +55,17 @@ class Clash
             $isFilter = false;
             foreach ($config['proxy-groups'][$k]['proxies'] as $src) {
                 foreach ($proxies as $dst) {
+                    if (!$this->isRegex($src)) continue;
+                    $isFilter = true;
+                    $config['proxy-groups'][$k]['proxies'] = array_values(array_diff($config['proxy-groups'][$k]['proxies'], [$src]));
                     if ($this->isMatch($src, $dst)) {
-                        $isFilter = true;
-                        $config['proxy-groups'][$k]['proxies'] = array_diff($config['proxy-groups'][$k]['proxies'], [$src]);
                         array_push($config['proxy-groups'][$k]['proxies'], $dst);
                     }
                 }
+                if ($isFilter) continue;
             }
-            if (!$isFilter) {
-                $config['proxy-groups'][$k]['proxies'] = array_merge($config['proxy-groups'][$k]['proxies'], $proxies);
-            }
+            if ($isFilter) continue;
+            $config['proxy-groups'][$k]['proxies'] = array_merge($config['proxy-groups'][$k]['proxies'], $proxies);
         }
         // Force the current subscription domain to be a direct rule
         $subsDomain = $_SERVER['SERVER_NAME'];
@@ -155,10 +156,11 @@ class Clash
 
     private function isMatch($exp, $str)
     {
-        try {
-            return preg_match($exp, $str);
-        } catch (\Exception $e) {
-            return false;
-        }
+        return @preg_match($exp, $str);
+    }
+
+    private function isRegex($exp)
+    {
+        return @preg_match($exp, null) !== false;
     }
 }
