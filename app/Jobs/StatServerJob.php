@@ -15,7 +15,7 @@ class StatServerJob implements ShouldQueue
     protected $statistic;
 
     public $tries = 3;
-    public $timeout = 5;
+    public $timeout = 60;
 
     /**
      * Create a new job instance.

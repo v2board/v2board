@@ -42,6 +42,7 @@ class V2boardStatistics extends Command
      */
     public function handle()
     {
+        ini_set('memory_limit', -1);
         $this->statOrder();
         $this->statServer();
     }
