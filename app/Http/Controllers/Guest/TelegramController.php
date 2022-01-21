@@ -184,6 +184,7 @@ class TelegramController extends Controller
             abort(500, '用户不存在');
         }
         $ticketService = new TicketService();
+        if (!$msg->text) return;
         if ($user->is_admin || $user->is_staff) {
             $ticketService->replyByAdmin(
                 $ticketId,

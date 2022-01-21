@@ -12,15 +12,12 @@ use Illuminate\Support\Facades\DB;
 class TicketService {
     public function replyByAdmin($ticketId, $message, $userId):void
     {
-        if ($message)
         $ticket = Ticket::where('id', $ticketId)
             ->first();
         if (!$ticket) {
             abort(500, '工单不存在');
         }
-        if ($ticket->status) {
-            abort(500, '工单已关闭，无法回复');
-        }
+        $ticket->status = 0;
         DB::beginTransaction();
         $ticketMessage = TicketMessage::create([
             'user_id' => $userId,
