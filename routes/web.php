@@ -25,8 +25,8 @@ Route::get('/', function (Request $request) {
         'theme_sidebar' => config('v2board.frontend_theme_sidebar', 'light'),
         'theme_header' => config('v2board.frontend_theme_header', 'dark'),
         'theme_color' => config('v2board.frontend_theme_color', 'default'),
-        'backgroun_url' => config('v2board.frontend_background_url'),
-        'verison' => config('app.version'),
+        'background_url' => config('v2board.frontend_background_url'),
+        'version' => config('app.version'),
         'description' => config('v2board.app_description', 'V2Board is best'),
         'crisp_id' => config('v2board.frontend_customer_service_method') === 'crisp' ? config('v2board.frontend_customer_service_id') : ''
     ];

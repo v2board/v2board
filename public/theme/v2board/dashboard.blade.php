@@ -2,10 +2,10 @@
 <html>
 
 <head>
-    <link rel="stylesheet" href="/theme/{{$theme}}/assets/components.chunk.css?v={{$verison}}">
-    <link rel="stylesheet" href="/theme/{{$theme}}/assets/umi.css?v={{$verison}}">
+    <link rel="stylesheet" href="/theme/{{$theme}}/assets/components.chunk.css?v={{$version}}">
+    <link rel="stylesheet" href="/theme/{{$theme}}/assets/umi.css?v={{$version}}">
     @if (file_exists(public_path("/theme/{$theme}/assets/custom.css")))
-        <link rel="stylesheet" href="/theme/{{$theme}}/assets/custom.css?v={{$verison}}">
+        <link rel="stylesheet" href="/theme/{{$theme}}/assets/custom.css?v={{$version}}">
     @endif
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
@@ -28,8 +28,8 @@
                 header: '{{$theme_header}}',
                 color: '{{$theme_color}}',
             },
-            verison: '{{$verison}}',
-            background_url: '{{$backgroun_url}}',
+            version: '{{$version}}',
+            background_url: '{{$background_url}}',
             description: '{{$description}}',
             crisp_id: '{{$crisp_id}}'
         }
