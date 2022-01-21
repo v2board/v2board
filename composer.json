@@ -20,7 +20,6 @@
         "laravel/horizon": "^4.3.5",
         "laravel/tinker": "^2.5",
         "linfo/linfo": "^4.0",
-        "lokielse/omnipay-alipay": "3.1.2",
         "lokielse/omnipay-wechatpay": "^3.0",
         "php-curl-class/php-curl-class": "^8.6",
         "stripe/stripe-php": "^7.36.1",
