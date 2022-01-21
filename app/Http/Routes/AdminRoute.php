@@ -87,6 +87,7 @@ class AdminRoute
             $router->post('/notice/save', 'Admin\\NoticeController@save');
             $router->post('/notice/update', 'Admin\\NoticeController@update');
             $router->post('/notice/drop', 'Admin\\NoticeController@drop');
+            $router->post('/notice/show', 'Admin\\NoticeController@show');
             // Ticket
             $router->get ('/ticket/fetch', 'Admin\\TicketController@fetch');
             $router->post('/ticket/reply', 'Admin\\TicketController@reply');
@@ -95,6 +96,7 @@ class AdminRoute
             $router->get ('/coupon/fetch', 'Admin\\CouponController@fetch');
             $router->post('/coupon/generate', 'Admin\\CouponController@generate');
             $router->post('/coupon/drop', 'Admin\\CouponController@drop');
+            $router->post('/coupon/show', 'Admin\\CouponController@show');
             // Knowledge
             $router->get ('/knowledge/fetch', 'Admin\\KnowledgeController@fetch');
             $router->get ('/knowledge/getCategory', 'Admin\\KnowledgeController@getCategory');

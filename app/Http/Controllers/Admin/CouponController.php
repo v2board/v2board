@@ -30,6 +30,25 @@ class CouponController extends Controller
         ]);
     }
 
+    public function show(Request $request)
+    {
+        if (empty($request->input('id'))) {
+            abort(500, '参数有误');
+        }
+        $coupon = Coupon::find($request->input('id'));
+        if (!$coupon) {
+            abort(500, '优惠券不存在');
+        }
+        $coupon->show = $coupon->show ? 0 : 1;
+        if (!$coupon->save()) {
+            abort(500, '保存失败');
+        }
+
+        return response([
+            'data' => true
+        ]);
+    }
+
     public function generate(CouponGenerate $request)
     {
         if ($request->input('generate_count')) {

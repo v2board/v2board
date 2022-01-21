@@ -81,7 +81,7 @@ class CouponService
 
     public function check()
     {
-        if (!$this->coupon) {
+        if (!$this->coupon || !$this->coupon->show) {
             abort(500, __('Invalid coupon'));
         }
         if ($this->coupon->limit_use <= 0 && $this->coupon->limit_use !== NULL) {

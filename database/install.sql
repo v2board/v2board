@@ -40,6 +40,7 @@ CREATE TABLE `v2_coupon` (
                              `name` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
                              `type` tinyint(1) NOT NULL,
                              `value` int(11) NOT NULL,
+                             `show` tinyint(1) NOT NULL DEFAULT '0',
                              `limit_use` int(11) DEFAULT NULL,
                              `limit_use_with_user` int(11) DEFAULT NULL,
                              `limit_plan_ids` varchar(255) DEFAULT NULL,
@@ -98,6 +99,7 @@ CREATE TABLE `v2_notice` (
                              `id` int(11) NOT NULL AUTO_INCREMENT,
                              `title` varchar(255) NOT NULL,
                              `content` text NOT NULL,
+                             `show` tinyint(1) NOT NULL DEFAULT '0',
                              `img_url` varchar(255) DEFAULT NULL,
                              `created_at` int(11) NOT NULL,
                              `updated_at` int(11) NOT NULL,
@@ -369,4 +371,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2022-01-04 16:20:42
+-- 2022-01-21 18:20:29

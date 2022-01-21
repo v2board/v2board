@@ -477,3 +477,9 @@ DROP `alter_id`;
 
 ALTER TABLE `v2_user`
     CHANGE `commission_type` `commission_type` tinyint(4) NOT NULL DEFAULT '0' COMMENT '0: system 1: period 2: onetime' AFTER `discount`;
+
+ALTER TABLE `v2_coupon`
+    ADD `show` tinyint(1) NOT NULL DEFAULT '0' AFTER `value`;
+
+ALTER TABLE `v2_notice`
+    ADD `show` tinyint(1) NOT NULL DEFAULT '0' AFTER `content`;
