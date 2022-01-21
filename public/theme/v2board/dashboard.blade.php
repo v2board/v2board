@@ -43,9 +43,9 @@
 
 <body>
 <div id="root"></div>
-<script src="/theme/{{$theme}}/assets/vendors.async.js?v={{$verison}}"></script>
-<script src="/theme/{{$theme}}/assets/components.async.js?v={{$verison}}"></script>
-<script src="/theme/{{$theme}}/assets/umi.js?v={{$verison}}"></script>
+<script src="/theme/{{$theme}}/assets/vendors.async.js?v={{$version}}"></script>
+<script src="/theme/{{$theme}}/assets/components.async.js?v={{$version}}"></script>
+<script src="/theme/{{$theme}}/assets/umi.js?v={{$version}}"></script>
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-P1E9Z5LRRK"></script>
 <script>
