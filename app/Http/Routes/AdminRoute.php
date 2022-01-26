@@ -110,6 +110,8 @@ class AdminRoute
             $router->post('/payment/getPaymentForm', 'Admin\\PaymentController@getPaymentForm');
             $router->post('/payment/save', 'Admin\\PaymentController@save');
             $router->post('/payment/drop', 'Admin\\PaymentController@drop');
+            // System
+            $router->get ('/system/getStatus', 'Admin\\SystemController@getStatus');
         });
     }
 }
