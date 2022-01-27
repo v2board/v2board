@@ -22,9 +22,9 @@ class ReplyTicket extends Telegram {
         if (!$user) {
             abort(500, '用户不存在');
         }
-        $ticketService = new TicketService();
         if (!$msg->text) return;
         if (!($user->is_admin || $user->is_staff)) return;
+        $ticketService = new TicketService();
         $ticketService->replyByAdmin(
             $ticketId,
             $msg->text,

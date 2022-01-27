@@ -15,8 +15,6 @@ class Traffic extends Telegram {
         if (!$message->is_private) return;
         $user = User::where('telegram_id', $message->chat_id)->first();
         if (!$user) {
-            $help = new Help();
-            $help->handle($message);
             $telegramService->sendMessage($message->chat_id, '没有查询到您的用户信息，请先绑定账号', 'markdown');
             return;
         }

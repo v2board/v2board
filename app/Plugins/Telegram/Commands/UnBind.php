@@ -14,8 +14,6 @@ class UnBind extends Telegram {
         $user = User::where('telegram_id', $message->chat_id)->first();
         $telegramService = $this->telegramService;
         if (!$user) {
-            $help = new Help();
-            $help->handle($message);
             $telegramService->sendMessage($message->chat_id, '没有查询到您的用户信息，请先绑定账号', 'markdown');
             return;
         }
