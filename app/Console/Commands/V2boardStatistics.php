@@ -56,9 +56,9 @@ class V2boardStatistics extends Command
             ->whereNotIn('status', [0, 2]);
         $orderCount = $builder->count();
         $orderAmount = $builder->sum('total_amount');
-        $builder = $builder->where('commission_balance', '!=', 0);
+        $builder = $builder->where('actual_commission_balance', '!=', 0);
         $commissionCount = $builder->count();
-        $commissionAmount = $builder->sum('commission_balance');
+        $commissionAmount = $builder->sum('actual_commission_balance');
         $data = [
             'order_count' => $orderCount,
             'order_amount' => $orderAmount,

@@ -68,6 +68,7 @@ class AdminRoute
             $router->post('/order/assign', 'Admin\\OrderController@assign');
             $router->post('/order/paid', 'Admin\\OrderController@paid');
             $router->post('/order/cancel', 'Admin\\OrderController@cancel');
+            $router->post('/order/detail', 'Admin\\OrderController@detail');
             // User
             $router->get ('/user/fetch', 'Admin\\UserController@fetch');
             $router->post('/user/update', 'Admin\\UserController@update');
