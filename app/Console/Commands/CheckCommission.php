@@ -93,6 +93,7 @@ class CheckCommission extends Command
                 0 => 100
             ];
         }
+        $actualPayCommissionAmount = 0;
         for ($l = 0; $l < $level; $l++) {
             $inviter = User::find($inviteUserId);
             if (!$inviter) continue;
@@ -118,7 +119,10 @@ class CheckCommission extends Command
                 return false;
             }
             $inviteUserId = $inviter->invite_user_id;
+            $actualPayCommissionAmount = $actualPayCommissionAmount + $commissionBalance;
         }
+        // update order commission balance
+        $order->commission_balance = $actualPayCommissionAmount;
         return true;
     }
 
