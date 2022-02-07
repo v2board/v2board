@@ -47,7 +47,7 @@ class OrderController extends Controller
         ]);
     }
 
-    public function details(Request $request)
+    public function detail(Request $request)
     {
         $order = Order::where('user_id', $request->session()->get('id'))
             ->where('trade_no', $request->input('trade_no'))
@@ -59,6 +59,9 @@ class OrderController extends Controller
         $order['try_out_plan_id'] = (int)config('v2board.try_out_plan_id');
         if (!$order['plan']) {
             abort(500, __('Subscription plan does not exist'));
+        }
+        if ($order->surplus_order_ids) {
+            $order['surplus_orders'] = Order::whereIn(id, $order->surplus_order_ids)->get();
         }
         return response([
             'data' => $order
