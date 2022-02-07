@@ -31,9 +31,9 @@ class StatController extends Controller
                 'month_register_total' => User::where('created_at', '>=', strtotime(date('Y-m-1')))
                     ->where('created_at', '<', time())
                     ->count(),
-                'ticket_pendding_total' => Ticket::where('status', 0)
+                'ticket_pending_total' => Ticket::where('status', 0)
                     ->count(),
-                'commission_pendding_total' => Order::where('commission_status', 0)
+                'commission_pending_total' => Order::where('commission_status', 0)
                     ->where('invite_user_id', '!=', NULL)
                     ->whereNotIn('status', [0, 2])
                     ->where('commission_balance', '>', 0)

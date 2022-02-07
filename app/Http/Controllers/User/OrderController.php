@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\OrderSave;
+use App\Models\CommissionLog;
 use App\Models\Payment;
 use App\Services\CouponService;
 use App\Services\OrderService;
