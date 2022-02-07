@@ -36,9 +36,11 @@
     </script>
     <script src="/theme/{{$theme}}/assets/i18n.js"></script>
     <script src="/theme/{{$theme}}/assets/i18n/zh-CN.js"></script>
+    <script src="/theme/{{$theme}}/assets/i18n/zh-TW.js"></script>
     <script src="/theme/{{$theme}}/assets/i18n/en-US.js"></script>
     <script src="/theme/{{$theme}}/assets/i18n/ja-JP.js"></script>
     <script src="/theme/{{$theme}}/assets/i18n/vi-VN.js"></script>
+    <script src="/theme/{{$theme}}/assets/i18n/ko-KR.js"></script>
 </head>
 
 <body>
