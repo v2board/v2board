@@ -483,3 +483,6 @@ ALTER TABLE `v2_coupon`
 
 ALTER TABLE `v2_notice`
     ADD `show` tinyint(1) NOT NULL DEFAULT '0' AFTER `content`;
+
+ALTER TABLE `v2_order`
+    ADD `actual_commission_balance` int(11) NULL COMMENT '实际支付佣金' AFTER `commission_balance`;
