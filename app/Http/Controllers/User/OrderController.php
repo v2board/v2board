@@ -61,7 +61,7 @@ class OrderController extends Controller
             abort(500, __('Subscription plan does not exist'));
         }
         if ($order->surplus_order_ids) {
-            $order['surplus_orders'] = Order::whereIn(id, $order->surplus_order_ids)->get();
+            $order['surplus_orders'] = Order::whereIn('id', $order->surplus_order_ids)->get();
         }
         return response([
             'data' => $order

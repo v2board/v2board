@@ -32,6 +32,11 @@ class MGate {
                 'label' => 'AppSecret',
                 'description' => '',
                 'type' => 'input',
+            ],
+            'notify_domain' => [
+                'label' => '通知域名(选填)',
+                'description' => '用于接收来自网关的支付通知',
+                'type' => 'input'
             ]
         ];
     }
