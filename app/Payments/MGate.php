@@ -43,10 +43,14 @@ class MGate {
 
     public function pay($order)
     {
+        if ($this->config['notify_domain']) {
+            $parseUrl = parse_url($order['notify_url']);
+            $notifyUrl = "{$parseUrl['scheme']}://{$this->config['notify_domain']}{$parseUrl['path']}";
+        }
         $params = [
             'out_trade_no' => $order['trade_no'],
             'total_amount' => $order['total_amount'],
-            'notify_url' => $order['notify_url'],
+            'notify_url' => $notifyUrl ?? $order['notify_url'],
             'return_url' => $order['return_url']
         ];
         $params['app_id'] = $this->config['mgate_app_id'];

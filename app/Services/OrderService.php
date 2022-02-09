@@ -119,8 +119,9 @@ class OrderService
         $order = $this->order;
         if ($user->invite_user_id && $order->total_amount > 0) {
             $order->invite_user_id = $user->invite_user_id;
+            $inviter = User::find($user->invite_user_id);
             $isCommission = false;
-            switch ((int)$user->commission_type) {
+            switch ((int)$inviter->commission_type) {
                 case 0:
                     $commissionFirstTime = (int)config('v2board.commission_first_time_enable', 1);
                     $isCommission = (!$commissionFirstTime || ($commissionFirstTime && !$this->haveValidOrder($user)));
@@ -134,7 +135,6 @@ class OrderService
             }
 
             if ($isCommission) {
-                $inviter = User::find($user->invite_user_id);
                 if ($inviter && $inviter->commission_rate) {
                     $order->commission_balance = $order->total_amount * ($inviter->commission_rate / 100);
                 } else {
