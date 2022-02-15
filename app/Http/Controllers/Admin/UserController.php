@@ -58,7 +58,11 @@ class UserController extends Controller
         $pageSize = $request->input('pageSize') >= 10 ? $request->input('pageSize') : 10;
         $sortType = in_array($request->input('sort_type'), ['ASC', 'DESC']) ? $request->input('sort_type') : 'DESC';
         $sort = $request->input('sort') ? $request->input('sort') : 'created_at';
-        $userModel = User::orderBy($sort, $sortType);
+        $userModel = User::select(
+            DB::raw('*'),
+            DB::raw('(u+d) as total_used')
+        )
+            ->orderBy($sort, $sortType);
         $this->filter($request, $userModel);
         $total = $userModel->count();
         $res = $userModel->forPage($current, $pageSize)
