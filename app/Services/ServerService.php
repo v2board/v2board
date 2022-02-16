@@ -27,17 +27,17 @@ class ServerService
         for ($i = 0; $i < count($v2ray); $i++) {
             $v2ray[$i]['type'] = 'v2ray';
             $groupId = $v2ray[$i]['group_id'];
+            if (strpos($v2ray[$i]['port'], '-') !== false) {
+                $v2ray[$i]['port'] = Helper::randomPort($v2ray[$i]['port']);
+            }
             if (in_array($user->group_id, $groupId)) {
                 if ($v2ray[$i]['parent_id']) {
                     $v2ray[$i]['last_check_at'] = Cache::get(CacheKey::get('SERVER_V2RAY_LAST_CHECK_AT', $v2ray[$i]['parent_id']));
                 } else {
                     $v2ray[$i]['last_check_at'] = Cache::get(CacheKey::get('SERVER_V2RAY_LAST_CHECK_AT', $v2ray[$i]['id']));
                 }
-                array_push($servers, $v2ray[$i]->toArray());
             }
-            if (strpos($v2ray[$i]['port'], '-') !== false) {
-                $v2ray[$i]['port'] = Helper::randomPort($v2ray[$i]['port']);
-            }
+            array_push($servers, $v2ray[$i]->toArray());
         }
 
 
@@ -55,17 +55,17 @@ class ServerService
         for ($i = 0; $i < count($trojan); $i++) {
             $trojan[$i]['type'] = 'trojan';
             $groupId = $trojan[$i]['group_id'];
+            if (strpos($trojan[$i]['port'], '-') !== false) {
+                $trojan[$i]['port'] = Helper::randomPort($trojan[$i]['port']);
+            }
             if (in_array($user->group_id, $groupId)) {
                 if ($trojan[$i]['parent_id']) {
                     $trojan[$i]['last_check_at'] = Cache::get(CacheKey::get('SERVER_TROJAN_LAST_CHECK_AT', $trojan[$i]['parent_id']));
                 } else {
                     $trojan[$i]['last_check_at'] = Cache::get(CacheKey::get('SERVER_TROJAN_LAST_CHECK_AT', $trojan[$i]['id']));
                 }
-                array_push($servers, $trojan[$i]->toArray());
             }
-            if (strpos($trojan[$i]['port'], '-') !== false) {
-                $trojan[$i]['port'] = Helper::randomPort($trojan[$i]['port']);
-            }
+            array_push($servers, $trojan[$i]->toArray());
         }
         return $servers;
     }
@@ -81,17 +81,17 @@ class ServerService
         for ($i = 0; $i < count($shadowsocks); $i++) {
             $shadowsocks[$i]['type'] = 'shadowsocks';
             $groupId = $shadowsocks[$i]['group_id'];
+            if (strpos($shadowsocks[$i]['port'], '-') !== false) {
+                $shadowsocks[$i]['port'] = Helper::randomPort($shadowsocks[$i]['port']);
+            }
             if (in_array($user->group_id, $groupId)) {
                 if ($shadowsocks[$i]['parent_id']) {
                     $shadowsocks[$i]['last_check_at'] = Cache::get(CacheKey::get('SERVER_SHADOWSOCKS_LAST_CHECK_AT', $shadowsocks[$i]['parent_id']));
                 } else {
                     $shadowsocks[$i]['last_check_at'] = Cache::get(CacheKey::get('SERVER_SHADOWSOCKS_LAST_CHECK_AT', $shadowsocks[$i]['id']));
                 }
-                array_push($servers, $shadowsocks[$i]->toArray());
             }
-            if (strpos($shadowsocks[$i]['port'], '-') !== false) {
-                $shadowsocks[$i]['port'] = Helper::randomPort($shadowsocks[$i]['port']);
-            }
+            array_push($servers, $shadowsocks[$i]->toArray());
         }
         return $servers;
     }

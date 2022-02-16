@@ -486,3 +486,6 @@ ALTER TABLE `v2_notice`
 
 ALTER TABLE `v2_order`
     ADD `actual_commission_balance` int(11) NULL COMMENT '实际支付佣金' AFTER `commission_balance`;
+
+ALTER TABLE `v2_server_v2ray`
+    CHANGE `port` `port` char(11) NOT NULL AFTER `host`;

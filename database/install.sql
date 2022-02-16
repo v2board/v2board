@@ -254,7 +254,7 @@ CREATE TABLE `v2_server_v2ray` (
                                    `name` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
                                    `parent_id` int(11) DEFAULT NULL,
                                    `host` varchar(255) NOT NULL,
-                                   `port` int(11) NOT NULL,
+                                   `port` char(11) NOT NULL,
                                    `server_port` int(11) NOT NULL,
                                    `tls` tinyint(4) NOT NULL DEFAULT '0',
                                    `tags` varchar(255) DEFAULT NULL,
@@ -372,4 +372,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2022-02-07 07:04:34
+-- 2022-02-16 19:16:57
