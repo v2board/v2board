@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\ServerV2ray;
 use App\Models\ServerTrojan;
 use App\Utils\CacheKey;
+use App\Utils\Helper;
 use Illuminate\Support\Facades\Cache;
 
 class ServerService
@@ -34,6 +35,9 @@ class ServerService
                 }
                 array_push($servers, $v2ray[$i]->toArray());
             }
+            if (strpos($v2ray[$i]['port'], '-') !== false) {
+                $v2ray[$i]['port'] = Helper::randomPort($v2ray[$i]['port']);
+            }
         }
 
 
@@ -59,6 +63,9 @@ class ServerService
                 }
                 array_push($servers, $trojan[$i]->toArray());
             }
+            if (strpos($trojan[$i]['port'], '-') !== false) {
+                $trojan[$i]['port'] = Helper::randomPort($trojan[$i]['port']);
+            }
         }
         return $servers;
     }
@@ -82,7 +89,9 @@ class ServerService
                 }
                 array_push($servers, $shadowsocks[$i]->toArray());
             }
-
+            if (strpos($shadowsocks[$i]['port'], '-') !== false) {
+                $shadowsocks[$i]['port'] = Helper::randomPort($shadowsocks[$i]['port']);
+            }
         }
         return $servers;
     }
