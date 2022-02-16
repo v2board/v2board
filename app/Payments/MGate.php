@@ -43,7 +43,7 @@ class MGate {
 
     public function pay($order)
     {
-        if ($this->config['notify_domain']) {
+        if (isset($this->config['notify_domain'])) {
             $parseUrl = parse_url($order['notify_url']);
             $notifyUrl = "{$parseUrl['scheme']}://{$this->config['notify_domain']}{$parseUrl['path']}";
         }
