@@ -489,3 +489,18 @@ ALTER TABLE `v2_order`
 
 ALTER TABLE `v2_server_v2ray`
     CHANGE `port` `port` char(11) NOT NULL AFTER `host`;
+
+CREATE TABLE `v2_stat_user` (
+                                `id` int(11) NOT NULL AUTO_INCREMENT,
+                                `user_id` int(11) NOT NULL,
+                                `server_id` int(11) NOT NULL,
+                                `server_type` char(11) NOT NULL,
+                                `server_rate` decimal(10,2) NOT NULL,
+                                `u` bigint(20) NOT NULL,
+                                `d` bigint(20) NOT NULL,
+                                `record_type` char(2) NOT NULL,
+                                `record_at` int(11) NOT NULL,
+                                `created_at` int(11) NOT NULL,
+                                `updated_at` int(11) NOT NULL,
+                                PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

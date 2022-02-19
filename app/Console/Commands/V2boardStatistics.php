@@ -44,7 +44,6 @@ class V2boardStatistics extends Command
     {
         ini_set('memory_limit', -1);
         $this->statOrder();
-        $this->statServer();
     }
 
     private function statOrder()
@@ -75,27 +74,5 @@ class V2boardStatistics extends Command
             return;
         }
         StatOrder::create($data);
-    }
-
-    private function statServer()
-    {
-        $endAt = strtotime(date('Y-m-d'));
-        $startAt = strtotime('-1 day', $endAt);
-        $statistics = ServerLog::select([
-            'server_id',
-            'method as server_type',
-            DB::raw("sum(u) as u"),
-            DB::raw("sum(d) as d"),
-        ])
-            ->where('log_at', '>=', $startAt)
-            ->where('log_at', '<', $endAt)
-            ->groupBy('server_id', 'method')
-            ->get()
-            ->toArray();
-        foreach ($statistics as $statistic) {
-            $statistic['record_type'] = 'd';
-            $statistic['record_at'] = $startAt;
-            StatServerJob::dispatch($statistic);
-        }
     }
 }

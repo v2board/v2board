@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Jobs\ServerLogJob;
+use App\Jobs\StatServerJob;
+use App\Jobs\StatUserJob;
 use App\Jobs\TrafficFetchJob;
 use App\Models\InviteCode;
 use App\Models\Order;
@@ -86,5 +88,7 @@ class UserService
     {
         TrafficFetchJob::dispatch($u, $d, $userId, $server, $protocol);
         ServerLogJob::dispatch($u, $d, $userId, $server, $protocol);
+        StatServerJob::dispatch($u, $d, $server, $protocol, 'd');
+        StatUserJob::dispatch($u, $d, $userId, $server, $protocol, 'd');
     }
 }

@@ -173,13 +173,13 @@ return [
             'V2board' => [
                 'connection' => 'redis',
                 'queue' => [
+                    'order_handle',
                     'traffic_fetch',
+                    'stat',
                     'server_log',
                     'send_email',
                     'send_email_mass',
                     'send_telegram',
-                    'stat_server',
-                    'order_handle',
                 ],
                 'balance' => 'auto',
                 'minProcesses' => 1,
