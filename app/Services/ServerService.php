@@ -36,8 +36,8 @@ class ServerService
                 } else {
                     $v2ray[$i]['last_check_at'] = Cache::get(CacheKey::get('SERVER_V2RAY_LAST_CHECK_AT', $v2ray[$i]['id']));
                 }
+                array_push($servers, $v2ray[$i]->toArray());
             }
-            array_push($servers, $v2ray[$i]->toArray());
         }
 
 
@@ -64,8 +64,8 @@ class ServerService
                 } else {
                     $trojan[$i]['last_check_at'] = Cache::get(CacheKey::get('SERVER_TROJAN_LAST_CHECK_AT', $trojan[$i]['id']));
                 }
+                array_push($servers, $trojan[$i]->toArray());
             }
-            array_push($servers, $trojan[$i]->toArray());
         }
         return $servers;
     }
@@ -90,8 +90,8 @@ class ServerService
                 } else {
                     $shadowsocks[$i]['last_check_at'] = Cache::get(CacheKey::get('SERVER_SHADOWSOCKS_LAST_CHECK_AT', $shadowsocks[$i]['id']));
                 }
+                array_push($servers, $shadowsocks[$i]->toArray());
             }
-            array_push($servers, $shadowsocks[$i]->toArray());
         }
         return $servers;
     }
