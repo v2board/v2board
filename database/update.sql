@@ -504,3 +504,7 @@ CREATE TABLE `v2_stat_user` (
                                 `updated_at` int(11) NOT NULL,
                                 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+ALTER TABLE `v2_payment`
+    ADD `notify_domain` varchar(128) COLLATE 'utf8mb4_general_ci' NULL AFTER `config`;

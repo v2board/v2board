@@ -32,25 +32,16 @@ class MGate {
                 'label' => 'AppSecret',
                 'description' => '',
                 'type' => 'input',
-            ],
-            'notify_domain' => [
-                'label' => '通知域名(选填)',
-                'description' => '用于接收来自网关的支付通知',
-                'type' => 'input'
             ]
         ];
     }
 
     public function pay($order)
     {
-        if (isset($this->config['notify_domain'])) {
-            $parseUrl = parse_url($order['notify_url']);
-            $notifyUrl = "{$parseUrl['scheme']}://{$this->config['notify_domain']}{$parseUrl['path']}";
-        }
         $params = [
             'out_trade_no' => $order['trade_no'],
             'total_amount' => $order['total_amount'],
-            'notify_url' => $notifyUrl ?? $order['notify_url'],
+            'notify_url' => $order['notify_url'],
             'return_url' => $order['return_url']
         ];
         $params['app_id'] = $this->config['mgate_app_id'];

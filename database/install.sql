@@ -144,6 +144,7 @@ CREATE TABLE `v2_payment` (
                               `name` varchar(255) NOT NULL,
                               `icon` varchar(255) DEFAULT NULL,
                               `config` text NOT NULL,
+                              `notify_domain` varchar(128) DEFAULT NULL,
                               `enable` tinyint(1) NOT NULL DEFAULT '0',
                               `sort` int(11) DEFAULT NULL,
                               `created_at` int(11) NOT NULL,
@@ -389,4 +390,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2022-02-19 16:59:30
+-- 2022-02-23 07:42:04
