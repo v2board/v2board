@@ -8,7 +8,6 @@ use App\Models\Payment;
 class PaymentService
 {
     public $method;
-    public $customResult;
     protected $class;
     protected $config;
     protected $payment;
@@ -29,7 +28,6 @@ class PaymentService
             $this->config['notify_domain'] = $payment['notify_domain'];
         };
         $this->payment = new $this->class($this->config);
-        if (isset($this->payment->customResult)) $this->customResult = $this->payment->customResult;
     }
 
     public function notify($params)
