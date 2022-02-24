@@ -57,17 +57,12 @@ class AlipayF2F {
 
     public function notify($params)
     {
-        $gateway = Omnipay::create('Alipay_AopF2F');
-        $gateway->setSignType('RSA2'); //RSA/RSA2
+        $gateway = new \Library\AlipayF2F();
         $gateway->setAppId($this->config['app_id']);
         $gateway->setPrivateKey($this->config['private_key']); // 可以是路径，也可以是密钥内容
         $gateway->setAlipayPublicKey($this->config['public_key']); // 可以是路径，也可以是密钥内容
-        $request = $gateway->completePurchase();
-        $request->setParams($_POST); //Optional
         try {
-            /** @var \Omnipay\Alipay\Responses\AopCompletePurchaseResponse $response */
-            $response = $request->send();
-            if ($response->isPaid()) {
+            if ($gateway->verify($params)) {
                 /**
                  * Payment is successful
                  */
