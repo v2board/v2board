@@ -163,7 +163,13 @@ class OrderService
 
     private function getSurplusValueByOneTime(User $user, Order $order)
     {
-        $plan = Plan::find($user->plan_id);
+        $lastOneTimeOrder = Order::where('user_id', $user->id)
+            ->where('period', 'onetime')
+            ->where('status', 3)
+            ->orderBy('id', 'DESC')
+            ->first();
+        if (!$lastOneTimeOrder) return;
+        $plan = Plan::find($lastOneTimeOrder->plan_id);
         $trafficUnitPrice = $plan->onetime_price / $plan->transfer_enable;
         if ($user->discount && $trafficUnitPrice) {
             $trafficUnitPrice = $trafficUnitPrice - ($trafficUnitPrice * $user->discount / 100);
