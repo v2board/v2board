@@ -322,7 +322,10 @@ CREATE TABLE `v2_stat_user` (
                                 `record_at` int(11) NOT NULL,
                                 `created_at` int(11) NOT NULL,
                                 `updated_at` int(11) NOT NULL,
-                                PRIMARY KEY (`id`)
+                                PRIMARY KEY (`id`),
+                                KEY `server_id` (`server_id`),
+                                KEY `user_id` (`user_id`),
+                                KEY `record_at` (`record_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
@@ -390,4 +393,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2022-02-23 07:42:04
+-- 2022-02-25 09:10:24

@@ -508,3 +508,8 @@ CREATE TABLE `v2_stat_user` (
 
 ALTER TABLE `v2_payment`
     ADD `notify_domain` varchar(128) COLLATE 'utf8mb4_general_ci' NULL AFTER `config`;
+
+ALTER TABLE `v2_stat_user`
+    ADD INDEX `server_id` (`server_id`),
+ADD INDEX `user_id` (`user_id`),
+ADD INDEX `record_at` (`record_at`);
