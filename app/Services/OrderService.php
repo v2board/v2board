@@ -170,6 +170,7 @@ class OrderService
             ->first();
         if (!$lastOneTimeOrder) return;
         $plan = Plan::find($lastOneTimeOrder->plan_id);
+        if (!$plan) return;
         $trafficUnitPrice = $plan->onetime_price / $plan->transfer_enable;
         if ($user->discount && $trafficUnitPrice) {
             $trafficUnitPrice = $trafficUnitPrice - ($trafficUnitPrice * $user->discount / 100);
