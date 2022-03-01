@@ -31,16 +31,23 @@
             version: '{{$version}}',
             background_url: '{{$background_url}}',
             description: '{{$description}}',
-            crisp_id: '{{$crisp_id}}'
+            crisp_id: '{{$crisp_id}}',
+            i18n: [
+                'zh-CN',
+                'en-US',
+                'ja-JP',
+                'vi-VN',
+                'ko-KR',
+                'zh-TW'
+            ]
         }
     </script>
-    <script src="/theme/{{$theme}}/assets/i18n.js"></script>
-    <script src="/theme/{{$theme}}/assets/i18n/zh-CN.js"></script>
-    <script src="/theme/{{$theme}}/assets/i18n/zh-TW.js"></script>
-    <script src="/theme/{{$theme}}/assets/i18n/en-US.js"></script>
-    <script src="/theme/{{$theme}}/assets/i18n/ja-JP.js"></script>
-    <script src="/theme/{{$theme}}/assets/i18n/vi-VN.js"></script>
-    <script src="/theme/{{$theme}}/assets/i18n/ko-KR.js"></script>
+    <script src="/theme/{{$theme}}/assets/i18n/zh-CN.js?v={{$version}}"></script>
+    <script src="/theme/{{$theme}}/assets/i18n/zh-TW.js?v={{$version}}"></script>
+    <script src="/theme/{{$theme}}/assets/i18n/en-US.js?v={{$version}}"></script>
+    <script src="/theme/{{$theme}}/assets/i18n/ja-JP.js?v={{$version}}"></script>
+    <script src="/theme/{{$theme}}/assets/i18n/vi-VN.js?v={{$version}}"></script>
+    <script src="/theme/{{$theme}}/assets/i18n/ko-KR.js?v={{$version}}"></script>
 </head>
 
 <body>
