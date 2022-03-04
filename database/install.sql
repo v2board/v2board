@@ -188,25 +188,6 @@ CREATE TABLE `v2_server_group` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-DROP TABLE IF EXISTS `v2_server_log`;
-CREATE TABLE `v2_server_log` (
-                                 `id` bigint(20) NOT NULL AUTO_INCREMENT,
-                                 `user_id` int(11) NOT NULL,
-                                 `server_id` int(11) NOT NULL,
-                                 `u` varchar(255) NOT NULL,
-                                 `d` varchar(255) NOT NULL,
-                                 `rate` decimal(10,2) NOT NULL,
-                                 `method` varchar(255) NOT NULL,
-                                 `log_at` int(11) NOT NULL,
-                                 `created_at` int(11) NOT NULL,
-                                 `updated_at` int(11) NOT NULL,
-                                 PRIMARY KEY (`id`),
-                                 KEY `log_at` (`log_at`),
-                                 KEY `user_id` (`user_id`),
-                                 KEY `server_id` (`server_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
 DROP TABLE IF EXISTS `v2_server_shadowsocks`;
 CREATE TABLE `v2_server_shadowsocks` (
                                          `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -393,4 +374,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2022-02-25 09:10:24
+-- 2022-03-04 16:25:43

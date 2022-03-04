@@ -10,11 +10,9 @@ use App\Utils\CacheKey;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Plan;
-use App\Models\ServerV2ray;
 use App\Models\Ticket;
 use App\Utils\Helper;
 use App\Models\Order;
-use App\Models\ServerLog;
 use Illuminate\Support\Facades\Cache;
 
 class UserController extends Controller

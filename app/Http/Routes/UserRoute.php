@@ -48,7 +48,6 @@ class UserRoute
             $router->post('/ticket/withdraw', 'User\\TicketController@withdraw');
             // Server
             $router->get ('/server/fetch', 'User\\ServerController@fetch');
-            $router->get ('/server/getServerLogs', 'User\\ServerController@getServerLogs');
             // Coupon
             $router->post('/coupon/check', 'User\\CouponController@check');
             // Telegram
@@ -59,6 +58,8 @@ class UserRoute
             // Knowledge
             $router->get ('/knowledge/fetch', 'User\\KnowledgeController@fetch');
             $router->get ('/knowledge/getCategory', 'User\\KnowledgeController@getCategory');
+            // Stat
+            $router->get ('/stat/getTrafficLog', 'User\\StatController@getTrafficLog');
         });
     }
 }

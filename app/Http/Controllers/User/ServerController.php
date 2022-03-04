@@ -30,22 +30,4 @@ class ServerController extends Controller
             'data' => $servers
         ]);
     }
-
-    public function getServerLogs(Request $request)
-    {
-        $serverLogModel = ServerLog::select([
-            DB::raw('sum(u) as u'),
-            DB::raw('sum(d) as d'),
-            'log_at',
-            'user_id',
-            'rate'
-        ])
-            ->where('user_id', $request->session()->get('id'))
-            ->where('log_at', '>=', strtotime(date('Y-m-1')))
-            ->groupBy('log_at', 'user_id', 'rate')
-            ->orderBy('log_at', 'DESC');
-        return response([
-            'data' => $serverLogModel->get()
-        ]);
-    }
 }
