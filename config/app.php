@@ -237,5 +237,5 @@ return [
     | The only modification by laravel config
     |
     */
-    'version' => '1.5.5.1644685605492'
+    'version' => '1.5.5.1646413688376'
 ];
