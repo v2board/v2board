@@ -120,6 +120,7 @@ class OrderService
         if ($user->invite_user_id && ($order->total_amount <= 0)) return;
         $order->invite_user_id = $user->invite_user_id;
         $inviter = User::find($user->invite_user_id);
+        if (!$inviter) return;
         $isCommission = false;
         switch ((int)$inviter->commission_type) {
             case 0:
@@ -134,7 +135,7 @@ class OrderService
                 break;
         }
 
-        if ($isCommission) return;
+        if (!$isCommission) return;
         if ($inviter && $inviter->commission_rate) {
             $order->commission_balance = $order->total_amount * ($inviter->commission_rate / 100);
         } else {
