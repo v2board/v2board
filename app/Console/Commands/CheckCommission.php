@@ -118,6 +118,8 @@ class CheckCommission extends Command
                 return false;
             }
             $inviteUserId = $inviter->invite_user_id;
+            // update order actual commission balance
+            $order->actual_commission_balance = $order->actual_commission_balance + $commissionBalance;
         }
         return true;
     }

@@ -30,6 +30,25 @@ class CouponController extends Controller
         ]);
     }
 
+    public function show(Request $request)
+    {
+        if (empty($request->input('id'))) {
+            abort(500, '参数有误');
+        }
+        $coupon = Coupon::find($request->input('id'));
+        if (!$coupon) {
+            abort(500, '优惠券不存在');
+        }
+        $coupon->show = $coupon->show ? 0 : 1;
+        if (!$coupon->save()) {
+            abort(500, '保存失败');
+        }
+
+        return response([
+            'data' => true
+        ]);
+    }
+
     public function generate(CouponGenerate $request)
     {
         if ($request->input('generate_count')) {
@@ -63,8 +82,6 @@ class CouponController extends Controller
         $coupons = [];
         $coupon = $request->validated();
         $coupon['created_at'] = $coupon['updated_at'] = time();
-        $coupon['limit_plan_ids'] = json_encode($coupon['limit_plan_ids']);
-        $coupon['limit_period'] = json_encode($coupon['limit_period']);
         unset($coupon['generate_count']);
         for ($i = 0;$i < $request->input('generate_count');$i++) {
             $coupon['code'] = Helper::randomChar(8);
@@ -84,7 +101,7 @@ class CouponController extends Controller
             $endTime = date('Y-m-d H:i:s', $coupon['ended_at']);
             $limitUse = $coupon['limit_use'] ?? '不限制';
             $createTime = date('Y-m-d H:i:s', $coupon['created_at']);
-            $limitPlanIds = implode("/", json_decode($coupon['limit_plan_ids'], true)) ?? '不限制';
+            $limitPlanIds = isset($coupon['limit_plan_ids']) ? implode("/", $coupon['limit_plan_ids']) : '不限制';
             $data .= "{$coupon['name']},{$type},{$value},{$startTime},{$endTime},{$limitUse},{$limitPlanIds},{$coupon['code']},{$createTime}\r\n";
         }
         echo $data;

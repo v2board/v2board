@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Requests\Admin\OrderAssign;
 use App\Http\Requests\Admin\OrderUpdate;
 use App\Http\Requests\Admin\OrderFetch;
+use App\Models\CommissionLog;
 use App\Services\OrderService;
 use App\Services\UserService;
 use App\Utils\Helper;
@@ -34,6 +35,19 @@ class OrderController extends Controller
                 $builder->where($filter['key'], $filter['condition'], $filter['value']);
             }
         }
+    }
+
+    public function detail(Request $request)
+    {
+        $order = Order::find($request->input('id'));
+        if (!$order) abort(500, '订单不存在');
+        $order['commission_log'] = CommissionLog::where('trade_no', $order->trade_no)->get();
+        if ($order->surplus_order_ids) {
+            $order['surplus_orders'] = Order::whereIn('id', $order->surplus_order_ids)->get();
+        }
+        return response([
+            'data' => $order
+        ]);
     }
 
     public function fetch(OrderFetch $request)

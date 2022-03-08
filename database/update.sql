@@ -471,3 +471,45 @@ ALTER TABLE `v2_coupon`
 
 ALTER TABLE `v2_order`
     CHANGE `cycle` `period` varchar(255) COLLATE 'utf8_general_ci' NOT NULL AFTER `type`;
+
+ALTER TABLE `v2_server_v2ray`
+DROP `alter_id`;
+
+ALTER TABLE `v2_user`
+    CHANGE `commission_type` `commission_type` tinyint(4) NOT NULL DEFAULT '0' COMMENT '0: system 1: period 2: onetime' AFTER `discount`;
+
+ALTER TABLE `v2_coupon`
+    ADD `show` tinyint(1) NOT NULL DEFAULT '0' AFTER `value`;
+
+ALTER TABLE `v2_notice`
+    ADD `show` tinyint(1) NOT NULL DEFAULT '0' AFTER `content`;
+
+ALTER TABLE `v2_order`
+    ADD `actual_commission_balance` int(11) NULL COMMENT '实际支付佣金' AFTER `commission_balance`;
+
+ALTER TABLE `v2_server_v2ray`
+    CHANGE `port` `port` char(11) NOT NULL AFTER `host`;
+
+CREATE TABLE `v2_stat_user` (
+                                `id` int(11) NOT NULL AUTO_INCREMENT,
+                                `user_id` int(11) NOT NULL,
+                                `server_id` int(11) NOT NULL,
+                                `server_type` char(11) NOT NULL,
+                                `server_rate` decimal(10,2) NOT NULL,
+                                `u` bigint(20) NOT NULL,
+                                `d` bigint(20) NOT NULL,
+                                `record_type` char(2) NOT NULL,
+                                `record_at` int(11) NOT NULL,
+                                `created_at` int(11) NOT NULL,
+                                `updated_at` int(11) NOT NULL,
+                                PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+ALTER TABLE `v2_payment`
+    ADD `notify_domain` varchar(128) COLLATE 'utf8mb4_general_ci' NULL AFTER `config`;
+
+ALTER TABLE `v2_stat_user`
+    ADD INDEX `server_id` (`server_id`),
+ADD INDEX `user_id` (`user_id`),
+ADD INDEX `record_at` (`record_at`);

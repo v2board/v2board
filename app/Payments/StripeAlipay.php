@@ -40,7 +40,7 @@ class StripeAlipay {
         $currency = $this->config['currency'];
         $exchange = $this->exchange('CNY', strtoupper($currency));
         if (!$exchange) {
-            abort(500, __('user.order.stripeAlipay.currency_convert_timeout'));
+            abort(500, __('Currency conversion has timed out, please try again later'));
         }
         Stripe::setApiKey($this->config['stripe_sk_live']);
         $source = Source::create([
@@ -58,7 +58,7 @@ class StripeAlipay {
             ]
         ]);
         if (!$source['redirect']['url']) {
-            abort(500, __('user.order.stripeAlipay.gateway_request_failed'));
+            abort(500, __('Payment gateway request failed'));
         }
         return [
             'type' => 1,

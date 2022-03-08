@@ -56,16 +56,17 @@ class Stash
             $isFilter = false;
             foreach ($config['proxy-groups'][$k]['proxies'] as $src) {
                 foreach ($proxies as $dst) {
+                    if (!$this->isRegex($src)) continue;
+                    $isFilter = true;
+                    $config['proxy-groups'][$k]['proxies'] = array_values(array_diff($config['proxy-groups'][$k]['proxies'], [$src]));
                     if ($this->isMatch($src, $dst)) {
-                        $isFilter = true;
-                        $config['proxy-groups'][$k]['proxies'] = array_diff($config['proxy-groups'][$k]['proxies'], [$src]);
                         array_push($config['proxy-groups'][$k]['proxies'], $dst);
                     }
                 }
+                if ($isFilter) continue;
             }
-            if (!$isFilter) {
-                $config['proxy-groups'][$k]['proxies'] = array_merge($config['proxy-groups'][$k]['proxies'], $proxies);
-            }
+            if ($isFilter) continue;
+            $config['proxy-groups'][$k]['proxies'] = array_merge($config['proxy-groups'][$k]['proxies'], $proxies);
         }
         // Force the current subscription domain to be a direct rule
         $subsDomain = $_SERVER['SERVER_NAME'];
@@ -98,7 +99,7 @@ class Stash
         $array['server'] = $server['host'];
         $array['port'] = $server['port'];
         $array['uuid'] = $uuid;
-        $array['alterId'] = $server['alter_id'];
+        $array['alterId'] = 0;
         $array['cipher'] = 'auto';
         $array['udp'] = true;
 
@@ -116,6 +117,12 @@ class Stash
             $array['network'] = 'ws';
             if ($server['networkSettings']) {
                 $wsSettings = $server['networkSettings'];
+                $array['ws-opts'] = [];
+                if (isset($wsSettings['path']) && !empty($wsSettings['path']))
+                    $array['ws-opts']['path'] = $wsSettings['path'];
+                if (isset($wsSettings['headers']['Host']) && !empty($wsSettings['headers']['Host']))
+                    $array['ws-opts']['headers'] = ['Host' => $wsSettings['headers']['Host']];
+                // TODO: 2022.06.01 remove it
                 if (isset($wsSettings['path']) && !empty($wsSettings['path']))
                     $array['ws-path'] = $wsSettings['path'];
                 if (isset($wsSettings['headers']['Host']) && !empty($wsSettings['headers']['Host']))
@@ -125,9 +132,9 @@ class Stash
         if ($server['network'] === 'grpc') {
             $array['network'] = 'grpc';
             if ($server['networkSettings']) {
-                $grpcObject = $server['networkSettings'];
+                $grpcSettings = $server['networkSettings'];
                 $array['grpc-opts'] = [];
-                $array['grpc-opts']['grpc-service-name'] = $grpcObject['serviceName'];
+                $array['grpc-opts']['grpc-service-name'] = $grpcSettings['serviceName'];
             }
         }
 

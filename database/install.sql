@@ -40,6 +40,7 @@ CREATE TABLE `v2_coupon` (
                              `name` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
                              `type` tinyint(1) NOT NULL,
                              `value` int(11) NOT NULL,
+                             `show` tinyint(1) NOT NULL DEFAULT '0',
                              `limit_use` int(11) DEFAULT NULL,
                              `limit_use_with_user` int(11) DEFAULT NULL,
                              `limit_plan_ids` varchar(255) DEFAULT NULL,
@@ -98,6 +99,7 @@ CREATE TABLE `v2_notice` (
                              `id` int(11) NOT NULL AUTO_INCREMENT,
                              `title` varchar(255) NOT NULL,
                              `content` text NOT NULL,
+                             `show` tinyint(1) NOT NULL DEFAULT '0',
                              `img_url` varchar(255) DEFAULT NULL,
                              `created_at` int(11) NOT NULL,
                              `updated_at` int(11) NOT NULL,
@@ -126,6 +128,7 @@ CREATE TABLE `v2_order` (
                             `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0待支付1开通中2已取消3已完成4已折抵',
                             `commission_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0待确认1发放中2有效3无效',
                             `commission_balance` int(11) NOT NULL DEFAULT '0',
+                            `actual_commission_balance` int(11) DEFAULT NULL COMMENT '实际支付佣金',
                             `paid_at` int(11) DEFAULT NULL,
                             `created_at` int(11) NOT NULL,
                             `updated_at` int(11) NOT NULL,
@@ -141,6 +144,7 @@ CREATE TABLE `v2_payment` (
                               `name` varchar(255) NOT NULL,
                               `icon` varchar(255) DEFAULT NULL,
                               `config` text NOT NULL,
+                              `notify_domain` varchar(128) DEFAULT NULL,
                               `enable` tinyint(1) NOT NULL DEFAULT '0',
                               `sort` int(11) DEFAULT NULL,
                               `created_at` int(11) NOT NULL,
@@ -181,25 +185,6 @@ CREATE TABLE `v2_server_group` (
                                    `created_at` int(11) NOT NULL,
                                    `updated_at` int(11) NOT NULL,
                                    PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-DROP TABLE IF EXISTS `v2_server_log`;
-CREATE TABLE `v2_server_log` (
-                                 `id` bigint(20) NOT NULL AUTO_INCREMENT,
-                                 `user_id` int(11) NOT NULL,
-                                 `server_id` int(11) NOT NULL,
-                                 `u` varchar(255) NOT NULL,
-                                 `d` varchar(255) NOT NULL,
-                                 `rate` decimal(10,2) NOT NULL,
-                                 `method` varchar(255) NOT NULL,
-                                 `log_at` int(11) NOT NULL,
-                                 `created_at` int(11) NOT NULL,
-                                 `updated_at` int(11) NOT NULL,
-                                 PRIMARY KEY (`id`),
-                                 KEY `log_at` (`log_at`),
-                                 KEY `user_id` (`user_id`),
-                                 KEY `server_id` (`server_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -251,13 +236,12 @@ CREATE TABLE `v2_server_v2ray` (
                                    `name` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
                                    `parent_id` int(11) DEFAULT NULL,
                                    `host` varchar(255) NOT NULL,
-                                   `port` int(11) NOT NULL,
+                                   `port` char(11) NOT NULL,
                                    `server_port` int(11) NOT NULL,
                                    `tls` tinyint(4) NOT NULL DEFAULT '0',
                                    `tags` varchar(255) DEFAULT NULL,
                                    `rate` varchar(11) NOT NULL,
                                    `network` text NOT NULL,
-                                   `alter_id` int(11) NOT NULL DEFAULT '1',
                                    `settings` text,
                                    `rules` text,
                                    `networkSettings` text,
@@ -306,6 +290,26 @@ CREATE TABLE `v2_stat_server` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='节点数据统计';
 
 
+DROP TABLE IF EXISTS `v2_stat_user`;
+CREATE TABLE `v2_stat_user` (
+                                `id` int(11) NOT NULL AUTO_INCREMENT,
+                                `user_id` int(11) NOT NULL,
+                                `server_id` int(11) NOT NULL,
+                                `server_type` char(11) NOT NULL,
+                                `server_rate` decimal(10,2) NOT NULL,
+                                `u` bigint(20) NOT NULL,
+                                `d` bigint(20) NOT NULL,
+                                `record_type` char(2) NOT NULL,
+                                `record_at` int(11) NOT NULL,
+                                `created_at` int(11) NOT NULL,
+                                `updated_at` int(11) NOT NULL,
+                                PRIMARY KEY (`id`),
+                                KEY `server_id` (`server_id`),
+                                KEY `user_id` (`user_id`),
+                                KEY `record_at` (`record_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
 DROP TABLE IF EXISTS `v2_ticket`;
 CREATE TABLE `v2_ticket` (
                              `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -343,7 +347,7 @@ CREATE TABLE `v2_user` (
                            `password_salt` char(10) DEFAULT NULL,
                            `balance` int(11) NOT NULL DEFAULT '0',
                            `discount` int(11) DEFAULT NULL,
-                           `commission_type` tinyint(4) NOT NULL DEFAULT '0' COMMENT '0: system 1: cycle 2: onetime',
+                           `commission_type` tinyint(4) NOT NULL DEFAULT '0' COMMENT '0: system 1: period 2: onetime',
                            `commission_rate` int(11) DEFAULT NULL,
                            `commission_balance` int(11) NOT NULL DEFAULT '0',
                            `t` int(11) NOT NULL DEFAULT '0',
@@ -370,4 +374,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2021-12-27 17:37:09
+-- 2022-03-04 16:25:43

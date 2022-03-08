@@ -2,9 +2,11 @@
 <html>
 
 <head>
-    <link rel="stylesheet" href="/theme/{{$theme}}/assets/components.chunk.css?v={{$verison}}">
-    <link rel="stylesheet" href="/theme/{{$theme}}/assets/umi.css?v={{$verison}}">
-    <link rel="stylesheet" href="/theme/{{$theme}}/assets/custom.css?v={{$verison}}">
+    <link rel="stylesheet" href="/theme/{{$theme}}/assets/components.chunk.css?v={{$version}}">
+    <link rel="stylesheet" href="/theme/{{$theme}}/assets/umi.css?v={{$version}}">
+    @if (file_exists(public_path("/theme/{$theme}/assets/custom.css")))
+        <link rel="stylesheet" href="/theme/{{$theme}}/assets/custom.css?v={{$version}}">
+    @endif
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
     @php ($colors = [
@@ -26,24 +28,33 @@
                 header: '{{$theme_header}}',
                 color: '{{$theme_color}}',
             },
-            verison: '{{$verison}}',
-            background_url: '{{$backgroun_url}}',
+            version: '{{$version}}',
+            background_url: '{{$background_url}}',
             description: '{{$description}}',
-            crisp_id: '{{$crisp_id}}'
+            crisp_id: '{{$crisp_id}}',
+            i18n: [
+                'zh-CN',
+                'en-US',
+                'ja-JP',
+                'vi-VN',
+                'ko-KR',
+                'zh-TW'
+            ]
         }
     </script>
-    <script src="/theme/{{$theme}}/assets/i18n.js"></script>
-    <script src="/theme/{{$theme}}/assets/i18n/zh-CN.js"></script>
-    <script src="/theme/{{$theme}}/assets/i18n/en-US.js"></script>
-    <script src="/theme/{{$theme}}/assets/i18n/ja-JP.js"></script>
-    <script src="/theme/{{$theme}}/assets/i18n/vi-VN.js"></script>
+    <script src="/theme/{{$theme}}/assets/i18n/zh-CN.js?v={{$version}}"></script>
+    <script src="/theme/{{$theme}}/assets/i18n/zh-TW.js?v={{$version}}"></script>
+    <script src="/theme/{{$theme}}/assets/i18n/en-US.js?v={{$version}}"></script>
+    <script src="/theme/{{$theme}}/assets/i18n/ja-JP.js?v={{$version}}"></script>
+    <script src="/theme/{{$theme}}/assets/i18n/vi-VN.js?v={{$version}}"></script>
+    <script src="/theme/{{$theme}}/assets/i18n/ko-KR.js?v={{$version}}"></script>
 </head>
 
 <body>
 <div id="root"></div>
-<script src="/theme/{{$theme}}/assets/vendors.async.js?v={{$verison}}"></script>
-<script src="/theme/{{$theme}}/assets/components.async.js?v={{$verison}}"></script>
-<script src="/theme/{{$theme}}/assets/umi.js?v={{$verison}}"></script>
+<script src="/theme/{{$theme}}/assets/vendors.async.js?v={{$version}}"></script>
+<script src="/theme/{{$theme}}/assets/components.async.js?v={{$version}}"></script>
+<script src="/theme/{{$theme}}/assets/umi.js?v={{$version}}"></script>
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-P1E9Z5LRRK"></script>
 <script>
@@ -57,6 +68,9 @@
 
     gtag('config', 'G-P1E9Z5LRRK');
 </script>
+@if (file_exists(public_path("/theme/{$theme}/assets/custom.js")))
+    <script src="/theme/{{$theme}}/assets/custom.js?v={{$version}}"></script>
+@endif
 </body>
 
 </html>

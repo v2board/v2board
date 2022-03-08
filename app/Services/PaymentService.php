@@ -8,7 +8,6 @@ use App\Models\Payment;
 class PaymentService
 {
     public $method;
-    public $customResult;
     protected $class;
     protected $config;
     protected $payment;
@@ -26,9 +25,9 @@ class PaymentService
             $this->config['enable'] = $payment['enable'];
             $this->config['id'] = $payment['id'];
             $this->config['uuid'] = $payment['uuid'];
+            $this->config['notify_domain'] = $payment['notify_domain'];
         };
         $this->payment = new $this->class($this->config);
-        if (isset($this->payment->customResult)) $this->customResult = $this->payment->customResult;
     }
 
     public function notify($params)
@@ -39,8 +38,15 @@ class PaymentService
 
     public function pay($order)
     {
+        // custom notify domain name
+        $notifyUrl = url("/api/v1/guest/payment/notify/{$this->method}/{$this->config['uuid']}");
+        if ($this->config['notify_domain']) {
+            $parseUrl = parse_url($notifyUrl);
+            $notifyUrl = $this->config['notify_domain'] . $parseUrl['path'];
+        }
+
         return $this->payment->pay([
-            'notify_url' => url("/api/v1/guest/payment/notify/{$this->method}/{$this->config['uuid']}"),
+            'notify_url' => $notifyUrl,
             'return_url' => config('v2board.app_url', env('APP_URL')) . '/#/order/' . $order['trade_no'],
             'trade_no' => $order['trade_no'],
             'total_amount' => $order['total_amount'],

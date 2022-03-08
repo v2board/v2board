@@ -5,8 +5,6 @@
  */
 namespace App\Payments;
 
-use Omnipay\Omnipay;
-
 class AlipayF2F {
     public function __construct($config)
     {
@@ -36,43 +34,36 @@ class AlipayF2F {
 
     public function pay($order)
     {
-        $gateway = Omnipay::create('Alipay_AopF2F');
-        $gateway->setSignType('RSA2'); //RSA/RSA2
-        $gateway->setAppId($this->config['app_id']);
-        $gateway->setPrivateKey($this->config['private_key']); // 可以是路径，也可以是密钥内容
-        $gateway->setAlipayPublicKey($this->config['public_key']); // 可以是路径，也可以是密钥内容
-        $gateway->setNotifyUrl($order['notify_url']);
-        $request = $gateway->purchase();
-        $request->setBizContent([
-            'subject' => config('v2board.app_name', 'V2Board') . ' - 订阅',
-            'out_trade_no' => $order['trade_no'],
-            'total_amount' => $order['total_amount'] / 100
-        ]);
-        /** @var \Omnipay\Alipay\Responses\AopTradePreCreateResponse $response */
-        $response = $request->send();
-        $result = $response->getAlipayResponse();
-        if ($result['code'] !== '10000') {
-            abort(500, $result['sub_msg']);
+        try {
+            $gateway = new \Library\AlipayF2F();
+            $gateway->setMethod('alipay.trade.precreate');
+            $gateway->setAppId($this->config['app_id']);
+            $gateway->setPrivateKey($this->config['private_key']); // 可以是路径，也可以是密钥内容
+            $gateway->setAlipayPublicKey($this->config['public_key']); // 可以是路径，也可以是密钥内容
+            $gateway->setNotifyUrl($order['notify_url']);
+            $gateway->setBizContent([
+                'subject' => config('v2board.app_name', 'V2Board') . ' - 订阅',
+                'out_trade_no' => $order['trade_no'],
+                'total_amount' => $order['total_amount'] / 100
+            ]);
+            $gateway->send();
+            return [
+                'type' => 0, // 0:qrcode 1:url
+                'data' => $gateway->getQrCodeUrl()
+            ];
+        } catch (\Exception $e) {
+            abort(500, $e->getMessage());
         }
-        return [
-            'type' => 0, // 0:qrcode 1:url
-            'data' => $response->getQrCode()
-        ];
     }
 
     public function notify($params)
     {
-        $gateway = Omnipay::create('Alipay_AopF2F');
-        $gateway->setSignType('RSA2'); //RSA/RSA2
+        $gateway = new \Library\AlipayF2F();
         $gateway->setAppId($this->config['app_id']);
         $gateway->setPrivateKey($this->config['private_key']); // 可以是路径，也可以是密钥内容
         $gateway->setAlipayPublicKey($this->config['public_key']); // 可以是路径，也可以是密钥内容
-        $request = $gateway->completePurchase();
-        $request->setParams($_POST); //Optional
         try {
-            /** @var \Omnipay\Alipay\Responses\AopCompletePurchaseResponse $response */
-            $response = $request->send();
-            if ($response->isPaid()) {
+            if ($gateway->verify($params)) {
                 /**
                  * Payment is successful
                  */

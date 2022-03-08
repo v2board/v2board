@@ -23,7 +23,7 @@ class Clash
         $appName = config('v2board.app_name', 'V2Board');
         header("subscription-userinfo: upload={$user['u']}; download={$user['d']}; total={$user['transfer_enable']}; expire={$user['expired_at']}");
         header('profile-update-interval: 24');
-        header("content-disposition: filename={$appName}");
+        header("content-disposition:attachment;filename={$appName}");
         $defaultConfig = base_path() . '/resources/rules/default.clash.yaml';
         $customConfig = base_path() . '/resources/rules/custom.clash.yaml';
         if (\File::exists($customConfig)) {
@@ -51,20 +51,21 @@ class Clash
 
         $config['proxies'] = array_merge($config['proxies'] ? $config['proxies'] : [], $proxy);
         foreach ($config['proxy-groups'] as $k => $v) {
-            if (!is_array($config['proxy-groups'][$k]['proxies'])) continue;
+            if (!is_array($config['proxy-groups'][$k]['proxies'])) $config['proxy-groups'][$k]['proxies'] = [];
             $isFilter = false;
             foreach ($config['proxy-groups'][$k]['proxies'] as $src) {
                 foreach ($proxies as $dst) {
+                    if (!$this->isRegex($src)) continue;
+                    $isFilter = true;
+                    $config['proxy-groups'][$k]['proxies'] = array_values(array_diff($config['proxy-groups'][$k]['proxies'], [$src]));
                     if ($this->isMatch($src, $dst)) {
-                        $isFilter = true;
-                        $config['proxy-groups'][$k]['proxies'] = array_diff($config['proxy-groups'][$k]['proxies'], [$src]);
                         array_push($config['proxy-groups'][$k]['proxies'], $dst);
                     }
                 }
+                if ($isFilter) continue;
             }
-            if (!$isFilter) {
-                $config['proxy-groups'][$k]['proxies'] = array_merge($config['proxy-groups'][$k]['proxies'], $proxies);
-            }
+            if ($isFilter) continue;
+            $config['proxy-groups'][$k]['proxies'] = array_merge($config['proxy-groups'][$k]['proxies'], $proxies);
         }
         // Force the current subscription domain to be a direct rule
         $subsDomain = $_SERVER['SERVER_NAME'];
@@ -97,7 +98,7 @@ class Clash
         $array['server'] = $server['host'];
         $array['port'] = $server['port'];
         $array['uuid'] = $uuid;
-        $array['alterId'] = $server['alter_id'];
+        $array['alterId'] = 0;
         $array['cipher'] = 'auto';
         $array['udp'] = true;
 
@@ -115,6 +116,12 @@ class Clash
             $array['network'] = 'ws';
             if ($server['networkSettings']) {
                 $wsSettings = $server['networkSettings'];
+                $array['ws-opts'] = [];
+                if (isset($wsSettings['path']) && !empty($wsSettings['path']))
+                    $array['ws-opts']['path'] = $wsSettings['path'];
+                if (isset($wsSettings['headers']['Host']) && !empty($wsSettings['headers']['Host']))
+                    $array['ws-opts']['headers'] = ['Host' => $wsSettings['headers']['Host']];
+                // TODO: 2022.06.01 remove it
                 if (isset($wsSettings['path']) && !empty($wsSettings['path']))
                     $array['ws-path'] = $wsSettings['path'];
                 if (isset($wsSettings['headers']['Host']) && !empty($wsSettings['headers']['Host']))
@@ -124,9 +131,9 @@ class Clash
         if ($server['network'] === 'grpc') {
             $array['network'] = 'grpc';
             if ($server['networkSettings']) {
-                $grpcObject = $server['networkSettings'];
+                $grpcSettings = $server['networkSettings'];
                 $array['grpc-opts'] = [];
-                $array['grpc-opts']['grpc-service-name'] = $grpcObject['serviceName'];
+                $array['grpc-opts']['grpc-service-name'] = $grpcSettings['serviceName'];
             }
         }
 
@@ -149,10 +156,11 @@ class Clash
 
     private function isMatch($exp, $str)
     {
-        try {
-            return preg_match($exp, $str);
-        } catch (\Exception $e) {
-            return false;
-        }
+        return @preg_match($exp, $str);
+    }
+
+    private function isRegex($exp)
+    {
+        return @preg_match($exp, null) !== false;
     }
 }

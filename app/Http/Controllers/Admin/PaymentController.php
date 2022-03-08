@@ -26,7 +26,12 @@ class PaymentController extends Controller
     {
         $payments = Payment::all();
         foreach ($payments as $k => $v) {
-            $payments[$k]['notify_url'] = url("/api/v1/guest/payment/notify/{$v->payment}/{$v->uuid}");
+            $notifyUrl = url("/api/v1/guest/payment/notify/{$v->payment}/{$v->uuid}");
+            if ($v->notify_domain) {
+                $parseUrl = parse_url($notifyUrl);
+                $notifyUrl = $v->notify_domain . $parseUrl['path'];
+            }
+            $payments[$k]['notify_url'] = $notifyUrl;
         }
         return response([
             'data' => $payments
@@ -58,22 +63,20 @@ class PaymentController extends Controller
                 'data' => true
             ]);
         }
-        $request->validate([
+        $params = $request->validate([
             'name' => 'required',
+            'icon' => 'nullable',
             'payment' => 'required',
-            'config' => 'required'
+            'config' => 'required',
+            'notify_domain' => 'nullable|url'
         ], [
             'name.required' => '显示名称不能为空',
             'payment.required' => '网关参数不能为空',
-            'config.required' => '配置参数不能为空'
+            'config.required' => '配置参数不能为空',
+            'notify_domain.url' => '自定义通知域名格式有误'
         ]);
-        if (!Payment::create([
-            'name' => $request->input('name'),
-            'icon' => $request->input('icon'),
-            'payment' => $request->input('payment'),
-            'config' => $request->input('config'),
-            'uuid' => Helper::randomChar(8)
-        ])) {
+        $params['uuid'] = Helper::randomChar(8);
+        if (!Payment::create($params)) {
             abort(500, '保存失败');
         }
         return response([

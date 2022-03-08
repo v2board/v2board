@@ -2,8 +2,10 @@
 
 namespace App\Console;
 
+use App\Utils\CacheKey;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Illuminate\Support\Facades\Cache;
 
 class Kernel extends ConsoleKernel
 {
@@ -24,14 +26,15 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        Cache::put(CacheKey::get('SCHEDULE_LAST_CHECK_AT', null), time());
         // v2board
         $schedule->command('v2board:statistics')->dailyAt('0:10');
         // check
         $schedule->command('check:order')->everyMinute();
         $schedule->command('check:commission')->everyMinute();
+        $schedule->command('check:ticket')->everyMinute();
         // reset
         $schedule->command('reset:traffic')->daily();
-        $schedule->command('reset:serverLog')->quarterly()->at('0:15');
         // send
         $schedule->command('send:remindMail')->dailyAt('11:30');
         // horizon metrics

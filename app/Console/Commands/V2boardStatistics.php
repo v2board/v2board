@@ -42,8 +42,8 @@ class V2boardStatistics extends Command
      */
     public function handle()
     {
+        ini_set('memory_limit', -1);
         $this->statOrder();
-        $this->statServer();
     }
 
     private function statOrder()
@@ -55,9 +55,9 @@ class V2boardStatistics extends Command
             ->whereNotIn('status', [0, 2]);
         $orderCount = $builder->count();
         $orderAmount = $builder->sum('total_amount');
-        $builder = $builder->where('commission_balance', '!=', 0);
+        $builder = $builder->whereNotNull('actual_commission_balance');
         $commissionCount = $builder->count();
-        $commissionAmount = $builder->sum('commission_balance');
+        $commissionAmount = $builder->sum('actual_commission_balance');
         $data = [
             'order_count' => $orderCount,
             'order_amount' => $orderAmount,
@@ -74,27 +74,5 @@ class V2boardStatistics extends Command
             return;
         }
         StatOrder::create($data);
-    }
-
-    private function statServer()
-    {
-        $endAt = strtotime(date('Y-m-d'));
-        $startAt = strtotime('-1 day', $endAt);
-        $statistics = ServerLog::select([
-            'server_id',
-            'method as server_type',
-            DB::raw("sum(u) as u"),
-            DB::raw("sum(d) as d"),
-        ])
-            ->where('log_at', '>=', $startAt)
-            ->where('log_at', '<', $endAt)
-            ->groupBy('server_id', 'method')
-            ->get()
-            ->toArray();
-        foreach ($statistics as $statistic) {
-            $statistic['record_type'] = 'd';
-            $statistic['record_at'] = $startAt;
-            StatServerJob::dispatch($statistic);
-        }
     }
 }

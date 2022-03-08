@@ -112,4 +112,9 @@ class Helper
         }
         return $subscribeUrl;
     }
+
+    public static function randomPort($range) {
+        $portRange = explode('-', $range);
+        return rand($portRange[0], $portRange[1]);
+    }
 }

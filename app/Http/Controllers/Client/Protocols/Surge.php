@@ -87,6 +87,7 @@ class Surge
             "{$server['host']}",
             "{$server['port']}",
             "username={$uuid}",
+            "vmess-aead=true",
             'tfo=true',
             'udp-relay=true'
         ];

@@ -34,6 +34,7 @@ class TrojanTidalabController extends Controller
     // 后端获取用户
     public function user(Request $request)
     {
+        ini_set('memory_limit', -1);
         $nodeId = $request->input('node_id');
         $server = ServerTrojan::find($nodeId);
         if (!$server) {

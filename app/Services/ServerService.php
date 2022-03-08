@@ -8,12 +8,13 @@ use App\Models\User;
 use App\Models\ServerV2ray;
 use App\Models\ServerTrojan;
 use App\Utils\CacheKey;
+use App\Utils\Helper;
 use Illuminate\Support\Facades\Cache;
 
 class ServerService
 {
 
-    CONST V2RAY_CONFIG = '{"api":{"services":["HandlerService","StatsService"],"tag":"api"},"dns":{},"stats":{},"inbound":{"port":443,"protocol":"vmess","settings":{"clients":[]},"sniffing":{"enabled":true,"destOverride":["http","tls"]},"streamSettings":{"network":"tcp"},"tag":"proxy"},"inboundDetour":[{"listen":"127.0.0.1","port":23333,"protocol":"dokodemo-door","settings":{"address":"0.0.0.0"},"tag":"api"}],"log":{"loglevel":"debug","access":"access.log","error":"error.log"},"outbound":{"protocol":"freedom","settings":{}},"outboundDetour":[{"protocol":"blackhole","settings":{},"tag":"block"}],"routing":{"rules":[{"inboundTag":"api","outboundTag":"api","type":"field"}]},"policy":{"levels":{"0":{"handshake":4,"connIdle":300,"uplinkOnly":5,"downlinkOnly":30,"statsUserUplink":true,"statsUserDownlink":true}}}}';
+    CONST V2RAY_CONFIG = '{"log":{"loglevel":"debug","access":"access.log","error":"error.log"},"api":{"services":["HandlerService","StatsService"],"tag":"api"},"dns":{},"stats":{},"inbounds":[{"port":443,"protocol":"vmess","settings":{"clients":[]},"sniffing":{"enabled":true,"destOverride":["http","tls"]},"streamSettings":{"network":"tcp"},"tag":"proxy"},{"listen":"127.0.0.1","port":23333,"protocol":"dokodemo-door","settings":{"address":"0.0.0.0"},"tag":"api"}],"outbounds":[{"protocol":"freedom","settings":{}},{"protocol":"blackhole","settings":{},"tag":"block"}],"routing":{"rules":[{"type":"field","inboundTag":"api","outboundTag":"api"}]},"policy":{"levels":{"0":{"handshake":4,"connIdle":300,"uplinkOnly":5,"downlinkOnly":30,"statsUserUplink":true,"statsUserDownlink":true}}}}';
     CONST TROJAN_CONFIG = '{"run_type":"server","local_addr":"0.0.0.0","local_port":443,"remote_addr":"www.taobao.com","remote_port":80,"password":[],"ssl":{"cert":"server.crt","key":"server.key","sni":"domain.com"},"api":{"enabled":true,"api_addr":"127.0.0.1","api_port":10000}}';
     public function getV2ray(User $user, $all = false):array
     {
@@ -26,14 +27,16 @@ class ServerService
         for ($i = 0; $i < count($v2ray); $i++) {
             $v2ray[$i]['type'] = 'v2ray';
             $groupId = $v2ray[$i]['group_id'];
-            if (in_array($user->group_id, $groupId)) {
-                if ($v2ray[$i]['parent_id']) {
-                    $v2ray[$i]['last_check_at'] = Cache::get(CacheKey::get('SERVER_V2RAY_LAST_CHECK_AT', $v2ray[$i]['parent_id']));
-                } else {
-                    $v2ray[$i]['last_check_at'] = Cache::get(CacheKey::get('SERVER_V2RAY_LAST_CHECK_AT', $v2ray[$i]['id']));
-                }
-                array_push($servers, $v2ray[$i]->toArray());
+            if (!in_array($user->group_id, $groupId)) continue;
+            if (strpos($v2ray[$i]['port'], '-') !== false) {
+                $v2ray[$i]['port'] = Helper::randomPort($v2ray[$i]['port']);
             }
+            if ($v2ray[$i]['parent_id']) {
+                $v2ray[$i]['last_check_at'] = Cache::get(CacheKey::get('SERVER_V2RAY_LAST_CHECK_AT', $v2ray[$i]['parent_id']));
+            } else {
+                $v2ray[$i]['last_check_at'] = Cache::get(CacheKey::get('SERVER_V2RAY_LAST_CHECK_AT', $v2ray[$i]['id']));
+            }
+            array_push($servers, $v2ray[$i]->toArray());
         }
 
 
@@ -51,14 +54,16 @@ class ServerService
         for ($i = 0; $i < count($trojan); $i++) {
             $trojan[$i]['type'] = 'trojan';
             $groupId = $trojan[$i]['group_id'];
-            if (in_array($user->group_id, $groupId)) {
-                if ($trojan[$i]['parent_id']) {
-                    $trojan[$i]['last_check_at'] = Cache::get(CacheKey::get('SERVER_TROJAN_LAST_CHECK_AT', $trojan[$i]['parent_id']));
-                } else {
-                    $trojan[$i]['last_check_at'] = Cache::get(CacheKey::get('SERVER_TROJAN_LAST_CHECK_AT', $trojan[$i]['id']));
-                }
-                array_push($servers, $trojan[$i]->toArray());
+            if (!in_array($user->group_id, $groupId)) continue;
+            if (strpos($trojan[$i]['port'], '-') !== false) {
+                $trojan[$i]['port'] = Helper::randomPort($trojan[$i]['port']);
             }
+            if ($trojan[$i]['parent_id']) {
+                $trojan[$i]['last_check_at'] = Cache::get(CacheKey::get('SERVER_TROJAN_LAST_CHECK_AT', $trojan[$i]['parent_id']));
+            } else {
+                $trojan[$i]['last_check_at'] = Cache::get(CacheKey::get('SERVER_TROJAN_LAST_CHECK_AT', $trojan[$i]['id']));
+            }
+            array_push($servers, $trojan[$i]->toArray());
         }
         return $servers;
     }
@@ -74,15 +79,16 @@ class ServerService
         for ($i = 0; $i < count($shadowsocks); $i++) {
             $shadowsocks[$i]['type'] = 'shadowsocks';
             $groupId = $shadowsocks[$i]['group_id'];
-            if (in_array($user->group_id, $groupId)) {
-                if ($shadowsocks[$i]['parent_id']) {
-                    $shadowsocks[$i]['last_check_at'] = Cache::get(CacheKey::get('SERVER_SHADOWSOCKS_LAST_CHECK_AT', $shadowsocks[$i]['parent_id']));
-                } else {
-                    $shadowsocks[$i]['last_check_at'] = Cache::get(CacheKey::get('SERVER_SHADOWSOCKS_LAST_CHECK_AT', $shadowsocks[$i]['id']));
-                }
-                array_push($servers, $shadowsocks[$i]->toArray());
+            if (!in_array($user->group_id, $groupId)) continue;
+            if (strpos($shadowsocks[$i]['port'], '-') !== false) {
+                $shadowsocks[$i]['port'] = Helper::randomPort($shadowsocks[$i]['port']);
             }
-
+            if ($shadowsocks[$i]['parent_id']) {
+                $shadowsocks[$i]['last_check_at'] = Cache::get(CacheKey::get('SERVER_SHADOWSOCKS_LAST_CHECK_AT', $shadowsocks[$i]['parent_id']));
+            } else {
+                $shadowsocks[$i]['last_check_at'] = Cache::get(CacheKey::get('SERVER_SHADOWSOCKS_LAST_CHECK_AT', $shadowsocks[$i]['id']));
+            }
+            array_push($servers, $shadowsocks[$i]->toArray());
         }
         return $servers;
     }
@@ -129,9 +135,9 @@ class ServerService
         }
         $json = json_decode(self::V2RAY_CONFIG);
         $json->log->loglevel = (int)config('v2board.server_log_enable') ? 'debug' : 'none';
-        $json->inboundDetour[0]->port = (int)$localPort;
-        $json->inbound->port = (int)$server->server_port;
-        $json->inbound->streamSettings->network = $server->network;
+        $json->inbounds[1]->port = (int)$localPort;
+        $json->inbounds[0]->port = (int)$server->server_port;
+        $json->inbounds[0]->streamSettings->network = $server->network;
         $this->setDns($server, $json);
         $this->setNetwork($server, $json);
         $this->setRule($server, $json);
@@ -165,7 +171,7 @@ class ServerService
                 array_push($dns->servers, 'localhost');
             }
             $json->dns = $dns;
-            $json->outbound->settings->domainStrategy = 'UseIP';
+            $json->outbounds[0]->settings->domainStrategy = 'UseIP';
         }
     }
 
@@ -174,25 +180,25 @@ class ServerService
         if ($server->networkSettings) {
             switch ($server->network) {
                 case 'tcp':
-                    $json->inbound->streamSettings->tcpSettings = $server->networkSettings;
+                    $json->inbounds[0]->streamSettings->tcpSettings = $server->networkSettings;
                     break;
                 case 'kcp':
-                    $json->inbound->streamSettings->kcpSettings = $server->networkSettings;
+                    $json->inbounds[0]->streamSettings->kcpSettings = $server->networkSettings;
                     break;
                 case 'ws':
-                    $json->inbound->streamSettings->wsSettings = $server->networkSettings;
+                    $json->inbounds[0]->streamSettings->wsSettings = $server->networkSettings;
                     break;
                 case 'http':
-                    $json->inbound->streamSettings->httpSettings = $server->networkSettings;
+                    $json->inbounds[0]->streamSettings->httpSettings = $server->networkSettings;
                     break;
                 case 'domainsocket':
-                    $json->inbound->streamSettings->dsSettings = $server->networkSettings;
+                    $json->inbounds[0]->streamSettings->dsSettings = $server->networkSettings;
                     break;
                 case 'quic':
-                    $json->inbound->streamSettings->quicSettings = $server->networkSettings;
+                    $json->inbounds[0]->streamSettings->quicSettings = $server->networkSettings;
                     break;
                 case 'grpc':
-                    $json->inbound->streamSettings->grpcSettings = $server->networkSettings;
+                    $json->inbounds[0]->streamSettings->grpcSettings = $server->networkSettings;
                     break;
             }
         }
@@ -234,7 +240,7 @@ class ServerService
             array_push($json->routing->rules, $protocolObj);
         }
         if (empty($domainRules) && empty($protocolRules)) {
-            $json->inbound->sniffing->enabled = false;
+            $json->inbounds[0]->sniffing->enabled = false;
         }
     }
 
@@ -242,19 +248,19 @@ class ServerService
     {
         if ((int)$server->tls) {
             $tlsSettings = $server->tlsSettings;
-            $json->inbound->streamSettings->security = 'tls';
+            $json->inbounds[0]->streamSettings->security = 'tls';
             $tls = (object)[
                 'certificateFile' => '/root/.cert/server.crt',
                 'keyFile' => '/root/.cert/server.key'
             ];
-            $json->inbound->streamSettings->tlsSettings = new \StdClass();
+            $json->inbounds[0]->streamSettings->tlsSettings = new \StdClass();
             if (isset($tlsSettings->serverName)) {
-                $json->inbound->streamSettings->tlsSettings->serverName = (string)$tlsSettings->serverName;
+                $json->inbounds[0]->streamSettings->tlsSettings->serverName = (string)$tlsSettings->serverName;
             }
             if (isset($tlsSettings->allowInsecure)) {
-                $json->inbound->streamSettings->tlsSettings->allowInsecure = (int)$tlsSettings->allowInsecure ? true : false;
+                $json->inbounds[0]->streamSettings->tlsSettings->allowInsecure = (int)$tlsSettings->allowInsecure ? true : false;
             }
-            $json->inbound->streamSettings->tlsSettings->certificates[0] = $tls;
+            $json->inbounds[0]->streamSettings->tlsSettings->certificates[0] = $tls;
         }
     }
 

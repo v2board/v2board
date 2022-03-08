@@ -68,6 +68,7 @@ class AdminRoute
             $router->post('/order/assign', 'Admin\\OrderController@assign');
             $router->post('/order/paid', 'Admin\\OrderController@paid');
             $router->post('/order/cancel', 'Admin\\OrderController@cancel');
+            $router->post('/order/detail', 'Admin\\OrderController@detail');
             // User
             $router->get ('/user/fetch', 'Admin\\UserController@fetch');
             $router->post('/user/update', 'Admin\\UserController@update');
@@ -87,6 +88,7 @@ class AdminRoute
             $router->post('/notice/save', 'Admin\\NoticeController@save');
             $router->post('/notice/update', 'Admin\\NoticeController@update');
             $router->post('/notice/drop', 'Admin\\NoticeController@drop');
+            $router->post('/notice/show', 'Admin\\NoticeController@show');
             // Ticket
             $router->get ('/ticket/fetch', 'Admin\\TicketController@fetch');
             $router->post('/ticket/reply', 'Admin\\TicketController@reply');
@@ -95,6 +97,7 @@ class AdminRoute
             $router->get ('/coupon/fetch', 'Admin\\CouponController@fetch');
             $router->post('/coupon/generate', 'Admin\\CouponController@generate');
             $router->post('/coupon/drop', 'Admin\\CouponController@drop');
+            $router->post('/coupon/show', 'Admin\\CouponController@show');
             // Knowledge
             $router->get ('/knowledge/fetch', 'Admin\\KnowledgeController@fetch');
             $router->get ('/knowledge/getCategory', 'Admin\\KnowledgeController@getCategory');
@@ -108,6 +111,8 @@ class AdminRoute
             $router->post('/payment/getPaymentForm', 'Admin\\PaymentController@getPaymentForm');
             $router->post('/payment/save', 'Admin\\PaymentController@save');
             $router->post('/payment/drop', 'Admin\\PaymentController@drop');
+            // System
+            $router->get ('/system/getStatus', 'Admin\\SystemController@getStatus');
         });
     }
 }

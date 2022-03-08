@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Guest;
 
 use App\Utils\Dict;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Http;
 
 class CommController extends Controller
 {
@@ -32,5 +33,12 @@ class CommController extends Controller
             return preg_split('/,/', $suffix);
         }
         return $suffix;
+    }
+
+    public function getHitokoto()
+    {
+        return response([
+            'data' => Http::get('https://v1.hitokoto.cn/')->json()
+        ]);
     }
 }

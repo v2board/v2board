@@ -9,7 +9,6 @@ class WechatPayNative {
     public function __construct($config)
     {
         $this->config = $config;
-        $this->customResult = '<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>';
     }
 
     public function form()
@@ -57,7 +56,8 @@ class WechatPayNative {
         }
         return [
             'type' => 0,
-            'data' => $response['code_url']
+            'data' => $response['code_url'],
+            'custom_result' => '<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>'
         ];
     }
 

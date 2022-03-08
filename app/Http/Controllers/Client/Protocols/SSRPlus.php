@@ -54,7 +54,7 @@ class SSRPlus
             "add" => $server['host'],
             "port" => (string)$server['port'],
             "id" => $uuid,
-            "aid" => (string)$server['alter_id'],
+            "aid" => '0',
             "net" => $server['network'],
             "type" => "none",
             "host" => "",

@@ -13,6 +13,7 @@ use App\Models\ServerLog;
 use App\Models\User;
 
 use App\Utils\Helper;
+use Illuminate\Support\Facades\DB;
 
 class ServerController extends Controller
 {
@@ -27,32 +28,6 @@ class ServerController extends Controller
         }
         return response([
             'data' => $servers
-        ]);
-    }
-
-    public function logFetch(Request $request)
-    {
-        $type = $request->input('type') ? $request->input('type') : 0;
-        $current = $request->input('current') ? $request->input('current') : 1;
-        $pageSize = $request->input('pageSize') >= 10 ? $request->input('pageSize') : 10;
-        $serverLogModel = ServerLog::where('user_id', $request->session()->get('id'))
-            ->orderBy('log_at', 'DESC');
-        switch ($type) {
-            case 0:
-                $serverLogModel->where('log_at', '>=', strtotime(date('Y-m-d')));
-                break;
-            case 1:
-                $serverLogModel->where('log_at', '>=', strtotime(date('Y-m-d')) - 604800);
-                break;
-            case 2:
-                $serverLogModel->where('log_at', '>=', strtotime(date('Y-m-1')));
-        }
-        $total = $serverLogModel->count();
-        $res = $serverLogModel->forPage($current, $pageSize)
-            ->get();
-        return response([
-            'data' => $res,
-            'total' => $total
         ]);
     }
 }

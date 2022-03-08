@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\CommissionLog;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Order;
@@ -27,15 +28,13 @@ class InviteController extends Controller
     public function details(Request $request)
     {
         return response([
-            'data' => Order::where('invite_user_id', $request->session()->get('id'))
-                ->where('commission_balance', '>', 0)
-                ->whereIn('status', [3, 4])
+            'data' => CommissionLog::where('invite_user_id', $request->session()->get('id'))
                 ->select([
                     'id',
-                    'commission_status',
-                    'commission_balance',
-                    'created_at',
-                    'updated_at'
+                    'trade_no',
+                    'order_amount',
+                    'get_amount',
+                    'created_at'
                 ])
                 ->get()
         ]);

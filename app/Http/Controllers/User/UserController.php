@@ -10,11 +10,9 @@ use App\Utils\CacheKey;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Plan;
-use App\Models\ServerV2ray;
 use App\Models\Ticket;
 use App\Utils\Helper;
 use App\Models\Order;
-use App\Models\ServerLog;
 use Illuminate\Support\Facades\Cache;
 
 class UserController extends Controller
@@ -195,10 +193,14 @@ class UserController extends Controller
         $today = date('d');
         $lastDay = date('d', strtotime('last day of +0 months'));
 
-        if ((int)config('v2board.reset_traffic_method') === 0) {
+        if ((int)config('v2board.reset_traffic_method') === 0 ||
+            (isset($user->plan->reset_traffic_method) && $user->plan->reset_traffic_method === 0))
+        {
             return $lastDay - $today;
         }
-        if ((int)config('v2board.reset_traffic_method') === 1) {
+        if ((int)config('v2board.reset_traffic_method') === 1 ||
+            (isset($user->plan->reset_traffic_method) && $user->plan->reset_traffic_method === 1))
+        {
             if ((int)$day >= (int)$today && (int)$day >= (int)$lastDay) {
                 return $lastDay - $today;
             }

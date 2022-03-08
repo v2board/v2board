@@ -2,25 +2,24 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Ticket;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
-use App\Models\ServerLog;
 
-class ResetServerLog extends Command
+class CheckTicket extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'reset:serverLog';
+    protected $signature = 'check:ticket';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = '节点服务器日志重置';
+    protected $description = '工单检查任务';
 
     /**
      * Create a new command instance.
@@ -39,6 +38,14 @@ class ResetServerLog extends Command
      */
     public function handle()
     {
-        ServerLog::truncate();
+        ini_set('memory_limit', -1);
+        $tickets = Ticket::where('status', 0)
+            ->where('updated_at', '<=', time() - 24 * 3600)
+            ->get();
+        foreach ($tickets as $ticket) {
+            if ($ticket->user_id === $ticket->last_reply_user_id) continue;
+            $ticket->status = 1;
+            $ticket->save();
+        }
     }
 }
