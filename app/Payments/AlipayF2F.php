@@ -58,6 +58,7 @@ class AlipayF2F {
 
     public function notify($params)
     {
+        if ($params['trade_status'] !== 'TRADE_SUCCESS') return false;
         $gateway = new \Library\AlipayF2F();
         $gateway->setAppId($this->config['app_id']);
         $gateway->setPrivateKey($this->config['private_key']); // 可以是路径，也可以是密钥内容
