@@ -69,7 +69,7 @@
     gtag('config', 'G-P1E9Z5LRRK');
 </script>
 @if (file_exists(public_path("/theme/{$theme}/assets/custom.js")))
-    <script src="/theme/{{$theme}}/assets/custom.js?v={{$verison}}"></script>
+    <script src="/theme/{{$theme}}/assets/custom.js?v={{$version}}"></script>
 @endif
 </body>
 
