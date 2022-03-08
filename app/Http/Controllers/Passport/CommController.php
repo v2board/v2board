@@ -45,7 +45,8 @@ class CommController extends Controller
     public function sendEmailVerify(CommSendEmailVerify $request)
     {
         if ((int)config('v2board.recaptcha_enable', 0)) {
-            $recaptcha = new ReCaptcha(config('v2board.recaptcha_key'));
+            $recaptcha_verify_url = config('v2board.recaptcha_verify_url');
+            $recaptcha = new ReCaptcha(config('v2board.recaptcha_key'), new \ReCaptcha\RequestMethod\Post($recaptcha_verify_url));
             $recaptchaResp = $recaptcha->verify($request->input('recaptcha_data'));
             if (!$recaptchaResp->isSuccess()) {
                 abort(500, __('Invalid code is incorrect'));

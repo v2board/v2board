@@ -102,6 +102,7 @@ class ConfigController extends Controller
                     'recaptcha_enable' => (int)config('v2board.recaptcha_enable', 0),
                     'recaptcha_key' => config('v2board.recaptcha_key'),
                     'recaptcha_site_key' => config('v2board.recaptcha_site_key'),
+                    'recaptcha_verify_url' => config('v2board.recaptcha_verify_url'),
                     'tos_url' => config('v2board.tos_url'),
                     'currency' => config('v2board.currency', 'CNY'),
                     'currency_symbol' => config('v2board.currency_symbol', '¥')
