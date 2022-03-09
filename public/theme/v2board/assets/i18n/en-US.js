@@ -54,7 +54,7 @@ window.settings.i18n['en-US'] = {
   '佣金将会在确认后会到达你的佣金账户。': 'The commission will reach your commission account after review.',
   '邀请码管理': 'Invitation Code Management',
   '生成邀请码': 'Generate invitation code',
-  '邀请明细': 'Invitation Details',
+  '佣金发放记录': '佣金发放记录',
   '复制成功': 'Copied successfully',
   '密码': 'Password',
   '登入': 'Login',
