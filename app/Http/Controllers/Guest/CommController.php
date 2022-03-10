@@ -34,11 +34,4 @@ class CommController extends Controller
         }
         return $suffix;
     }
-
-    public function getHitokoto()
-    {
-        return response([
-            'data' => Http::get('https://v1.hitokoto.cn/')->json()
-        ]);
-    }
 }

@@ -54,7 +54,7 @@ window.settings.i18n['vi-VN'] = {
   '佣金将会在确认后会到达你的佣金账户。': 'Sau khi xác nhận tiền hoa hồng sẽ gửi đến tài khoản hoa hồng của bạn.',
   '邀请码管理': 'Quản lý mã mời',
   '生成邀请码': 'Tạo mã mời',
-  '邀请明细': 'Chi tiết mời',
+  '佣金发放记录': '佣金发放记录',
   '复制成功': 'Sao chép thành công',
   '密码': 'Mật khẩu',
   '登入': 'Đăng nhập',
