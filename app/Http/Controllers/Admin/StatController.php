@@ -71,12 +71,12 @@ class StatController extends Controller
                 'value' => $statistic['order_count']
             ]);
             array_push($result, [
-                'type' => '佣金金额',
+                'type' => '佣金金额(已发放)',
                 'date' => $date,
                 'value' => $statistic['commission_amount'] / 100
             ]);
             array_push($result, [
-                'type' => '佣金笔数',
+                'type' => '佣金笔数(已发放)',
                 'date' => $date,
                 'value' => $statistic['commission_count']
             ]);

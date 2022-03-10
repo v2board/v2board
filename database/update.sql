@@ -513,3 +513,7 @@ ALTER TABLE `v2_stat_user`
     ADD INDEX `server_id` (`server_id`),
 ADD INDEX `user_id` (`user_id`),
 ADD INDEX `record_at` (`record_at`);
+
+ALTER TABLE `v2_stat_server`
+    CHANGE `u` `u` bigint NOT NULL AFTER `server_type`,
+    CHANGE `d` `d` bigint NOT NULL AFTER `u`;

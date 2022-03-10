@@ -277,8 +277,8 @@ CREATE TABLE `v2_stat_server` (
                                   `id` int(11) NOT NULL AUTO_INCREMENT,
                                   `server_id` int(11) NOT NULL COMMENT '节点id',
                                   `server_type` char(11) NOT NULL COMMENT '节点类型',
-                                  `u` varchar(255) NOT NULL,
-                                  `d` varchar(255) NOT NULL,
+                                  `u` bigint(20) NOT NULL,
+                                  `d` bigint(20) NOT NULL,
                                   `record_type` char(1) NOT NULL COMMENT 'd day m month',
                                   `record_at` int(11) NOT NULL COMMENT '记录时间',
                                   `created_at` int(11) NOT NULL,
@@ -374,4 +374,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2022-03-04 16:25:43
+-- 2022-03-10 15:45:02
