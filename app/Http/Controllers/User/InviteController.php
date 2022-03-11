@@ -29,6 +29,7 @@ class InviteController extends Controller
     {
         return response([
             'data' => CommissionLog::where('invite_user_id', $request->session()->get('id'))
+                ->where('get_amount', '>', 0)
                 ->select([
                     'id',
                     'trade_no',
