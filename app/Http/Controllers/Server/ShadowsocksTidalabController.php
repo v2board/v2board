@@ -48,9 +48,13 @@ class ShadowsocksTidalabController extends Controller
                 'secret' => $user->uuid
             ]);
         }
+        $eTag = sha1(json_encode($result));
+        if ($eTag === $request->header("IF-NONE-MATCH")) {
+            abort(304);
+        }
         return response([
             'data' => $result
-        ]);
+        ])->header('ETag', $eTag);
     }
 
     // 后端提交数据
