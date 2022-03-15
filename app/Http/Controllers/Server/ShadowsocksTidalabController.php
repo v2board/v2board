@@ -49,12 +49,12 @@ class ShadowsocksTidalabController extends Controller
             ]);
         }
         $eTag = sha1(json_encode($result));
-        if ($eTag === $request->header("IF-NONE-MATCH")) {
+        if (strpos($request->header('If-None-Match'), $eTag) !== false ) {
             abort(304);
         }
         return response([
             'data' => $result
-        ])->header('ETag', $eTag);
+        ])->header('ETag', "\"{$eTag}\"");
     }
 
     // 后端提交数据

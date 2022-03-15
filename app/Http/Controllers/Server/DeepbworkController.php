@@ -56,13 +56,13 @@ class DeepbworkController extends Controller
             array_push($result, $user);
         }
         $eTag = sha1(json_encode($result));
-        if ($eTag === $request->header("IF-NONE-MATCH")) {
+        if (strpos($request->header('If-None-Match'), $eTag) !== false ) {
             abort(304);
         }
         return response([
             'msg' => 'ok',
             'data' => $result,
-        ])->header('ETag', $eTag);
+        ])->header('ETag', "\"{$eTag}\"");
     }
 
     // 后端提交数据
