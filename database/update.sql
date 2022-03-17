@@ -517,3 +517,10 @@ ADD INDEX `record_at` (`record_at`);
 ALTER TABLE `v2_stat_server`
     CHANGE `u` `u` bigint NOT NULL AFTER `server_type`,
     CHANGE `d` `d` bigint NOT NULL AFTER `u`;
+
+ALTER TABLE `v2_payment`
+    ADD `handling_fee_fixed` int(11) NULL AFTER `notify_domain`,
+ADD `handling_fee_percent` decimal(5,2) NULL AFTER `handling_fee_fixed`;
+
+ALTER TABLE `v2_order`
+    ADD `handling_amount` int(11) NULL AFTER `total_amount`;

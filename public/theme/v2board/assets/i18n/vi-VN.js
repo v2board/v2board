@@ -54,7 +54,7 @@ window.settings.i18n['vi-VN'] = {
   '佣金将会在确认后会到达你的佣金账户。': 'Sau khi xác nhận tiền hoa hồng sẽ gửi đến tài khoản hoa hồng của bạn.',
   '邀请码管理': 'Quản lý mã mời',
   '生成邀请码': 'Tạo mã mời',
-  '佣金发放记录': '佣金发放记录',
+  '佣金发放记录': 'Hồ sơ hoa hồng',
   '复制成功': 'Sao chép thành công',
   '密码': 'Mật khẩu',
   '登入': 'Đăng nhập',
@@ -244,5 +244,6 @@ window.settings.i18n['vi-VN'] = {
   '该订阅无法续费，仅允许新用户购买': 'Đăng ký này không thể gia hạn, chỉ người dùng mới được phép mua',
   '重置当月流量': 'Đặt lại dung lượng tháng hiện tại',
   '流量明细仅保留近月数据以供查询。': 'Chi tiết dung lượng chỉ lưu dữ liệu của những tháng gần đây để truy vấn.',
-  '扣费倍率': 'Tỷ lệ khấu trừ'
+  '扣费倍率': 'Tỷ lệ khấu trừ',
+  '支付手续费': '支付手续费'
 };

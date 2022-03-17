@@ -120,6 +120,7 @@ CREATE TABLE `v2_order` (
                             `trade_no` varchar(36) NOT NULL,
                             `callback_no` varchar(255) DEFAULT NULL,
                             `total_amount` int(11) NOT NULL,
+                            `handling_amount` int(11) DEFAULT NULL,
                             `discount_amount` int(11) DEFAULT NULL,
                             `surplus_amount` int(11) DEFAULT NULL COMMENT '剩余价值',
                             `refund_amount` int(11) DEFAULT NULL COMMENT '退款金额',
@@ -145,6 +146,8 @@ CREATE TABLE `v2_payment` (
                               `icon` varchar(255) DEFAULT NULL,
                               `config` text NOT NULL,
                               `notify_domain` varchar(128) DEFAULT NULL,
+                              `handling_fee_fixed` int(11) DEFAULT NULL,
+                              `handling_fee_percent` decimal(5,2) DEFAULT NULL,
                               `enable` tinyint(1) NOT NULL DEFAULT '0',
                               `sort` int(11) DEFAULT NULL,
                               `created_at` int(11) NOT NULL,
@@ -374,4 +377,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2022-03-10 15:45:02
+-- 2022-03-17 05:35:39
