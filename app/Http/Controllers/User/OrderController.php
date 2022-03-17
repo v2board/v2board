@@ -184,7 +184,7 @@ class OrderController extends Controller
         $payment = Payment::find($method);
         if (!$payment || $payment->enable !== 1) abort(500, __('Payment method is not available'));
         $paymentService = new PaymentService($payment->payment, $payment->id);
-        if ($order->total_amount > 0 && ($payment->handling_fee_fixed || $payment->handling_fee_percent)) {
+        if ($payment->handling_fee_fixed || $payment->handling_fee_percent) {
             $order->handling_amount = ($order->total_amount * ($payment->handling_fee_percent / 100)) + $payment->handling_fee_fixed;
         }
         $order->payment_id = $method;
