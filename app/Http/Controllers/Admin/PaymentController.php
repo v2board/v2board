@@ -46,12 +46,23 @@ class PaymentController extends Controller
         ]);
     }
 
+    public function show(Request $request)
+    {
+        $payment = Payment::find($request->input('id'));
+        if (!$payment) abort(500, '支付方式不存在');
+        $payment->enable = !$payment->enable;
+        if (!$payment->save()) abort(500, '保存失败');
+        return response([
+            'data' => true
+        ]);
+    }
+
     public function save(Request $request)
     {
         if (!config('v2board.app_url')) {
             abort(500, '请在站点配置中配置站点地址');
         }
-        $validateRules = [
+        $params = $request->validate([
             'name' => 'required',
             'icon' => 'nullable',
             'payment' => 'required',
@@ -59,20 +70,7 @@ class PaymentController extends Controller
             'notify_domain' => 'nullable|url',
             'handling_fee_fixed' => 'nullable|integer',
             'handling_fee_percent' => 'nullable|numeric|between:0.1,100'
-        ];
-        if ($request->input('id')) {
-            $payment = Payment::find($request->input('id'));
-            if (!$payment) abort(500, '支付方式不存在');
-            try {
-                $payment->update($request->only(array_keys($validateRules)));
-            } catch (\Exception $e) {
-                abort(500, $e->getMessage());
-            }
-            return response([
-                'data' => true
-            ]);
-        }
-        $params = $request->validate($validateRules, [
+        ], [
             'name.required' => '显示名称不能为空',
             'payment.required' => '网关参数不能为空',
             'config.required' => '配置参数不能为空',
@@ -80,6 +78,18 @@ class PaymentController extends Controller
             'handling_fee_fixed.integer' => '固定手续费格式有误',
             'handling_fee_percent.between' => '百分比手续费范围须在0.1-100之间'
         ]);
+        if ($request->input('id')) {
+            $payment = Payment::find($request->input('id'));
+            if (!$payment) abort(500, '支付方式不存在');
+            try {
+                $payment->update($params);
+            } catch (\Exception $e) {
+                abort(500, $e->getMessage());
+            }
+            return response([
+                'data' => true
+            ]);
+        }
         $params['uuid'] = Helper::randomChar(8);
         if (!Payment::create($params)) {
             abort(500, '保存失败');
