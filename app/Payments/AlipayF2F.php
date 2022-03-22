@@ -47,10 +47,18 @@ class AlipayF2F {
                 'total_amount' => $order['total_amount'] / 100
             ]);
             $gateway->send();
-            return [
-                'type' => 0, // 0:qrcode 1:url
-                'data' => $gateway->getQrCodeUrl()
-            ];
+            $agent = strtolower($_SERVER['HTTP_USER_AGENT']);
+            if((strpos($agent, 'android') || strpos($agent, 'iphone')) && ! strpos($agent, 'micromessenger')){
+                return [
+                    'type' => 1, // 0:qrcode 1:url
+                    'data' => "alipayqr://platformapi/startapp?saId=10000007&qrcode=" . $gateway->getQrCodeUrl()
+                ];
+            } else {
+                return [
+                    'type' => 0, // 0:qrcode 1:url
+                    'data' => $gateway->getQrCodeUrl()
+                ];
+            }
         } catch (\Exception $e) {
             abort(500, $e->getMessage());
         }
