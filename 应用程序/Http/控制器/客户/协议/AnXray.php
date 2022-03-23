@@ -73,8 +73,8 @@ class AnXray
             }
         }
         if ((string)$server['network'] === 'tcp') {
-        $tcpSettings = $server['networkSettings'];
-        if (isset($tcpSettings['header']['type'])) $config['headerType'] = urlencode($tcpSettings['header']['type']);
+            $tcpSettings = $server['networkSettings'];
+            if (isset($tcpSettings['header']['type'])) $config['headerType'] = urlencode($tcpSettings['header']['type']);
         }
         if ((string)$server['network'] === 'ws') {
             $wsSettings = $server['networkSettings'];
