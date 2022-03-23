@@ -51,7 +51,7 @@ class AlipayF2F {
             if((strpos($agent, 'android') || strpos($agent, 'iphone')) && ! strpos($agent, 'micromessenger')){
                 return [
                     'type' => 1, // 0:qrcode 1:url
-                    'data' => "alipayqr://platformapi/startapp?saId=10000007&qrcode=" . $gateway->getQrCodeUrl()
+                    'data' => "alipayqr://platformapi/startapp?saId=" . $this->config['app_id'] . "&qrcode=" . $gateway->getQrCodeUrl()
                 ];
             } else {
                 return [
