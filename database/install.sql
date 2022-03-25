@@ -91,7 +91,7 @@ CREATE TABLE `v2_mail_log` (
                                `created_at` int(11) NOT NULL,
                                `updated_at` int(11) NOT NULL,
                                PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `v2_notice`;
@@ -361,7 +361,7 @@ CREATE TABLE `v2_user` (
                            `is_admin` tinyint(1) NOT NULL DEFAULT '0',
                            `is_staff` tinyint(1) NOT NULL DEFAULT '0',
                            `last_login_at` int(11) DEFAULT NULL,
-                           `last_login_ip` int(11) DEFAULT NULL,
+                           `last_login_ip` varchar(182) DEFAULT NULL,
                            `uuid` varchar(36) NOT NULL,
                            `group_id` int(11) DEFAULT NULL,
                            `plan_id` int(11) DEFAULT NULL,
