@@ -150,6 +150,15 @@ class AuthController extends Controller
             $request->session()->put('is_staff', true);
             $data['is_staff'] = true;
         }
+        // Add getIP
+        try {
+            $user->update([
+                'last_login_ip' => Helper::getIP(),
+                'last_login_at' => time()
+            ]);
+        } catch (\Exception $e) {
+            abort(500, __('Login failed, please contact customer service'));
+        }
         return response([
             'data' => $data
         ]);

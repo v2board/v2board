@@ -516,3 +516,6 @@ ADD INDEX `record_at` (`record_at`);
 
 ALTER TABLE `v2_mail_log` 
     CHANGE `subject` `subject` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
+
+ALTER TABLE `v2_user` 
+    CHANGE `last_login_ip` `last_login_ip` VARCHAR(182) NULL DEFAULT NULL;

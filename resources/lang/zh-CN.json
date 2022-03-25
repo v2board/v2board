@@ -87,5 +87,6 @@
     "The service in :app_name is about to expire": "在 :app_name 的服务即将到期",
     "The coupon can only be used :limit_use_with_user per person": "该优惠券每人只能用 :limit_use_with_user 次",
     "The coupon code cannot be used for this period": "此优惠券无法用于该付款周期",
-    "Request failed, please try again later": "请求失败，请稍后再试"
+    "Request failed, please try again later": "请求失败，请稍后再试",
+    "Login failed, please contact customer service": "登录失败，请联系客服"
 }
