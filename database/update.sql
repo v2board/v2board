@@ -514,9 +514,5 @@ ALTER TABLE `v2_stat_user`
 ADD INDEX `user_id` (`user_id`),
 ADD INDEX `record_at` (`record_at`);
 
-ALTER TABLE `v2_stat_server`
-    CHANGE `u` `u` bigint NOT NULL AFTER `server_type`,
-    CHANGE `d` `d` bigint NOT NULL AFTER `u`;
-
 ALTER TABLE `v2_mail_log` 
     CHANGE `subject` `subject` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;

@@ -86,5 +86,6 @@
     "The traffic usage in :app_name has reached 80%": "The traffic usage in :app_name has reached 80%",
     "The service in :app_name is about to expire": "The service in :app_name is about to expire",
     "The coupon can only be used :limit_use_with_user per person": "The coupon can only be used :limit_use_with_user per person",
-    "The coupon code cannot be used for this period": "The coupon code cannot be used for this period"
+    "The coupon code cannot be used for this period": "The coupon code cannot be used for this period",
+    "Request failed, please try again later": "Request failed, please try again later"
 }

@@ -54,7 +54,7 @@ window.settings.i18n['en-US'] = {
   '佣金将会在确认后会到达你的佣金账户。': 'The commission will reach your commission account after review.',
   '邀请码管理': 'Invitation Code Management',
   '生成邀请码': 'Generate invitation code',
-  '佣金发放记录': '佣金发放记录',
+  '佣金发放记录': 'Commission Income Record',
   '复制成功': 'Copied successfully',
   '密码': 'Password',
   '登入': 'Login',
@@ -244,5 +244,6 @@ window.settings.i18n['en-US'] = {
   '该订阅无法续费，仅允许新用户购买': 'This subscription cannot be renewed and is only available to new users.',
   '重置当月流量': 'Reset current month usage',
   '流量明细仅保留近月数据以供查询。': 'Only keep the most recent month\'s usage for checking the transfer data details.',
-  '扣费倍率': 'Fee deduction rate'
+  '扣费倍率': 'Fee deduction rate',
+  '支付手续费': '支付手续费'
 };
