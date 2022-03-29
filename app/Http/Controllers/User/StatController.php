@@ -20,7 +20,6 @@ class StatController extends Controller
         ])
             ->where('user_id', $request->session()->get('id'))
             ->where('record_at', '>=', strtotime(date('Y-m-1')))
-            ->groupBy('record_at', 'user_id', 'server_rate')
             ->orderBy('record_at', 'DESC');
         return response([
             'data' => $builder->get()
