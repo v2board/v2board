@@ -12,8 +12,8 @@ class StatController extends Controller
     public function getTrafficLog(Request $request)
     {
         $builder = StatUser::select([
-            DB::raw('sum(u) as u'),
-            DB::raw('sum(d) as d'),
+            'u',
+            'd',
             'record_at',
             'user_id',
             'server_rate'
