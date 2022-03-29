@@ -48,6 +48,9 @@ class ConfigSave extends FormRequest
             'tos_url' => 'nullable|url',
             'currency' => '',
             'currency_symbol' => '',
+            'register_limit_by_ip_enable' => 'in:0,1',
+            'register_limit_count' => 'integer',
+            'register_limit_expire' => 'integer',
             // subscribe
             'plan_change_enable' => 'in:0,1',
             'reset_traffic_method' => 'in:0,1,2',

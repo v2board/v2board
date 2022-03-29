@@ -103,7 +103,10 @@ class ConfigController extends Controller
                 'recaptcha_site_key' => config('v2board.recaptcha_site_key'),
                 'tos_url' => config('v2board.tos_url'),
                 'currency' => config('v2board.currency', 'CNY'),
-                'currency_symbol' => config('v2board.currency_symbol', '¥')
+                'currency_symbol' => config('v2board.currency_symbol', '¥'),
+                'register_limit_by_ip_enable' => config('v2board.register_limit_by_ip_enable', 0),
+                'register_limit_count' => config('v2board.register_limit_count', 3),
+                'register_limit_expire' => config('v2board.register_limit_expire', 60)
             ],
             'subscribe' => [
                 'plan_change_enable' => (int)config('v2board.plan_change_enable', 1),

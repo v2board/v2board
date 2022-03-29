@@ -22,7 +22,7 @@ class AuthController extends Controller
     {
         if ((int)config('v2board.register_limit_by_ip_enable', 0)) {
             $registerCountByIP = Cache::get(CacheKey::get('REGISTER_IP_RATE_LIMIT', $request->ip())) ?? 0;
-            if ((int)$registerCountByIP >= 3) {
+            if ((int)$registerCountByIP >= (int)config('v2board.register_limit_count', 3)) {
                 abort(500, __('Register frequently, please try again after 1 hour'));
             }
         }
@@ -119,7 +119,11 @@ class AuthController extends Controller
         $user->save();
 
         if ((int)config('v2board.register_limit_by_ip_enable', 0)) {
-            Cache::put(CacheKey::get('REGISTER_IP_RATE_LIMIT', $request->ip()), (int)$registerCountByIP + 1, 3600);
+            Cache::put(
+                CacheKey::get('REGISTER_IP_RATE_LIMIT', $request->ip()),
+                (int)$registerCountByIP + 1,
+                (int)config('v2board.register_limit_expire', 60) * 60
+            );
         }
         return response()->json([
             'data' => $data
