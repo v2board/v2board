@@ -524,3 +524,13 @@ ADD `handling_fee_percent` decimal(5,2) NULL AFTER `handling_fee_fixed`;
 
 ALTER TABLE `v2_order`
     ADD `handling_amount` int(11) NULL AFTER `total_amount`;
+
+ALTER TABLE `v2_stat_user`
+    ADD UNIQUE `server_rate_user_id_record_at` (`server_rate`, `user_id`, `record_at`),
+    ADD INDEX `server_rate` (`server_rate`),
+DROP INDEX `server_id_user_id_record_at`,
+DROP INDEX `server_id`;
+
+ALTER TABLE `v2_stat_user`
+DROP `server_id`,
+DROP `server_type`;

@@ -297,8 +297,6 @@ DROP TABLE IF EXISTS `v2_stat_user`;
 CREATE TABLE `v2_stat_user` (
                                 `id` int(11) NOT NULL AUTO_INCREMENT,
                                 `user_id` int(11) NOT NULL,
-                                `server_id` int(11) NOT NULL,
-                                `server_type` char(11) NOT NULL,
                                 `server_rate` decimal(10,2) NOT NULL,
                                 `u` bigint(20) NOT NULL,
                                 `d` bigint(20) NOT NULL,
@@ -307,9 +305,10 @@ CREATE TABLE `v2_stat_user` (
                                 `created_at` int(11) NOT NULL,
                                 `updated_at` int(11) NOT NULL,
                                 PRIMARY KEY (`id`),
-                                KEY `server_id` (`server_id`),
+                                UNIQUE KEY `server_rate_user_id_record_at` (`server_rate`,`user_id`,`record_at`),
                                 KEY `user_id` (`user_id`),
-                                KEY `record_at` (`record_at`)
+                                KEY `record_at` (`record_at`),
+                                KEY `server_rate` (`server_rate`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
@@ -377,4 +376,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2022-03-17 05:35:39
+-- 2022-03-29 06:56:01

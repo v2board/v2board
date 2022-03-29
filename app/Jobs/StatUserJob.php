@@ -52,7 +52,7 @@ class StatUserJob implements ShouldQueue
         }
 
         $data = StatUser::where('record_at', $recordAt)
-            ->where('server_id', $this->server->id)
+            ->where('server_rate', $this->server->rate)
             ->where('user_id', $this->userId)
             ->first();
         if ($data) {
@@ -67,8 +67,6 @@ class StatUserJob implements ShouldQueue
         } else {
             if (!StatUser::create([
                 'user_id' => $this->userId,
-                'server_id' => $this->server->id,
-                'server_type' => $this->protocol,
                 'server_rate' => $this->server->rate,
                 'u' => $this->u,
                 'd' => $this->d,
