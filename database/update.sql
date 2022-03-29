@@ -549,11 +549,15 @@ CALL `path-2022-03-29`();
 DROP PROCEDURE IF EXISTS `path-2022-03-29`;
 
 ALTER TABLE `v2_stat_user`
-    ADD UNIQUE `server_rate_user_id_record_at` (`server_rate`, `user_id`, `record_at`),
-    ADD INDEX `server_rate` (`server_rate`),
-DROP INDEX `server_id_user_id_record_at`,
+    ADD UNIQUE `server_rate_user_id_record_at` (`server_rate`, `user_id`, `record_at`);
+ALTER TABLE `v2_stat_user`
+    ADD INDEX `server_rate` (`server_rate`);
+ALTER TABLE `v2_stat_user`
+DROP INDEX `server_id_user_id_record_at`;
+ALTER TABLE `v2_stat_user`
 DROP INDEX `server_id`;
 
 ALTER TABLE `v2_stat_user`
-DROP `server_id`,
+DROP `server_id`;
+ALTER TABLE `v2_stat_user`
 DROP `server_type`;
