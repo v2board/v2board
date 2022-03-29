@@ -525,6 +525,29 @@ ADD `handling_fee_percent` decimal(5,2) NULL AFTER `handling_fee_fixed`;
 ALTER TABLE `v2_order`
     ADD `handling_amount` int(11) NULL AFTER `total_amount`;
 
+DELIMITER $$
+
+DROP PROCEDURE IF EXISTS `path-2022-03-29` $$
+CREATE PROCEDURE `path-2022-03-29`()
+BEGIN
+
+    DECLARE IndexIsThere INTEGER;
+
+SELECT COUNT(1) INTO IndexIsThere
+FROM INFORMATION_SCHEMA.STATISTICS
+WHERE table_name   = 'v2_stat_user'
+  AND   index_name   = 'server_id';
+
+IF IndexIsThere != 0 THEN
+         TRUNCATE TABLE `v2_stat_user`;
+END IF;
+
+END $$
+
+DELIMITER ;
+CALL `path-2022-03-29`();
+DROP PROCEDURE IF EXISTS `path-2022-03-29`;
+
 ALTER TABLE `v2_stat_user`
     ADD UNIQUE `server_rate_user_id_record_at` (`server_rate`, `user_id`, `record_at`),
     ADD INDEX `server_rate` (`server_rate`),
