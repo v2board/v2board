@@ -245,5 +245,5 @@ window.settings.i18n['en-US'] = {
   '重置当月流量': 'Reset current month usage',
   '流量明细仅保留近月数据以供查询。': 'Only keep the most recent month\'s usage for checking the transfer data details.',
   '扣费倍率': 'Fee deduction rate',
-  '支付手续费': '支付手续费'
+  '支付手续费': 'Payment fee'
 };

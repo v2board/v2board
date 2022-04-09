@@ -163,7 +163,7 @@ class OrderService
     private function getSurplusValueByOneTime(User $user, Order $order)
     {
         $lastOneTimeOrder = Order::where('user_id', $user->id)
-            ->where('period', 'onetime')
+            ->where('period', 'onetime_price')
             ->where('status', 3)
             ->orderBy('id', 'DESC')
             ->first();

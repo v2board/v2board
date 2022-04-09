@@ -245,5 +245,5 @@ window.settings.i18n['vi-VN'] = {
   '重置当月流量': 'Đặt lại dung lượng tháng hiện tại',
   '流量明细仅保留近月数据以供查询。': 'Chi tiết dung lượng chỉ lưu dữ liệu của những tháng gần đây để truy vấn.',
   '扣费倍率': 'Tỷ lệ khấu trừ',
-  '支付手续费': '支付手续费'
+  '支付手续费': 'Phí thủ tục'
 };
