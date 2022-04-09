@@ -459,10 +459,6 @@ ALTER TABLE `v2_plan`
 ALTER TABLE `v2_server`
     RENAME TO `v2_server_v2ray`;
 
-ALTER TABLE `v2_user`
-    CHANGE `remind_expire` `remind_expire` tinyint(4) NULL DEFAULT '0' AFTER `plan_id`,
-    CHANGE `remind_traffic` `remind_traffic` tinyint(4) NULL DEFAULT '0' AFTER `remind_expire`;
-
 ALTER TABLE `v2_payment`
     ADD `icon` varchar(255) COLLATE 'utf8mb4_general_ci' NULL AFTER `name`;
 
