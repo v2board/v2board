@@ -6,6 +6,8 @@ use App\Jobs\OrderHandleJob;
 use App\Models\Order;
 use App\Models\Plan;
 use App\Models\User;
+use App\Utils\CacheKey;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class OrderService
@@ -78,6 +80,8 @@ class OrderService
             DB::rollBack();
             abort(500, '开通失败');
         }
+
+        Cache::put(CacheKey::get('SUBSCRIBE_TOKEN', $this->user->token), 1, 120);
 
         DB::commit();
     }

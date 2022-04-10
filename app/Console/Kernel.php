@@ -29,6 +29,7 @@ class Kernel extends ConsoleKernel
         Cache::put(CacheKey::get('SCHEDULE_LAST_CHECK_AT', null), time());
         // v2board
         $schedule->command('v2board:statistics')->dailyAt('0:10');
+        $schedule->command('cache:token')->everyMinute();
         // check
         $schedule->command('check:order')->everyMinute();
         $schedule->command('check:commission')->everyMinute();
