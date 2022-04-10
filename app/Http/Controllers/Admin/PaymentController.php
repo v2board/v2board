@@ -26,7 +26,7 @@ class PaymentController extends Controller
     {
         $payments = Payment::all();
         foreach ($payments as $k => $v) {
-            $notifyUrl = url("/api/v1/guest/payment/notify/{$v->payment}/{$v->uuid}");
+            $notifyUrl = config('v2board.app_url') . "/api/v1/guest/payment/notify/{$v->payment}/{$v->uuid}";
             if ($v->notify_domain) {
                 $parseUrl = parse_url($notifyUrl);
                 $notifyUrl = $v->notify_domain . $parseUrl['path'];
