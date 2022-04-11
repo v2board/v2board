@@ -81,8 +81,6 @@ class OrderService
             abort(500, '开通失败');
         }
 
-        Cache::put(CacheKey::get('SUBSCRIBE_TOKEN', $this->user->token), 1, 120);
-
         DB::commit();
     }
 

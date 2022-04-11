@@ -19,7 +19,7 @@ class Client
     public function handle($request, Closure $next)
     {
         $token = $request->input('token');
-        if (empty($token) || $this->tokenNotInCache($token)) {
+        if (empty($token)) {
             abort(403, 'token is null');
         }
         $user = User::where('token', $token)->first();
@@ -28,13 +28,5 @@ class Client
         }
         $request->user = $user;
         return $next($request);
-    }
-
-    private function tokenNotInCache($token)
-    {
-        // schedule init complete?
-        if (!Cache::get(CacheKey::get('SCHEDULE_LAST_CHECK_AT', null))) return true;
-        if (Cache::get(CacheKey::get('SUBSCRIBE_TOKEN', $token))) return false;
-        return true;
     }
 }
