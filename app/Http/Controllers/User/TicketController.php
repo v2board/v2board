@@ -55,7 +55,7 @@ class TicketController extends Controller
     public function save(TicketSave $request)
     {
         DB::beginTransaction();
-        if ((int)Ticket::where('status', 0)->where('user_id', $request->session()->get('id'))->count()) {
+        if ((int)Ticket::where('status', 0)->where('user_id', $request->session()->get('id'))->lockForUpdate()->count()) {
             abort(500, __('There are other unresolved tickets'));
         }
         $ticket = Ticket::create(array_merge($request->only([
