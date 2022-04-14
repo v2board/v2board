@@ -28,7 +28,8 @@ class CoinPayments {
         ];
     }
 
-    public function pay($order) {
+    public function pay($order)
+    {
 
         // IPN notifications are slow, when the transaction is successful, we should return to the user center to avoid user confusion
         $parseUrl = parse_url($order['return_url']);
@@ -53,12 +54,12 @@ class CoinPayments {
 
         return [
             'type' => 1, // Redirect to url
-            'data' =>  'https://www.coinpayments.net/index.php?' . $params_string,
-            'custom_result' => 'IPN OK'
+            'data' =>  'https://www.coinpayments.net/index.php?' . $params_string
         ];
     }
 
-    public function notify($params) {
+    public function notify($params)
+    {
 
         if (!isset($params['merchant']) || $params['merchant'] != trim($this->config['coinpayments_merchant_id'])) {
             abort(500, 'No or incorrect Merchant ID passed');
@@ -75,24 +76,22 @@ class CoinPayments {
 
         $hmac = hash_hmac("sha512", $request, trim($this->config['coinpayments_ipn_secret']));
 
-        // if (!hash_equals($hmac, $signHeader)) {
-        // if ($hmac != $_SERVER['HTTP_HMAC']) { <-- Use this if you are running a version of PHP below 5.6.0 without the hash_equals function
-        //     $this->dieSendMessage(400, 'HMAC signature does not match');
+        // if ($hmac != $signHeader) { <-- Use this if you are running a version of PHP below 5.6.0 without the hash_equals function
+        //     abort(400, 'HMAC signature does not match');
         // }
 
-        if ($hmac != $signHeader) {
+        if (!hash_equals($hmac, $signHeader)) {
             abort(400, 'HMAC signature does not match');
         }
 
         // HMAC Signature verified at this point, load some variables.
-
         $status = $params['status'];
-
         if ($status >= 100 || $status == 2) {
             // payment is complete or queued for nightly payout, success
             return [
                 'trade_no' => $params['item_number'],
-                'callback_no' => $params['txn_id']
+                'callback_no' => $params['txn_id'],
+                'custom_result' => 'IPN OK'
             ];
         } else if ($status < 0) {
             //payment error, this is usually final but payments will sometimes be reopened if there was no exchange rate conversion or with seller consent
@@ -101,7 +100,5 @@ class CoinPayments {
             //payment is pending, you can optionally add a note to the order page
             die('IPN OK: pending');
         }
-
     }
-
 }
