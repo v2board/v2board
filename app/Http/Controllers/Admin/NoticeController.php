@@ -22,7 +22,8 @@ class NoticeController extends Controller
         $data = $request->only([
             'title',
             'content',
-            'img_url'
+            'img_url',
+            'tags'
         ]);
         if (!$request->input('id')) {
             if (!Notice::create($data)) {

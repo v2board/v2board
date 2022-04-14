@@ -557,3 +557,6 @@ ALTER TABLE `v2_stat_user`
 DROP `server_id`;
 ALTER TABLE `v2_stat_user`
 DROP `server_type`;
+
+ALTER TABLE `v2_notice`
+    ADD `tags` varchar(255) COLLATE 'utf8_general_ci' NULL AFTER `img_url`;

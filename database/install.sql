@@ -101,6 +101,7 @@ CREATE TABLE `v2_notice` (
                              `content` text NOT NULL,
                              `show` tinyint(1) NOT NULL DEFAULT '0',
                              `img_url` varchar(255) DEFAULT NULL,
+                             `tags` varchar(255) DEFAULT NULL,
                              `created_at` int(11) NOT NULL,
                              `updated_at` int(11) NOT NULL,
                              PRIMARY KEY (`id`)
@@ -376,4 +377,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2022-03-29 06:56:01
+-- 2022-04-14 18:42:31
