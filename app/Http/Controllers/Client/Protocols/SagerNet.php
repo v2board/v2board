@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Client\Protocols;
 
-class AnXray
+class SagerNet
 {
-    public $flag = 'axxray';
+    public $flag = 'sagernet';
     private $servers;
     private $user;
 
@@ -74,7 +74,7 @@ class AnXray
         }
         if ((string)$server['network'] === 'ws') {
             $wsSettings = $server['networkSettings'];
-            if (isset($wsSettings['path'])) $config['path'] = urlencode($wsSettings['path']);
+            if (isset($wsSettings['path'])) $config['path'] = $wsSettings['path'];
             if (isset($wsSettings['headers']['Host'])) $config['host'] = urlencode($wsSettings['headers']['Host']);
         }
         if ((string)$server['network'] === 'grpc') {
