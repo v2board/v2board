@@ -90,8 +90,12 @@ class CouponController extends Controller
         DB::beginTransaction();
         if (!Coupon::insert(array_map(function ($item) use ($coupon) {
             // format data
-            if (is_array($item['limit_plan_ids'])) $item['limit_plan_ids'] = json_encode($coupon['limit_plan_ids']);
-            if (is_array($item['limit_period'])) $item['limit_period'] = json_encode($coupon['limit_period']);
+            if (isset($item['limit_plan_ids']) && is_array($item['limit_plan_ids'])) {
+                $item['limit_plan_ids'] = json_encode($coupon['limit_plan_ids']);
+            }
+            if (isset($item['limit_period']) && is_array($item['limit_period'])) {
+                $item['limit_period'] = json_encode($coupon['limit_period']);
+            }
             return $item;
         }, $coupons))) {
             DB::rollBack();
