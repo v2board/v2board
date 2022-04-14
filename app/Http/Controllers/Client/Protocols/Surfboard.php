@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Client\Protocols;
 
+use App\Utils\Helper;
 
 class Surfboard
 {
@@ -53,7 +54,8 @@ class Surfboard
         }
 
         // Subscription link
-        $subsURL = config('v2board.subscribe_url', config('v2board.app_url', env('APP_URL'))) . '/api/v1/client/subscribe?token=' . $user['token'];
+        $subsHost = Helper::getSubscribeHost();
+        $subsURL = "{$subsHost}/api/v1/client/subscribe?token={$user['token']}";
         $subsDomain = $_SERVER['SERVER_NAME'];
 
         $config = str_replace('$subs_link', $subsURL, $config);
