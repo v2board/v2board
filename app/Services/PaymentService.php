@@ -39,7 +39,7 @@ class PaymentService
     public function pay($order)
     {
         // custom notify domain name
-        $notifyUrl = url("/api/v1/guest/payment/notify/{$this->method}/{$this->config['uuid']}");
+        $notifyUrl = config('v2board.app_url', env('APP_URL')) . "/api/v1/guest/payment/notify/{$this->method}/{$this->config['uuid']}";
         if ($this->config['notify_domain']) {
             $parseUrl = parse_url($notifyUrl);
             $notifyUrl = $this->config['notify_domain'] . $parseUrl['path'];
