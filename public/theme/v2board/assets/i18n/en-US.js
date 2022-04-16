@@ -239,11 +239,18 @@ window.settings.i18n['en-US'] = {
   '于 {date} 到期，距离到期还有 {day} 天。': 'Will expire on {date}, {day} days before expiration, ',
   'Telegram 讨论组': 'Telegram Discussion Group',
   '立即加入': 'Join Now',
-  '续费': 'Renewal',
-  '购买': 'Purchase',
   '该订阅无法续费，仅允许新用户购买': 'This subscription cannot be renewed and is only available to new users.',
   '重置当月流量': 'Reset current month usage',
   '流量明细仅保留近月数据以供查询。': 'Only keep the most recent month\'s usage for checking the transfer data details.',
   '扣费倍率': 'Fee deduction rate',
-  '支付手续费': 'Payment fee'
+  '支付手续费': 'Payment fee',
+  '续费订阅': '续费订阅',
+  '学习如何使用': '学习如何使用',
+  '快速将节点导入对应客户端进行使用': '快速将节点导入对应客户端进行使用',
+  '对您当前的订阅进行续费': '对您当前的订阅进行续费',
+  '对您当前的订阅进行购买': '对您当前的订阅进行购买',
+  '捷径': '捷径',
+  '不会使用，查看使用教程': '不会使用，查看使用教程',
+  '使用支持扫码的客户端进行订阅': '使用支持扫码的客户端进行订阅',
+  '扫描二维码订阅': '扫描二维码订阅'
 };
