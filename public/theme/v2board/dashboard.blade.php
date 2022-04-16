@@ -23,6 +23,7 @@
     <script>
         window.settings = {
             title: '{{$title}}',
+            theme_path: '{{$theme_path}}',
             theme: {
                 sidebar: '{{$theme_sidebar}}',
                 header: '{{$theme_header}}',
