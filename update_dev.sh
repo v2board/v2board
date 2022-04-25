@@ -3,5 +3,6 @@ git checkout dev
 rm -rf composer.lock composer.phar
 wget https://github.com/composer/composer/releases/latest/download/composer.phar -O composer.phar
 php composer.phar update -vvv
+php artisan horizon:publish
 php artisan v2board:update
 php artisan config:cache
