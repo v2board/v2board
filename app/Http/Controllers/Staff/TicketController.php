@@ -39,13 +39,6 @@ class TicketController extends Controller
         $total = $model->count();
         $res = $model->forPage($current, $pageSize)
             ->get();
-        for ($i = 0; $i < count($res); $i++) {
-            if ($res[$i]['last_reply_user_id'] == $request->session()->get('id')) {
-                $res[$i]['reply_status'] = 0;
-            } else {
-                $res[$i]['reply_status'] = 1;
-            }
-        }
         return response([
             'data' => $res,
             'total' => $total

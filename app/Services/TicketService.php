@@ -10,6 +10,27 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class TicketService {
+    public function reply($ticket, $message, $userId)
+    {
+        DB::beginTransaction();
+        $ticketMessage = TicketMessage::create([
+            'user_id' => $userId,
+            'ticket_id' => $ticket->id,
+            'message' => $message
+        ]);
+        if ($userId !== $ticket->user_id) {
+            $ticket->reply_status = 0;
+        } else {
+            $ticket->reply_status = 1;
+        }
+        if (!$ticketMessage || !$ticket->save()) {
+            DB::rollback();
+            return false;
+        }
+        DB::commit();
+        return $ticketMessage;
+    }
+
     public function replyByAdmin($ticketId, $message, $userId):void
     {
         $ticket = Ticket::where('id', $ticketId)
@@ -24,7 +45,11 @@ class TicketService {
             'ticket_id' => $ticket->id,
             'message' => $message
         ]);
-        $ticket->last_reply_user_id = $userId;
+        if ($userId !== $ticket->user_id) {
+            $ticket->reply_status = 0;
+        } else {
+            $ticket->reply_status = 1;
+        }
         if (!$ticketMessage || !$ticket->save()) {
             DB::rollback();
             abort(500, '工单回复失败');
