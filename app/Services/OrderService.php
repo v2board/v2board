@@ -171,7 +171,10 @@ class OrderService
             ->first();
         if (!$lastOneTimeOrder) return;
         $nowUserTraffic = $user->transfer_enable / 1073741824;
-        $trafficUnitPrice = ($lastOneTimeOrder->total_amount + $lastOneTimeOrder->balance_amount) / $nowUserTraffic;
+        if (!$nowUserTraffic) return;
+        $paidTotalAmount = ($lastOneTimeOrder->total_amount + $lastOneTimeOrder->balance_amount);
+        if (!$paidTotalAmount) return;
+        $trafficUnitPrice = $paidTotalAmount / $nowUserTraffic;
         $notUsedTraffic = $nowUserTraffic - (($user->u + $user->d) / 1073741824);
         $result = $trafficUnitPrice * $notUsedTraffic;
         $orderModel = Order::where('user_id', $user->id)->where('period', '!=', 'reset_price')->where('status', 3);
