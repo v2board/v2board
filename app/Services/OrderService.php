@@ -170,13 +170,9 @@ class OrderService
             ->orderBy('id', 'DESC')
             ->first();
         if (!$lastOneTimeOrder) return;
-        $plan = Plan::find($lastOneTimeOrder->plan_id);
-        if (!$plan) return;
-        $trafficUnitPrice = $plan->onetime_price / $plan->transfer_enable;
-        if ($user->discount && $trafficUnitPrice) {
-            $trafficUnitPrice = $trafficUnitPrice - ($trafficUnitPrice * $user->discount / 100);
-        }
-        $notUsedTraffic = $plan->transfer_enable - (($user->u + $user->d) / 1073741824);
+        $nowUserTraffic = $user->transfer_enable / 1073741824;
+        $trafficUnitPrice = ($lastOneTimeOrder->total_amount + $lastOneTimeOrder->balance_amount) / $nowUserTraffic;
+        $notUsedTraffic = $nowUserTraffic - (($user->u + $user->d) / 1073741824);
         $result = $trafficUnitPrice * $notUsedTraffic;
         $orderModel = Order::where('user_id', $user->id)->where('period', '!=', 'reset_price')->where('status', 3);
         $order->surplus_amount = $result > 0 ? $result : 0;
