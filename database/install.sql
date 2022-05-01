@@ -246,7 +246,6 @@ CREATE TABLE `v2_server_v2ray` (
                                    `tags` varchar(255) DEFAULT NULL,
                                    `rate` varchar(11) NOT NULL,
                                    `network` text NOT NULL,
-                                   `settings` text,
                                    `rules` text,
                                    `networkSettings` text,
                                    `tlsSettings` text,
@@ -377,4 +376,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2022-04-27 16:56:19
+-- 2022-05-01 17:06:46

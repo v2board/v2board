@@ -564,3 +564,6 @@ ALTER TABLE `v2_notice`
 ALTER TABLE `v2_ticket`
 DROP `last_reply_user_id`,
 ADD `reply_status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '0:待回复 1:已回复' AFTER `status`;
+
+ALTER TABLE `v2_server_v2ray`
+DROP `settings`;
