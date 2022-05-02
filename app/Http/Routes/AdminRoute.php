@@ -114,6 +114,9 @@ class AdminRoute
             $router->post('/payment/show', 'Admin\\PaymentController@show');
             // System
             $router->get ('/system/getStatus', 'Admin\\SystemController@getStatus');
+            // Theme
+            $router->get ('/theme/getThemes', 'Admin\\ThemeController@getThemes');
+            $router->post('/theme/saveThemeConfig', 'Admin\\ThemeController@saveThemeConfig');
         });
     }
 }
