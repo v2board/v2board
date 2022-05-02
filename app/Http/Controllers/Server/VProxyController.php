@@ -12,7 +12,7 @@ use App\Models\ServerV2ray;
 use App\Models\ServerTrojan;
 use Illuminate\Support\Facades\Cache;
 
-class XProxyController extends Controller
+class VProxyController extends Controller
 {
     private $nodeType;
     private $nodeInfo;
