@@ -4,44 +4,75 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Http\Request;
 
 class ThemeController extends Controller
 {
-    public function getThemes()
+    private $themes;
+    private $path;
+
+    public function __construct()
     {
-        $path = public_path('theme/');
-        $files = array_map(function ($item) use ($path) {
+        $this->path = $path = public_path('theme/');
+        $this->themes = array_map(function ($item) use ($path) {
             return str_replace($path, '', $item);
         }, glob($path . '*'));
+    }
+
+    public function getThemes()
+    {
         $themeConfigs = [];
-        foreach ($files as $file) {
-            $themeConfigFile = $path . "{$file}/config.php";
+        foreach ($this->themes as $theme) {
+            $themeConfigFile = $this->path . "{$theme}/config.php";
             if (!File::exists($themeConfigFile)) continue;
             $themeConfig = include($themeConfigFile);
             if (!isset($themeConfig['configs']) || !is_array($themeConfig)) continue;
-            $themeConfigs[$file] = $themeConfig;
+            $themeConfigs[$this->themes] = $themeConfig;
         }
         return response([
             'data' => $themeConfigs
         ]);
     }
 
+    public function getThemeConfig(Request $request)
+    {
+        return response([
+            'data' => config('theme.v2board')
+        ]);
+    }
+
     public function saveThemeConfig(Request $request)
     {
-        $path = public_path('theme/');
-        $files = array_map(function ($item) use ($path) {
-            return str_replace($path, '', $item);
-        }, glob($path . '*'));
         $payload = $request->validate([
-            'name' => 'required|in:' . join(',', $files),
+            'name' => 'required|in:' . join(',', $this->themes),
             'configs' => 'required|array'
         ]);
         $themeConfigFile = public_path("theme/{$payload['name']}/config.php");
         if (!File::exists($themeConfigFile)) abort(500, '主题不存在');
         $themeConfig = include($themeConfigFile);
         $validateFields = array_column($themeConfig['configs'], 'field_name');
-        dd($validateFields);
+        $config = [];
+        foreach ($validateFields as $validateField) {
+            if (!isset($payload['configs'][$validateField])) continue;
+            $config[$validateField] = $payload['configs'][$validateField];
+        }
 
+        File::ensureDirectoryExists(base_path() . '/config/theme/');
+
+        $data = var_export($config, 1);
+        if (!File::put(base_path() . "/config/theme/{$payload['name']}.php", "<?php\n return $data ;")) {
+            abort(500, '修改失败');
+        }
+
+        try {
+            Artisan::call('config:cache');
+        } catch (\Exception $e) {
+            abort(500, '保存失败');
+        }
+
+        return response([
+            'data' => config('theme.v2board')
+        ]);
     }
 }

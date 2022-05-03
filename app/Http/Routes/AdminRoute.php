@@ -117,6 +117,7 @@ class AdminRoute
             // Theme
             $router->get ('/theme/getThemes', 'Admin\\ThemeController@getThemes');
             $router->post('/theme/saveThemeConfig', 'Admin\\ThemeController@saveThemeConfig');
+            $router->get ('/theme/getThemeConfig', 'Admin\\ThemeController@getThemeConfig');
         });
     }
 }

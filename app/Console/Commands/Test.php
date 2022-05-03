@@ -43,5 +43,6 @@ class Test extends Command
      */
     public function handle()
     {
+        abort(500, 123);
     }
 }
