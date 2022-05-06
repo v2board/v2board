@@ -31,14 +31,20 @@ class ThemeController extends Controller
             $themeConfigs[$this->themes] = $themeConfig;
         }
         return response([
-            'data' => $themeConfigs
+            'data' => [
+                'themes' => $themeConfigs,
+                'active' => config('v2board.theme', 'v2board')
+            ]
         ]);
     }
 
     public function getThemeConfig(Request $request)
     {
+        $payload = $request->validate([
+            'name' => 'required|in:' . join(',', $this->themes)
+        ]);
         return response([
-            'data' => config('theme.v2board')
+            'data' => config("theme.{$payload['name']}")
         ]);
     }
 
