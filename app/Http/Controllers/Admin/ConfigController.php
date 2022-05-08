@@ -8,6 +8,8 @@ use App\Services\TelegramService;
 use Illuminate\Http\Request;
 use App\Utils\Dict;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
 
 class ConfigController extends Controller
@@ -118,10 +120,6 @@ class ConfigController extends Controller
             ],
             'frontend' => [
                 'frontend_theme' => config('v2board.frontend_theme', 'v2board'),
-                'frontend_theme_sidebar' => config('v2board.frontend_theme_sidebar', 'light'),
-                'frontend_theme_header' => config('v2board.frontend_theme_header', 'dark'),
-                'frontend_theme_color' => config('v2board.frontend_theme_color', 'default'),
-                'frontend_background_url' => config('v2board.frontend_background_url'),
                 'frontend_admin_path' => config('v2board.frontend_admin_path', 'admin'),
                 'frontend_customer_service_method' => config('v2board.frontend_customer_service_method', 0),
                 'frontend_customer_service_id' => config('v2board.frontend_customer_service_id'),
@@ -172,15 +170,18 @@ class ConfigController extends Controller
     public function save(ConfigSave $request)
     {
         $data = $request->validated();
-        $array = \Config::get('v2board');
-        foreach ($data as $k => $v) {
-            if (!in_array($k, array_keys($request->validated()))) {
-                abort(500, '参数' . $k . '不在规则内，禁止修改');
+        $config = config('v2board');
+        foreach ($config as $k => $v) {
+            if (!in_array($k, array_keys(ConfigSave::RULES))) {
+                unset($config[$k]);
+                continue;
             }
-            $array[$k] = $v;
+            if (isset($data[$k])) {
+                $config[$k] = $data[$k];
+            }
         }
-        $data = var_export($array, 1);
-        if (!\File::put(base_path() . '/config/v2board.php', "<?php\n return $data ;")) {
+        $data = var_export($config, 1);
+        if (!File::put(base_path() . '/config/v2board.php', "<?php\n return $data ;")) {
             abort(500, '修改失败');
         }
         if (function_exists('opcache_reset')) {
@@ -188,7 +189,7 @@ class ConfigController extends Controller
                 abort(500, '缓存清除失败，请卸载或检查opcache配置状态');
             }
         }
-        \Artisan::call('config:cache');
+        Artisan::call('config:cache');
         return response([
             'data' => true
         ]);
