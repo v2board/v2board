@@ -52,7 +52,7 @@
 
 <body>
 <div id="root"></div>
-{{!! $theme_config['custom_html'] !!}}
+{!! $theme_config['custom_html'] !!}
 <script src="/theme/{{$theme}}/assets/vendors.async.js?v={{$version}}"></script>
 <script src="/theme/{{$theme}}/assets/components.async.js?v={{$version}}"></script>
 <script src="/theme/{{$theme}}/assets/umi.js?v={{$version}}"></script>
