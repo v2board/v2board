@@ -34,6 +34,7 @@ class ThemeController extends Controller
 
         try {
             Artisan::call('config:cache');
+            sleep(2);
         } catch (\Exception $e) {
             abort(500, "{$themeName}初始化失败");
         }
@@ -93,6 +94,7 @@ class ThemeController extends Controller
 
         try {
             Artisan::call('config:cache');
+            sleep(2);
         } catch (\Exception $e) {
             abort(500, '保存失败');
         }
