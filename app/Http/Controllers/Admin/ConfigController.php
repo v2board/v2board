@@ -56,13 +56,11 @@ class ConfigController extends Controller
 
     public function setTelegramWebhook(Request $request)
     {
-        $appUrl = config('v2board.app_url');
-        if (!$appUrl) abort(500, '请先配置正确的站点地址');
+        $hookUrl = '/api/v1/guest/telegram/webhook?access_token=' . md5(config('v2board.telegram_bot_token', $request->input('telegram_bot_token')));
+        $hookUrl - str_replace('http://', 'https://', $hookUrl);
         $telegramService = new TelegramService($request->input('telegram_bot_token'));
         $telegramService->getMe();
-        $telegramService->setWebhook(
-            $appUrl . '/api/v1/guest/telegram/webhook?access_token=' . md5(config('v2board.telegram_bot_token', $request->input('telegram_bot_token')))
-        );
+        $telegramService->setWebhook($hookUrl);
         return response([
             'data' => true
         ]);

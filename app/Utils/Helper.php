@@ -103,14 +103,12 @@ class Helper
         }
     }
 
-    public static function getSubscribeHost()
+    public static function getSubscribeUrl($path)
     {
-        $subscribeUrl = config('v2board.app_url');
         $subscribeUrls = explode(',', config('v2board.subscribe_url'));
-        if ($subscribeUrls && $subscribeUrls[0]) {
-            $subscribeUrl = $subscribeUrls[rand(0, count($subscribeUrls) - 1)];
-        }
-        return $subscribeUrl;
+        $subscribeUrl = $subscribeUrls[rand(0, count($subscribeUrls) - 1)];
+        if ($subscribeUrl) return $subscribeUrl . $path;
+        return url($path);
     }
 
     public static function randomPort($range) {

@@ -74,7 +74,7 @@ class UserController extends Controller
                     $res[$i]['plan_name'] = $plan[$k]['name'];
                 }
             }
-            $res[$i]['subscribe_url'] = Helper::getSubscribeHost() . '/api/v1/client/subscribe?token=' . $res[$i]['token'];
+            $res[$i]['subscribe_url'] = Helper::getSubscribeUrl('/api/v1/client/subscribe?token=' . $res[$i]['token']);
         }
         return response([
             'data' => $res,
@@ -153,7 +153,6 @@ class UserController extends Controller
         }
 
         $data = "邮箱,余额,推广佣金,总流量,剩余流量,套餐到期时间,订阅计划,订阅地址\r\n";
-        $baseUrl = config('v2board.subscribe_url', config('v2board.app_url', env('APP_URL')));
         foreach($res as $user) {
             $expireDate = $user['expired_at'] === NULL ? '长期有效' : date('Y-m-d H:i:s', $user['expired_at']);
             $balance = $user['balance'] / 100;
@@ -161,7 +160,7 @@ class UserController extends Controller
             $transferEnable = $user['transfer_enable'] ? $user['transfer_enable'] / 1073741824 : 0;
             $notUseFlow = (($user['transfer_enable'] - ($user['u'] + $user['d'])) / 1073741824) ?? 0;
             $planName = $user['plan_name'] ?? '无订阅';
-            $subscribeUrl = $baseUrl . '/api/v1/client/subscribe?token=' . $user['token'];
+            $subscribeUrl = Helper::getSubscribeUrl('/api/v1/client/subscribe?token=' . $user['token']);
             $data .= "{$user['email']},{$balance},{$commissionBalance},{$transferEnable},{$notUseFlow},{$expireDate},{$planName},{$subscribeUrl}\r\n";
         }
         echo "\xEF\xBB\xBF" . $data;
@@ -232,12 +231,11 @@ class UserController extends Controller
         }
         DB::commit();
         $data = "账号,密码,过期时间,UUID,创建时间,订阅地址\r\n";
-        $baseUrl = config('v2board.subscribe_url', config('v2board.app_url', env('APP_URL')));
         foreach($users as $user) {
             $expireDate = $user['expired_at'] === NULL ? '长期有效' : date('Y-m-d H:i:s', $user['expired_at']);
             $createDate = date('Y-m-d H:i:s', $user['created_at']);
             $password = $request->input('password') ?? $user['email'];
-            $subscribeUrl = $baseUrl . '/api/v1/client/subscribe?token=' . $user['token'];
+            $subscribeUrl = Helper::getSubscribeUrl('/api/v1/client/subscribe?token=' . $user['token']);
             $data .= "{$user['email']},{$password},{$expireDate},{$user['uuid']},{$createDate},{$subscribeUrl}\r\n";
         }
         echo $data;

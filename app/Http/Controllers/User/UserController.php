@@ -120,7 +120,7 @@ class UserController extends Controller
                 abort(500, __('Subscription plan does not exist'));
             }
         }
-        $user['subscribe_url'] = Helper::getSubscribeHost() . "/api/v1/client/subscribe?token={$user['token']}";
+        $user['subscribe_url'] = Helper::getSubscribeUrl("/api/v1/client/subscribe?token={$user['token']}");
         $user['reset_day'] = $this->getResetDay($user);
         return response([
             'data' => $user
@@ -139,7 +139,7 @@ class UserController extends Controller
             abort(500, __('Reset failed'));
         }
         return response([
-            'data' => config('v2board.subscribe_url', config('v2board.app_url', env('APP_URL'))) . '/api/v1/client/subscribe?token=' . $user->token
+            'data' => Helper::getSubscribeUrl('/api/v1/client/subscribe?token=' . $user->token)
         ]);
     }
 

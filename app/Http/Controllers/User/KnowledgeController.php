@@ -5,6 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Services\UserService;
+use App\Utils\Helper;
 use Illuminate\Http\Request;
 use App\Models\Knowledge;
 
@@ -28,12 +29,7 @@ class KnowledgeController extends Controller
                 $appleIdPassword = __('No active subscription. Unable to use our provided Apple ID');
                 $this->formatAccessData($knowledge['body']);
             }
-            $subscribeUrl = config('v2board.app_url', env('APP_URL'));
-            $subscribeUrls = explode(',', config('v2board.subscribe_url'));
-            if ($subscribeUrls) {
-                $subscribeUrl = $subscribeUrls[rand(0, count($subscribeUrls) - 1)];
-            }
-            $subscribeUrl = "{$subscribeUrl}/api/v1/client/subscribe?token={$user['token']}";
+            $subscribeUrl = Helper::getSubscribeUrl("/api/v1/client/subscribe?token={$user['token']}");
             $knowledge['body'] = str_replace('{{siteName}}', config('v2board.app_name', 'V2Board'), $knowledge['body']);
             $knowledge['body'] = str_replace('{{subscribeUrl}}', $subscribeUrl, $knowledge['body']);
             $knowledge['body'] = str_replace('{{urlEncodeSubscribeUrl}}', urlencode($subscribeUrl), $knowledge['body']);
