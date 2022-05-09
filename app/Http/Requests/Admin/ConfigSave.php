@@ -8,7 +8,6 @@ class ConfigSave extends FormRequest
 {
     const RULES = [
         // invite & commission
-        'safe_mode_enable' => 'in:0,1',
         'invite_force' => 'in:0,1',
         'invite_commission' => 'integer',
         'invite_gen_limit' => 'integer',
@@ -23,6 +22,8 @@ class ConfigSave extends FormRequest
         'commission_distribution_l2' => 'nullable|numeric',
         'commission_distribution_l3' => 'nullable|numeric',
         // site
+        'force_https' => 'in:0,1',
+        'safe_mode_enable' => 'in:0,1',
         'stop_register' => 'in:0,1',
         'email_verify' => 'in:0,1',
         'app_name' => '',
@@ -88,9 +89,11 @@ class ConfigSave extends FormRequest
         'epay_key' => '',
         // frontend
         'frontend_theme' => '',
+        'frontend_theme_sidebar' => 'in:dark,light',
+        'frontend_theme_header' => 'in:dark,light',
+        'frontend_theme_color' => 'in:default,darkblue,black,green',
+        'frontend_background_url' => 'nullable|url',
         'frontend_admin_path' => '',
-        'frontend_customer_service_method' => '',
-        'frontend_customer_service_id' => '',
         // email
         'email_template' => '',
         'email_host' => '',

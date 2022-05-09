@@ -56,8 +56,7 @@ class ConfigController extends Controller
 
     public function setTelegramWebhook(Request $request)
     {
-        $hookUrl = '/api/v1/guest/telegram/webhook?access_token=' . md5(config('v2board.telegram_bot_token', $request->input('telegram_bot_token')));
-        $hookUrl - str_replace('http://', 'https://', $hookUrl);
+        $hookUrl = url('/api/v1/guest/telegram/webhook?access_token=' . md5(config('v2board.telegram_bot_token', $request->input('telegram_bot_token'))));
         $telegramService = new TelegramService($request->input('telegram_bot_token'));
         $telegramService->getMe();
         $telegramService->setWebhook($hookUrl);
@@ -86,6 +85,7 @@ class ConfigController extends Controller
                 'commission_distribution_l3' => config('v2board.commission_distribution_l3')
             ],
             'site' => [
+                'force_https' => (int)config('v2board.force_https', 0),
                 'safe_mode_enable' => (int)config('v2board.safe_mode_enable', 0),
                 'stop_register' => (int)config('v2board.stop_register', 0),
                 'email_verify' => (int)config('v2board.email_verify', 0),
@@ -118,9 +118,11 @@ class ConfigController extends Controller
             ],
             'frontend' => [
                 'frontend_theme' => config('v2board.frontend_theme', 'v2board'),
-                'frontend_admin_path' => config('v2board.frontend_admin_path', 'admin'),
-                'frontend_customer_service_method' => config('v2board.frontend_customer_service_method', 0),
-                'frontend_customer_service_id' => config('v2board.frontend_customer_service_id'),
+                'frontend_theme_sidebar' => config('v2board.frontend_theme_sidebar', 'light'),
+                'frontend_theme_header' => config('v2board.frontend_theme_header', 'dark'),
+                'frontend_theme_color' => config('v2board.frontend_theme_color', 'default'),
+                'frontend_background_url' => config('v2board.frontend_background_url'),
+                'frontend_admin_path' => config('v2board.frontend_admin_path', 'admin')
             ],
             'server' => [
                 'server_token' => config('v2board.server_token'),
