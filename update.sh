@@ -8,5 +8,5 @@ php artisan v2board:update
 php artisan config:cache
 
 if [ -f "/etc/init.d/bt" ]; then
-  chmod -R www $(PWD);
+  chmod -R www $(pwd);
 fi
