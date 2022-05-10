@@ -6,5 +6,5 @@ php composer.phar install -vvv
 php artisan v2board:install
 
 if [ -f "/etc/init.d/bt" ]; then
-  chmod -R www $(pwd);
+  chown -R www $(pwd);
 fi
