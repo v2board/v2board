@@ -134,7 +134,7 @@ class Stash
             if ($server['networkSettings']) {
                 $grpcSettings = $server['networkSettings'];
                 $array['grpc-opts'] = [];
-                $array['grpc-opts']['grpc-service-name'] = $grpcSettings['serviceName'];
+                if (isset($grpcSettings['serviceName']))  $array['grpc-opts']['grpc-service-name'] = $grpcSettings['serviceName'];
             }
         }
 

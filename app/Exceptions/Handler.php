@@ -50,6 +50,9 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
+        if ($exception instanceof \Facade\Ignition\Exceptions\ViewException) {
+            abort(501, '主题初始化发生错误，请在后台对主题检查或配置后重试。');
+        }
         return parent::render($request, $exception);
     }
 }
