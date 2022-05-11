@@ -204,6 +204,8 @@ CREATE TABLE `v2_server_shadowsocks` (
                                          `port` int(11) NOT NULL,
                                          `server_port` int(11) NOT NULL,
                                          `cipher` varchar(255) NOT NULL,
+                                         `obfs` char(11) DEFAULT NULL,
+                                         `obfs_settings` varchar(255) DEFAULT NULL,
                                          `show` tinyint(4) NOT NULL DEFAULT '0',
                                          `sort` int(11) DEFAULT NULL,
                                          `created_at` int(11) NOT NULL,
@@ -376,4 +378,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2022-05-01 17:06:46
+-- 2022-05-10 17:13:24

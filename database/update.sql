@@ -569,3 +569,7 @@ DROP `settings`;
 
 ALTER TABLE `v2_ticket`
 DROP `last_reply_user_id`;
+
+ALTER TABLE `v2_server_shadowsocks`
+    ADD `obfs` char(11) NULL AFTER `cipher`,
+ADD `obfs_settings` varchar(255) NULL AFTER `obfs`;

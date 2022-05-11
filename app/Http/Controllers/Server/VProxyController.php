@@ -53,7 +53,7 @@ class VProxyController extends Controller
     public function user(Request $request)
     {
         ini_set('memory_limit', -1);
-        Cache::put(CacheKey::get('SERVER_V2RAY_LAST_CHECK_AT', $this->nodeInfo->id), time(), 3600);
+        Cache::put(CacheKey::get('SERVER_' . strtoupper($this->nodeType) . '_LAST_CHECK_AT', $this->nodeInfo->id), time(), 3600);
         $serverService = new ServerService();
         $users = $serverService->getAvailableUsers($this->nodeInfo->group_id);
         $users = $users->toArray();
@@ -82,8 +82,8 @@ class VProxyController extends Controller
     {
         $data = file_get_contents('php://input');
         $data = json_decode($data, true);
-        Cache::put(CacheKey::get('SERVER_V2RAY_ONLINE_USER', $this->nodeInfo->id), count($data), 3600);
-        Cache::put(CacheKey::get('SERVER_V2RAY_LAST_PUSH_AT', $this->nodeInfo->id), time(), 3600);
+        Cache::put(CacheKey::get('SERVER_' . strtoupper($this->nodeType) . '_ONLINE_USER', $this->nodeInfo->id), count($data), 3600);
+        Cache::put(CacheKey::get('SERVER_' . strtoupper($this->nodeType) . '_LAST_PUSH_AT', $this->nodeInfo->id), time(), 3600);
         $userService = new UserService();
         foreach ($data as $item) {
             $u = $item['u'] * $this->nodeInfo->rate;
@@ -103,7 +103,9 @@ class VProxyController extends Controller
             case 'shadowsocks':
                 die(json_encode([
                     'server_port' => $this->nodeInfo->server_port,
-                    'cipher' => $this->nodeInfo->cipher
+                    'cipher' => $this->nodeInfo->cipher,
+                    'obfs' => $this->nodeInfo->obfs,
+                    'obfs_settings' => $this->nodeInfo->obfs_settings
                 ], JSON_UNESCAPED_UNICODE));
                 break;
             case 'v2ray':
