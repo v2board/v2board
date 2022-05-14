@@ -28,8 +28,12 @@ class ThemeController extends Controller
         }
 
         $data = var_export($data, 1);
-        if (!File::put(base_path() . "/config/theme/{$themeName}.php", "<?php\n return $data ;")) {
-            abort(500, "{$themeName}初始化失败");
+        try {
+            if (!File::put(base_path() . "/config/theme/{$themeName}.php", "<?php\n return $data ;")) {
+                abort(500, "{$themeName}初始化失败");
+            }
+        } catch (\Exception $e) {
+            abort(500, '请检查V2Board目录权限');
         }
 
         try {
