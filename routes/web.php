@@ -24,7 +24,8 @@ Route::get('/', function (Request $request) {
         'theme' => config('v2board.frontend_theme', 'v2board'),
         'theme_path' => '/theme/' . config('v2board.frontend_theme', 'v2board') . '/assets/',
         'version' => config('app.version'),
-        'description' => config('v2board.app_description', 'V2Board is best')
+        'description' => config('v2board.app_description', 'V2Board is best'),
+        'logo' => config('v2board.logo')
     ];
     $renderParams['theme_config'] = config('theme.' . config('v2board.frontend_theme', 'v2board'));
     return view('theme::' . config('v2board.frontend_theme', 'v2board') . '.dashboard', $renderParams);
@@ -36,7 +37,8 @@ Route::get('/' . config('v2board.frontend_admin_path', 'admin'), function () {
         'theme_sidebar' => config('v2board.frontend_theme_sidebar', 'light'),
         'theme_header' => config('v2board.frontend_theme_header', 'dark'),
         'theme_color' => config('v2board.frontend_theme_color', 'default'),
-        'backgroun_url' => config('v2board.frontend_background_url'),
-        'verison' => config('app.version')
+        'background_url' => config('v2board.frontend_background_url'),
+        'version' => config('app.version'),
+        'logo' => config('v2board.logo')
     ]);
 });

@@ -39,7 +39,8 @@
                 'vi-VN',
                 'ko-KR',
                 'zh-TW'
-            ]
+            ],
+            logo: '{{$logo}}'
         }
     </script>
     <script src="/theme/{{$theme}}/assets/i18n/zh-CN.js?v={{$version}}"></script>

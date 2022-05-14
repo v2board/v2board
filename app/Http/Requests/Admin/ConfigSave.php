@@ -22,6 +22,7 @@ class ConfigSave extends FormRequest
         'commission_distribution_l2' => 'nullable|numeric',
         'commission_distribution_l3' => 'nullable|numeric',
         // site
+        'logo' => 'nullable|url',
         'force_https' => 'in:0,1',
         'safe_mode_enable' => 'in:0,1',
         'stop_register' => 'in:0,1',
@@ -134,7 +135,8 @@ class ConfigSave extends FormRequest
             'subscribe_url.url' => '订阅URL格式不正确，必须携带http(s)://',
             'server_token.min' => '通讯密钥长度必须大于16位',
             'tos_url.url' => '服务条款URL格式不正确，必须携带http(s)://',
-            'telegram_discuss_link.url' => 'Telegram群组地址必须为URL格式，必须携带http(s)://'
+            'telegram_discuss_link.url' => 'Telegram群组地址必须为URL格式，必须携带http(s)://',
+            'logo.url' => 'LOGO URL格式不正确，必须携带https(s)://'
         ];
     }
 }
