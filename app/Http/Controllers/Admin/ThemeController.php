@@ -78,8 +78,10 @@ class ThemeController extends Controller
     {
         $payload = $request->validate([
             'name' => 'required|in:' . join(',', $this->themes),
-            'config' => 'required|array'
+            'config' => 'required'
         ]);
+        $payload['config'] = json_decode(base64_decode($payload['config']), true);
+        if (!$payload['config'] || !is_array($payload['config'])) abort(500, '参数有误');
         $themeConfigFile = public_path("theme/{$payload['name']}/config.php");
         if (!File::exists($themeConfigFile)) abort(500, '主题不存在');
         $themeConfig = include($themeConfigFile);
