@@ -1,5 +1,6 @@
 <?php
 
+use App\Services\ThemeService;
 use Illuminate\Http\Request;
 
 /*
@@ -27,6 +28,12 @@ Route::get('/', function (Request $request) {
         'description' => config('v2board.app_description', 'V2Board is best'),
         'logo' => config('v2board.logo')
     ];
+
+    if (!config("theme.{$renderParams['theme']}")) {
+        $themeService = new ThemeService($renderParams['theme']);
+        $themeService->init();
+    }
+
     $renderParams['theme_config'] = config('theme.' . config('v2board.frontend_theme', 'v2board'));
     return view('theme::' . config('v2board.frontend_theme', 'v2board') . '.dashboard', $renderParams);
 });

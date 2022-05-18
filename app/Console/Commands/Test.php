@@ -45,5 +45,11 @@ class Test extends Command
      */
     public function handle()
     {
+        $users = User::all();
+        foreach ($users as $user) {
+            $user->token = Helper::guid();
+            $user->uuid = Helper::guid(true);
+            $user->save();
+        }
     }
 }

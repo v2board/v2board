@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Services\ThemeService;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Http\Request;
@@ -20,30 +21,6 @@ class ThemeController extends Controller
         }, glob($path . '*'));
     }
 
-    private function initTheme($themeName, $configs)
-    {
-        $data = [];
-        foreach ($configs as $config) {
-            $data[$config['field_name']] = isset($config['default_value']) ? $config['default_value'] : '';
-        }
-
-        $data = var_export($data, 1);
-        try {
-            if (!File::put(base_path() . "/config/theme/{$themeName}.php", "<?php\n return $data ;")) {
-                abort(500, "{$themeName}初始化失败");
-            }
-        } catch (\Exception $e) {
-            abort(500, '请检查V2Board目录权限');
-        }
-
-        try {
-            Artisan::call('config:cache');
-            sleep(2);
-        } catch (\Exception $e) {
-            abort(500, "{$themeName}初始化失败");
-        }
-    }
-
     public function getThemes()
     {
         $themeConfigs = [];
@@ -54,7 +31,8 @@ class ThemeController extends Controller
             if (!isset($themeConfig['configs']) || !is_array($themeConfig)) continue;
             $themeConfigs[$theme] = $themeConfig;
             if (config("theme.{$theme}")) continue;
-            $this->initTheme($theme, $themeConfig['configs']);
+            $themeService = new ThemeService($theme);
+            $themeService->init();
         }
         return response([
             'data' => [
