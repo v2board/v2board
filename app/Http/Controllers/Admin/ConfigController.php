@@ -85,6 +85,7 @@ class ConfigController extends Controller
                 'commission_distribution_l3' => config('v2board.commission_distribution_l3')
             ],
             'site' => [
+                'logo' => config('v2board.logo'),
                 'force_https' => (int)config('v2board.force_https', 0),
                 'safe_mode_enable' => (int)config('v2board.safe_mode_enable', 0),
                 'stop_register' => (int)config('v2board.stop_register', 0),
@@ -172,7 +173,7 @@ class ConfigController extends Controller
         $data = $request->validated();
         $config = config('v2board');
         foreach (ConfigSave::RULES as $k => $v) {
-            if (!in_array($k, array_keys(ConfigSave::RULES))) {
+            if (!in_array($k, array_keys(ConfigSave::RULES)) || !isset($data[$k])) {
                 unset($config[$k]);
                 continue;
             }
