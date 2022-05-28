@@ -573,3 +573,7 @@ DROP `last_reply_user_id`;
 ALTER TABLE `v2_server_shadowsocks`
     ADD `obfs` char(11) NULL AFTER `cipher`,
 ADD `obfs_settings` varchar(255) NULL AFTER `obfs`;
+
+ALTER TABLE `v2_plan`
+    CHANGE `name` `name` varchar(255) COLLATE 'utf8mb4_general_ci' NOT NULL AFTER `transfer_enable`,
+    CHANGE `content` `content` text COLLATE 'utf8mb4_general_ci' NULL AFTER `renew`;

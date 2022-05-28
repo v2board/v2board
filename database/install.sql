@@ -162,11 +162,11 @@ CREATE TABLE `v2_plan` (
                            `id` int(11) NOT NULL AUTO_INCREMENT,
                            `group_id` int(11) NOT NULL,
                            `transfer_enable` int(11) NOT NULL,
-                           `name` varchar(255) NOT NULL,
+                           `name` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
                            `show` tinyint(1) NOT NULL DEFAULT '0',
                            `sort` int(11) DEFAULT NULL,
                            `renew` tinyint(1) NOT NULL DEFAULT '1',
-                           `content` text,
+                           `content` text CHARACTER SET utf8mb4,
                            `month_price` int(11) DEFAULT NULL,
                            `quarter_price` int(11) DEFAULT NULL,
                            `half_year_price` int(11) DEFAULT NULL,
@@ -378,4 +378,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2022-05-10 17:13:24
+-- 2022-05-28 18:13:17
