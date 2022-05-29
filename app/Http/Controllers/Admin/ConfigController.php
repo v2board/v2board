@@ -173,11 +173,11 @@ class ConfigController extends Controller
         $data = $request->validated();
         $config = config('v2board');
         foreach (ConfigSave::RULES as $k => $v) {
-            if (!in_array($k, array_keys(ConfigSave::RULES)) || !isset($data[$k])) {
+            if (!in_array($k, array_keys(ConfigSave::RULES))) {
                 unset($config[$k]);
                 continue;
             }
-            if (isset($data[$k])) {
+            if (isset($data[$k]) && !is_null($data[$k])) {
                 $config[$k] = $data[$k];
             }
         }
