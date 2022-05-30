@@ -60,9 +60,6 @@ rules:
   # - DOMAIN,e.crashlytics.com,REJECT //注释此选项有助于大多数App开发者分析崩溃信息；如果您拒绝一切崩溃数据统计、搜集，请取消 # 注释。
 
   # 国内网站
-  - DOMAIN-SUFFIX,cn,DIRECT
-  - DOMAIN-KEYWORD,-cn,DIRECT
-
   - DOMAIN-SUFFIX,126.com,DIRECT
   - DOMAIN-SUFFIX,126.net,DIRECT
   - DOMAIN-SUFFIX,127.net,DIRECT
@@ -366,6 +363,7 @@ rules:
   - DOMAIN-SUFFIX,klip.me,SELECT
   - DOMAIN-SUFFIX,libsyn.com,SELECT
   - DOMAIN-SUFFIX,linkedin.com,SELECT
+  - DOMAIN-SUFFIX,line-apps.com,SELECT
   - DOMAIN-SUFFIX,linode.com,SELECT
   - DOMAIN-SUFFIX,lithium.com,SELECT
   - DOMAIN-SUFFIX,littlehj.com,SELECT
@@ -549,6 +547,10 @@ rules:
   - IP-CIDR,100.64.0.0/10,DIRECT
   - IP-CIDR,224.0.0.0/4,DIRECT
   - IP-CIDR6,fe80::/10,DIRECT
+
+  # 剩余未匹配的国内网站
+  - DOMAIN-SUFFIX,cn,DIRECT
+  - DOMAIN-KEYWORD,-cn,DIRECT
 
   # 最终规则
   - GEOIP,CN,DIRECT
