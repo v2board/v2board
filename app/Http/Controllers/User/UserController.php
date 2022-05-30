@@ -189,18 +189,21 @@ class UserController extends Controller
         if ($user->expired_at <= time() || $user->expired_at === NULL) return null;
         // if reset method is not reset
         if (isset($user->plan->reset_traffic_method) && $user->plan->reset_traffic_method === 2) return null;
-        $day = date('d', $user->expired_at);
-        $today = date('d');
-        $lastDay = date('d', strtotime('last day of +0 months'));
 
         if ((int)config('v2board.reset_traffic_method') === 0 ||
             (isset($user->plan->reset_traffic_method) && $user->plan->reset_traffic_method === 0))
         {
+            $day = date('d', $user->expired_at);
+            $today = date('d');
+            $lastDay = date('d', strtotime('last day of +0 months'));
             return $lastDay - $today;
         }
         if ((int)config('v2board.reset_traffic_method') === 1 ||
             (isset($user->plan->reset_traffic_method) && $user->plan->reset_traffic_method === 1))
         {
+            $day = date('d', $user->expired_at);
+            $today = date('d');
+            $lastDay = date('d', strtotime('last day of +0 months'));
             if ((int)$day >= (int)$today && (int)$day >= (int)$lastDay) {
                 return $lastDay - $today;
             }
@@ -209,6 +212,12 @@ class UserController extends Controller
             } else {
                 return $lastDay - $today + $day;
             }
+        }
+        if ((int)config('v2board.reset_traffic_method') === 2 ||
+            (isset($user->plan->reset_traffic_method) && $user->plan->reset_traffic_method === 2))
+        {
+            $nextYear = strtotime(date("Y-01-01", strtotime('+1 year')));
+            return (int)(($nextYear - time()) / 86400);
         }
         return null;
     }

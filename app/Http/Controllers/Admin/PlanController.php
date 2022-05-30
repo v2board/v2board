@@ -16,7 +16,6 @@ class PlanController extends Controller
 {
     public function fetch(Request $request)
     {
-
         $counts = User::select(
             DB::raw("plan_id"),
             DB::raw("count(*) as count")

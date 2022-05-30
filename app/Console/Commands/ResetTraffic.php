@@ -69,6 +69,9 @@ class ResetTraffic extends Command
                         // no action
                         case 2:
                             break;
+                        // year
+                        case 3:
+                            $this->resetByYear($builder);
                     }
                     break;
                 }
@@ -85,7 +88,22 @@ class ResetTraffic extends Command
                 case ($resetMethod['method'] === 2): {
                     break;
                 }
+                case ($resetMethod['method'] === 3): {
+                    $builder = with(clone($this->builder))->whereIn('plan_id', $planIds);
+                    $this->resetByYear($builder);
+                    break;
+                }
             }
+        }
+    }
+
+    private function resetByYear($builder):void
+    {
+        if ((string)date('d') === '01' && (string)date('m') === '01') {
+            $builder->update([
+                'u' => 0,
+                'd' => 0
+            ]);
         }
     }
 
