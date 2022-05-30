@@ -99,7 +99,7 @@ class ResetTraffic extends Command
 
     private function resetByYear($builder):void
     {
-        if ((string)date('d') === '01' && (string)date('m') === '01') {
+        if ((string)date('md') === '0101') {
             $builder->update([
                 'u' => 0,
                 'd' => 0
