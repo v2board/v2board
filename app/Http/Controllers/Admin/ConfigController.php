@@ -177,7 +177,7 @@ class ConfigController extends Controller
                 unset($config[$k]);
                 continue;
             }
-            if (isset($data[$k]) && !is_null($data[$k])) {
+            if (array_key_exists($k, $data)) {
                 $config[$k] = $data[$k];
             }
         }
