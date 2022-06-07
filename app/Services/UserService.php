@@ -44,10 +44,18 @@ class UserService
                 return $lastDay - $today + $day;
             }
         }
-        if ((int)config('v2board.reset_traffic_method') === 2 ||
-            (isset($user->plan->reset_traffic_method) && $user->plan->reset_traffic_method === 2))
+        if ((int)config('v2board.reset_traffic_method') === 3 ||
+            (isset($user->plan->reset_traffic_method) && $user->plan->reset_traffic_method === 3))
         {
             $nextYear = strtotime(date("Y-01-01", strtotime('+1 year')));
+            return (int)(($nextYear - time()) / 86400);
+        }
+        if ((int)config('v2board.reset_traffic_method') === 4 ||
+            (isset($user->plan->reset_traffic_method) && $user->plan->reset_traffic_method === 4))
+        {
+            $md = date('m-d', $user->expired_at);
+            $nowYear = strtotime(date("Y-{$md}"));
+            $nextYear = strtotime('+1 year', $nowYear);
             return (int)(($nextYear - time()) / 86400);
         }
         return null;

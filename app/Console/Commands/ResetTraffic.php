@@ -69,9 +69,12 @@ class ResetTraffic extends Command
                         // no action
                         case 2:
                             break;
-                        // year
+                        // year first day
                         case 3:
-                            $this->resetByYear($builder);
+                            $this->resetByYearFirstDay($builder);
+                        // year expire day
+                        case 4:
+                            $this->resetByExpireYear($builder);
                     }
                     break;
                 }
@@ -90,14 +93,35 @@ class ResetTraffic extends Command
                 }
                 case ($resetMethod['method'] === 3): {
                     $builder = with(clone($this->builder))->whereIn('plan_id', $planIds);
-                    $this->resetByYear($builder);
+                    $this->resetByYearFirstDay($builder);
+                    break;
+                }
+                case ($resetMethod['method'] === 4): {
+                    $builder = with(clone($this->builder))->whereIn('plan_id', $planIds);
+                    $this->resetByExpireYear($builder);
                     break;
                 }
             }
         }
     }
 
-    private function resetByYear($builder):void
+    private function resetByExpireYear($builder):void
+    {
+        $users = [];
+        foreach ($builder->get() as $item) {
+            $expireDay = date('m-d', $item->expired_at);
+            $today = date('m-d');
+            if ($expireDay === $today) {
+                array_push($users, $item->id);
+            }
+        }
+        User::whereIn('id', $users)->update([
+            'u' => 0,
+            'd' => 0
+        ]);
+    }
+
+    private function resetByYearFirstDay($builder):void
     {
         if ((string)date('md') === '0101') {
             $builder->update([

@@ -48,7 +48,7 @@ class ConfigSave extends FormRequest
         'register_limit_expire' => 'integer',
         // subscribe
         'plan_change_enable' => 'in:0,1',
-        'reset_traffic_method' => 'in:0,1,2,3',
+        'reset_traffic_method' => 'in:0,1,2,3,4',
         'surplus_enable' => 'in:0,1',
         'new_order_event_id' => 'in:0,1',
         'renew_order_event_id' => 'in:0,1',
@@ -60,35 +60,6 @@ class ConfigSave extends FormRequest
         'server_log_enable' => 'in:0,1',
         'server_v2ray_domain' => '',
         'server_v2ray_protocol' => '',
-        // alipay
-        'alipay_enable' => 'in:0,1',
-        'alipay_appid' => 'nullable|integer|min:16',
-        'alipay_pubkey' => 'max:2048',
-        'alipay_privkey' => 'max:2048',
-        // stripe
-        'stripe_alipay_enable' => 'in:0,1',
-        'stripe_wepay_enable' => 'in:0,1',
-        'stripe_card_enable' => 'in:0,1',
-        'stripe_sk_live' => '',
-        'stripe_pk_live' => '',
-        'stripe_webhook_key' => '',
-        'stripe_currency' => 'in:hkd,usd,sgd,eur,gbp,jpy,cad',
-        // bitpayx
-        'bitpayx_name' => '',
-        'bitpayx_enable' => 'in:0,1',
-        'bitpayx_appsecret' => '',
-        // mGate
-        'mgate_name' => '',
-        'mgate_enable' => 'in:0,1',
-        'mgate_url' => 'nullable|url',
-        'mgate_app_id' => '',
-        'mgate_app_secret' => '',
-        // Epay
-        'epay_name' => '',
-        'epay_enable' => 'in:0,1',
-        'epay_url' => 'nullable|url',
-        'epay_pid' => '',
-        'epay_key' => '',
         // frontend
         'frontend_theme' => '',
         'frontend_theme_sidebar' => 'in:dark,light',
