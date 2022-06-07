@@ -53,6 +53,7 @@ class ConfigSave extends FormRequest
         'new_order_event_id' => 'in:0,1',
         'renew_order_event_id' => 'in:0,1',
         'change_order_event_id' => 'in:0,1',
+        'show_info_to_server_enable' => 'in:0,1',
         // server
         'server_token' => 'nullable|min:16',
         'server_license' => 'nullable',
