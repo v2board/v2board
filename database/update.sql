@@ -580,3 +580,9 @@ ALTER TABLE `v2_plan`
 
 ALTER TABLE `v2_mail_log`
     COLLATE 'utf8mb4_general_ci';
+
+ALTER TABLE `v2_mail_log`
+    CHANGE `email` `email` varchar(64) NOT NULL AFTER `id`,
+    CHANGE `subject` `subject` varchar(255) NOT NULL AFTER `email`,
+    CHANGE `template_name` `template_name` varchar(255) NOT NULL AFTER `subject`,
+    CHANGE `error` `error` text NULL AFTER `template_name`;
