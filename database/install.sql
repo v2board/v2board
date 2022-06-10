@@ -84,14 +84,14 @@ CREATE TABLE `v2_knowledge` (
 DROP TABLE IF EXISTS `v2_mail_log`;
 CREATE TABLE `v2_mail_log` (
                                `id` int(11) NOT NULL AUTO_INCREMENT,
-                               `email` varchar(64) NOT NULL,
-                               `subject` varchar(255) NOT NULL,
-                               `template_name` varchar(255) NOT NULL,
-                               `error` text,
+                               `email` varchar(64) CHARACTER SET utf8 NOT NULL,
+                               `subject` varchar(255) CHARACTER SET utf8 NOT NULL,
+                               `template_name` varchar(255) CHARACTER SET utf8 NOT NULL,
+                               `error` text CHARACTER SET utf8,
                                `created_at` int(11) NOT NULL,
                                `updated_at` int(11) NOT NULL,
                                PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `v2_notice`;
@@ -378,4 +378,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2022-05-28 18:13:17
+-- 2022-06-10 17:12:02

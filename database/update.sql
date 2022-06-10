@@ -577,3 +577,6 @@ ADD `obfs_settings` varchar(255) NULL AFTER `obfs`;
 ALTER TABLE `v2_plan`
     CHANGE `name` `name` varchar(255) COLLATE 'utf8mb4_general_ci' NOT NULL AFTER `transfer_enable`,
     CHANGE `content` `content` text COLLATE 'utf8mb4_general_ci' NULL AFTER `renew`;
+
+ALTER TABLE `v2_mail_log`
+    COLLATE 'utf8mb4_general_ci';
