@@ -87,8 +87,12 @@ class OrderController extends Controller
         }
 
         if ($request->input('period') === 'reset_price') {
-            if ($user->expired_at <= time() || !$user->plan_id) {
+            if (!$user->plan_id) {
                 abort(500, __('Subscription has expired or no active subscription, unable to purchase Data Reset Package'));
+            } else {
+                if ($user->plan_id !== $request->input('plan_id')) {
+                    abort(500, __('This subscription reset package does not apply to your subscription'));
+                }
             }
         }
 
