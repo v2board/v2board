@@ -28,6 +28,17 @@ class TelegramController extends Controller
     public function handle()
     {
         $msg = $this->msg;
+
+        $commandName = explode('@', $msg->command);
+
+        // To reduce request, only commands contains @ will get the bot name
+        if (count($commandName) == 2) {
+            $botName = $this->getBotName();
+            if ($commandName[1] === $botName){
+                $msg->command = $commandName[0];
+            }
+        }
+
         try {
             foreach (glob(base_path('app//Plugins//Telegram//Commands') . '/*.php') as $file) {
                 $command = basename($file, '.php');
@@ -51,6 +62,13 @@ class TelegramController extends Controller
             $telegramService = new TelegramService();
             $telegramService->sendMessage($msg->chat_id, $e->getMessage());
         }
+    }
+
+    public function getBotName()
+    {
+        $telegramService = new TelegramService();
+        $response = $telegramService->getMe();
+        return $response->result->username;
     }
 
     private function getMessage(array $data)
