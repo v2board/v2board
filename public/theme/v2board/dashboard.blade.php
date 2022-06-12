@@ -15,7 +15,7 @@
         'default' => '#0665d0',
         'green' => '#319795'
     ])
-    <meta name="theme-color" content="{{$colors[$theme_color]}}">
+    <meta name="theme-color" content="{{$colors[$theme_config['theme_color']]}}">
 
     <title>{{$title}}</title>
     <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito+Sans:300,400,400i,600,700"> -->
@@ -23,15 +23,15 @@
     <script>
         window.settings = {
             title: '{{$title}}',
+            theme_path: '{{$theme_path}}',
             theme: {
-                sidebar: '{{$theme_sidebar}}',
-                header: '{{$theme_header}}',
-                color: '{{$theme_color}}',
+                sidebar: '{{$theme_config['theme_sidebar']}}',
+                header: '{{$theme_config['theme_header']}}',
+                color: '{{$theme_config['theme_color']}}',
             },
             version: '{{$version}}',
-            background_url: '{{$background_url}}',
+            background_url: '{{$theme_config['background_url']}}',
             description: '{{$description}}',
-            crisp_id: '{{$crisp_id}}',
             i18n: [
                 'zh-CN',
                 'en-US',
@@ -39,7 +39,8 @@
                 'vi-VN',
                 'ko-KR',
                 'zh-TW'
-            ]
+            ],
+            logo: '{{$logo}}'
         }
     </script>
     <script src="/theme/{{$theme}}/assets/i18n/zh-CN.js?v={{$version}}"></script>
@@ -52,6 +53,7 @@
 
 <body>
 <div id="root"></div>
+{!! $theme_config['custom_html'] !!}
 <script src="/theme/{{$theme}}/assets/vendors.async.js?v={{$version}}"></script>
 <script src="/theme/{{$theme}}/assets/components.async.js?v={{$version}}"></script>
 <script src="/theme/{{$theme}}/assets/umi.js?v={{$version}}"></script>

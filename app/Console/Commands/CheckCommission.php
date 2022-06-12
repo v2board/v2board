@@ -98,6 +98,7 @@ class CheckCommission extends Command
             if (!$inviter) continue;
             if (!isset($commissionShareLevels[$l])) continue;
             $commissionBalance = $order->commission_balance * ($commissionShareLevels[$l] / 100);
+            if (!$commissionBalance) continue;
             if ((int)config('v2board.withdraw_close_enable', 0)) {
                 $inviter->balance = $inviter->balance + $commissionBalance;
             } else {

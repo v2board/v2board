@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Cache;
  */
 class TrojanTidalabController extends Controller
 {
+    CONST TROJAN_CONFIG = '{"run_type":"server","local_addr":"0.0.0.0","local_port":443,"remote_addr":"www.taobao.com","remote_port":80,"password":[],"ssl":{"cert":"server.crt","key":"server.key","sni":"domain.com"},"api":{"enabled":true,"api_addr":"127.0.0.1","api_port":10000}}';
     public function __construct(Request $request)
     {
         $token = $request->input('token');
@@ -49,13 +50,16 @@ class TrojanTidalabController extends Controller
                 "password" => $user->uuid,
             ];
             unset($user['uuid']);
-            unset($user['email']);
             array_push($result, $user);
+        }
+        $eTag = sha1(json_encode($result));
+        if (strpos($request->header('If-None-Match'), $eTag) !== false ) {
+            abort(304);
         }
         return response([
             'msg' => 'ok',
             'data' => $result,
-        ]);
+        ])->header('ETag', "\"{$eTag}\"");
     }
 
     // 后端提交数据
@@ -94,13 +98,28 @@ class TrojanTidalabController extends Controller
         if (empty($nodeId) || empty($localPort)) {
             abort(500, '参数错误');
         }
-        $serverService = new ServerService();
         try {
-            $json = $serverService->getTrojanConfig($nodeId, $localPort);
+            $json = $this->getTrojanConfig($nodeId, $localPort);
         } catch (\Exception $e) {
             abort(500, $e->getMessage());
         }
 
         die(json_encode($json, JSON_UNESCAPED_UNICODE));
+    }
+
+    private function getTrojanConfig(int $nodeId, int $localPort)
+    {
+        $server = ServerTrojan::find($nodeId);
+        if (!$server) {
+            abort(500, '节点不存在');
+        }
+
+        $json = json_decode(self::TROJAN_CONFIG);
+        $json->local_port = $server->server_port;
+        $json->ssl->sni = $server->server_name ? $server->server_name : $server->host;
+        $json->ssl->cert = "/root/.cert/server.crt";
+        $json->ssl->key = "/root/.cert/server.key";
+        $json->api->api_port = $localPort;
+        return $json;
     }
 }

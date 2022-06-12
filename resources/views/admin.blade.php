@@ -2,9 +2,9 @@
 <html>
 
 <head>
-    <link rel="stylesheet" href="/assets/admin/components.chunk.css?v={{$verison}}">
-    <link rel="stylesheet" href="/assets/admin/umi.css?v={{$verison}}">
-    <link rel="stylesheet" href="/assets/admin/custom.css?v={{$verison}}">
+    <link rel="stylesheet" href="/assets/admin/components.chunk.css?v={{$version}}">
+    <link rel="stylesheet" href="/assets/admin/umi.css?v={{$version}}">
+    <link rel="stylesheet" href="/assets/admin/custom.css?v={{$version}}">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
     <title>{{$title}}</title>
@@ -18,17 +18,18 @@
                 header: '{{$theme_header}}',
                 color: '{{$theme_color}}',
             },
-            verison: '{{$verison}}',
-            background_url: '{{$backgroun_url}}'
+            version: '{{$version}}',
+            background_url: '{{$background_url}}',
+            logo: '{{$logo}}'
         }
     </script>
 </head>
 
 <body>
 <div id="root"></div>
-<script src="/assets/admin/vendors.async.js?v={{$verison}}"></script>
-<script src="/assets/admin/components.async.js?v={{$verison}}"></script>
-<script src="/assets/admin/umi.js?v={{$verison}}"></script>
+<script src="/assets/admin/vendors.async.js?v={{$version}}"></script>
+<script src="/assets/admin/components.async.js?v={{$version}}"></script>
+<script src="/assets/admin/umi.js?v={{$version}}"></script>
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-P1E9Z5LRRK"></script>
 <script>

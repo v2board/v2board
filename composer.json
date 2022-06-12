@@ -11,26 +11,25 @@
     ],
     "license": "MIT",
     "require": {
-        "php": "^7.2.5|^8.0",
+        "php": "^7.3.0|^8.0",
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
         "google/recaptcha": "^1.2",
-        "guzzlehttp/guzzle": "^6.3.1|^7.0.1",
-        "laravel/framework": "^7.29",
-        "laravel/horizon": "^4.3.5",
+        "guzzlehttp/guzzle": "^7.4.3",
+        "laravel/framework": "^8.0",
+        "laravel/horizon": "^5.9.6",
         "laravel/tinker": "^2.5",
         "linfo/linfo": "^4.0",
-        "lokielse/omnipay-wechatpay": "^3.0",
         "php-curl-class/php-curl-class": "^8.6",
         "stripe/stripe-php": "^7.36.1",
         "symfony/yaml": "^4.3"
     },
     "require-dev": {
-        "facade/ignition": "^2.0",
+        "facade/ignition": "^2.3.6",
         "fakerphp/faker": "^1.9.1",
         "mockery/mockery": "^1.3.1",
         "nunomaduro/collision": "^4.3",
-        "phpunit/phpunit": "^8.5.8|^9.3.3"
+        "phpunit/phpunit": "^9.0"
     },
     "config": {
         "optimize-autoloader": true,

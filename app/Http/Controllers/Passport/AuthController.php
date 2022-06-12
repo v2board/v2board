@@ -20,6 +20,12 @@ class AuthController extends Controller
 {
     public function register(AuthRegister $request)
     {
+        if ((int)config('v2board.register_limit_by_ip_enable', 0)) {
+            $registerCountByIP = Cache::get(CacheKey::get('REGISTER_IP_RATE_LIMIT', $request->ip())) ?? 0;
+            if ((int)$registerCountByIP >= (int)config('v2board.register_limit_count', 3)) {
+                abort(500, __('Register frequently, please try again after 1 hour'));
+            }
+        }
         if ((int)config('v2board.recaptcha_enable', 0)) {
             $recaptcha = new ReCaptcha(config('v2board.recaptcha_key'));
             $recaptchaResp = $recaptcha->verify($request->input('recaptcha_data'));
@@ -109,6 +115,16 @@ class AuthController extends Controller
         ];
         $request->session()->put('email', $user->email);
         $request->session()->put('id', $user->id);
+        $user->last_login_at = time();
+        $user->save();
+
+        if ((int)config('v2board.register_limit_by_ip_enable', 0)) {
+            Cache::put(
+                CacheKey::get('REGISTER_IP_RATE_LIMIT', $request->ip()),
+                (int)$registerCountByIP + 1,
+                (int)config('v2board.register_limit_expire', 60) * 60
+            );
+        }
         return response()->json([
             'data' => $data
         ]);

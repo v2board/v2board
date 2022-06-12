@@ -2,12 +2,10 @@
 
 namespace App\Console\Commands;
 
-use App\Jobs\StatServerJob;
 use Illuminate\Console\Command;
 use App\Models\Order;
 use App\Models\StatOrder;
-use App\Models\ServerLog;
-use Illuminate\Support\Facades\DB;
+use App\Models\CommissionLog;
 
 class V2boardStatistics extends Command
 {
@@ -50,14 +48,16 @@ class V2boardStatistics extends Command
     {
         $endAt = strtotime(date('Y-m-d'));
         $startAt = strtotime('-1 day', $endAt);
-        $builder = Order::where('paid_at', '>=', $startAt)
+        $orderBuilder = Order::where('paid_at', '>=', $startAt)
             ->where('paid_at', '<', $endAt)
             ->whereNotIn('status', [0, 2]);
-        $orderCount = $builder->count();
-        $orderAmount = $builder->sum('total_amount');
-        $builder = $builder->whereNotNull('actual_commission_balance');
-        $commissionCount = $builder->count();
-        $commissionAmount = $builder->sum('actual_commission_balance');
+        $orderCount = $orderBuilder->count();
+        $orderAmount = $orderBuilder->sum('total_amount');
+        $commissionBuilder = CommissionLog::where('created_at', '>=', $startAt)
+            ->where('created_at', '<', $endAt)
+            ->where('get_amount', '>', 0);
+        $commissionCount = $commissionBuilder->count();
+        $commissionAmount = $commissionBuilder->sum('get_amount');
         $data = [
             'order_count' => $orderCount,
             'order_amount' => $orderAmount,

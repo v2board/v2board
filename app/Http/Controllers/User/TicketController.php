@@ -8,6 +8,7 @@ use App\Http\Requests\User\TicketWithdraw;
 use App\Jobs\SendTelegramJob;
 use App\Models\User;
 use App\Services\TelegramService;
+use App\Services\TicketService;
 use App\Utils\Dict;
 use Illuminate\Http\Request;
 use App\Models\Ticket;
@@ -40,13 +41,6 @@ class TicketController extends Controller
         $ticket = Ticket::where('user_id', $request->session()->get('id'))
             ->orderBy('created_at', 'DESC')
             ->get();
-        for ($i = 0; $i < count($ticket); $i++) {
-            if ($ticket[$i]['last_reply_user_id'] == $request->session()->get('id')) {
-                $ticket[$i]['reply_status'] = 0;
-            } else {
-                $ticket[$i]['reply_status'] = 1;
-            }
-        }
         return response([
             'data' => $ticket
         ]);
@@ -55,15 +49,14 @@ class TicketController extends Controller
     public function save(TicketSave $request)
     {
         DB::beginTransaction();
-        if ((int)Ticket::where('status', 0)->where('user_id', $request->session()->get('id'))->count()) {
+        if ((int)Ticket::where('status', 0)->where('user_id', $request->session()->get('id'))->lockForUpdate()->count()) {
             abort(500, __('There are other unresolved tickets'));
         }
         $ticket = Ticket::create(array_merge($request->only([
             'subject',
             'level'
         ]), [
-            'user_id' => $request->session()->get('id'),
-            'last_reply_user_id' => $request->session()->get('id')
+            'user_id' => $request->session()->get('id')
         ]));
         if (!$ticket) {
             DB::rollback();
@@ -79,7 +72,7 @@ class TicketController extends Controller
             abort(500, __('Failed to open ticket'));
         }
         DB::commit();
-        $this->sendNotify($ticket, $ticketMessage);
+        $this->sendNotify($ticket, $request->input('message'));
         return response([
             'data' => true
         ]);
@@ -105,19 +98,15 @@ class TicketController extends Controller
         if ($request->session()->get('id') == $this->getLastMessage($ticket->id)->user_id) {
             abort(500, __('Please wait for the technical enginneer to reply'));
         }
-        DB::beginTransaction();
-        $ticketMessage = TicketMessage::create([
-            'user_id' => $request->session()->get('id'),
-            'ticket_id' => $ticket->id,
-            'message' => $request->input('message')
-        ]);
-        $ticket->last_reply_user_id = $request->session()->get('id');
-        if (!$ticketMessage || !$ticket->save()) {
-            DB::rollback();
+        $ticketService = new TicketService();
+        if (!$ticketService->reply(
+            $ticket,
+            $request->input('message'),
+            $request->session()->get('id')
+        )) {
             abort(500, __('Ticket reply failed'));
         }
-        DB::commit();
-        $this->sendNotify($ticket, $ticketMessage);
+        $this->sendNotify($ticket, $request->input('message'));
         return response([
             'data' => true
         ]);
@@ -175,8 +164,7 @@ class TicketController extends Controller
         $ticket = Ticket::create([
             'subject' => $subject,
             'level' => 2,
-            'user_id' => $request->session()->get('id'),
-            'last_reply_user_id' => $request->session()->get('id')
+            'user_id' => $request->session()->get('id')
         ]);
         if (!$ticket) {
             DB::rollback();
@@ -196,15 +184,15 @@ class TicketController extends Controller
             abort(500, __('Failed to open ticket'));
         }
         DB::commit();
-        $this->sendNotify($ticket, $ticketMessage);
+        $this->sendNotify($ticket, $message);
         return response([
             'data' => true
         ]);
     }
 
-    private function sendNotify(Ticket $ticket, TicketMessage $ticketMessage)
+    private function sendNotify(Ticket $ticket, string $message)
     {
         $telegramService = new TelegramService();
-        $telegramService->sendMessageWithAdmin("📮工单提醒 #{$ticket->id}\n———————————————\n主题：\n`{$ticket->subject}`\n内容：\n`{$ticketMessage->message}`", true);
+        $telegramService->sendMessageWithAdmin("📮工单提醒 #{$ticket->id}\n———————————————\n主题：\n`{$ticket->subject}`\n内容：\n`{$message}`", true);
     }
 }

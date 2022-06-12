@@ -21,7 +21,8 @@ class CommController extends Controller
                 'is_recaptcha' => (int)config('v2board.recaptcha_enable', 0) ? 1 : 0,
                 'recaptcha_site_key' => config('v2board.recaptcha_site_key'),
                 'app_description' => config('v2board.app_description'),
-                'app_url' => config('v2board.app_url')
+                'app_url' => config('v2board.app_url'),
+                'logo' => config('v2board.logo'),
             ]
         ]);
     }
@@ -33,12 +34,5 @@ class CommController extends Controller
             return preg_split('/,/', $suffix);
         }
         return $suffix;
-    }
-
-    public function getHitokoto()
-    {
-        return response([
-            'data' => Http::get('https://v1.hitokoto.cn/')->json()
-        ]);
     }
 }

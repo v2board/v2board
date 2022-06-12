@@ -15,6 +15,52 @@ use Illuminate\Support\Facades\DB;
 
 class UserService
 {
+    public function getResetDay(User $user)
+    {
+        if ($user->expired_at <= time() || $user->expired_at === NULL) return null;
+        // if reset method is not reset
+        if (isset($user->plan->reset_traffic_method) && $user->plan->reset_traffic_method === 2) return null;
+
+        if ((int)config('v2board.reset_traffic_method') === 0 ||
+            (isset($user->plan->reset_traffic_method) && $user->plan->reset_traffic_method === 0))
+        {
+            $day = date('d', $user->expired_at);
+            $today = date('d');
+            $lastDay = date('d', strtotime('last day of +0 months'));
+            return $lastDay - $today;
+        }
+        if ((int)config('v2board.reset_traffic_method') === 1 ||
+            (isset($user->plan->reset_traffic_method) && $user->plan->reset_traffic_method === 1))
+        {
+            $day = date('d', $user->expired_at);
+            $today = date('d');
+            $lastDay = date('d', strtotime('last day of +0 months'));
+            if ((int)$day >= (int)$today && (int)$day >= (int)$lastDay) {
+                return $lastDay - $today;
+            }
+            if ((int)$day >= (int)$today) {
+                return $day - $today;
+            } else {
+                return $lastDay - $today + $day;
+            }
+        }
+        if ((int)config('v2board.reset_traffic_method') === 3 ||
+            (isset($user->plan->reset_traffic_method) && $user->plan->reset_traffic_method === 3))
+        {
+            $nextYear = strtotime(date("Y-01-01", strtotime('+1 year')));
+            return (int)(($nextYear - time()) / 86400);
+        }
+        if ((int)config('v2board.reset_traffic_method') === 4 ||
+            (isset($user->plan->reset_traffic_method) && $user->plan->reset_traffic_method === 4))
+        {
+            $md = date('m-d', $user->expired_at);
+            $nowYear = strtotime(date("Y-{$md}"));
+            $nextYear = strtotime('+1 year', $nowYear);
+            return (int)(($nextYear - time()) / 86400);
+        }
+        return null;
+    }
+
     public function isAvailable(User $user)
     {
         if (!$user->banned && $user->transfer_enable && ($user->expired_at > time() || $user->expired_at === NULL)) {

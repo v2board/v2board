@@ -71,12 +71,12 @@ class StatController extends Controller
                 'value' => $statistic['order_count']
             ]);
             array_push($result, [
-                'type' => '佣金金额',
+                'type' => '佣金金额(已发放)',
                 'date' => $date,
                 'value' => $statistic['commission_amount'] / 100
             ]);
             array_push($result, [
-                'type' => '佣金笔数',
+                'type' => '佣金笔数(已发放)',
                 'date' => $date,
                 'value' => $statistic['commission_count']
             ]);
@@ -94,7 +94,8 @@ class StatController extends Controller
             'vmess' => ServerV2ray::where('parent_id', null)->get()->toArray(),
             'trojan' => ServerTrojan::where('parent_id', null)->get()->toArray()
         ];
-        $timestamp = strtotime('-1 day', strtotime(date('Y-m-d')));
+        $startAt = strtotime('-1 day', strtotime(date('Y-m-d')));
+        $endAt = strtotime(date('Y-m-d'));
         $statistics = StatServer::select([
                 'server_id',
                 'server_type',
@@ -102,7 +103,8 @@ class StatController extends Controller
                 'd',
                 DB::raw('(u+d) as total')
             ])
-            ->where('record_at', '>=', $timestamp)
+            ->where('record_at', '>=', $startAt)
+            ->where('record_at', '<', $endAt)
             ->where('record_type', 'd')
             ->limit(10)
             ->orderBy('total', 'DESC')

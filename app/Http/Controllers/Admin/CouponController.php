@@ -88,7 +88,16 @@ class CouponController extends Controller
             array_push($coupons, $coupon);
         }
         DB::beginTransaction();
-        if (!Coupon::insert($coupons)) {
+        if (!Coupon::insert(array_map(function ($item) use ($coupon) {
+            // format data
+            if (isset($item['limit_plan_ids']) && is_array($item['limit_plan_ids'])) {
+                $item['limit_plan_ids'] = json_encode($coupon['limit_plan_ids']);
+            }
+            if (isset($item['limit_period']) && is_array($item['limit_period'])) {
+                $item['limit_period'] = json_encode($coupon['limit_period']);
+            }
+            return $item;
+        }, $coupons))) {
             DB::rollBack();
             abort(500, '生成失败');
         }

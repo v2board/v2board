@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Client\Protocols;
 
+use App\Utils\Helper;
+
 class Surge
 {
     public $flag = 'surge';
@@ -52,6 +54,7 @@ class Surge
         }
 
         // Subscription link
+        $subsURL = Helper::getSubscribeUrl("/api/v1/client/subscribe?token={$user['token']}");
         $subsDomain = $_SERVER['SERVER_NAME'];
         $subsURL = 'https://' . $subsDomain . '/api/v1/client/subscribe?token=' . $user['token'];
 

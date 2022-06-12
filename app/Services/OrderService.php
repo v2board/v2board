@@ -6,6 +6,8 @@ use App\Jobs\OrderHandleJob;
 use App\Models\Order;
 use App\Models\Plan;
 use App\Models\User;
+use App\Utils\CacheKey;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class OrderService
@@ -163,18 +165,17 @@ class OrderService
     private function getSurplusValueByOneTime(User $user, Order $order)
     {
         $lastOneTimeOrder = Order::where('user_id', $user->id)
-            ->where('period', 'onetime')
+            ->where('period', 'onetime_price')
             ->where('status', 3)
             ->orderBy('id', 'DESC')
             ->first();
         if (!$lastOneTimeOrder) return;
-        $plan = Plan::find($lastOneTimeOrder->plan_id);
-        if (!$plan) return;
-        $trafficUnitPrice = $plan->onetime_price / $plan->transfer_enable;
-        if ($user->discount && $trafficUnitPrice) {
-            $trafficUnitPrice = $trafficUnitPrice - ($trafficUnitPrice * $user->discount / 100);
-        }
-        $notUsedTraffic = $plan->transfer_enable - (($user->u + $user->d) / 1073741824);
+        $nowUserTraffic = $user->transfer_enable / 1073741824;
+        if (!$nowUserTraffic) return;
+        $paidTotalAmount = ($lastOneTimeOrder->total_amount + $lastOneTimeOrder->balance_amount);
+        if (!$paidTotalAmount) return;
+        $trafficUnitPrice = $paidTotalAmount / $nowUserTraffic;
+        $notUsedTraffic = $nowUserTraffic - (($user->u + $user->d) / 1073741824);
         $result = $trafficUnitPrice * $notUsedTraffic;
         $orderModel = Order::where('user_id', $user->id)->where('period', '!=', 'reset_price')->where('status', 3);
         $order->surplus_amount = $result > 0 ? $result : 0;

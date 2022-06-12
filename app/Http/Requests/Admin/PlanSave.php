@@ -26,7 +26,7 @@ class PlanSave extends FormRequest
             'three_year_price' => 'nullable|integer',
             'onetime_price' => 'nullable|integer',
             'reset_price' => 'nullable|integer',
-            'reset_traffic_method' => 'nullable|integer|in:0,1,2'
+            'reset_traffic_method' => 'nullable|integer|in:0,1,2,3,4'
         ];
     }
 

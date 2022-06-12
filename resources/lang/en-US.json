@@ -86,5 +86,9 @@
     "The traffic usage in :app_name has reached 80%": "The traffic usage in :app_name has reached 80%",
     "The service in :app_name is about to expire": "The service in :app_name is about to expire",
     "The coupon can only be used :limit_use_with_user per person": "The coupon can only be used :limit_use_with_user per person",
-    "The coupon code cannot be used for this period": "The coupon code cannot be used for this period"
+    "The coupon code cannot be used for this period": "The coupon code cannot be used for this period",
+    "Request failed, please try again later": "Request failed, please try again later",
+    "Register frequently, please try again after 1 hour": "Register frequently, please try again after 1 hour",
+    "Uh-oh, we've had some problems, we're working on it.": "Uh-oh, we've had some problems, we're working on it",
+    "This subscription reset package does not apply to your subscription": "This subscription reset package does not apply to your subscription"
 }

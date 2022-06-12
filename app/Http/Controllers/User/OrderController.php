@@ -87,8 +87,12 @@ class OrderController extends Controller
         }
 
         if ($request->input('period') === 'reset_price') {
-            if ($user->expired_at <= time() || !$user->plan_id) {
+            if (!$user->plan_id) {
                 abort(500, __('Subscription has expired or no active subscription, unable to purchase Data Reset Package'));
+            } else {
+                if ($user->plan_id !== $request->input('plan_id')) {
+                    abort(500, __('This subscription reset package does not apply to your subscription'));
+                }
             }
         }
 
@@ -184,13 +188,17 @@ class OrderController extends Controller
         $payment = Payment::find($method);
         if (!$payment || $payment->enable !== 1) abort(500, __('Payment method is not available'));
         $paymentService = new PaymentService($payment->payment, $payment->id);
+        if ($payment->handling_fee_fixed || $payment->handling_fee_percent) {
+            $order->handling_amount = round(($order->total_amount * ($payment->handling_fee_percent / 100)) + $payment->handling_fee_fixed);
+        }
+        $order->payment_id = $method;
+        if (!$order->save()) abort(500, __('Request failed, please try again later'));
         $result = $paymentService->pay([
             'trade_no' => $tradeNo,
-            'total_amount' => $order->total_amount,
+            'total_amount' => isset($order->handling_amount) ? ($order->total_amount + $order->handling_amount) : $order->total_amount,
             'user_id' => $order->user_id,
             'stripe_token' => $request->input('token')
         ]);
-        $order->update(['payment_id' => $method]);
         return response([
             'type' => $result['type'],
             'data' => $result['data']
@@ -217,7 +225,9 @@ class OrderController extends Controller
             'id',
             'name',
             'payment',
-            'icon'
+            'icon',
+            'handling_fee_fixed',
+            'handling_fee_percent'
         ])
             ->where('enable', 1)->get();
 

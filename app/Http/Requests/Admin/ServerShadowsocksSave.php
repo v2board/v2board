@@ -22,6 +22,8 @@ class ServerShadowsocksSave extends FormRequest
             'port' => 'required',
             'server_port' => 'required',
             'cipher' => 'required|in:aes-128-gcm,aes-256-gcm,chacha20-ietf-poly1305',
+            'obfs' => 'nullable|in:http',
+            'obfs_settings' => 'nullable|array',
             'tags' => 'nullable|array',
             'rate' => 'required|numeric'
         ];
@@ -40,7 +42,9 @@ class ServerShadowsocksSave extends FormRequest
             'cipher.required' => '加密方式不能为空',
             'tags.array' => '标签格式不正确',
             'rate.required' => '倍率不能为空',
-            'rate.numeric' => '倍率格式不正确'
+            'rate.numeric' => '倍率格式不正确',
+            'obfs.in' => '混淆格式不正确',
+            'obfs_settings.array' => '混淆设置格式不正确'
         ];
     }
 }

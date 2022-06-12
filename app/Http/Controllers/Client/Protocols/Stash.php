@@ -23,7 +23,7 @@ class Stash
         $appName = config('v2board.app_name', 'V2Board');
         header("subscription-userinfo: upload={$user['u']}; download={$user['d']}; total={$user['transfer_enable']}; expire={$user['expired_at']}");
         header('profile-update-interval: 24');
-        header("content-disposition: filename={$appName}");
+        header("content-disposition: filename*=UTF-8''".rawurlencode($appName));
         // 暂时使用clash配置文件，后续根据Stash更新情况更新
         $defaultConfig = base_path() . '/resources/rules/default.clash.yaml';
         $customConfig = base_path() . '/resources/rules/custom.clash.yaml';
@@ -134,7 +134,7 @@ class Stash
             if ($server['networkSettings']) {
                 $grpcSettings = $server['networkSettings'];
                 $array['grpc-opts'] = [];
-                $array['grpc-opts']['grpc-service-name'] = $grpcSettings['serviceName'];
+                if (isset($grpcSettings['serviceName']))  $array['grpc-opts']['grpc-service-name'] = $grpcSettings['serviceName'];
             }
         }
 
