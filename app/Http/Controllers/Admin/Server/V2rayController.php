@@ -89,13 +89,4 @@ class V2rayController extends Controller
             'data' => true
         ]);
     }
-
-    public function viewConfig(Request $request)
-    {
-        $serverService = new ServerService();
-        $config = $serverService->getV2RayConfig($request->input('node_id'), 23333);
-        return response([
-            'data' => $config
-        ]);
-    }
 }

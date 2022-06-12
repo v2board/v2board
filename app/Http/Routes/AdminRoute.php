@@ -50,7 +50,6 @@ class AdminRoute
                 $router->post('update', 'Admin\\Server\\V2rayController@update');
                 $router->post('copy', 'Admin\\Server\\V2rayController@copy');
                 $router->post('sort', 'Admin\\Server\\V2rayController@sort');
-                $router->post('viewConfig', 'Admin\\Server\\V2rayController@viewConfig');
             });
             $router->group([
                 'prefix' => 'server/shadowsocks'
