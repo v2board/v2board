@@ -2,15 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Order;
-use App\Models\User;
-use App\Utils\CacheKey;
-use App\Utils\Helper;
 use Illuminate\Console\Command;
-use Illuminate\Filesystem\Filesystem;
-use Illuminate\Foundation\Console\ConfigCacheCommand;
-use Illuminate\Support\Facades\Cache;
-use Matriphe\Larinfo;
 
 class Test extends Command
 {

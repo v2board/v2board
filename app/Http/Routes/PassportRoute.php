@@ -18,6 +18,7 @@ class PassportRoute
             $router->post('/auth/forget', 'Passport\\AuthController@forget');
             $router->post('/auth/getTempToken', 'Passport\\AuthController@getTempToken');
             $router->post('/auth/getQuickLoginUrl', 'Passport\\AuthController@getQuickLoginUrl');
+            $router->post('/auth/loginWithMailLink', 'Passport\\AuthController@loginWithMailLink');
             // Comm
             $router->get ('/comm/config', 'Passport\\CommController@config');
             $router->post('/comm/sendEmailVerify', 'Passport\\CommController@sendEmailVerify');

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Passport\AuthRegister;
 use App\Http\Requests\Passport\AuthForget;
 use App\Http\Requests\Passport\AuthLogin;
+use App\Jobs\SendEmailJob;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use App\Models\Plan;
@@ -18,6 +19,59 @@ use ReCaptcha\ReCaptcha;
 
 class AuthController extends Controller
 {
+    public function loginWithMailLink(Request $request)
+    {
+        if (!(int)config('v2board.login_with_mail_link_enable')) {
+            abort(404);
+        }
+        $params = $request->validate([
+            'email' => 'required|email',
+            'redirect' => 'nullable'
+        ]);
+
+        if (Cache::get(CacheKey::get('LAST_SEND_LOGIN_WITH_MAIL_LINK_TIMESTAMP', $params['email']))) {
+            abort(500, __('Sending frequently, please try again later'));
+        }
+
+        $user = User::where('email', $params['email'])->first();
+        if (!$user) {
+            return response([
+                'data' => true
+            ]);
+        }
+
+        $code = Helper::guid();
+        $key = CacheKey::get('TEMP_TOKEN', $code);
+        Cache::put($key, $user->id, 300);
+        Cache::put(CacheKey::get('LAST_SEND_LOGIN_WITH_MAIL_LINK_TIMESTAMP', $params['email']), time(), 60);
+
+
+        $redirect = '/#/login?verify=' . $code . '&redirect=' . ($request->input('redirect') ? $request->input('redirect') : 'dashboard');
+        if (config('v2board.app_url')) {
+            $link = config('v2board.app_url') . $redirect;
+        } else {
+            $link = url($redirect);
+        }
+
+        SendEmailJob::dispatch([
+            'email' => $user->email,
+            'subject' => __('Login to :name', [
+                'name' => config('v2board.app_name', 'V2Board')
+            ]),
+            'template_name' => 'login',
+            'template_value' => [
+                'name' => config('v2board.app_name', 'V2Board'),
+                'link' => $link,
+                'url' => config('v2board.app_url')
+            ]
+        ]);
+
+        return response([
+            'data' => $link
+        ]);
+
+    }
+
     public function register(AuthRegister $request)
     {
         if ((int)config('v2board.register_limit_by_ip_enable', 0)) {
