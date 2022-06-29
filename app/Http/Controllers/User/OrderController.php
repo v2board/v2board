@@ -85,6 +85,10 @@ class OrderController extends Controller
             abort(500, __('Subscription plan does not exist'));
         }
 
+        if ($plan->inventory_limit !== NULL && !$plan->inventory_limit) {
+            abort(500, __('Current product is sold out'));
+        }
+
         if ($plan[$request->input('period')] === NULL) {
             abort(500, __('This payment period cannot be purchased, please choose another period'));
         }
