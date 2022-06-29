@@ -249,6 +249,11 @@ class OrderService
                 return false;
             }
         }
+        $planService = new PlanService($order->plan_id);
+        if (!$planService->incrementInventory()) {
+            DB::rollBack();
+            return false;
+        }
         DB::commit();
         return true;
     }

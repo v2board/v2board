@@ -9,6 +9,7 @@ use App\Models\Payment;
 use App\Services\CouponService;
 use App\Services\OrderService;
 use App\Services\PaymentService;
+use App\Services\PlanService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -75,7 +76,9 @@ class OrderController extends Controller
             abort(500, __('You have an unpaid or pending order, please try again later or cancel it'));
         }
 
-        $plan = Plan::find($request->input('plan_id'));
+        $planService = new PlanService($request->input('plan_id'));
+
+        $plan = $planService->plan;
         $user = User::find($request->session()->get('id'));
 
         if (!$plan) {
@@ -151,6 +154,10 @@ class OrderController extends Controller
                 $order->balance_amount = $user->balance;
                 $order->total_amount = $order->total_amount - $user->balance;
             }
+        }
+
+        if (!$planService->decrementInventory()) {
+            abort(500, __('Failed to create order'));
         }
 
         if (!$order->save()) {
