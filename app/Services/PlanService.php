@@ -13,17 +13,15 @@ class PlanService
         $this->plan = Plan::lockForUpdate()->find($planId);
     }
 
-    public function incrementInventory()
+    public function incrementInventory(): bool
     {
-        if ($this->plan->inventory_limit !== NULL) {
-            return $this->plan->increment('inventory_limit');
-        }
+        if ($this->plan->inventory_limit !== NULL) return true;
+        return $this->plan->increment('inventory_limit');
     }
 
-    public function decrementInventory()
+    public function decrementInventory(): bool
     {
-        if ($this->plan->inventory_limit !== NULL) {
-            return $this->plan->decrement('inventory_limit');
-        }
+        if ($this->plan->inventory_limit !== NULL) return true;
+        return $this->plan->decrement('inventory_limit');
     }
 }
