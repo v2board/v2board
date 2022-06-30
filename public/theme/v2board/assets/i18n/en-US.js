@@ -207,12 +207,10 @@ window.settings.i18n['en-US'] = {
   '使用文档': 'Knowledge Base',
   '最后更新: {date}': 'Last Updated: {date}',
   '复制成功': 'Copied successfully',
-  '我的订阅': 'My Subscription',
   '还有没支付的订单': 'There are still unpaid orders',
   '立即支付': 'Pay Now',
   '条工单正在处理中': 'tickets are in process',
   '立即查看': 'View Now',
-  '购买订阅': 'Purchase Subscription',
   '使用文档': 'Knowledge Base',
   '我的订单': 'My Orders',
   '流量明细': 'Transfer Data Details',
@@ -263,7 +261,7 @@ window.settings.i18n['en-US'] = {
   '选择最适合你的计划': 'Choose the right plan for you',
   '全部': 'All',
   '按周期': 'By Cycle',
-  '一次性': 'One Time',
   '遇到问题': 'I have a problem',
-  '遇到问题可以通过工单与我们沟通': 'If you have any problems, you can contact us via ticket'
+  '遇到问题可以通过工单与我们沟通': 'If you have any problems, you can contact us via ticket',
+  '按流量': '按流量'
 };
