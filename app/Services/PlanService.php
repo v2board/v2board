@@ -15,13 +15,13 @@ class PlanService
 
     public function incrementInventory(): bool
     {
-        if ($this->plan->inventory_limit !== NULL) return true;
+        if ($this->plan->inventory_limit === NULL) return true;
         return $this->plan->increment('inventory_limit');
     }
 
     public function decrementInventory(): bool
     {
-        if ($this->plan->inventory_limit !== NULL) return true;
+        if ($this->plan->inventory_limit === NULL) return true;
         return $this->plan->decrement('inventory_limit');
     }
 }
