@@ -263,5 +263,5 @@ window.settings.i18n['en-US'] = {
   '按周期': 'By Cycle',
   '遇到问题': 'I have a problem',
   '遇到问题可以通过工单与我们沟通': 'If you have any problems, you can contact us via ticket',
-  '按流量': '按流量'
+  '按流量': 'Pay As You Go'
 };
