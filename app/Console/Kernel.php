@@ -35,6 +35,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('check:ticket')->everyMinute();
         // reset
         $schedule->command('reset:traffic')->daily();
+        $schedule->command('reset:log')->daily();
         // send
         $schedule->command('send:remindMail')->dailyAt('11:30');
         // horizon metrics
