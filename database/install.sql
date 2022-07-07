@@ -176,7 +176,7 @@ CREATE TABLE `v2_plan` (
                            `onetime_price` int(11) DEFAULT NULL,
                            `reset_price` int(11) DEFAULT NULL,
                            `reset_traffic_method` tinyint(1) DEFAULT NULL,
-                           `inventory_limit` int(11) DEFAULT NULL,
+                           `capacity_limit` int(11) DEFAULT NULL,
                            `created_at` int(11) NOT NULL,
                            `updated_at` int(11) NOT NULL,
                            PRIMARY KEY (`id`)
@@ -379,4 +379,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2022-06-28 18:09:08
+-- 2022-07-07 18:23:17

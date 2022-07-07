@@ -85,7 +85,7 @@ class OrderController extends Controller
             abort(500, __('Subscription plan does not exist'));
         }
 
-        if ($plan->inventory_limit !== NULL && !$plan->inventory_limit) {
+        if (!$planService->haveCapacity()) {
             abort(500, __('Current product is sold out'));
         }
 
@@ -158,10 +158,6 @@ class OrderController extends Controller
                 $order->balance_amount = $user->balance;
                 $order->total_amount = $order->total_amount - $user->balance;
             }
-        }
-
-        if (!$planService->decrementInventory()) {
-            abort(500, __('Failed to create order'));
         }
 
         if (!$order->save()) {

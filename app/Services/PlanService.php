@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Plan;
+use App\Models\User;
 
 class PlanService
 {
@@ -13,15 +14,10 @@ class PlanService
         $this->plan = Plan::lockForUpdate()->find($planId);
     }
 
-    public function incrementInventory(): bool
+    public function haveCapacity(): bool
     {
-        if ($this->plan->inventory_limit === NULL) return true;
-        return $this->plan->increment('inventory_limit');
-    }
-
-    public function decrementInventory(): bool
-    {
-        if ($this->plan->inventory_limit === NULL) return true;
-        return $this->plan->decrement('inventory_limit');
+        if ($this->plan->capacity_limit === 0) return true;
+        $count = User::where('plan_id', $this->plan->plan_id)->count();
+        return $this->plan->capacity_limit - $count;
     }
 }

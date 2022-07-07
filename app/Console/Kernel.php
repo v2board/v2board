@@ -33,6 +33,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('check:order')->everyMinute();
         $schedule->command('check:commission')->everyMinute();
         $schedule->command('check:ticket')->everyMinute();
+        $schedule->command('check:user')->daily();
         // reset
         $schedule->command('reset:traffic')->daily();
         $schedule->command('reset:log')->daily();

@@ -589,3 +589,6 @@ ALTER TABLE `v2_mail_log`
 
 ALTER TABLE `v2_plan`
     ADD `inventory_limit` int(11) NULL AFTER `reset_traffic_method`;
+
+ALTER TABLE `v2_plan`
+    CHANGE `inventory_limit` `capacity_limit` int(11) NULL AFTER `reset_traffic_method`;

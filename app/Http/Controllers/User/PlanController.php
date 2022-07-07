@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Plan;
+use Illuminate\Support\Facades\DB;
 
 class PlanController extends Controller
 {
@@ -23,12 +24,32 @@ class PlanController extends Controller
             return response([
                 'data' => $plan
             ]);
+        } else {
+            $counts = User::select(
+                DB::raw("plan_id"),
+                DB::raw("count(*) as count")
+            )
+                ->where('plan_id', '!=', NULL)
+                ->where(function ($query) {
+                    $query->where('expired_at', '>=', time())
+                        ->orWhere('expired_at', NULL);
+                })
+                ->groupBy("plan_id")
+                ->get()
+                ->keyBy('plan_id');
         }
-        $plan = Plan::where('show', 1)
+        $plans = Plan::where('show', 1)
             ->orderBy('sort', 'ASC')
             ->get();
+        if (isset($counts)) {
+            foreach ($plans as $k => $v) {
+                if (isset($counts[$plans[$k]->id])) {
+                    $plans[$k]->capacity_limit = $plans[$k]->capacity_limit - $counts[$plans[$k]->id]->count;
+                }
+            }
+        }
         return response([
-            'data' => $plan
+            'data' => $plans
         ]);
     }
 }
