@@ -43,7 +43,9 @@ class CheckUser extends Command
 
     private function resetExpiredUserPlan($day = 14)
     {
-        User::where('expired_at', '<', $day * 86400)->update([
+        User::where('expired_at', '<', $day * 86400)
+            ->whereNotNull('expired_at')
+            ->update([
             'plan_id' => NULL,
             'group_id' => NULL
         ]);
