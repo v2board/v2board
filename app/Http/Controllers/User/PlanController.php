@@ -43,9 +43,9 @@ class PlanController extends Controller
             ->get();
         if (isset($counts)) {
             foreach ($plans as $k => $v) {
-                if (isset($counts[$plans[$k]->id])) {
-                    $plans[$k]->capacity_limit = $plans[$k]->capacity_limit - $counts[$plans[$k]->id]->count;
-                }
+                if ($plans[$k]->capacity_limit === NULL) continue;
+                if (!isset($counts[$plans[$k]->id])) continue;
+                $plans[$k]->capacity_limit = $plans[$k]->capacity_limit - $counts[$plans[$k]->id]->count;
             }
         }
         return response([
