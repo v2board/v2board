@@ -19,7 +19,7 @@ class KnowledgeController extends Controller
                 ->first()
                 ->toArray();
             if (!$knowledge) abort(500, __('Article does not exist'));
-            $user = User::find($request->session()->get('id'));
+            $user = User::find($request->user->id);
             $userService = new UserService();
             if ($userService->isAvailable($user)) {
                 $appleId = config('v2board.apple_id');

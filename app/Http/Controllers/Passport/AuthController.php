@@ -167,8 +167,8 @@ class AuthController extends Controller
             'token' => $user->token,
             'auth_data' => base64_encode("{$user->email}:{$user->password}")
         ];
-        $request->session()->put('email', $user->email);
-        $request->session()->put('id', $user->id);
+
+        Helper::setSession($request, $user);
         $user->last_login_at = time();
         $user->save();
 
@@ -210,16 +210,8 @@ class AuthController extends Controller
             'token' => $user->token,
             'auth_data' => base64_encode("{$user->email}:{$user->password}")
         ];
-        $request->session()->put('email', $user->email);
-        $request->session()->put('id', $user->id);
-        if ($user->is_admin) {
-            $request->session()->put('is_admin', true);
-            $data['is_admin'] = true;
-        }
-        if ($user->is_staff) {
-            $request->session()->put('is_staff', true);
-            $data['is_staff'] = true;
-        }
+
+        if ($user->is_admin) $data['is_admin'] = true;
         return response([
             'data' => $data
         ]);
@@ -250,11 +242,7 @@ class AuthController extends Controller
             if ($user->banned) {
                 abort(500, __('Your account has been suspended'));
             }
-            $request->session()->put('email', $user->email);
-            $request->session()->put('id', $user->id);
-            if ($user->is_admin) {
-                $request->session()->put('is_admin', true);
-            }
+            Helper::setSession($request, $user);
             Cache::forget($key);
             return response([
                 'data' => true
@@ -302,19 +290,6 @@ class AuthController extends Controller
         ]);
     }
 
-    public function check(Request $request)
-    {
-        $data = [
-            'is_login' => $request->session()->get('id') ? true : false
-        ];
-        if ($request->session()->get('is_admin')) {
-            $data['is_admin'] = true;
-        }
-        return response([
-            'data' => $data
-        ]);
-    }
-
     public function forget(AuthForget $request)
     {
         if (Cache::get(CacheKey::get('EMAIL_VERIFY_CODE', $request->input('email'))) !== $request->input('email_code')) {
@@ -335,5 +310,4 @@ class AuthController extends Controller
             'data' => true
         ]);
     }
-
 }

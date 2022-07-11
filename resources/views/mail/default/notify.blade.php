@@ -12,7 +12,7 @@
                         </thead>
                         <tbody>
                         <tr style="padding:40px 40px 0 40px;display:table-cell">
-                            <td style="font-size:24px;line-height:1.5;color:#000;margin-top:40px">公告通知</td>
+                            <td style="font-size:24px;line-height:1.5;color:#000;margin-top:40px">网站通知</td>
                         </tr>
                         <tr>
                             <td style="font-size:14px;color:#333;padding:24px 40px 0 40px">

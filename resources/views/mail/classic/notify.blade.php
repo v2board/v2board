@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>网站公告</title>
+    <title>网站通知</title>
     <style type="text/css">
         img {
             max-width: 100%;
@@ -102,7 +102,7 @@
                             <td class="alert alert-warning"
                                 style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 22px; font-weight: bold; vertical-align: top; color: #fff; font-weight: 500; text-align: center; border-radius: 3px 3px 0 0; background-color: #0073ba; margin: 0; padding: 20px;"
                                 align="center" bgcolor="#0073ba" valign="top">
-                                网站公告
+                                网站通知
                             </td>
                         </tr>
                         <tr

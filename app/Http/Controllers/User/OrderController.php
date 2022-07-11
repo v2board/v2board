@@ -29,7 +29,7 @@ class OrderController extends Controller
 {
     public function fetch(Request $request)
     {
-        $model = Order::where('user_id', $request->session()->get('id'))
+        $model = Order::where('user_id', $request->user->id)
             ->orderBy('created_at', 'DESC');
         if ($request->input('status') !== null) {
             $model->where('status', $request->input('status'));
@@ -50,7 +50,7 @@ class OrderController extends Controller
 
     public function detail(Request $request)
     {
-        $order = Order::where('user_id', $request->session()->get('id'))
+        $order = Order::where('user_id', $request->user->id)
             ->where('trade_no', $request->input('trade_no'))
             ->first();
         if (!$order) {
@@ -72,14 +72,14 @@ class OrderController extends Controller
     public function save(OrderSave $request)
     {
         $userService = new UserService();
-        if ($userService->isNotCompleteOrderByUserId($request->session()->get('id'))) {
+        if ($userService->isNotCompleteOrderByUserId($request->user->id)) {
             abort(500, __('You have an unpaid or pending order, please try again later or cancel it'));
         }
 
         $planService = new PlanService($request->input('plan_id'));
 
         $plan = $planService->plan;
-        $user = User::find($request->session()->get('id'));
+        $user = User::find($request->user->id);
 
         if (!$plan) {
             abort(500, __('Subscription plan does not exist'));
@@ -121,7 +121,7 @@ class OrderController extends Controller
         DB::beginTransaction();
         $order = new Order();
         $orderService = new OrderService($order);
-        $order->user_id = $request->session()->get('id');
+        $order->user_id = $request->user->id;
         $order->plan_id = $plan->id;
         $order->period = $request->input('period');
         $order->trade_no = Helper::generateOrderNo();
@@ -177,7 +177,7 @@ class OrderController extends Controller
         $tradeNo = $request->input('trade_no');
         $method = $request->input('method');
         $order = Order::where('trade_no', $tradeNo)
-            ->where('user_id', $request->session()->get('id'))
+            ->where('user_id', $request->user->id)
             ->where('status', 0)
             ->first();
         if (!$order) {
@@ -216,7 +216,7 @@ class OrderController extends Controller
     {
         $tradeNo = $request->input('trade_no');
         $order = Order::where('trade_no', $tradeNo)
-            ->where('user_id', $request->session()->get('id'))
+            ->where('user_id', $request->user->id)
             ->first();
         if (!$order) {
             abort(500, __('Order does not exist'));
@@ -249,7 +249,7 @@ class OrderController extends Controller
             abort(500, __('Invalid parameter'));
         }
         $order = Order::where('trade_no', $request->input('trade_no'))
-            ->where('user_id', $request->session()->get('id'))
+            ->where('user_id', $request->user->id)
             ->first();
         if (!$order) {
             abort(500, __('Order does not exist'));

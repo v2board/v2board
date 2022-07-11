@@ -13,12 +13,12 @@ class UserRoute
         ], function ($router) {
             // User
             $router->get ('/resetSecurity', 'User\\UserController@resetSecurity');
-            $router->get ('/logout', 'User\\UserController@logout');
             $router->get ('/info', 'User\\UserController@info');
             $router->post('/changePassword', 'User\\UserController@changePassword');
             $router->post('/update', 'User\\UserController@update');
             $router->get ('/getSubscribe', 'User\\UserController@getSubscribe');
             $router->get ('/getStat', 'User\\UserController@getStat');
+            $router->get ('/checkLogin', 'User\\UserController@checkLogin');
             $router->post('/transfer', 'User\\UserController@transfer');
             $router->post('/getQuickLoginUrl', 'User\\UserController@getQuickLoginUrl');
             // Order
