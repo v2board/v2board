@@ -15,7 +15,9 @@ class CouponService
 
     public function __construct($code)
     {
-        $this->coupon = Coupon::where('code', $code)->first();
+        $this->coupon = Coupon::where('code', $code)
+            ->lockForUpdate()
+            ->first();
     }
 
     public function use(Order $order):bool
@@ -37,6 +39,7 @@ class CouponService
         }
         if ($this->coupon->limit_use !== NULL) {
             $this->coupon->limit_use = $this->coupon->limit_use - 1;
+            if ($this->coupon->limit_use <= 0) return false;
             if (!$this->coupon->save()) {
                 return false;
             }

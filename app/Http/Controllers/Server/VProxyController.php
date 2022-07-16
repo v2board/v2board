@@ -86,9 +86,9 @@ class VProxyController extends Controller
         Cache::put(CacheKey::get('SERVER_' . strtoupper($this->nodeType) . '_LAST_PUSH_AT', $this->nodeInfo->id), time(), 3600);
         $userService = new UserService();
         foreach ($data as $item) {
-            $u = $item['u'] * $this->nodeInfo->rate;
-            $d = $item['d'] * $this->nodeInfo->rate;
-            $userService->trafficFetch($u, $d, $item['user_id'], $this->nodeInfo, $this->nodeType);
+            $u = $item['u'];
+            $d = $item['d'];
+            $userService->trafficFetch($u, $d, $item['user_id'], $this->nodeInfo->toArray(), $this->nodeType);
         }
 
         return response([

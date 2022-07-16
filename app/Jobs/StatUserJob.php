@@ -28,7 +28,7 @@ class StatUserJob implements ShouldQueue
      *
      * @return void
      */
-    public function __construct($u, $d, $userId, $server, $protocol, $recordType = 'd')
+    public function __construct($u, $d, $userId, array $server, $protocol, $recordType = 'd')
     {
         $this->onQueue('stat');
         $this->u = $u;
@@ -52,14 +52,14 @@ class StatUserJob implements ShouldQueue
         }
 
         $data = StatUser::where('record_at', $recordAt)
-            ->where('server_rate', $this->server->rate)
+            ->where('server_rate', $this->server['rate'])
             ->where('user_id', $this->userId)
             ->first();
         if ($data) {
             try {
                 $data->update([
-                    'u' => $data['u'] + $this->u,
-                    'd' => $data['d'] + $this->d
+                    'u' => $data['u'] + ($this->u * $this->server['rate']),
+                    'd' => $data['d'] + ($this->d * $this->server['rate'])
                 ]);
             } catch (\Exception $e) {
                 abort(500, '用户统计数据更新失败');
@@ -67,7 +67,7 @@ class StatUserJob implements ShouldQueue
         } else {
             if (!StatUser::create([
                 'user_id' => $this->userId,
-                'server_rate' => $this->server->rate,
+                'server_rate' => $this->server['rate'],
                 'u' => $this->u,
                 'd' => $this->d,
                 'record_type' => $this->recordType,
