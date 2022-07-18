@@ -57,7 +57,7 @@ class TicketController extends Controller
         $ticketService->replyByAdmin(
             $request->input('id'),
             $request->input('message'),
-            $request->user->id
+            $request->user['id']
         );
         return response([
             'data' => true

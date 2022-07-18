@@ -21,9 +21,9 @@ class UserController extends Controller
     public function checkLogin(Request $request)
     {
         $data = [
-            'is_login' => $request->user->id ? true : false
+            'is_login' => $request->user['id'] ? true : false
         ];
-        if ($request->user->is_admin) {
+        if ($request->user['is_admin']) {
             $data['is_admin'] = true;
         }
         return response([
@@ -33,7 +33,7 @@ class UserController extends Controller
 
     public function changePassword(UserChangePassword $request)
     {
-        $user = User::find($request->user->id);
+        $user = User::find($request->user['id']);
         if (!$user) {
             abort(500, __('The user does not exist'));
         }
@@ -58,7 +58,7 @@ class UserController extends Controller
 
     public function info(Request $request)
     {
-        $user = User::where('id', $request->user->id)
+        $user = User::where('id', $request->user['id'])
             ->select([
                 'email',
                 'transfer_enable',
@@ -90,12 +90,12 @@ class UserController extends Controller
     {
         $stat = [
             Order::where('status', 0)
-                ->where('user_id', $request->user->id)
+                ->where('user_id', $request->user['id'])
                 ->count(),
             Ticket::where('status', 0)
-                ->where('user_id', $request->user->id)
+                ->where('user_id', $request->user['id'])
                 ->count(),
-            User::where('invite_user_id', $request->user->id)
+            User::where('invite_user_id', $request->user['id'])
                 ->count()
         ];
         return response([
@@ -105,7 +105,7 @@ class UserController extends Controller
 
     public function getSubscribe(Request $request)
     {
-        $user = User::where('id', $request->user->id)
+        $user = User::where('id', $request->user['id'])
             ->select([
                 'plan_id',
                 'token',
@@ -135,7 +135,7 @@ class UserController extends Controller
 
     public function resetSecurity(Request $request)
     {
-        $user = User::find($request->user->id);
+        $user = User::find($request->user['id']);
         if (!$user) {
             abort(500, __('The user does not exist'));
         }
@@ -156,7 +156,7 @@ class UserController extends Controller
             'remind_traffic'
         ]);
 
-        $user = User::find($request->user->id);
+        $user = User::find($request->user['id']);
         if (!$user) {
             abort(500, __('The user does not exist'));
         }
@@ -173,7 +173,7 @@ class UserController extends Controller
 
     public function transfer(UserTransfer $request)
     {
-        $user = User::find($request->user->id);
+        $user = User::find($request->user['id']);
         if (!$user) {
             abort(500, __('The user does not exist'));
         }
@@ -192,7 +192,7 @@ class UserController extends Controller
 
     public function getQuickLoginUrl(Request $request)
     {
-        $user = User::find($request->user->id);
+        $user = User::find($request->user['id']);
         if (!$user) {
             abort(500, __('The user does not exist'));
         }

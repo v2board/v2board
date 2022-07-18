@@ -22,6 +22,6 @@ class TelegramController extends Controller
 
     public function unbind(Request $request)
     {
-        $user = User::where('user_id', $request->user->id)->first();
+        $user = User::where('user_id', $request->user['id'])->first();
     }
 }

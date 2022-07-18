@@ -39,7 +39,7 @@ class ConfigController extends Controller
     public function testSendMail(Request $request)
     {
         $obj = new SendEmailJob([
-            'email' => $request->user->email,
+            'email' => $request->user['email'],
             'subject' => 'This is v2board test email',
             'template_name' => 'notify',
             'template_value' => [
