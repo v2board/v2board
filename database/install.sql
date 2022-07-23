@@ -241,6 +241,7 @@ CREATE TABLE `v2_server_v2ray` (
                                    `group_id` varchar(255) NOT NULL,
                                    `name` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
                                    `parent_id` int(11) DEFAULT NULL,
+                                   `alter_id` int(11) DEFAULT 1,
                                    `host` varchar(255) NOT NULL,
                                    `port` char(11) NOT NULL,
                                    `server_port` int(11) NOT NULL,

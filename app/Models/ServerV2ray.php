@@ -17,6 +17,7 @@ class ServerV2ray extends Model
         'networkSettings' => 'array',
         'dnsSettings' => 'array',
         'ruleSettings' => 'array',
-        'tags' => 'array'
+        'tags' => 'array',
+        'altere_id' => 'integer'
     ];
 }

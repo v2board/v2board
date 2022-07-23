@@ -49,17 +49,17 @@ class V2rayN
     public static function buildVmess($uuid, $server)
     {
         $config = [
-            "v" => "2",
-            "ps" => $server['name'],
-            "add" => $server['host'],
-            "port" => (string)$server['port'],
-            "id" => $uuid,
-            "aid" => '0',
-            "net" => $server['network'],
-            "type" => "none",
-            "host" => "",
-            "path" => "",
-            "tls" => $server['tls'] ? "tls" : "",
+            'v' => '2',
+            'ps' => $server['name'],
+            'add' => $server['host'],
+            'port' => (string)$server['port'],
+            'id' => $uuid,
+            'aid' => '0',
+            'net' => $server['network'],
+            'type' => 'none',
+            'host' => '',
+            'path' => '',
+            'tls' => $server['tls'] ? 'tls' : '',
         ];
         if ($server['tls']) {
             if ($server['tlsSettings']) {
@@ -77,7 +77,10 @@ class V2rayN
             $grpcSettings = $server['networkSettings'];
             if (isset($grpcSettings['serviceName'])) $config['path'] = $grpcSettings['serviceName'];
         }
-        return "vmess://" . base64_encode(json_encode($config)) . "\r\n";
+        if(isset($server['alter_id'])) {
+            $config['aid'] = $server['alter_id'];
+        }
+        return 'vmess://' . base64_encode(json_encode($config)) . "\r\n";
     }
 
     public static function buildTrojan($password, $server)
