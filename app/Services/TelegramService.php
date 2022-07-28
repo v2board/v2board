@@ -26,6 +26,22 @@ class TelegramService {
         ]);
     }
 
+    public function approveChatJoinRequest(int $chatId, int $userId)
+    {
+        $this->request('approveChatJoinRequest', [
+            'chat_id' => $chatId,
+            'user_id' => $userId
+        ]);
+    }
+
+    public function declineChatJoinRequest(int $chatId, int $userId)
+    {
+        $this->request('declineChatJoinRequest', [
+            'chat_id' => $chatId,
+            'user_id' => $userId
+        ]);
+    }
+
     public function getMe()
     {
         return $this->request('getMe');
