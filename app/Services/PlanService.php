@@ -19,7 +19,7 @@ class PlanService
     {
         if ($this->plan->capacity_limit === NULL) return true;
         $count = User::where('plan_id', $this->plan->plan_id)->count();
-        return $this->plan->capacity_limit - $count;
+        return ($this->plan->capacity_limit - $count) > 0;
     }
 
     public static function countActiveUsers()

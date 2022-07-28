@@ -168,7 +168,6 @@ class AuthController extends Controller
             'auth_data' => base64_encode("{$user->email}:{$user->password}")
         ];
 
-        Helper::setSession($request, $user);
         $user->last_login_at = time();
         $user->save();
 
@@ -242,10 +241,13 @@ class AuthController extends Controller
             if ($user->banned) {
                 abort(500, __('Your account has been suspended'));
             }
-            Helper::setSession($request, $user);
+            $data = [
+                'token' => $user->token,
+                'auth_data' => base64_encode("{$user->email}:{$user->password}")
+            ];
             Cache::forget($key);
             return response([
-                'data' => true
+                'data' => $data
             ]);
         }
     }
