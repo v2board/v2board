@@ -13,21 +13,19 @@ class UserRoute
         ], function ($router) {
             // User
             $router->get ('/resetSecurity', 'User\\UserController@resetSecurity');
-            $router->get ('/logout', 'User\\UserController@logout');
             $router->get ('/info', 'User\\UserController@info');
             $router->post('/changePassword', 'User\\UserController@changePassword');
             $router->post('/update', 'User\\UserController@update');
             $router->get ('/getSubscribe', 'User\\UserController@getSubscribe');
             $router->get ('/getStat', 'User\\UserController@getStat');
+            $router->get ('/checkLogin', 'User\\UserController@checkLogin');
             $router->post('/transfer', 'User\\UserController@transfer');
             $router->post('/getQuickLoginUrl', 'User\\UserController@getQuickLoginUrl');
             // Order
             $router->post('/order/save', 'User\\OrderController@save');
             $router->post('/order/checkout', 'User\\OrderController@checkout');
             $router->get ('/order/check', 'User\\OrderController@check');
-            // TODO: 1.5.6 remove
-            $router->get ('/order/details', 'User\\OrderController@detail');
-            // TODO: 1.5.6 remove
+            $router->get ('/order/details', 'User\\OrderController@detail');                                            // TODO: 1.7.0 remove
             $router->get ('/order/detail', 'User\\OrderController@detail');
             $router->get ('/order/fetch', 'User\\OrderController@fetch');
             $router->get ('/order/getPaymentMethod', 'User\\OrderController@getPaymentMethod');

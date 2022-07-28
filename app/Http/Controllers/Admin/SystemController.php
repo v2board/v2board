@@ -23,7 +23,7 @@ use Laravel\Horizon\Contracts\MasterSupervisorRepository;
 
 class SystemController extends Controller
 {
-    public function getStatus()
+    public function getSystemStatus()
     {
         return response([
             'data' => [
@@ -31,6 +31,11 @@ class SystemController extends Controller
                 'horizon' => $this->getHorizonStatus()
             ]
         ]);
+    }
+
+    public function getQueueStatus()
+    {
+
     }
 
     protected function getScheduleStatus():bool

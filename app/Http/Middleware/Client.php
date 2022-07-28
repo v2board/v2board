@@ -26,7 +26,9 @@ class Client
         if (!$user) {
             abort(403, 'token is error');
         }
-        $request->user = $user;
+        $request->merge([
+            'user' => $user
+        ]);
         return $next($request);
     }
 }
