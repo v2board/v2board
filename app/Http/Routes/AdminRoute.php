@@ -113,8 +113,8 @@ class AdminRoute
             $router->post('/payment/show', 'Admin\\PaymentController@show');
             // System
             $router->get ('/system/getSystemStatus', 'Admin\\SystemController@getSystemStatus');
-            $router->get ('/system/getQueueStats', '\\Laravel\\Horizon\\Http\\Controllers\\DashboardStatsController@index');
-            $router->get ('/system/getQueueWorkload', '\\Laravel\\Horizon\\Http\\Controllers\\WorkloadController@index');
+            $router->get ('/system/getQueueStats', 'Admin\\SystemController@getQueueStats');
+            $router->get ('/system/getQueueWorkload', 'Admin\\SystemController@getQueueWorkload');
             $router->get ('/system/getQueueMasters', '\\Laravel\\Horizon\\Http\\Controllers\\MasterSupervisorController@index');
             // Theme
             $router->get ('/theme/getThemes', 'Admin\\ThemeController@getThemes');
