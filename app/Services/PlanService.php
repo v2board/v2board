@@ -18,7 +18,8 @@ class PlanService
     public function haveCapacity(): bool
     {
         if ($this->plan->capacity_limit === NULL) return true;
-        $count = User::where('plan_id', $this->plan->plan_id)->count();
+        $count = self::countActiveUsers();
+        $count = $count[$this->plan->plan_id];
         return ($this->plan->capacity_limit - $count) > 0;
     }
 

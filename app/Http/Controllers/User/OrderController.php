@@ -85,7 +85,7 @@ class OrderController extends Controller
             abort(500, __('Subscription plan does not exist'));
         }
 
-        if (!$planService->haveCapacity()) {
+        if (!$planService->haveCapacity() && $request->input('period') !== 'reset_price') {
             abort(500, __('Current product is sold out'));
         }
 

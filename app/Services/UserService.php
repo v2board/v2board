@@ -55,7 +55,6 @@ class UserService
     {
         if ($user->expired_at <= time() || $user->expired_at === NULL) return null;
         // if reset method is not reset
-        if (!isset($user->plan->reset_traffic_method)) return null;
         if ($user->plan->reset_traffic_method === 2) return null;
         switch (true) {
             case ($user->plan->reset_traffic_method === NULL): {
