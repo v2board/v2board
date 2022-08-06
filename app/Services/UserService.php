@@ -8,6 +8,7 @@ use App\Jobs\StatUserJob;
 use App\Jobs\TrafficFetchJob;
 use App\Models\InviteCode;
 use App\Models\Order;
+use App\Models\Plan;
 use App\Models\ServerV2ray;
 use App\Models\Ticket;
 use App\Models\User;
@@ -37,13 +38,13 @@ class UserService
         }
     }
 
-    private function calcResetDayByYearFirstDay()
+    private function calcResetDayByYearFirstDay(): int
     {
         $nextYear = strtotime(date("Y-01-01", strtotime('+1 year')));
         return (int)(($nextYear - time()) / 86400);
     }
 
-    private function calcResetDayByYearExpiredAt(int $expiredAt)
+    private function calcResetDayByYearExpiredAt(int $expiredAt): int
     {
         $md = date('m-d', $expiredAt);
         $nowYear = strtotime(date("Y-{$md}"));
@@ -53,6 +54,9 @@ class UserService
 
     public function getResetDay(User $user)
     {
+        if (!isset($user->plan)) {
+            $user->plan = Plan::find($user->plan_id);
+        }
         if ($user->expired_at <= time() || $user->expired_at === NULL) return null;
         // if reset method is not reset
         if ($user->plan->reset_traffic_method === 2) return null;
