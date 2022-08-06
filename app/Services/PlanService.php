@@ -19,7 +19,7 @@ class PlanService
     {
         if ($this->plan->capacity_limit === NULL) return true;
         $count = self::countActiveUsers();
-        $count = $count[$this->plan->id];
+        $count = $count[$this->plan->id]['count'] ?? 0;
         return ($this->plan->capacity_limit - $count) > 0;
     }
 
