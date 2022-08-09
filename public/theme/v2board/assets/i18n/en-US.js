@@ -233,7 +233,7 @@ window.settings.i18n['en-US'] = {
   '工单历史': 'Ticket History',
   '已用流量将在 {reset_day} 日后重置': 'Used data will reset after {reset_day} days',
   '已用流量已在今日重置': 'Data usage has been reset today',
-  '重置当前已用流量': 'Reset current usage',
+  '重置已用流量': '重置已用流量',
   '查看节点状态': 'View Access Point status',
   '当前已使用流量达{rate}%': 'Currently used data up to {rate}%',
   '节点名称': 'Access Point Name',
