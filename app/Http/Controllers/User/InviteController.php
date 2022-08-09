@@ -27,17 +27,24 @@ class InviteController extends Controller
 
     public function details(Request $request)
     {
+        $current = $request->input('current') ? $request->input('current') : 1;
+        $pageSize = $request->input('page_size') >= 10 ? $request->input('page_size') : 10;
+        $builder = CommissionLog::where('invite_user_id', $request->user['id'])
+            ->where('get_amount', '>', 0)
+            ->select([
+                'id',
+                'trade_no',
+                'order_amount',
+                'get_amount',
+                'created_at'
+            ])
+            ->orderBy('created_at', 'DESC');
+        $total = $builder->count();
+        $details = $builder->forPage($current, $pageSize)
+            ->get();
         return response([
-            'data' => CommissionLog::where('invite_user_id', $request->user['id'])
-                ->where('get_amount', '>', 0)
-                ->select([
-                    'id',
-                    'trade_no',
-                    'order_amount',
-                    'get_amount',
-                    'created_at'
-                ])
-                ->get()
+            'data' => $details,
+            'total' => $total
         ]);
     }
 
