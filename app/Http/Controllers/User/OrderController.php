@@ -134,7 +134,6 @@ class OrderController extends Controller
 
         $orderService->setVipDiscount($user);
         $orderService->setOrderType($user);
-        $orderService->setInvite($user);
 
         if ($user->balance && $order->total_amount > 0) {
             $remainingBalance = $user->balance - $order->total_amount;
@@ -155,7 +154,7 @@ class OrderController extends Controller
                 $order->total_amount = $order->total_amount - $user->balance;
             }
         }
-
+        $orderService->setInvite($user);
         if (!$order->save()) {
             DB::rollback();
             abort(500, __('Failed to create order'));
