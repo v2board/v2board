@@ -82,6 +82,7 @@ class AdminRoute
             $router->get ('/stat/getOverride', 'Admin\\StatController@getOverride');
             $router->get ('/stat/getServerLastRank', 'Admin\\StatController@getServerLastRank');
             $router->get ('/stat/getOrder', 'Admin\\StatController@getOrder');
+            $router->get ('/stat/getStatUser', 'Admin\\StatController@getStatUser');
             // Notice
             $router->get ('/notice/fetch', 'Admin\\NoticeController@fetch');
             $router->post('/notice/save', 'Admin\\NoticeController@save');

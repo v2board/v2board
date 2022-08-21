@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\ServerShadowsocks;
 use App\Models\ServerTrojan;
+use App\Models\StatUser;
 use App\Services\ServerService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -122,6 +123,24 @@ class StatController extends Controller
         return response([
             'data' => $statistics
         ]);
+    }
+
+    public function getStatUser(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required|integer'
+        ]);
+        $current = $request->input('current') ? $request->input('current') : 1;
+        $pageSize = $request->input('pageSize') >= 10 ? $request->input('pageSize') : 10;
+        $builder = StatUser::orderBy('record_at', 'DESC')->where('user_id', $request->input('user_id'));
+
+        $total = $builder->count();
+        $records = $builder->forPage($current, $pageSize)
+            ->get();
+        return [
+            'data' => $records,
+            'total' => $total
+        ];
     }
 }
 
