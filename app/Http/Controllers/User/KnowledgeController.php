@@ -41,11 +41,19 @@ class KnowledgeController extends Controller
                 'data' => $knowledge
             ]);
         }
-        $knowledges = Knowledge::select(['id', 'category', 'title', 'updated_at'])
+        $builder = Knowledge::select(['id', 'category', 'title', 'updated_at'])
             ->where('language', $request->input('language'))
             ->where('show', 1)
-            ->orderBy('sort', 'ASC')
-            ->get()
+            ->orderBy('sort', 'ASC');
+        $keyword = $request->input('keyword');
+        if ($keyword) {
+            $builder = $builder->where(function ($query) use ($keyword) {
+                $query->where('title', 'LIKE', "%{$keyword}%")
+                    ->orWhere('body', 'LIKE', "%{$keyword}%");
+            });
+        }
+
+        $knowledges = $builder->get()
             ->groupBy('category');
         return response([
             'data' => $knowledges

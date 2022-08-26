@@ -233,7 +233,7 @@ window.settings.i18n['en-US'] = {
   '工单历史': 'Ticket History',
   '已用流量将在 {reset_day} 日后重置': 'Used data will reset after {reset_day} days',
   '已用流量已在今日重置': 'Data usage has been reset today',
-  '重置已用流量': '重置已用流量',
+  '重置已用流量': 'Reset used data',
   '查看节点状态': 'View Access Point status',
   '当前已使用流量达{rate}%': 'Currently used data up to {rate}%',
   '节点名称': 'Access Point Name',
@@ -267,5 +267,6 @@ window.settings.i18n['en-US'] = {
   '按周期': 'By Cycle',
   '遇到问题': 'I have a problem',
   '遇到问题可以通过工单与我们沟通': 'If you have any problems, you can contact us via ticket',
-  '按流量': 'Pay As You Go'
+  '按流量': 'Pay As You Go',
+  '搜索文档': '搜索文档'
 };
