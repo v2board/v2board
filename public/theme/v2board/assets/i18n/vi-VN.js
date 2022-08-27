@@ -268,5 +268,6 @@ window.settings.i18n['vi-VN'] = {
   '遇到问题': 'Chúng tôi có một vấn đề',
   '遇到问题可以通过工单与我们沟通': 'Nếu bạn gặp sự cố, bạn có thể liên lạc với chúng tôi thông qua ',
   '按流量': '按流量',
-  '搜索文档': '搜索文档'
+  '搜索文档': '搜索文档',
+  '技术支持': '技术支持'
 };
