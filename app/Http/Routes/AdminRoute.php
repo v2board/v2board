@@ -112,6 +112,7 @@ class AdminRoute
             $router->post('/payment/save', 'Admin\\PaymentController@save');
             $router->post('/payment/drop', 'Admin\\PaymentController@drop');
             $router->post('/payment/show', 'Admin\\PaymentController@show');
+            $router->post('/payment/sort', 'Admin\\PaymentController@sort');
             // System
             $router->get ('/system/getSystemStatus', 'Admin\\SystemController@getSystemStatus');
             $router->get ('/system/getQueueStats', 'Admin\\SystemController@getQueueStats');

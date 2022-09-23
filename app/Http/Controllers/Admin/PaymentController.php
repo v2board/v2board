@@ -8,6 +8,7 @@ use App\Utils\Helper;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Payment;
+use Illuminate\Support\Facades\DB;
 
 class PaymentController extends Controller
 {
@@ -24,7 +25,7 @@ class PaymentController extends Controller
 
     public function fetch()
     {
-        $payments = Payment::all();
+        $payments = Payment::orderBy('sort', 'ASC')->get();
         foreach ($payments as $k => $v) {
             $notifyUrl = url("/api/v1/guest/payment/notify/{$v->payment}/{$v->uuid}");
             if ($v->notify_domain) {
@@ -105,6 +106,28 @@ class PaymentController extends Controller
         if (!$payment) abort(500, '支付方式不存在');
         return response([
             'data' => $payment->delete()
+        ]);
+    }
+
+
+    public function sort(Request $request)
+    {
+        $request->validate([
+            'ids' => 'required|array'
+        ], [
+            'ids.required' => '参数有误',
+            'ids.array' => '参数有误'
+        ]);
+        DB::beginTransaction();
+        foreach ($request->input('ids') as $k => $v) {
+            if (!Payment::find($v)->update(['sort' => $k + 1])) {
+                DB::rollBack();
+                abort(500, '保存失败');
+            }
+        }
+        DB::commit();
+        return response([
+            'data' => true
         ]);
     }
 }

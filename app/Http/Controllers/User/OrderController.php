@@ -232,7 +232,9 @@ class OrderController extends Controller
             'handling_fee_fixed',
             'handling_fee_percent'
         ])
-            ->where('enable', 1)->get();
+            ->where('enable', 1)
+            ->orderBy('sort', 'ASC')
+            ->get();
 
         return response([
             'data' => $methods
