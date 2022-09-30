@@ -24,6 +24,7 @@ class Clash
         header("subscription-userinfo: upload={$user['u']}; download={$user['d']}; total={$user['transfer_enable']}; expire={$user['expired_at']}");
         header('profile-update-interval: 24');
         header("content-disposition:attachment;filename*=UTF-8''".rawurlencode($appName));
+        header("profile-web-page-url:" . config('v2board.app_url'));
         $defaultConfig = base_path() . '/resources/rules/default.clash.yaml';
         $customConfig = base_path() . '/resources/rules/custom.clash.yaml';
         if (\File::exists($customConfig)) {
