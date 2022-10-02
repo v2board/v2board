@@ -268,6 +268,6 @@ window.settings.i18n['en-US'] = {
   '遇到问题': 'I have a problem',
   '遇到问题可以通过工单与我们沟通': 'If you have any problems, you can contact us via ticket',
   '按流量': 'Pay As You Go',
-  '搜索文档': '搜索文档',
-  '技术支持': '技术支持'
+  '搜索文档': 'Search Documents',
+  '技术支持': 'Technical Support'
 };
