@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Passport;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Password;
 
 class AuthRegister extends FormRequest
 {
@@ -15,7 +16,10 @@ class AuthRegister extends FormRequest
     {
         return [
             'email' => 'required|email',
-            'password' => 'required|min:8'
+             'password' => [
+            'required',
+            Password::min(8)->mixedCase()->numbers()->symbols()
+             ]
         ];
     }
 
