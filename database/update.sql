@@ -36,7 +36,6 @@ ADD `img_url` varchar(255) COLLATE 'utf8_general_ci' NULL AFTER `content`;
 CREATE TABLE `v2_ticket` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
-  `subject` varchar(255) NOT NULL,
   `level` tinyint(1) NOT NULL,
   `status` tinyint(1) NOT NULL DEFAULT '0',
   `created_at` int(11) NOT NULL,
@@ -53,6 +52,9 @@ CREATE TABLE `v2_ticket_message` (
   `updated_at` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `v2_ticket`
+CHANGE `subject` `subject` varchar(255) COLLATE 'utf8mb4_general_ci' NOT NULL AFTER `user_id`;
 
 ALTER TABLE `v2_ticket`
 ADD `last_reply_user_id` int(11) NOT NULL AFTER `user_id`;
