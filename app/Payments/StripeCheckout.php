@@ -1,14 +1,11 @@
 <?php
 
-/**
- * 自己写别抄，抄NMB抄
- */
 namespace App\Payments;
 
-use Stripe\Source;
 use Stripe\Stripe;
+use Stripe\Checkout\Session;
 
-class StripeAlipay {
+class StripeCheckout {
     public function __construct($config)
     {
         $this->config = $config;
@@ -24,11 +21,16 @@ class StripeAlipay {
             ],
             'stripe_sk_live' => [
                 'label' => 'SK_LIVE',
-                'description' => '',
+                'description' => 'API 密钥',
+                'type' => 'input',
+            ],
+            'stripe_pk_live' => [
+                'label' => 'PK_LIVE',
+                'description' => 'API 公钥',
                 'type' => 'input',
             ],
             'stripe_webhook_key' => [
-                'label' => 'WebHook密钥签名',
+                'label' => 'WebHook 密钥签名',
                 'description' => '',
                 'type' => 'input',
             ]
@@ -42,27 +44,38 @@ class StripeAlipay {
         if (!$exchange) {
             abort(500, __('Currency conversion has timed out, please try again later'));
         }
-        Stripe::setApiKey($this->config['stripe_sk_live']);
-        $source = Source::create([
-            'amount' => floor($order['total_amount'] * $exchange),
-            'currency' => $currency,
-            'type' => 'alipay',
-            'statement_descriptor' => $order['trade_no'],
-            'metadata' => [
-                'user_id' => $order['user_id'],
-                'out_trade_no' => $order['trade_no'],
-                'identifier' => ''
+
+        $params = [
+            'success_url' => $order['return_url'],
+            'cancel_url' => $order['return_url'],
+            'client_reference_id' => $order['trade_no'],
+            'line_items' => [
+                [
+                    'price_data' => [
+                        'currency' => $currency,
+                        'product_data' => [
+                            'name' => $order['trade_no']
+                        ],
+                        'unit_amount' => floor($order['total_amount'] * $exchange)
+                    ],
+                    'quantity' => 1
+                ]
             ],
-            'redirect' => [
-                'return_url' => $order['return_url']
-            ]
-        ]);
-        if (!$source['redirect']['url']) {
-            abort(500, __('Payment gateway request failed'));
+            'mode' => 'payment'
+            // 'customer_email' => $user['email'] not support
+
+        ];
+
+        Stripe::setApiKey($this->config['stripe_sk_live']);
+        try {
+            $session = Session::create($params);
+        } catch (\Exception $e) {
+            info($e);
+            abort(500, "Failed to create order. Error: {$e->getMessage}");
         }
         return [
-            'type' => 1,
-            'data' => $source['redirect']['url']
+            'type' => 1, // 0:qrcode 1:url
+            'data' => $session->url
         ];
     }
 
@@ -78,29 +91,23 @@ class StripeAlipay {
         } catch (\Stripe\Error\SignatureVerification $e) {
             abort(400);
         }
+
         switch ($event->type) {
-            case 'source.chargeable':
+            case 'checkout.session.completed':
                 $object = $event->data->object;
-                \Stripe\Charge::create([
-                    'amount' => $object->amount,
-                    'currency' => $object->currency,
-                    'source' => $object->id,
-                    'metadata' => json_decode($object->metadata, true)
-                ]);
-                break;
-            case 'charge.succeeded':
-                $object = $event->data->object;
-                if ($object->status === 'succeeded') {
-                    if (!isset($object->metadata->out_trade_no) && !isset($object->source->metadata)) {
-                        die('order error');
-                    }
-                    $metaData = isset($object->metadata->out_trade_no) ? $object->metadata : $object->source->metadata;
-                    $tradeNo = $metaData->out_trade_no;
+                if ($object->payment_status === 'paid') {
                     return [
-                        'trade_no' => $tradeNo,
-                        'callback_no' => $object->id
+                        'trade_no' => $object->client_reference_id,
+                        'callback_no' => $object->payment_intent
                     ];
                 }
+                break;
+            case 'checkout.session.async_payment_succeeded':
+                $object = $event->data->object;
+                return [
+                    'trade_no' => $object->client_reference_id,
+                    'callback_no' => $object->payment_intent
+                ];
                 break;
             default:
                 abort(500, 'event is not support');
