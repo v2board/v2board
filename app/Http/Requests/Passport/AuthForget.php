@@ -15,8 +15,11 @@ class AuthForget extends FormRequest
     {
         return [
             'email' => 'required|email',
-            'password' => 'required|min:8',
-            'email_code' => 'required'
+            'email_code' => 'required',
+            'password' => [
+            'required',
+            Password::min(8)->mixedCase()->numbers()->symbols()
+            ]
         ];
     }
 
