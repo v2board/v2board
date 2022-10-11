@@ -53,11 +53,10 @@ class V2boardStatistics extends Command
             ->whereNotIn('status', [0, 2]);
         $orderCount = $orderBuilder->count();
         $orderAmount = $orderBuilder->sum('total_amount');
-        $commissionBuilder = CommissionLog::where('created_at', '>=', $startAt)
-            ->where('created_at', '<', $endAt)
-            ->where('get_amount', '>', 0);
+        $commissionBuilder = Order::where('created_at', '>=', $startAt)
+            ->where('created_at', '<', $endAt);
         $commissionCount = $commissionBuilder->count();
-        $commissionAmount = $commissionBuilder->sum('get_amount');
+        $commissionAmount = $commissionBuilder->sum('actual_commission_balance');
         $data = [
             'order_count' => $orderCount,
             'order_amount' => $orderAmount,

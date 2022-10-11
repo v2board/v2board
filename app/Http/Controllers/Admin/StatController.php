@@ -46,7 +46,13 @@ class StatController extends Controller
                 'last_month_income' => Order::where('created_at', '>=', strtotime('-1 month', strtotime(date('Y-m-1'))))
                     ->where('created_at', '<', strtotime(date('Y-m-1')))
                     ->whereNotIn('status', [0, 2])
-                    ->sum('total_amount')
+                    ->sum('total_amount'),
+                'commission_month_payout' => Order::where('commission_balance' ,'!=', NULL)
+                    ->where('created_at', '<', time())
+                    ->sum('commission_balance'),
+                'commission_last_month_payout' => Order::where('commission_balance' ,'!=', NULL)
+                    ->where('created_at', '<', strtotime(date('Y-m-1')))
+                    ->sum('commission_balance'),
             ]
         ]);
     }
