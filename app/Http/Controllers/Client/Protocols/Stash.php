@@ -154,6 +154,11 @@ class Stash
         return $array;
     }
 
+    private function isRegex($exp)
+    {
+        return @preg_match($exp, null) !== false;
+    }
+
     private function isMatch($exp, $str)
     {
         try {
