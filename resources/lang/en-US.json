@@ -1,4 +1,8 @@
 {
+    "The :attribute must contain at least one letter.": ":attribute must contain at least one letter.",
+    "The :attribute must contain at least one uppercase and one lowercase letter.": ":attribute must contain at least one uppercase and one lowercase letter.",
+    "The :attribute must contain at least one number.": ":attribute must contain at least one number.",
+    "The :attribute must contain at least one symbol.": ":attribute must contain at least one symbol.",
     "Article does not exist": "Article does not exist",
     "Cancel failed": "Cancel failed",
     "Close failed": "Close failed",
