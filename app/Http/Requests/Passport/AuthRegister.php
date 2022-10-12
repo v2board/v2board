@@ -3,7 +3,7 @@
 namespace App\Http\Requests\Passport;
 
 use Illuminate\Foundation\Http\FormRequest;
-
+use Illuminate\Validation\Rules\Password;
 class AuthRegister extends FormRequest
 {
     /**
