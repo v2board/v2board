@@ -270,8 +270,8 @@ window.settings.i18n['en-US'] = {
   '按流量': 'Pay As You Go',
   '搜索文档': 'Search Documents',
   '技术支持': 'Technical Support',
-  '当前剩余佣金': '当前剩余佣金',
-  '三级分销比例': '三级分销比例',
-  '累计获得佣金': '累计获得佣金',
-  '您邀请的用户再次邀请用户将按照订单金额乘以分销等级的比例进行分成。': '您邀请的用户再次邀请用户将按照订单金额乘以分销等级的比例进行分成。'
+  '当前剩余佣金': 'Current commission remaining',
+  '三级分销比例': 'Three-level Distribution Ratio',
+  '累计获得佣金': 'Cumulative commission earned',
+  '您邀请的用户再次邀请用户将按照订单金额乘以分销等级的比例进行分成。': 'The users you invite to re-invite users will be divided according to the order amount multiplied by the distribution level.'
 };
