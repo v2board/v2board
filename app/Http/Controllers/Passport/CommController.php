@@ -17,24 +17,6 @@ use ReCaptcha\ReCaptcha;
 
 class CommController extends Controller
 {
-    // TODO: remove on 1.5.5
-    public function config()
-    {
-        return response([
-            'data' => [
-                'isEmailVerify' => (int)config('v2board.email_verify', 0) ? 1 : 0,
-                'isInviteForce' => (int)config('v2board.invite_force', 0) ? 1 : 0,
-                'emailWhitelistSuffix' => (int)config('v2board.email_whitelist_enable', 0)
-                    ? $this->getEmailSuffix()
-                    : 0,
-                'isRecaptcha' => (int)config('v2board.recaptcha_enable', 0) ? 1 : 0,
-                'recaptchaSiteKey' => config('v2board.recaptcha_site_key'),
-                'appDescription' => config('v2board.app_description'),
-                'appUrl' => config('v2board.app_url')
-            ]
-        ]);
-    }
-
     private function isEmailVerify()
     {
         return response([

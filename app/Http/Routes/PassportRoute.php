@@ -14,12 +14,10 @@ class PassportRoute
             $router->post('/auth/register', 'Passport\\AuthController@register');
             $router->post('/auth/login', 'Passport\\AuthController@login');
             $router->get ('/auth/token2Login', 'Passport\\AuthController@token2Login');
-            $router->post('/auth/forget', 'Passport\\AuthController@forget');                                           // TODO: 1.7.0 remove
-            $router->post('/auth/getTempToken', 'Passport\\AuthController@getTempToken');                               // TODO: 1.7.0 remove
+            $router->post('/auth/forget', 'Passport\\AuthController@forget');
             $router->post('/auth/getQuickLoginUrl', 'Passport\\AuthController@getQuickLoginUrl');
             $router->post('/auth/loginWithMailLink', 'Passport\\AuthController@loginWithMailLink');
             // Comm
-            $router->get ('/comm/config', 'Passport\\CommController@config');
             $router->post('/comm/sendEmailVerify', 'Passport\\CommController@sendEmailVerify');
             $router->post('/comm/pv', 'Passport\\CommController@pv');
         });
