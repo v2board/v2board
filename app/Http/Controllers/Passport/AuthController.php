@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Passport\AuthRegister;
 use App\Http\Requests\Passport\AuthForget;
 use App\Http\Requests\Passport\AuthLogin;
+use App\Jobs\SendEmailJob;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use App\Models\Plan;
@@ -18,6 +19,59 @@ use ReCaptcha\ReCaptcha;
 
 class AuthController extends Controller
 {
+    public function loginWithMailLink(Request $request)
+    {
+        if (!(int)config('v2board.login_with_mail_link_enable')) {
+            abort(404);
+        }
+        $params = $request->validate([
+            'email' => 'required|email',
+            'redirect' => 'nullable'
+        ]);
+
+        if (Cache::get(CacheKey::get('LAST_SEND_LOGIN_WITH_MAIL_LINK_TIMESTAMP', $params['email']))) {
+            abort(500, __('Sending frequently, please try again later'));
+        }
+
+        $user = User::where('email', $params['email'])->first();
+        if (!$user) {
+            return response([
+                'data' => true
+            ]);
+        }
+
+        $code = Helper::guid();
+        $key = CacheKey::get('TEMP_TOKEN', $code);
+        Cache::put($key, $user->id, 300);
+        Cache::put(CacheKey::get('LAST_SEND_LOGIN_WITH_MAIL_LINK_TIMESTAMP', $params['email']), time(), 60);
+
+
+        $redirect = '/#/login?verify=' . $code . '&redirect=' . ($request->input('redirect') ? $request->input('redirect') : 'dashboard');
+        if (config('v2board.app_url')) {
+            $link = config('v2board.app_url') . $redirect;
+        } else {
+            $link = url($redirect);
+        }
+
+        SendEmailJob::dispatch([
+            'email' => $user->email,
+            'subject' => __('Login to :name', [
+                'name' => config('v2board.app_name', 'V2Board')
+            ]),
+            'template_name' => 'login',
+            'template_value' => [
+                'name' => config('v2board.app_name', 'V2Board'),
+                'link' => $link,
+                'url' => config('v2board.app_url')
+            ]
+        ]);
+
+        return response([
+            'data' => $link
+        ]);
+
+    }
+
     public function register(AuthRegister $request)
     {
         if ((int)config('v2board.register_limit_by_ip_enable', 0)) {
@@ -113,8 +167,7 @@ class AuthController extends Controller
             'token' => $user->token,
             'auth_data' => base64_encode("{$user->email}:{$user->password}")
         ];
-        $request->session()->put('email', $user->email);
-        $request->session()->put('id', $user->id);
+
         $user->last_login_at = time();
         $user->save();
 
@@ -156,16 +209,8 @@ class AuthController extends Controller
             'token' => $user->token,
             'auth_data' => base64_encode("{$user->email}:{$user->password}")
         ];
-        $request->session()->put('email', $user->email);
-        $request->session()->put('id', $user->id);
-        if ($user->is_admin) {
-            $request->session()->put('is_admin', true);
-            $data['is_admin'] = true;
-        }
-        if ($user->is_staff) {
-            $request->session()->put('is_staff', true);
-            $data['is_staff'] = true;
-        }
+
+        if ($user->is_admin) $data['is_admin'] = true;
         return response([
             'data' => $data
         ]);
@@ -196,14 +241,13 @@ class AuthController extends Controller
             if ($user->banned) {
                 abort(500, __('Your account has been suspended'));
             }
-            $request->session()->put('email', $user->email);
-            $request->session()->put('id', $user->id);
-            if ($user->is_admin) {
-                $request->session()->put('is_admin', true);
-            }
+            $data = [
+                'token' => $user->token,
+                'auth_data' => base64_encode("{$user->email}:{$user->password}")
+            ];
             Cache::forget($key);
             return response([
-                'data' => true
+                'data' => $data
             ]);
         }
     }
@@ -225,8 +269,11 @@ class AuthController extends Controller
 
     public function getQuickLoginUrl(Request $request)
     {
-        $authData = explode(':', base64_decode($request->input('auth_data')));
-        if (!isset($authData[0])) abort(403, __('Token error'));
+        $authorization = $request->input('auth_data') ?? $request->header('authorization');
+        if (!$authorization) abort(403, '未登录或登陆已过期');
+
+        $authData = explode(':', base64_decode($authorization));
+        if (!isset($authData[0]) || !isset($authData[1])) abort(403, __('Token error'));
         $user = User::where('email', $authData[0])
             ->where('password', $authData[1])
             ->first();
@@ -245,19 +292,6 @@ class AuthController extends Controller
         }
         return response([
             'data' => $url
-        ]);
-    }
-
-    public function check(Request $request)
-    {
-        $data = [
-            'is_login' => $request->session()->get('id') ? true : false
-        ];
-        if ($request->session()->get('is_admin')) {
-            $data['is_admin'] = true;
-        }
-        return response([
-            'data' => $data
         ]);
     }
 
@@ -281,5 +315,4 @@ class AuthController extends Controller
             'data' => true
         ]);
     }
-
 }

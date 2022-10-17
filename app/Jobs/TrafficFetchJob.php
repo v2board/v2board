@@ -27,7 +27,7 @@ class TrafficFetchJob implements ShouldQueue
      *
      * @return void
      */
-    public function __construct($u, $d, $userId, $server, $protocol)
+    public function __construct($u, $d, $userId, array $server, $protocol)
     {
         $this->onQueue('traffic_fetch');
         $this->u = $u;
@@ -46,10 +46,10 @@ class TrafficFetchJob implements ShouldQueue
     {
         $user = User::lockForUpdate()->find($this->userId);
         if (!$user) return;
-        
+
         $user->t = time();
-        $user->u = $user->u + $this->u;
-        $user->d = $user->d + $this->d;
+        $user->u = $user->u + ($this->u * $this->server['rate']);
+        $user->d = $user->d + ($this->d * $this->server['rate']);
         if (!$user->save()) throw new \Exception('流量更新失败');
         $mailService = new MailService();
         $mailService->remindTraffic($user);

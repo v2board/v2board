@@ -19,14 +19,9 @@ class KnowledgeController extends Controller
                 ->first()
                 ->toArray();
             if (!$knowledge) abort(500, __('Article does not exist'));
-            $user = User::find($request->session()->get('id'));
+            $user = User::find($request->user['id']);
             $userService = new UserService();
-            if ($userService->isAvailable($user)) {
-                $appleId = config('v2board.apple_id');
-                $appleIdPassword = config('v2board.apple_id_password');
-            } else {
-                $appleId = __('No active subscription. Unable to use our provided Apple ID');
-                $appleIdPassword = __('No active subscription. Unable to use our provided Apple ID');
+            if (!$userService->isAvailable($user)) {
                 $this->formatAccessData($knowledge['body']);
             }
             $subscribeUrl = Helper::getSubscribeUrl("/api/v1/client/subscribe?token={$user['token']}");
@@ -46,11 +41,19 @@ class KnowledgeController extends Controller
                 'data' => $knowledge
             ]);
         }
-        $knowledges = Knowledge::select(['id', 'category', 'title', 'updated_at'])
+        $builder = Knowledge::select(['id', 'category', 'title', 'updated_at'])
             ->where('language', $request->input('language'))
             ->where('show', 1)
-            ->orderBy('sort', 'ASC')
-            ->get()
+            ->orderBy('sort', 'ASC');
+        $keyword = $request->input('keyword');
+        if ($keyword) {
+            $builder = $builder->where(function ($query) use ($keyword) {
+                $query->where('title', 'LIKE', "%{$keyword}%")
+                    ->orWhere('body', 'LIKE', "%{$keyword}%");
+            });
+        }
+
+        $knowledges = $builder->get()
             ->groupBy('category');
         return response([
             'data' => $knowledges

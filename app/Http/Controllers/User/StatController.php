@@ -18,7 +18,7 @@ class StatController extends Controller
             'user_id',
             'server_rate'
         ])
-            ->where('user_id', $request->session()->get('id'))
+            ->where('user_id', $request->user['id'])
             ->where('record_at', '>=', strtotime(date('Y-m-1')))
             ->orderBy('record_at', 'DESC');
         return response([

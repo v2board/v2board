@@ -19,7 +19,11 @@ class CommController extends Controller
                 'withdraw_methods' => config('v2board.commission_withdraw_method', Dict::WITHDRAW_METHOD_WHITELIST_DEFAULT),
                 'withdraw_close' => (int)config('v2board.withdraw_close_enable', 0),
                 'currency' => config('v2board.currency', 'CNY'),
-                'currency_symbol' => config('v2board.currency_symbol', '¥')
+                'currency_symbol' => config('v2board.currency_symbol', '¥'),
+                'commission_distribution_enable' => (int)config('v2board.commission_distribution_enable', 0),
+                'commission_distribution_l1' => config('v2board.commission_distribution_l1'),
+                'commission_distribution_l2' => config('v2board.commission_distribution_l2'),
+                'commission_distribution_l3' => config('v2board.commission_distribution_l3')
             ]
         ]);
     }

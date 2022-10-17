@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>网站通知</title>
+    <title>邮箱验证码</title>
     <style type="text/css">
         img {
             max-width: 100%;
@@ -102,7 +102,7 @@
                             <td class="alert alert-warning"
                                 style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 22px; font-weight: bold; vertical-align: top; color: #fff; font-weight: 500; text-align: center; border-radius: 3px 3px 0 0; background-color: #0073ba; margin: 0; padding: 20px;"
                                 align="center" bgcolor="#0073ba" valign="top">
-                                网站通知
+                                {{$name}}
                             </td>
                         </tr>
                         <tr
@@ -123,9 +123,17 @@
                                     <tr
                                         style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
                                         <td class="content-block"
-                                            style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 16px; color: #4a4a4a; vertical-align: top; margin: 0; padding: 0 10px 20px;"
+                                            style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 16px; color: #4a4a4a; vertical-align: top; margin: 0; padding: 0 0 20px;"
                                             valign="top">
-                                            {!! nl2br($content) !!}
+                                            您正在登入到{{$name}}, 请在 5 分钟内点击下方链接进行登入。如果您未授权该登入请求，请无视。
+                                        </td>
+                                    </tr>
+                                    <tr
+                                        style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
+                                        <td class="content-block"
+                                            style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 36px; font-weight: bold; text-align: center; color: #4a4a4a; vertical-align: top; line-height: 1.6em; margin: 0; padding: 0 0 20px;"
+                                            valign="top">
+                                            <a href="{{$link}}">{{$link}}</a>
                                         </td>
                                     </tr>
                                     <tr

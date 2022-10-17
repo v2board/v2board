@@ -19,7 +19,7 @@ class ServerController extends Controller
 {
     public function fetch(Request $request)
     {
-        $user = User::find($request->session()->get('id'));
+        $user = User::find($request->user['id']);
         $servers = [];
         $userService = new UserService();
         if ($userService->isAvailable($user)) {

@@ -50,7 +50,6 @@ class AdminRoute
                 $router->post('update', 'Admin\\Server\\V2rayController@update');
                 $router->post('copy', 'Admin\\Server\\V2rayController@copy');
                 $router->post('sort', 'Admin\\Server\\V2rayController@sort');
-                $router->post('viewConfig', 'Admin\\Server\\V2rayController@viewConfig');
             });
             $router->group([
                 'prefix' => 'server/shadowsocks'
@@ -83,6 +82,7 @@ class AdminRoute
             $router->get ('/stat/getOverride', 'Admin\\StatController@getOverride');
             $router->get ('/stat/getServerLastRank', 'Admin\\StatController@getServerLastRank');
             $router->get ('/stat/getOrder', 'Admin\\StatController@getOrder');
+            $router->get ('/stat/getStatUser', 'Admin\\StatController@getStatUser');
             // Notice
             $router->get ('/notice/fetch', 'Admin\\NoticeController@fetch');
             $router->post('/notice/save', 'Admin\\NoticeController@save');
@@ -112,8 +112,12 @@ class AdminRoute
             $router->post('/payment/save', 'Admin\\PaymentController@save');
             $router->post('/payment/drop', 'Admin\\PaymentController@drop');
             $router->post('/payment/show', 'Admin\\PaymentController@show');
+            $router->post('/payment/sort', 'Admin\\PaymentController@sort');
             // System
-            $router->get ('/system/getStatus', 'Admin\\SystemController@getStatus');
+            $router->get ('/system/getSystemStatus', 'Admin\\SystemController@getSystemStatus');
+            $router->get ('/system/getQueueStats', 'Admin\\SystemController@getQueueStats');
+            $router->get ('/system/getQueueWorkload', 'Admin\\SystemController@getQueueWorkload');
+            $router->get ('/system/getQueueMasters', '\\Laravel\\Horizon\\Http\\Controllers\\MasterSupervisorController@index');
             // Theme
             $router->get ('/theme/getThemes', 'Admin\\ThemeController@getThemes');
             $router->post('/theme/saveThemeConfig', 'Admin\\ThemeController@saveThemeConfig');

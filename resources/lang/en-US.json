@@ -90,5 +90,8 @@
     "Request failed, please try again later": "Request failed, please try again later",
     "Register frequently, please try again after 1 hour": "Register frequently, please try again after 1 hour",
     "Uh-oh, we've had some problems, we're working on it.": "Uh-oh, we've had some problems, we're working on it",
-    "This subscription reset package does not apply to your subscription": "This subscription reset package does not apply to your subscription"
+    "This subscription reset package does not apply to your subscription": "This subscription reset package does not apply to your subscription",
+    "Login to :name": "Login to :name",
+    "Sending frequently, please try again later": "Sending frequently, please try again later",
+    "Current product is sold out": "Current product is sold out"
 }

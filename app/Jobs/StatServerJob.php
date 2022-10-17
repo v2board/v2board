@@ -48,10 +48,10 @@ class StatServerJob implements ShouldQueue
             //
         }
 
-        $data = StatServer::where('record_at', $recordAt)
-            ->where('server_id', $this->server->id)
+        $data = StatServer::lockForUpdate()
+            ->where('record_at', $recordAt)
+            ->where('server_id', $this->server['id'])
             ->where('server_type', $this->protocol)
-            ->lockForUpdate()
             ->first();
         if ($data) {
             try {
@@ -64,7 +64,7 @@ class StatServerJob implements ShouldQueue
             }
         } else {
             if (!StatServer::create([
-                'server_id' => $this->server->id,
+                'server_id' => $this->server['id'],
                 'server_type' => $this->protocol,
                 'u' => $this->u,
                 'd' => $this->d,

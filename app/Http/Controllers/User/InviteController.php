@@ -14,11 +14,11 @@ class InviteController extends Controller
 {
     public function save(Request $request)
     {
-        if (InviteCode::where('user_id', $request->session()->get('id'))->where('status', 0)->count() >= config('v2board.invite_gen_limit', 5)) {
+        if (InviteCode::where('user_id', $request->user['id'])->where('status', 0)->count() >= config('v2board.invite_gen_limit', 5)) {
             abort(500, __('The maximum number of creations has been reached'));
         }
         $inviteCode = new InviteCode();
-        $inviteCode->user_id = $request->session()->get('id');
+        $inviteCode->user_id = $request->user['id'];
         $inviteCode->code = Helper::randomChar(8);
         return response([
             'data' => $inviteCode->save()
@@ -27,42 +27,49 @@ class InviteController extends Controller
 
     public function details(Request $request)
     {
+        $current = $request->input('current') ? $request->input('current') : 1;
+        $pageSize = $request->input('page_size') >= 10 ? $request->input('page_size') : 10;
+        $builder = CommissionLog::where('invite_user_id', $request->user['id'])
+            ->where('get_amount', '>', 0)
+            ->select([
+                'id',
+                'trade_no',
+                'order_amount',
+                'get_amount',
+                'created_at'
+            ])
+            ->orderBy('created_at', 'DESC');
+        $total = $builder->count();
+        $details = $builder->forPage($current, $pageSize)
+            ->get();
         return response([
-            'data' => CommissionLog::where('invite_user_id', $request->session()->get('id'))
-                ->where('get_amount', '>', 0)
-                ->select([
-                    'id',
-                    'trade_no',
-                    'order_amount',
-                    'get_amount',
-                    'created_at'
-                ])
-                ->get()
+            'data' => $details,
+            'total' => $total
         ]);
     }
 
     public function fetch(Request $request)
     {
-        $codes = InviteCode::where('user_id', $request->session()->get('id'))
+        $codes = InviteCode::where('user_id', $request->user['id'])
             ->where('status', 0)
             ->get();
         $commission_rate = config('v2board.invite_commission', 10);
-        $user = User::find($request->session()->get('id'));
+        $user = User::find($request->user['id']);
         if ($user->commission_rate) {
             $commission_rate = $user->commission_rate;
         }
         $stat = [
             //已注册用户数
-            (int)User::where('invite_user_id', $request->session()->get('id'))->count(),
+            (int)User::where('invite_user_id', $request->user['id'])->count(),
             //有效的佣金
             (int)Order::where('status', 3)
                 ->where('commission_status', 2)
-                ->where('invite_user_id', $request->session()->get('id'))
+                ->where('invite_user_id', $request->user['id'])
                 ->sum('commission_balance'),
             //确认中的佣金
             (int)Order::where('status', 3)
                 ->where('commission_status', 0)
-                ->where('invite_user_id', $request->session()->get('id'))
+                ->where('invite_user_id', $request->user['id'])
                 ->sum('commission_balance'),
             //佣金比例
             (int)$commission_rate,

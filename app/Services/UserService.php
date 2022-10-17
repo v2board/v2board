@@ -8,6 +8,7 @@ use App\Jobs\StatUserJob;
 use App\Jobs\TrafficFetchJob;
 use App\Models\InviteCode;
 use App\Models\Order;
+use App\Models\Plan;
 use App\Models\ServerV2ray;
 use App\Models\Ticket;
 use App\Models\User;
@@ -15,48 +16,87 @@ use Illuminate\Support\Facades\DB;
 
 class UserService
 {
-    public function getResetDay(User $user)
+    private function calcResetDayByMonthFirstDay()
     {
-        if ($user->expired_at <= time() || $user->expired_at === NULL) return null;
-        // if reset method is not reset
-        if (isset($user->plan->reset_traffic_method) && $user->plan->reset_traffic_method === 2) return null;
+        $today = date('d');
+        $lastDay = date('d', strtotime('last day of +0 months'));
+        return $lastDay - $today;
+    }
 
-        if ((int)config('v2board.reset_traffic_method') === 0 ||
-            (isset($user->plan->reset_traffic_method) && $user->plan->reset_traffic_method === 0))
-        {
-            $day = date('d', $user->expired_at);
-            $today = date('d');
-            $lastDay = date('d', strtotime('last day of +0 months'));
+    private function calcResetDayByExpireDay(int $expiredAt)
+    {
+        $day = date('d', $expiredAt);
+        $today = date('d');
+        $lastDay = date('d', strtotime('last day of +0 months'));
+        if ((int)$day >= (int)$today && (int)$day >= (int)$lastDay) {
             return $lastDay - $today;
         }
-        if ((int)config('v2board.reset_traffic_method') === 1 ||
-            (isset($user->plan->reset_traffic_method) && $user->plan->reset_traffic_method === 1))
-        {
-            $day = date('d', $user->expired_at);
-            $today = date('d');
-            $lastDay = date('d', strtotime('last day of +0 months'));
-            if ((int)$day >= (int)$today && (int)$day >= (int)$lastDay) {
-                return $lastDay - $today;
-            }
-            if ((int)$day >= (int)$today) {
-                return $day - $today;
-            } else {
-                return $lastDay - $today + $day;
-            }
+        if ((int)$day >= (int)$today) {
+            return $day - $today;
+        } else {
+            return $lastDay - $today + $day;
         }
-        if ((int)config('v2board.reset_traffic_method') === 3 ||
-            (isset($user->plan->reset_traffic_method) && $user->plan->reset_traffic_method === 3))
-        {
-            $nextYear = strtotime(date("Y-01-01", strtotime('+1 year')));
-            return (int)(($nextYear - time()) / 86400);
+    }
+
+    private function calcResetDayByYearFirstDay(): int
+    {
+        $nextYear = strtotime(date("Y-01-01", strtotime('+1 year')));
+        return (int)(($nextYear - time()) / 86400);
+    }
+
+    private function calcResetDayByYearExpiredAt(int $expiredAt): int
+    {
+        $md = date('m-d', $expiredAt);
+        $nowYear = strtotime(date("Y-{$md}"));
+        $nextYear = strtotime('+1 year', $nowYear);
+        return (int)(($nextYear - time()) / 86400);
+    }
+
+    public function getResetDay(User $user)
+    {
+        if (!isset($user->plan)) {
+            $user->plan = Plan::find($user->plan_id);
         }
-        if ((int)config('v2board.reset_traffic_method') === 4 ||
-            (isset($user->plan->reset_traffic_method) && $user->plan->reset_traffic_method === 4))
-        {
-            $md = date('m-d', $user->expired_at);
-            $nowYear = strtotime(date("Y-{$md}"));
-            $nextYear = strtotime('+1 year', $nowYear);
-            return (int)(($nextYear - time()) / 86400);
+        if ($user->expired_at <= time() || $user->expired_at === NULL) return null;
+        // if reset method is not reset
+        if ($user->plan->reset_traffic_method === 2) return null;
+        switch (true) {
+            case ($user->plan->reset_traffic_method === NULL): {
+                $resetTrafficMethod = config('v2board.reset_traffic_method', 0);
+                switch ((int)$resetTrafficMethod) {
+                    // month first day
+                    case 0:
+                        return $this->calcResetDayByMonthFirstDay();
+                    // expire day
+                    case 1:
+                        return $this->calcResetDayByExpireDay($user->expired_at);
+                    // no action
+                    case 2:
+                        return null;
+                    // year first day
+                    case 3:
+                        return $this->calcResetDayByYearFirstDay();
+                    // year expire day
+                    case 4:
+                        return $this->calcResetDayByYearExpiredAt($user->expired_at);
+                }
+                break;
+            }
+            case ($user->plan->reset_traffic_method === 0): {
+                return $this->calcResetDayByMonthFirstDay();
+            }
+            case ($user->plan->reset_traffic_method === 1): {
+                return $this->calcResetDayByExpireDay($user->expired_at);
+            }
+            case ($user->plan->reset_traffic_method === 2): {
+                return null;
+            }
+            case ($user->plan->reset_traffic_method === 3): {
+                return $this->calcResetDayByYearFirstDay();
+            }
+            case ($user->plan->reset_traffic_method === 4): {
+                return $this->calcResetDayByYearExpiredAt($user->expired_at);
+            }
         }
         return null;
     }
@@ -130,7 +170,7 @@ class UserService
         return true;
     }
 
-    public function trafficFetch(int $u, int $d, int $userId, object $server, string $protocol)
+    public function trafficFetch(int $u, int $d, int $userId, array $server, string $protocol)
     {
         TrafficFetchJob::dispatch($u, $d, $userId, $server, $protocol);
         StatServerJob::dispatch($u, $d, $server, $protocol, 'd');

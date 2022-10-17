@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Requests\Admin\PlanSave;
 use App\Http\Requests\Admin\PlanSort;
 use App\Http\Requests\Admin\PlanUpdate;
+use App\Services\PlanService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Plan;
@@ -16,17 +17,7 @@ class PlanController extends Controller
 {
     public function fetch(Request $request)
     {
-        $counts = User::select(
-            DB::raw("plan_id"),
-            DB::raw("count(*) as count")
-        )
-            ->where('plan_id', '!=', NULL)
-            ->where(function ($query) {
-                $query->where('expired_at', '>=', time())
-                    ->orWhere('expired_at', NULL);
-            })
-            ->groupBy("plan_id")
-            ->get();
+        $counts = PlanService::countActiveUsers();
         $plans = Plan::orderBy('sort', 'ASC')->get();
         foreach ($plans as $k => $v) {
             $plans[$k]->count = 0;

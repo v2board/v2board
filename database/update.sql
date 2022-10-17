@@ -586,3 +586,9 @@ ALTER TABLE `v2_mail_log`
     CHANGE `subject` `subject` varchar(255) NOT NULL AFTER `email`,
     CHANGE `template_name` `template_name` varchar(255) NOT NULL AFTER `subject`,
     CHANGE `error` `error` text NULL AFTER `template_name`;
+
+ALTER TABLE `v2_plan`
+    ADD `inventory_limit` int(11) NULL AFTER `reset_traffic_method`;
+
+ALTER TABLE `v2_plan`
+    CHANGE `inventory_limit` `capacity_limit` int(11) NULL AFTER `reset_traffic_method`;

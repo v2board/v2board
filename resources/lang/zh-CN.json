@@ -90,5 +90,8 @@
     "Request failed, please try again later": "请求失败，请稍后再试",
     "Register frequently, please try again after 1 hour": "注册频繁，请等待1小时后再次尝试",
     "Uh-oh, we've had some problems, we're working on it.": "遇到了些问题，我们正在进行处理",
-    "This subscription reset package does not apply to your subscription": "该订阅重置包不适用于你的订阅"
+    "This subscription reset package does not apply to your subscription": "该订阅重置包不适用于你的订阅",
+    "Login to :name": "登入到 :name",
+    "Sending frequently, please try again later": "发送频繁，请稍后再试",
+    "Current product is sold out": "当前商品已售罄"
 }

@@ -14,17 +14,14 @@
 ## Document
 [Click](https://docs.v2board.com)
 
-## Donation
-[![Donate with Ethereum](https://en.cryptobadges.io/badge/big/0x41dea6134d6Bf4f78cD88C71666144315573c9d3?showBalance=true)](https://en.cryptobadges.io/donate/0x41dea6134d6Bf4f78cD88C71666144315573c9d3)
-
 ## Sponsors
 Thanks to the open source project license provided by [Jetbrains](https://www.jetbrains.com/)
 
 ## Community
 Telegram Channel: [@v2board](https://t.me/v2board)  
+Telegram Group: [@v2board_official](https://t.me/v2board_official)
 
-## Rules
-1.We have closed issue. If you want to find us, please contact us through the telegram group.  
-2.Forward, Please indicate the original repo.  
-3.This repo is v2board api interface open source.  
-4.Due to the copyright problem, we have no plan to open source the front-end, but the front-end code is still readable.
+## How to Feedback
+We have closed issues due to too much invalid feedback, you can give us your feedback in the following way.
+ - Contact us through Community
+ - Fork Dev branch commit pull request

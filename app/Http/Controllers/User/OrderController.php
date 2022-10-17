@@ -9,6 +9,7 @@ use App\Models\Payment;
 use App\Services\CouponService;
 use App\Services\OrderService;
 use App\Services\PaymentService;
+use App\Services\PlanService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -28,7 +29,7 @@ class OrderController extends Controller
 {
     public function fetch(Request $request)
     {
-        $model = Order::where('user_id', $request->session()->get('id'))
+        $model = Order::where('user_id', $request->user['id'])
             ->orderBy('created_at', 'DESC');
         if ($request->input('status') !== null) {
             $model->where('status', $request->input('status'));
@@ -49,7 +50,7 @@ class OrderController extends Controller
 
     public function detail(Request $request)
     {
-        $order = Order::where('user_id', $request->session()->get('id'))
+        $order = Order::where('user_id', $request->user['id'])
             ->where('trade_no', $request->input('trade_no'))
             ->first();
         if (!$order) {
@@ -71,15 +72,21 @@ class OrderController extends Controller
     public function save(OrderSave $request)
     {
         $userService = new UserService();
-        if ($userService->isNotCompleteOrderByUserId($request->session()->get('id'))) {
+        if ($userService->isNotCompleteOrderByUserId($request->user['id'])) {
             abort(500, __('You have an unpaid or pending order, please try again later or cancel it'));
         }
 
-        $plan = Plan::find($request->input('plan_id'));
-        $user = User::find($request->session()->get('id'));
+        $planService = new PlanService($request->input('plan_id'));
+
+        $plan = $planService->plan;
+        $user = User::find($request->user['id']);
 
         if (!$plan) {
             abort(500, __('Subscription plan does not exist'));
+        }
+
+        if (!$planService->haveCapacity() && $request->input('period') !== 'reset_price') {
+            abort(500, __('Current product is sold out'));
         }
 
         if ($plan[$request->input('period')] === NULL) {
@@ -87,12 +94,8 @@ class OrderController extends Controller
         }
 
         if ($request->input('period') === 'reset_price') {
-            if (!$user->plan_id) {
+            if (!$userService->isAvailable($user) || $plan->id !== $user->plan_id) {
                 abort(500, __('Subscription has expired or no active subscription, unable to purchase Data Reset Package'));
-            } else {
-                if ($user->plan_id !== $plan->id) {
-                    abort(500, __('This subscription reset package does not apply to your subscription'));
-                }
             }
         }
 
@@ -114,7 +117,7 @@ class OrderController extends Controller
         DB::beginTransaction();
         $order = new Order();
         $orderService = new OrderService($order);
-        $order->user_id = $request->session()->get('id');
+        $order->user_id = $request->user['id'];
         $order->plan_id = $plan->id;
         $order->period = $request->input('period');
         $order->trade_no = Helper::generateOrderNo();
@@ -170,7 +173,7 @@ class OrderController extends Controller
         $tradeNo = $request->input('trade_no');
         $method = $request->input('method');
         $order = Order::where('trade_no', $tradeNo)
-            ->where('user_id', $request->session()->get('id'))
+            ->where('user_id', $request->user['id'])
             ->where('status', 0)
             ->first();
         if (!$order) {
@@ -209,7 +212,7 @@ class OrderController extends Controller
     {
         $tradeNo = $request->input('trade_no');
         $order = Order::where('trade_no', $tradeNo)
-            ->where('user_id', $request->session()->get('id'))
+            ->where('user_id', $request->user['id'])
             ->first();
         if (!$order) {
             abort(500, __('Order does not exist'));
@@ -229,7 +232,9 @@ class OrderController extends Controller
             'handling_fee_fixed',
             'handling_fee_percent'
         ])
-            ->where('enable', 1)->get();
+            ->where('enable', 1)
+            ->orderBy('sort', 'ASC')
+            ->get();
 
         return response([
             'data' => $methods
@@ -242,7 +247,7 @@ class OrderController extends Controller
             abort(500, __('Invalid parameter'));
         }
         $order = Order::where('trade_no', $request->input('trade_no'))
-            ->where('user_id', $request->session()->get('id'))
+            ->where('user_id', $request->user['id'])
             ->first();
         if (!$order) {
             abort(500, __('Order does not exist'));

@@ -4,14 +4,16 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Services\PlanService;
 use Illuminate\Http\Request;
 use App\Models\Plan;
+use Illuminate\Support\Facades\DB;
 
 class PlanController extends Controller
 {
     public function fetch(Request $request)
     {
-        $user = User::find($request->session()->get('id'));
+        $user = User::find($request->user['id']);
         if ($request->input('id')) {
             $plan = Plan::where('id', $request->input('id'))->first();
             if (!$plan) {
@@ -24,11 +26,18 @@ class PlanController extends Controller
                 'data' => $plan
             ]);
         }
-        $plan = Plan::where('show', 1)
+
+        $counts = PlanService::countActiveUsers();
+        $plans = Plan::where('show', 1)
             ->orderBy('sort', 'ASC')
             ->get();
+        foreach ($plans as $k => $v) {
+            if ($plans[$k]->capacity_limit === NULL) continue;
+            if (!isset($counts[$plans[$k]->id])) continue;
+            $plans[$k]->capacity_limit = $plans[$k]->capacity_limit - $counts[$plans[$k]->id]->count;
+        }
         return response([
-            'data' => $plan
+            'data' => $plans
         ]);
     }
 }

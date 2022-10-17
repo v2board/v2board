@@ -91,11 +91,14 @@ class StripeWepay {
             case 'charge.succeeded':
                 $object = $event->data->object;
                 if ($object->status === 'succeeded') {
+                    if (!isset($object->metadata->out_trade_no) && !isset($object->source->metadata)) {
+                        die('order error');
+                    }
                     $metaData = isset($object->metadata->out_trade_no) ? $object->metadata : $object->source->metadata;
                     $tradeNo = $metaData->out_trade_no;
                     return [
                         'trade_no' => $tradeNo,
-                        'callback_no' => $object->balance_transaction
+                        'callback_no' => $object->id
                     ];
                 }
                 break;

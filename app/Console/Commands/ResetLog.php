@@ -2,23 +2,29 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Plan;
+use App\Models\StatUser;
+use App\Utils\Helper;
 use Illuminate\Console\Command;
+use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
-class Test extends Command
+class ResetLog extends Command
 {
+    protected $builder;
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'test';
+    protected $signature = 'reset:log';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = '';
+    protected $description = '清空日志';
 
     /**
      * Create a new command instance.
@@ -37,5 +43,7 @@ class Test extends Command
      */
     public function handle()
     {
+        StatUser::where('record_at', '<', strtotime('-2 month', time()))
+            ->delete();
     }
 }

@@ -82,9 +82,9 @@ class DeepbworkController extends Controller
         Cache::put(CacheKey::get('SERVER_V2RAY_LAST_PUSH_AT', $server->id), time(), 3600);
         $userService = new UserService();
         foreach ($data as $item) {
-            $u = $item['u'] * $server->rate;
-            $d = $item['d'] * $server->rate;
-            $userService->trafficFetch($u, $d, $item['user_id'], $server, 'vmess');
+            $u = $item['u'];
+            $d = $item['d'];
+            $userService->trafficFetch($u, $d, $item['user_id'], $server->toArray(), 'vmess');
         }
 
         return response([

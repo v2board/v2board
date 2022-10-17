@@ -2,11 +2,6 @@
 
 namespace App\Utils;
 
-use App\Models\ServerV2ray;
-use App\Models\ServerShadowsocks;
-use App\Models\ServerTrojan;
-use App\Models\User;
-
 class Helper
 {
     public static function guid($format = false)

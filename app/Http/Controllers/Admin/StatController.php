@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\ServerShadowsocks;
 use App\Models\ServerTrojan;
+use App\Models\StatUser;
 use App\Services\ServerService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -45,7 +46,15 @@ class StatController extends Controller
                 'last_month_income' => Order::where('created_at', '>=', strtotime('-1 month', strtotime(date('Y-m-1'))))
                     ->where('created_at', '<', strtotime(date('Y-m-1')))
                     ->whereNotIn('status', [0, 2])
-                    ->sum('total_amount')
+                    ->sum('total_amount'),
+                'commission_month_payout' => Order::where('actual_commission_balance' ,'!=', NULL)
+                    ->where('created_at', '>=', strtotime(date('Y-m-1')))
+                    ->where('created_at', '<', time())
+                    ->sum('actual_commission_balance'),
+                'commission_last_month_payout' => Order::where('actual_commission_balance' ,'!=', NULL)
+                    ->where('created_at', '>=', strtotime('-1 month', strtotime(date('Y-m-1'))))
+                    ->where('created_at', '<', strtotime(date('Y-m-1')))
+                    ->sum('actual_commission_balance'),
             ]
         ]);
     }
@@ -122,6 +131,24 @@ class StatController extends Controller
         return response([
             'data' => $statistics
         ]);
+    }
+
+    public function getStatUser(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required|integer'
+        ]);
+        $current = $request->input('current') ? $request->input('current') : 1;
+        $pageSize = $request->input('pageSize') >= 10 ? $request->input('pageSize') : 10;
+        $builder = StatUser::orderBy('record_at', 'DESC')->where('user_id', $request->input('user_id'));
+
+        $total = $builder->count();
+        $records = $builder->forPage($current, $pageSize)
+            ->get();
+        return [
+            'data' => $records,
+            'total' => $total
+        ];
     }
 }
 
