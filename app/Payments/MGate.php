@@ -50,7 +50,7 @@ class MGate {
             'return_url' => $order['return_url']
         ];
         if ($this->config['mgate_source_currency']) {
-            $params['source_currency'] = $this->config['mgate_source_currency']
+            $params['source_currency'] = $this->config['mgate_source_currency'];
         }
         $params['app_id'] = $this->config['mgate_app_id'];
         ksort($params);
