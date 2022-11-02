@@ -21,6 +21,7 @@ window.settings = {
     'ja-JP',
     'vi-VN',
     'ko-KR',
-    'zh-TW'
+    'zh-TW',
+    'fa-IR'
   ]
 }
