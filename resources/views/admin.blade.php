@@ -30,7 +30,7 @@
 <script src="/assets/admin/vendors.async.js?v={{$version}}"></script>
 <script src="/assets/admin/components.async.js?v={{$version}}"></script>
 <script src="/assets/admin/umi.js?v={{$version}}"></script>
-<!-- Global site tag (gtag.js) - Google Analytics -->
+<!-- Global site tag (gtag.js) - Google Analytics
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-P1E9Z5LRRK"></script>
 <script>
     window.dataLayer = window.dataLayer || [];
@@ -42,7 +42,7 @@
     gtag('js', new Date());
 
     gtag('config', 'G-P1E9Z5LRRK');
-</script>
+</script> -->
 </body>
 
 </html>
