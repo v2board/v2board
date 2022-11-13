@@ -49,7 +49,10 @@ class Shadowrocket
             ['-', '_', ''],
             base64_encode("{$server['cipher']}:{$password}")
         );
-        return "ss://{$str}@{$server['host']}:{$server['port']}#{$name}\r\n";
+        $query = http_build_query([
+            'udp' => true,
+        ]);
+        return "ss://{$str}@{$server['host']}:{$server['port']}?{$query}#{$name}\r\n";
     }
 
     public static function buildVmess($uuid, $server)
@@ -58,7 +61,8 @@ class Shadowrocket
         $config = [
             'tfo' => 1,
             'remark' => $server['name'],
-            'alterId' => 0
+            'alterId' => 0,
+            'udp' => true,
         ];
         if ($server['tls']) {
             $config['tls'] = 1;
@@ -104,7 +108,8 @@ class Shadowrocket
         $name = rawurlencode($server['name']);
         $query = http_build_query([
             'allowInsecure' => $server['allow_insecure'],
-            'peer' => $server['server_name']
+            'peer' => $server['server_name'],
+            'udp' => true,
         ]);
         $uri = "trojan://{$password}@{$server['host']}:{$server['port']}?{$query}&tfo=1#{$name}";
         $uri .= "\r\n";
