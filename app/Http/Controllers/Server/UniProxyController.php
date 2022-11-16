@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Server;
 use App\Services\ServerService;
 use App\Services\UserService;
 use App\Utils\CacheKey;
+use App\Utils\Helper;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\ServerShadowsocks;
@@ -12,7 +13,7 @@ use App\Models\ServerV2ray;
 use App\Models\ServerTrojan;
 use Illuminate\Support\Facades\Cache;
 
-class VProxyController extends Controller
+class UniProxyController extends Controller
 {
     private $nodeType;
     private $nodeInfo;
@@ -60,15 +61,6 @@ class VProxyController extends Controller
 
         $response['users'] = $users;
 
-        switch ($this->nodeType) {
-            case 'shadowsocks':
-                $response['server'] = [
-                    'cipher' => $this->nodeInfo->cipher,
-                    'server_port' => $this->nodeInfo->server_port
-                ];
-                break;
-        }
-
         $eTag = sha1(json_encode($response));
         if (strpos($request->header('If-None-Match'), $eTag) !== false ) {
             abort(304);
@@ -78,17 +70,17 @@ class VProxyController extends Controller
     }
 
     // 后端提交数据
-    public function submit(Request $request)
+    public function push(Request $request)
     {
         $data = file_get_contents('php://input');
         $data = json_decode($data, true);
         Cache::put(CacheKey::get('SERVER_' . strtoupper($this->nodeType) . '_ONLINE_USER', $this->nodeInfo->id), count($data), 3600);
         Cache::put(CacheKey::get('SERVER_' . strtoupper($this->nodeType) . '_LAST_PUSH_AT', $this->nodeInfo->id), time(), 3600);
         $userService = new UserService();
-        foreach ($data as $item) {
-            $u = $item['u'];
-            $d = $item['d'];
-            $userService->trafficFetch($u, $d, $item['user_id'], $this->nodeInfo->toArray(), $this->nodeType);
+        foreach (array_keys($data) as $k) {
+            $u = $data[$k]['Upload'];
+            $d = $data[$k]['Download'];
+            $userService->trafficFetch($u, $d, $k, $this->nodeInfo->toArray(), $this->nodeType);
         }
 
         return response([
@@ -101,28 +93,39 @@ class VProxyController extends Controller
     {
         switch ($this->nodeType) {
             case 'shadowsocks':
-                die(json_encode([
+                $response = [
                     'server_port' => $this->nodeInfo->server_port,
                     'cipher' => $this->nodeInfo->cipher,
                     'obfs' => $this->nodeInfo->obfs,
                     'obfs_settings' => $this->nodeInfo->obfs_settings
-                ], JSON_UNESCAPED_UNICODE));
+                ];
                 break;
             case 'v2ray':
-                die(json_encode([
+                $response = [
                     'server_port' => $this->nodeInfo->server_port,
                     'network' => $this->nodeInfo->network,
                     'cipher' => $this->nodeInfo->cipher,
                     'networkSettings' => $this->nodeInfo->networkSettings,
                     'tls' => $this->nodeInfo->tls
-                ], JSON_UNESCAPED_UNICODE));
+                ];
                 break;
             case 'trojan':
-                die(json_encode([
+                $response = [
                     'host' => $this->nodeInfo->host,
-                    'server_port' => $this->nodeInfo->server_port
-                ], JSON_UNESCAPED_UNICODE));
+                    'server_port' => $this->nodeInfo->server_port,
+                    'server_name' => $this->nodeInfo->server_name
+                ];
                 break;
         }
+        $response['base_config'] = [
+            'push_interval' => 120,
+            'pull_interval' => 120
+        ];
+        $eTag = sha1(json_encode($response));
+        if (strpos($request->header('If-None-Match'), $eTag) !== false ) {
+            abort(304);
+        }
+
+        return response($response)->header('ETag', "\"{$eTag}\"");
     }
 }
