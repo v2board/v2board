@@ -78,8 +78,8 @@ class UniProxyController extends Controller
         Cache::put(CacheKey::get('SERVER_' . strtoupper($this->nodeType) . '_LAST_PUSH_AT', $this->nodeInfo->id), time(), 3600);
         $userService = new UserService();
         foreach (array_keys($data) as $k) {
-            $u = $data[$k]['Upload'];
-            $d = $data[$k]['Download'];
+            $u = $data[$k][0];
+            $d = $data[$k][1];
             $userService->trafficFetch($u, $d, $k, $this->nodeInfo->toArray(), $this->nodeType);
         }
 
