@@ -28,7 +28,9 @@ class Surge
         $proxyGroup = '';
 
         foreach ($servers as $item) {
-            if ($item['type'] === 'shadowsocks') {
+            if ($item['type'] === 'shadowsocks'
+                && in_array($item['cipher'], ['aes-128-gcm', 'aes-256-gcm', 'aes-192-gcm'])
+            ) {
                 // [Proxy]
                 $proxies .= self::buildShadowsocks($user['uuid'], $item);
                 // [Proxy Group]
