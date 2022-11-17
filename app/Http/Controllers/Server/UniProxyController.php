@@ -99,6 +99,13 @@ class UniProxyController extends Controller
                     'obfs' => $this->nodeInfo->obfs,
                     'obfs_settings' => $this->nodeInfo->obfs_settings
                 ];
+
+                if ($this->nodeInfo->cipher === '2022-blake3-aes-128-gcm') {
+                    $response['server_key'] = Helper::getShadowsocksServerKey($this->nodeInfo->created_at, 16);
+                }
+                if ($this->nodeInfo->cipher === '2022-blake3-aes-256-gcm') {
+                    $response['server_key'] = Helper::getShadowsocksServerKey($this->nodeInfo->created_at, 32);
+                }
                 break;
             case 'v2ray':
                 $response = [
