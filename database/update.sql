@@ -592,3 +592,9 @@ ALTER TABLE `v2_plan`
 
 ALTER TABLE `v2_plan`
     CHANGE `inventory_limit` `capacity_limit` int(11) NULL AFTER `reset_traffic_method`;
+
+ALTER TABLE `v2_user`
+    ADD `speed_limit` int(11) NULL AFTER `plan_id`;
+
+ALTER TABLE `v2_plan`
+    ADD `speed_limit` int(11) NULL AFTER `transfer_enable`;
