@@ -592,3 +592,10 @@ ALTER TABLE `v2_plan`
 
 ALTER TABLE `v2_plan`
     CHANGE `inventory_limit` `capacity_limit` int(11) NULL AFTER `reset_traffic_method`;
+
+ALTER TABLE `v2_server_shadowsocks`
+    ADD `tfo` tinyint(1) NOT NULL DEFAULT '0' AFTER `obfs_settings`;
+ALTER TABLE `v2_server_v2ray`
+    ADD `tfo` tinyint(1) NOT NULL DEFAULT '0' AFTER `tls`;
+ALTER TABLE `v2_server_trojan`
+    ADD `tfo` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否开启TCP Fast Open' AFTER `allow_insecure`;
