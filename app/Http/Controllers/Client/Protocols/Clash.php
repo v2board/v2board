@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Client\Protocols;
 
+use App\Utils\Dict;
+use phpDocumentor\Reflection\Types\Self_;
 use Symfony\Component\Yaml\Yaml;
 
 class Clash
@@ -37,7 +39,12 @@ class Clash
 
         foreach ($servers as $item) {
             if ($item['type'] === 'shadowsocks'
-                && in_array($item['cipher'], ['aes-128-gcm', 'aes-256-gcm', 'aes-192-gcm'])
+                && in_array($item['cipher'], [
+                    'aes-128-gcm',
+                    'aes-192-gcm',
+                    'aes-256-gcm',
+                    'chacha20-ietf-poly1305'
+                ])
             ) {
                 array_push($proxy, self::buildShadowsocks($user['uuid'], $item));
                 array_push($proxies, $item['name']);
