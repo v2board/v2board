@@ -99,7 +99,7 @@ class StatController extends Controller
     {
         $servers = [
             'shadowsocks' => ServerShadowsocks::where('parent_id', null)->get()->toArray(),
-            'vmess' => ServerV2ray::where('parent_id', null)->get()->toArray(),
+            'v2ray' => ServerV2ray::where('parent_id', null)->get()->toArray(),
             'trojan' => ServerTrojan::where('parent_id', null)->get()->toArray()
         ];
         $startAt = strtotime('-1 day', strtotime(date('Y-m-d')));
