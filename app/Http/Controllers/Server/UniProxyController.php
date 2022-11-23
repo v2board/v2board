@@ -111,7 +111,6 @@ class UniProxyController extends Controller
                 $response = [
                     'server_port' => $this->nodeInfo->server_port,
                     'network' => $this->nodeInfo->network,
-                    'cipher' => $this->nodeInfo->cipher,
                     'networkSettings' => $this->nodeInfo->networkSettings,
                     'tls' => $this->nodeInfo->tls
                 ];

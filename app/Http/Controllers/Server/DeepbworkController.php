@@ -84,7 +84,7 @@ class DeepbworkController extends Controller
         foreach ($data as $item) {
             $u = $item['u'];
             $d = $item['d'];
-            $userService->trafficFetch($u, $d, $item['user_id'], $server->toArray(), 'vmess');
+            $userService->trafficFetch($u, $d, $item['user_id'], $server->toArray(), 'v2ray');
         }
 
         return response([
