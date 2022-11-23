@@ -203,7 +203,7 @@ CREATE TABLE `v2_server_shadowsocks` (
                                          `name` varchar(255) NOT NULL,
                                          `rate` varchar(11) NOT NULL,
                                          `host` varchar(255) NOT NULL,
-                                         `port` int(11) NOT NULL,
+                                         `port` varchar(11) NOT NULL,
                                          `server_port` int(11) NOT NULL,
                                          `cipher` varchar(255) NOT NULL,
                                          `obfs` char(11) DEFAULT NULL,
@@ -225,7 +225,7 @@ CREATE TABLE `v2_server_trojan` (
                                     `name` varchar(255) NOT NULL COMMENT '节点名称',
                                     `rate` varchar(11) NOT NULL COMMENT '倍率',
                                     `host` varchar(255) NOT NULL COMMENT '主机名',
-                                    `port` int(11) NOT NULL COMMENT '连接端口',
+                                    `port` varchar(11) NOT NULL COMMENT '连接端口',
                                     `server_port` int(11) NOT NULL COMMENT '服务端口',
                                     `allow_insecure` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否允许不安全',
                                     `server_name` varchar(255) DEFAULT NULL,
@@ -244,7 +244,7 @@ CREATE TABLE `v2_server_v2ray` (
                                    `name` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
                                    `parent_id` int(11) DEFAULT NULL,
                                    `host` varchar(255) NOT NULL,
-                                   `port` char(11) NOT NULL,
+                                   `port` varchar(11) NOT NULL,
                                    `server_port` int(11) NOT NULL,
                                    `tls` tinyint(4) NOT NULL DEFAULT '0',
                                    `tags` varchar(255) DEFAULT NULL,
@@ -381,4 +381,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2022-11-18 07:29:50
+-- 2022-11-21 20:03:16

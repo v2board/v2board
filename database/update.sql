@@ -598,3 +598,13 @@ ALTER TABLE `v2_user`
 
 ALTER TABLE `v2_plan`
     ADD `speed_limit` int(11) NULL AFTER `transfer_enable`;
+ALTER TABLE `v2_server_v2ray`
+    CHANGE `port` `port` varchar(11) COLLATE 'utf8_general_ci' NOT NULL AFTER `host`;
+ALTER TABLE `v2_server_shadowsocks`
+    CHANGE `port` `port` varchar(11) NOT NULL AFTER `host`;
+ALTER TABLE `v2_server_trojan`
+    CHANGE `port` `port` varchar(11) NOT NULL COMMENT '连接端口' AFTER `host`;
+
+UPDATE `v2_stat_server` SET
+    `server_type` = 'v2ray'
+WHERE `server_type` = 'vmess';
