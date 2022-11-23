@@ -96,8 +96,6 @@ class UniProxyController extends Controller
                 $response = [
                     'server_port' => $this->nodeInfo->server_port,
                     'cipher' => $this->nodeInfo->cipher,
-                    'obfs' => $this->nodeInfo->obfs,
-                    'obfs_settings' => $this->nodeInfo->obfs_settings
                 ];
 
                 if ($this->nodeInfo->cipher === '2022-blake3-aes-128-gcm') {
@@ -113,7 +111,8 @@ class UniProxyController extends Controller
                     'network' => $this->nodeInfo->network,
                     'cipher' => $this->nodeInfo->cipher,
                     'networkSettings' => $this->nodeInfo->networkSettings,
-                    'tls' => $this->nodeInfo->tls
+                    'tls' => $this->nodeInfo->tls,
+                    'rules' => $this->nodeInfo->ruleSettings
                 ];
                 break;
             case 'trojan':
