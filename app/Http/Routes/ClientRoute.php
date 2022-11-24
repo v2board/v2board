@@ -14,7 +14,6 @@ class ClientRoute
             // Client
             $router->get('/subscribe', 'Client\\ClientController@subscribe');
             // App
-            $router->get('/app/config', 'Client\\AppController@config');
             $router->get('/app/getConfig', 'Client\\AppController@getConfig');
             $router->get('/app/getVersion', 'Client\\AppController@getVersion');
         });

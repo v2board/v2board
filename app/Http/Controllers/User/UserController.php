@@ -113,7 +113,8 @@ class UserController extends Controller
                 'u',
                 'd',
                 'transfer_enable',
-                'email'
+                'email',
+                'uuid'
             ])
             ->first();
         if (!$user) {
