@@ -100,6 +100,10 @@ class ServerService
         );
         $tmp = array_column($servers, 'sort');
         array_multisort($tmp, SORT_ASC, $servers);
+        $servers = array_map(function ($server) {
+            $server['port'] = (int)$server['port'];
+            return $server;
+        }, $servers);
         return $servers;
     }
 
