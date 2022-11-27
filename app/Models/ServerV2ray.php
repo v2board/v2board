@@ -13,6 +13,7 @@ class ServerV2ray extends Model
         'created_at' => 'timestamp',
         'updated_at' => 'timestamp',
         'group_id' => 'array',
+        'route_id' => 'array',
         'tlsSettings' => 'array',
         'networkSettings' => 'array',
         'dnsSettings' => 'array',

@@ -194,10 +194,24 @@ CREATE TABLE `v2_server_group` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
+DROP TABLE IF EXISTS `v2_server_route`;
+CREATE TABLE `v2_server_route` (
+                                   `id` int(11) NOT NULL AUTO_INCREMENT,
+                                   `remarks` varchar(255) NOT NULL,
+                                   `match` varchar(255) NOT NULL,
+                                   `action` varchar(11) NOT NULL,
+                                   `action_value` varchar(255) DEFAULT NULL,
+                                   `created_at` int(11) NOT NULL,
+                                   `updated_at` int(11) NOT NULL,
+                                   PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
 DROP TABLE IF EXISTS `v2_server_shadowsocks`;
 CREATE TABLE `v2_server_shadowsocks` (
                                          `id` int(11) NOT NULL AUTO_INCREMENT,
                                          `group_id` varchar(255) NOT NULL,
+                                         `route_id` varchar(255) DEFAULT NULL,
                                          `parent_id` int(11) DEFAULT NULL,
                                          `tags` varchar(255) DEFAULT NULL,
                                          `name` varchar(255) NOT NULL,
@@ -220,6 +234,7 @@ DROP TABLE IF EXISTS `v2_server_trojan`;
 CREATE TABLE `v2_server_trojan` (
                                     `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '节点ID',
                                     `group_id` varchar(255) NOT NULL COMMENT '节点组',
+                                    `route_id` varchar(255) DEFAULT NULL,
                                     `parent_id` int(11) DEFAULT NULL COMMENT '父节点',
                                     `tags` varchar(255) DEFAULT NULL COMMENT '节点标签',
                                     `name` varchar(255) NOT NULL COMMENT '节点名称',
@@ -241,7 +256,8 @@ DROP TABLE IF EXISTS `v2_server_v2ray`;
 CREATE TABLE `v2_server_v2ray` (
                                    `id` int(11) NOT NULL AUTO_INCREMENT,
                                    `group_id` varchar(255) NOT NULL,
-                                   `name` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
+                                   `route_id` varchar(255) DEFAULT NULL,
+                                   `name` varchar(255) NOT NULL,
                                    `parent_id` int(11) DEFAULT NULL,
                                    `host` varchar(255) NOT NULL,
                                    `port` varchar(11) NOT NULL,
@@ -260,7 +276,7 @@ CREATE TABLE `v2_server_v2ray` (
                                    `created_at` int(11) NOT NULL,
                                    `updated_at` int(11) NOT NULL,
                                    PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `v2_stat_order`;
@@ -381,4 +397,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2022-11-21 20:03:16
+-- 2022-11-27 07:09:04

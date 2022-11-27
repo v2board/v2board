@@ -587,12 +587,6 @@ ALTER TABLE `v2_mail_log`
     CHANGE `template_name` `template_name` varchar(255) NOT NULL AFTER `subject`,
     CHANGE `error` `error` text NULL AFTER `template_name`;
 
-ALTER TABLE `v2_plan`
-    ADD `inventory_limit` int(11) NULL AFTER `reset_traffic_method`;
-
-ALTER TABLE `v2_plan`
-    CHANGE `inventory_limit` `capacity_limit` int(11) NULL AFTER `reset_traffic_method`;
-
 ALTER TABLE `v2_user`
     ADD `speed_limit` int(11) NULL AFTER `plan_id`;
 
@@ -608,3 +602,29 @@ ALTER TABLE `v2_server_trojan`
 UPDATE `v2_stat_server` SET
     `server_type` = 'v2ray'
 WHERE `server_type` = 'vmess';
+
+ALTER TABLE `v2_server_shadowsocks`
+    ADD `route_id` varchar(255) COLLATE 'utf8mb4_general_ci' NULL AFTER `group_id`;
+
+ALTER TABLE `v2_server_trojan`
+    ADD `route_id` varchar(255) COLLATE 'utf8mb4_general_ci' NULL AFTER `group_id`;
+
+ALTER TABLE `v2_server_v2ray`
+    COLLATE 'utf8mb4_general_ci';
+
+ALTER TABLE `v2_server_v2ray`
+    CHANGE `group_id` `group_id` varchar(255) NOT NULL AFTER `id`,
+    CHANGE `route_id` `route_id` varchar(255) NULL AFTER `group_id`,
+    CHANGE `host` `host` varchar(255) NOT NULL AFTER `parent_id`,
+    CHANGE `port` `port` varchar(11) NOT NULL AFTER `host`,
+    CHANGE `tags` `tags` varchar(255) NULL AFTER `tls`,
+    CHANGE `rate` `rate` varchar(11) NOT NULL AFTER `tags`,
+    CHANGE `network` `network` text NOT NULL AFTER `rate`,
+    CHANGE `rules` `rules` text NULL AFTER `network`,
+    CHANGE `networkSettings` `networkSettings` text NULL AFTER `rules`,
+    CHANGE `tlsSettings` `tlsSettings` text NULL AFTER `networkSettings`,
+    CHANGE `ruleSettings` `ruleSettings` text NULL AFTER `tlsSettings`,
+    CHANGE `dnsSettings` `dnsSettings` text NULL AFTER `ruleSettings`;
+
+ALTER TABLE `v2_server_v2ray`
+    ADD `route_id` varchar(255) COLLATE 'utf8mb4_general_ci' NULL AFTER `group_id`;

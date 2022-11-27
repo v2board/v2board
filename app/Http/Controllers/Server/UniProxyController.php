@@ -18,7 +18,7 @@ class UniProxyController extends Controller
     private $nodeType;
     private $nodeInfo;
     private $nodeId;
-    private $token;
+    private $serverService;
 
     public function __construct(Request $request)
     {
@@ -29,25 +29,11 @@ class UniProxyController extends Controller
         if ($token !== config('v2board.server_token')) {
             abort(500, 'token is error');
         }
-        $this->token = $token;
         $this->nodeType = $request->input('node_type');
         $this->nodeId = $request->input('node_id');
-        switch ($this->nodeType) {
-            case 'v2ray':
-                $this->nodeInfo = ServerV2ray::find($this->nodeId);
-                break;
-            case 'shadowsocks':
-                $this->nodeInfo = ServerShadowsocks::find($this->nodeId);
-                break;
-            case 'trojan':
-                $this->nodeInfo = ServerTrojan::find($this->nodeId);
-                break;
-            default:
-                break;
-        }
-        if (!$this->nodeInfo) {
-            abort(500, 'server not found');
-        }
+        $this->serverService = new ServerService();
+        $this->nodeInfo = $this->serverService->getServer($this->nodeId, $this->nodeType);
+        if (!$this->nodeInfo) abort(500, 'server is not exist');
     }
 
     // 后端获取用户
@@ -55,8 +41,7 @@ class UniProxyController extends Controller
     {
         ini_set('memory_limit', -1);
         Cache::put(CacheKey::get('SERVER_' . strtoupper($this->nodeType) . '_LAST_CHECK_AT', $this->nodeInfo->id), time(), 3600);
-        $serverService = new ServerService();
-        $users = $serverService->getAvailableUsers($this->nodeInfo->group_id);
+        $users = $this->serverService->getAvailableUsers($this->nodeInfo->group_id);
         $users = $users->toArray();
 
         $response['users'] = $users;
@@ -127,6 +112,7 @@ class UniProxyController extends Controller
             'push_interval' => 120,
             'pull_interval' => 120
         ];
+        $response['routes'] = $this->serverService->getRoutes($this->nodeInfo['route_id']);
         $eTag = sha1(json_encode($response));
         if (strpos($request->header('If-None-Match'), $eTag) !== false ) {
             abort(304);
