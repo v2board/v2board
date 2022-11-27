@@ -628,3 +628,15 @@ ALTER TABLE `v2_server_v2ray`
 
 ALTER TABLE `v2_server_v2ray`
     ADD `route_id` varchar(255) COLLATE 'utf8mb4_general_ci' NULL AFTER `group_id`;
+
+
+CREATE TABLE `v2_server_route` (
+                                   `id` int(11) NOT NULL AUTO_INCREMENT,
+                                   `remarks` varchar(255) NOT NULL,
+                                   `match` varchar(255) NOT NULL,
+                                   `action` varchar(11) NOT NULL,
+                                   `action_value` varchar(255) DEFAULT NULL,
+                                   `created_at` int(11) NOT NULL,
+                                   `updated_at` int(11) NOT NULL,
+                                   PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
