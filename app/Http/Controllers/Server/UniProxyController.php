@@ -109,8 +109,8 @@ class UniProxyController extends Controller
                 break;
         }
         $response['base_config'] = [
-            'push_interval' => 120,
-            'pull_interval' => 120
+            'push_interval' => config('v2board.server_push_interval', 60),
+            'pull_interval' => config('v2board.server_pull_interval', 60)
         ];
         $response['routes'] = $this->serverService->getRoutes($this->nodeInfo['route_id']);
         $eTag = sha1(json_encode($response));

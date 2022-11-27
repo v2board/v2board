@@ -128,10 +128,8 @@ class ConfigController extends Controller
             ],
             'server' => [
                 'server_token' => config('v2board.server_token'),
-                'server_license' => config('v2board.server_license'),
-                'server_log_enable' => config('v2board.server_log_enable', 0),
-                'server_v2ray_domain' => config('v2board.server_v2ray_domain'),
-                'server_v2ray_protocol' => config('v2board.server_v2ray_protocol'),
+                'server_pull_interval' => config('v2board.server_pull_interval', 60),
+                'server_push_interval' => config('v2board.server_push_interval', 60),
             ],
             'email' => [
                 'email_template' => config('v2board.email_template', 'default'),

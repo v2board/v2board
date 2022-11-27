@@ -56,10 +56,8 @@ class ConfigSave extends FormRequest
         'show_info_to_server_enable' => 'in:0,1',
         // server
         'server_token' => 'nullable|min:16',
-        'server_license' => 'nullable',
-        'server_log_enable' => 'in:0,1',
-        'server_v2ray_domain' => '',
-        'server_v2ray_protocol' => '',
+        'server_pull_interval' => 'integer',
+        'server_push_interval' => 'integer',
         // frontend
         'frontend_theme' => '',
         'frontend_theme_sidebar' => 'in:dark,light',
