@@ -218,7 +218,7 @@ class ServerService
         return $servers;
     }
 
-    public function getRoutes(array $routeIds)
+    public function getRoutes($routeIds)
     {
         return ServerRoute::select(['id', 'match', 'action', 'action_value'])->whereIn('id', $routeIds)->get();
     }
