@@ -599,8 +599,7 @@ ALTER TABLE `v2_server_shadowsocks`
 ALTER TABLE `v2_server_trojan`
     CHANGE `port` `port` varchar(11) NOT NULL COMMENT '连接端口' AFTER `host`;
 
-UPDATE `v2_stat_server` SET
-    `server_type` = 'v2ray'
+DELETE FROM `v2_stat_server`
 WHERE `server_type` = 'vmess';
 
 ALTER TABLE `v2_server_shadowsocks`
