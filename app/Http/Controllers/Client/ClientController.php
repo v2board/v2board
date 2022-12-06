@@ -54,7 +54,7 @@ class ClientController extends Controller
         ]));
         if ($resetDay) {
             array_unshift($servers, array_merge($servers[0], [
-                'name' => "Remaining until next reset：{$resetDay} 天",
+                'name' => "Remaining until next reset：{$resetDay} day",
             ]));
         }
         array_unshift($servers, array_merge($servers[0], [
