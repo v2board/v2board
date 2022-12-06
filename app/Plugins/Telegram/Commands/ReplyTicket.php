@@ -8,7 +8,7 @@ use App\Services\TicketService;
 
 class ReplyTicket extends Telegram {
     public $regex = '/[#](.*)/';
-    public $description = '快速工单回复';
+    public $description = 'Quick Ticket Reply';
 
     public function handle($message, $match = []) {
         if (!$message->is_private) return;
@@ -20,7 +20,7 @@ class ReplyTicket extends Telegram {
     {
         $user = User::where('telegram_id', $msg->chat_id)->first();
         if (!$user) {
-            abort(500, '用户不存在');
+            abort(500, 'User does not exist');
         }
         if (!$msg->text) return;
         if (!($user->is_admin || $user->is_staff)) return;
@@ -31,7 +31,7 @@ class ReplyTicket extends Telegram {
             $user->id
         );
         $telegramService = $this->telegramService;
-        $telegramService->sendMessage($msg->chat_id, "#`{$ticketId}` 的工单已回复成功", 'markdown');
-        $telegramService->sendMessageWithAdmin("#`{$ticketId}` 的工单已由 {$user->email} 进行回复", true);
+        $telegramService->sendMessage($msg->chat_id, "#`{$ticketId}` The Ticket of has been successfully replied", 'markdown');
+        $telegramService->sendMessageWithAdmin("#`{$ticketId}` A ticket for has been issued by {$user->email} to reply", true);
     }
 }
