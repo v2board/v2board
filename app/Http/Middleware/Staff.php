@@ -21,7 +21,7 @@ class Staff
 
         $authData = explode(':', base64_decode($authorization));
         if (!Cache::has($authorization)) {
-            if (!isset($authData[1]) || !isset($authData[0])) abort(403, '鉴权失败，请重新登入');
+            if (!isset($authData[1]) || !isset($authData[0])) abort(403, 'Authentication failed, please login again');
             $user = \App\Models\User::where('password', $authData[1])
                 ->where('email', $authData[0])
                 ->select([
@@ -31,8 +31,8 @@ class Staff
                     'is_staff'
                 ])
                 ->first();
-            if (!$user) abort(403, '鉴权失败，请重新登入');
-            if (!$user->is_staff) abort(403, '鉴权失败，请重新登入');
+            if (!$user) abort(403, 'Authentication failed, please login again');
+            if (!$user->is_staff) abort(403, 'Authentication failed, please login again');
             Cache::put($authorization, $user->toArray(), 3600);
         }
         $request->merge([
