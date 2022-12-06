@@ -1,4 +1,4 @@
-window.settings.i18n['zh-CN'] = {
+window.settings.i18n['en-US'] = {
   '请求失败': '请求失败',
   '月付': '月付',
   '季付': '季付',
