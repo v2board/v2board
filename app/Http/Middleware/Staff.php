@@ -17,7 +17,7 @@ class Staff
     public function handle($request, Closure $next)
     {
         $authorization = $request->input('auth_data') ?? $request->header('authorization');
-        if (!$authorization) abort(403, '未登录或登陆已过期');
+        if (!$authorization) abort(403, 'Not logged in or login has expired');
 
         $authData = explode(':', base64_decode($authorization));
         if (!Cache::has($authorization)) {

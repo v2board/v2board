@@ -17,11 +17,11 @@ class Admin
     public function handle($request, Closure $next)
     {
         $authorization = $request->input('auth_data') ?? $request->header('authorization');
-        if (!$authorization) abort(403, '未登录或登陆已过期');
+        if (!$authorization) abort(403, 'Not logged in or login has expired');
 
         $authData = explode(':', base64_decode($authorization));
         if (!Cache::has($authorization)) {
-            if (!isset($authData[1]) || !isset($authData[0])) abort(403, '鉴权失败，请重新登入');
+            if (!isset($authData[1]) || !isset($authData[0])) abort(403, 'Authentication failed, please log in again');
             $user = \App\Models\User::where('password', $authData[1])
                 ->where('email', $authData[0])
                 ->select([
@@ -31,8 +31,8 @@ class Admin
                     'is_staff'
                 ])
                 ->first();
-            if (!$user) abort(403, '鉴权失败，请重新登入');
-            if (!$user->is_admin) abort(403, '鉴权失败，请重新登入');
+            if (!$user) abort(403, 'Authentication failed, please log in again');
+            if (!$user->is_admin) abort(403, 'Authentication failed, please log in again');
             Cache::put($authorization, $user->toArray(), 3600);
         }
         $request->merge([
