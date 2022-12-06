@@ -184,11 +184,11 @@ class ConfigController extends Controller
         }
         $data = var_export($config, 1);
         if (!File::put(base_path() . '/config/v2board.php', "<?php\n return $data ;")) {
-            abort(500, '修改失败');
+            abort(500, 'Modification failure');
         }
         if (function_exists('opcache_reset')) {
             if (opcache_reset() === false) {
-                abort(500, '缓存清除失败，请卸载或检查opcache配置状态');
+                abort(500, 'Cache clearing failed, please uninstall or check opcache configuration status');
             }
         }
         Artisan::call('config:cache');

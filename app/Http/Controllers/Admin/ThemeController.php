@@ -59,9 +59,9 @@ class ThemeController extends Controller
             'config' => 'required'
         ]);
         $payload['config'] = json_decode(base64_decode($payload['config']), true);
-        if (!$payload['config'] || !is_array($payload['config'])) abort(500, '参数有误');
+        if (!$payload['config'] || !is_array($payload['config'])) abort(500, 'Wrong parameters');
         $themeConfigFile = public_path("theme/{$payload['name']}/config.php");
-        if (!File::exists($themeConfigFile)) abort(500, '主题不存在');
+        if (!File::exists($themeConfigFile)) abort(500, 'Theme does not exist');
         $themeConfig = include($themeConfigFile);
         $validateFields = array_column($themeConfig['configs'], 'field_name');
         $config = [];
@@ -73,14 +73,14 @@ class ThemeController extends Controller
 
         $data = var_export($config, 1);
         if (!File::put(base_path() . "/config/theme/{$payload['name']}.php", "<?php\n return $data ;")) {
-            abort(500, '修改失败');
+            abort(500, 'Modification failure');
         }
 
         try {
             Artisan::call('config:cache');
 //            sleep(2);
         } catch (\Exception $e) {
-            abort(500, '保存失败');
+            abort(500, 'Failed to save');
         }
 
         return response([

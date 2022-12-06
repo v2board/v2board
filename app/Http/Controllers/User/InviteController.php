@@ -59,21 +59,21 @@ class InviteController extends Controller
             $commission_rate = $user->commission_rate;
         }
         $stat = [
-            //已注册用户数
+            //Registered Users
             (int)User::where('invite_user_id', $request->user['id'])->count(),
-            //有效的佣金
+            //Effective Commissions
             (int)Order::where('status', 3)
                 ->where('commission_status', 2)
                 ->where('invite_user_id', $request->user['id'])
                 ->sum('commission_balance'),
-            //确认中的佣金
+            //Commissions under confirmation
             (int)Order::where('status', 3)
                 ->where('commission_status', 0)
                 ->where('invite_user_id', $request->user['id'])
                 ->sum('commission_balance'),
-            //佣金比例
+            //Commission rate
             (int)$commission_rate,
-            //可用佣金
+            //Available Commissions
             (int)$user->commission_balance
         ];
         return response([

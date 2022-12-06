@@ -70,22 +70,22 @@ class StatController extends Controller
         foreach ($statistics as $statistic) {
             $date = date('m-d', $statistic['record_at']);
             array_push($result, [
-                'type' => '收款金额',
+                'type' => 'Amount received',
                 'date' => $date,
                 'value' => $statistic['order_amount'] / 100
             ]);
             array_push($result, [
-                'type' => '收款笔数',
+                'type' => 'Number of payments received',
                 'date' => $date,
                 'value' => $statistic['order_count']
             ]);
             array_push($result, [
-                'type' => '佣金金额(已发放)',
+                'type' => 'Commission amount (issued)',
                 'date' => $date,
                 'value' => $statistic['commission_amount'] / 100
             ]);
             array_push($result, [
-                'type' => '佣金笔数(已发放)',
+                'type' => 'Number of commissions (issued)',
                 'date' => $date,
                 'value' => $statistic['commission_count']
             ]);

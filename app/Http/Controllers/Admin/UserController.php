@@ -20,7 +20,7 @@ class UserController extends Controller
     public function resetSecret(Request $request)
     {
         $user = User::find($request->input('id'));
-        if (!$user) abort(500, '用户不存在');
+        if (!$user) abort(500, 'User does not exist');
         $user->token = Helper::guid();
         $user->uuid = Helper::guid(true);
         return response([
@@ -33,7 +33,7 @@ class UserController extends Controller
         $filters = $request->input('filter');
         if ($filters) {
             foreach ($filters as $k => $filter) {
-                if ($filter['condition'] === '模糊') {
+                if ($filter['condition'] === 'Fuzzy') {
                     $filter['condition'] = 'like';
                     $filter['value'] = "%{$filter['value']}%";
                 }
@@ -85,7 +85,7 @@ class UserController extends Controller
     public function getUserInfoById(Request $request)
     {
         if (empty($request->input('id'))) {
-            abort(500, '参数错误');
+            abort(500, 'Parameter error');
         }
         $user = User::find($request->input('id'));
         if ($user->invite_user_id) {
@@ -101,10 +101,10 @@ class UserController extends Controller
         $params = $request->validated();
         $user = User::find($request->input('id'));
         if (!$user) {
-            abort(500, '用户不存在');
+            abort(500, 'User does not exist');
         }
         if (User::where('email', $params['email'])->first() && $user->email !== $params['email']) {
-            abort(500, '邮箱已被使用');
+            abort(500, 'Email is already in use');
         }
         if (isset($params['password'])) {
             $params['password'] = password_hash($params['password'], PASSWORD_DEFAULT);
@@ -115,7 +115,7 @@ class UserController extends Controller
         if (isset($params['plan_id'])) {
             $plan = Plan::find($params['plan_id']);
             if (!$plan) {
-                abort(500, '订阅计划不存在');
+                abort(500, 'Subscription plans do not exist');
             }
             $params['group_id'] = $plan->group_id;
         }
@@ -131,7 +131,7 @@ class UserController extends Controller
         try {
             $user->update($params);
         } catch (\Exception $e) {
-            abort(500, '保存失败');
+            abort(500, 'Failed to update');
         }
         return response([
             'data' => true
@@ -152,14 +152,14 @@ class UserController extends Controller
             }
         }
 
-        $data = "邮箱,余额,推广佣金,总流量,剩余流量,套餐到期时间,订阅计划,订阅地址\r\n";
+        $data = "email,balance,promotion commission,total traffic,remaining traffic,package expiration time,subscription plan,subscription address\r\n";
         foreach($res as $user) {
-            $expireDate = $user['expired_at'] === NULL ? '长期有效' : date('Y-m-d H:i:s', $user['expired_at']);
+            $expireDate = $user['expired_at'] === NULL ? 'Long-term validity' : date('Y-m-d H:i:s', $user['expired_at']);
             $balance = $user['balance'] / 100;
             $commissionBalance = $user['commission_balance'] / 100;
             $transferEnable = $user['transfer_enable'] ? $user['transfer_enable'] / 1073741824 : 0;
             $notUseFlow = (($user['transfer_enable'] - ($user['u'] + $user['d'])) / 1073741824) ?? 0;
-            $planName = $user['plan_name'] ?? '无订阅';
+            $planName = $user['plan_name'] ?? 'No subscription';
             $subscribeUrl = Helper::getSubscribeUrl('/api/v1/client/subscribe?token=' . $user['token']);
             $data .= "{$user['email']},{$balance},{$commissionBalance},{$transferEnable},{$notUseFlow},{$expireDate},{$planName},{$subscribeUrl}\r\n";
         }
@@ -172,7 +172,7 @@ class UserController extends Controller
             if ($request->input('plan_id')) {
                 $plan = Plan::find($request->input('plan_id'));
                 if (!$plan) {
-                    abort(500, '订阅计划不存在');
+                    abort(500, 'Subscription plans do not exist');
                 }
             }
             $user = [
@@ -185,11 +185,11 @@ class UserController extends Controller
                 'token' => Helper::guid()
             ];
             if (User::where('email', $user['email'])->first()) {
-                abort(500, '邮箱已存在于系统中');
+                abort(500, 'The mailbox already exists in the system');
             }
             $user['password'] = password_hash($request->input('password') ?? $user['email'], PASSWORD_DEFAULT);
             if (!User::create($user)) {
-                abort(500, '生成失败');
+                abort(500, 'Failed to generate');
             }
             return response([
                 'data' => true
@@ -205,7 +205,7 @@ class UserController extends Controller
         if ($request->input('plan_id')) {
             $plan = Plan::find($request->input('plan_id'));
             if (!$plan) {
-                abort(500, '订阅计划不存在');
+                abort(500, 'Subscription plans do not exist');
             }
         }
         $users = [];
@@ -227,12 +227,12 @@ class UserController extends Controller
         DB::beginTransaction();
         if (!User::insert($users)) {
             DB::rollBack();
-            abort(500, '生成失败');
+            abort(500, 'Failed to generate');
         }
         DB::commit();
-        $data = "账号,密码,过期时间,UUID,创建时间,订阅地址\r\n";
+        $data = "Account number, password, expiration time, UUID, creation time, subscription address\r\n";
         foreach($users as $user) {
-            $expireDate = $user['expired_at'] === NULL ? '长期有效' : date('Y-m-d H:i:s', $user['expired_at']);
+            $expireDate = $user['expired_at'] === NULL ? 'Long-term validity' : date('Y-m-d H:i:s', $user['expired_at']);
             $createDate = date('Y-m-d H:i:s', $user['created_at']);
             $password = $request->input('password') ?? $user['email'];
             $subscribeUrl = Helper::getSubscribeUrl('/api/v1/client/subscribe?token=' . $user['token']);
@@ -278,7 +278,7 @@ class UserController extends Controller
                 'banned' => 1
             ]);
         } catch (\Exception $e) {
-            abort(500, '处理失败');
+            abort(500, 'Processing Failure');
         }
 
         return response([
