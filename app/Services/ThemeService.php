@@ -30,10 +30,10 @@ class ThemeService
         $data = var_export($data, 1);
         try {
             if (!File::put(base_path() . "/config/theme/{$this->theme}.php", "<?php\n return $data ;")) {
-                abort(500, "{$this->theme}初始化失败");
+                abort(500, "{$this->theme}Initialization failure");
             }
         } catch (\Exception $e) {
-            abort(500, '请检查V2Board目录权限');
+            abort(500, 'Please check the V2Board directory permissions');
         }
 
         try {
@@ -42,7 +42,7 @@ class ThemeService
                 if (config("theme.{$this->theme}")) break;
             }
         } catch (\Exception $e) {
-            abort(500, "{$this->theme}初始化失败");
+            abort(500, "{$this->theme}Initialization failure");
         }
     }
 }
