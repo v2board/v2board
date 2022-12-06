@@ -6,6 +6,8 @@ class Dict
 {
     CONST EMAIL_WHITELIST_SUFFIX_DEFAULT = [
         'gmail.com',
+        'protonmail.com',
+        'pm.me',
         'qq.com',
         '163.com',
         'yahoo.com',
@@ -16,7 +18,7 @@ class Dict
         'foxmail.com'
     ];
     CONST WITHDRAW_METHOD_WHITELIST_DEFAULT = [
-        '支付宝',
+        'Alipay',
         'USDT',
         'Paypal'
     ];
