@@ -32,19 +32,19 @@ class ServerShadowsocksSave extends FormRequest
     public function messages()
     {
         return [
-            'name.required' => '节点名称不能为空',
-            'group_id.required' => '权限组不能为空',
-            'group_id.array' => '权限组格式不正确',
-            'parent_id.integer' => '父节点格式不正确',
-            'host.required' => '节点地址不能为空',
-            'port.required' => '连接端口不能为空',
-            'server_port.required' => '后端服务端口不能为空',
-            'cipher.required' => '加密方式不能为空',
-            'tags.array' => '标签格式不正确',
-            'rate.required' => '倍率不能为空',
-            'rate.numeric' => '倍率格式不正确',
-            'obfs.in' => '混淆格式不正确',
-            'obfs_settings.array' => '混淆设置格式不正确'
+            'name.required' => 'Node name cannot be empty',
+            'group_id.required' => 'groups id cannot be empty',
+            'group_id.array' => 'group id format is incorrect',
+            'parent_id.integer' => 'Parent node format is incorrect',
+            'host.required' => 'Node address cannot be empty',
+            'port.required' => 'The connection port cannot be empty',
+            'server_port.required' => 'The back-end service port cannot be empty',
+            'cipher.required' => 'Encryption method cannot be empty',
+            'tags.array' => 'Incorrect label format',
+            'rate.required' => 'Multiplier cannot be empty',
+            'rate.numeric' => 'Incorrect multiplier format',
+            'obfs.in' => 'obfuscation format is incorrect',
+            'obfs_settings.array' => 'Obfuscation settings are incorrectly formatted'
         ];
     }
 }

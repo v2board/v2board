@@ -22,8 +22,8 @@ class PlanUpdate extends FormRequest
     public function messages()
     {
         return [
-            'show.in' => '销售状态格式不正确',
-            'renew.in' => '续费状态格式不正确'
+            'show.in' => 'Incorrect sales status format',
+            'renew.in' => 'Incorrect renewal status format'
         ];
     }
 }

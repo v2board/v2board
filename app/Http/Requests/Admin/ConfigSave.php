@@ -103,12 +103,12 @@ class ConfigSave extends FormRequest
     {
         // illiteracy prompt
         return [
-            'app_url.url' => '站点URL格式不正确，必须携带http(s)://',
-            'subscribe_url.url' => '订阅URL格式不正确，必须携带http(s)://',
-            'server_token.min' => '通讯密钥长度必须大于16位',
-            'tos_url.url' => '服务条款URL格式不正确，必须携带http(s)://',
-            'telegram_discuss_link.url' => 'Telegram群组地址必须为URL格式，必须携带http(s)://',
-            'logo.url' => 'LOGO URL格式不正确，必须携带https(s)://'
+            'app_url.url' => 'The site URL is not in the correct format, it must carry http(s)://',
+            'subscribe_url.url' => 'The subscription URL is not in the correct format, it must carry http(s)://',
+            'server_token.min' => 'Communication key length must be greater than 16 bits',
+            'tos_url.url' => 'The Terms of Service URL format is incorrect and must carry http(s)://',
+            'telegram_discuss_link.url' => 'The Telegram group address must be in URL format and must carry http(s)://',
+            'logo.url' => 'LOGO URL is not in correct format, must carry https(s)://'
         ];
     }
 }

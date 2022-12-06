@@ -22,7 +22,7 @@ class ServerTrojanUpdate extends FormRequest
     public function messages()
     {
         return [
-            'show.in' => '显示状态格式不正确'
+            'show.in' => 'Display status format is incorrect'
         ];
     }
 }

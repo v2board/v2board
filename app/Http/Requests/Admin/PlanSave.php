@@ -34,22 +34,22 @@ class PlanSave extends FormRequest
     public function messages()
     {
         return [
-            'name.required' => '套餐名称不能为空',
-            'type.required' => '套餐类型不能为空',
-            'type.in' => '套餐类型格式有误',
-            'group_id.required' => '权限组不能为空',
-            'transfer_enable.required' => '流量不能为空',
-            'month_price.integer' => '月付金额格式有误',
-            'quarter_price.integer' => '季付金额格式有误',
-            'half_year_price.integer' => '半年付金额格式有误',
-            'year_price.integer' => '年付金额格式有误',
-            'two_year_price.integer' => '两年付金额格式有误',
-            'three_year_price.integer' => '三年付金额格式有误',
-            'onetime_price.integer' => '一次性金额有误',
-            'reset_price.integer' => '流量重置包金额有误',
-            'reset_traffic_method.integer' => '流量重置方式格式有误',
-            'reset_traffic_method.in' => '流量重置方式格式有误',
-            'capacity_limit.integer' => '容纳用户量限制格式有误'
+            'name.required' => 'Package name cannot be empty',
+            'type.required' => 'Package type cannot be empty',
+            'type.in' => 'Wrong format of package type',
+            'group_id.required' => 'groups id cannot be empty',
+            'transfer_enable.required' => 'Traffic cannot be empty',
+            'month_price.integer' => 'The monthly payment amount is incorrectly formatted',
+            'quarter_price.integer' => 'The quarterly payment amount is incorrectly formatted',
+            'half_year_price.integer' => 'The half year payment amount is incorrectly formatted',
+            'year_price.integer' => 'The annual payment amount is incorrectly formatted',
+            'two_year_price.integer' => 'The two-year payment amount is incorrectly formatted',
+            'three_year_price.integer' => 'The three-year payment amount is incorrectly formatted',
+            'onetime_price.integer' => 'One-time amount is incorrect',
+            'reset_price.integer' => 'The amount of the traffic reset package is wrong',
+            'reset_traffic_method.integer' => 'Wrong format of traffic reset method',
+            'reset_traffic_method.in' => 'Wrong format of traffic reset method',
+            'capacity_limit.integer' => 'Incorrect format of user capacity limit'
         ];
     }
 }
