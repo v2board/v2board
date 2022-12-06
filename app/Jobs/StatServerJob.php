@@ -60,7 +60,7 @@ class StatServerJob implements ShouldQueue
                     'd' => $data['d'] + $this->d
                 ]);
             } catch (\Exception $e) {
-                abort(500, '节点统计数据更新失败');
+                abort(500, 'Node statistics update failed');
             }
         } else {
             if (!StatServer::create([
@@ -71,7 +71,7 @@ class StatServerJob implements ShouldQueue
                 'record_type' => $this->recordType,
                 'record_at' => $recordAt
             ])) {
-                abort(500, '节点统计数据创建失败');
+                abort(500, 'Node statistics creation failure');
             }
         }
     }
