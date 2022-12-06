@@ -22,7 +22,7 @@ class CheckCommission extends Command
      *
      * @var string
      */
-    protected $description = '返佣服务';
+    protected $description = 'Rebate Service';
 
     /**
      * Create a new command instance.

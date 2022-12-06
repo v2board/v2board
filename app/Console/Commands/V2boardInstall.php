@@ -22,7 +22,7 @@ class V2boardInstall extends Command
      *
      * @var string
      */
-    protected $description = 'v2board 安装';
+    protected $description = 'v2board Installation';
 
     /**
      * Create a new command instance.
@@ -47,58 +47,62 @@ class V2boardInstall extends Command
             $this->info(" \ \ / /  __) |  _ \ / _ \ / _` | '__/ _` | ");
             $this->info("  \ V /  / __/| |_) | (_) | (_| | | | (_| | ");
             $this->info("   \_/  |_____|____/ \___/ \__,_|_|  \__,_| ");
+
+            $this->info("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+");
+            $this->info("Translated by Mr.Nobody https://tt.vg/v2board");
+
             if (\File::exists(base_path() . '/.env')) {
-                abort(500, 'V2board 已安装，如需重新安装请删除目录下.env文件');
+                abort(500, 'V2board is already installed, if you want to reinstall it, please delete the .env file in the directory');
             }
 
             if (!copy(base_path() . '/.env.example', base_path() . '/.env')) {
-                abort(500, '复制环境文件失败，请检查目录权限');
+                abort(500, 'Failed to copy environment file, please check the directory permission');
             }
             $this->saveToEnv([
                 'APP_KEY' => 'base64:' . base64_encode(Encrypter::generateKey('AES-256-CBC')),
-                'DB_HOST' => $this->ask('请输入数据库地址（默认:localhost）', 'localhost'),
-                'DB_DATABASE' => $this->ask('请输入数据库名'),
-                'DB_USERNAME' => $this->ask('请输入数据库用户名'),
-                'DB_PASSWORD' => $this->ask('请输入数据库密码')
+                'DB_HOST' => $this->ask('Please enter the database address (default:localhost)', 'localhost'),
+                'DB_DATABASE' => $this->ask('Please enter the database name'),
+                'DB_USERNAME' => $this->ask('Please enter the database user name'),
+                'DB_PASSWORD' => $this->ask('Please enter the database password')
             ]);
             \Artisan::call('config:clear');
             \Artisan::call('config:cache');
             try {
                 DB::connection()->getPdo();
             } catch (\Exception $e) {
-                abort(500, '数据库连接失败');
+                abort(500, 'Database connection failure');
             }
             $file = \File::get(base_path() . '/database/install.sql');
             if (!$file) {
-                abort(500, '数据库文件不存在');
+                abort(500, 'Database file does not exist');
             }
             $sql = str_replace("\n", "", $file);
             $sql = preg_split("/;/", $sql);
             if (!is_array($sql)) {
-                abort(500, '数据库文件格式有误');
+                abort(500, 'The database file format is wrong');
             }
-            $this->info('正在导入数据库请稍等...');
+            $this->info('Please wait while the database is imported...');
             foreach ($sql as $item) {
                 try {
                     DB::select(DB::raw($item));
                 } catch (\Exception $e) {
                 }
             }
-            $this->info('数据库导入完成');
+            $this->info('Database import completed');
             $email = '';
             while (!$email) {
-                $email = $this->ask('请输入管理员邮箱?');
+                $email = $this->ask('Please enter administrator email?');
             }
             $password = '';
             while (!$password) {
-                $password = $this->ask('请输入管理员密码?');
+                $password = $this->ask('Please enter the administrator password?');
             }
             if (!$this->registerAdmin($email, $password)) {
-                abort(500, '管理员账号注册失败，请重试');
+                abort(500, 'Administrator account registration failed, please try again');
             }
 
-            $this->info('一切就绪');
-            $this->info('访问 http(s)://你的站点/admin 进入管理面板');
+            $this->info('Finished...Everything is ready');
+            $this->info('Visit http(s)://your-site/admin to access the administration panel');
         } catch (\Exception $e) {
             $this->error($e->getMessage());
         }
@@ -109,7 +113,7 @@ class V2boardInstall extends Command
         $user = new User();
         $user->email = $email;
         if (strlen($password) < 8) {
-            abort(500, '管理员密码长度最小为8位字符');
+            abort(500, 'Minimum administrator password length is 8 characters');
         }
         $user->password = password_hash($password, PASSWORD_DEFAULT);
         $user->uuid = Helper::guid(true);
