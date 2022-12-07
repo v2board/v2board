@@ -91,11 +91,11 @@ class V2boardInstall extends Command
             $this->info('Database import completed');
             $email = '';
             while (!$email) {
-                $email = $this->ask('Please enter administrator email?');
+                $email = $this->ask('Please enter administrator email');
             }
             $password = '';
             while (!$password) {
-                $password = $this->ask('Please enter the administrator password?');
+                $password = $this->ask('Please enter the administrator password');
             }
             if (!$this->registerAdmin($email, $password)) {
                 abort(500, 'Administrator account registration failed, please try again');
