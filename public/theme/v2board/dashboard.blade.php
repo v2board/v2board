@@ -33,6 +33,7 @@
             background_url: '{{$theme_config['background_url']}}',
             description: '{{$description}}',
             i18n: [
+                'fa-IR',
                 'zh-CN',
                 'en-US',
                 'ja-JP',
@@ -43,6 +44,7 @@
             logo: '{{$logo}}'
         }
     </script>
+    <script src="/theme/{{$theme}}/assets/i18n/fa-IR.js?v={{$version}}"></script>
     <script src="/theme/{{$theme}}/assets/i18n/zh-CN.js?v={{$version}}"></script>
     <script src="/theme/{{$theme}}/assets/i18n/zh-TW.js?v={{$version}}"></script>
     <script src="/theme/{{$theme}}/assets/i18n/en-US.js?v={{$version}}"></script>
