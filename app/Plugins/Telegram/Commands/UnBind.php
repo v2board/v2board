@@ -14,13 +14,13 @@ class UnBind extends Telegram {
         $user = User::where('telegram_id', $message->chat_id)->first();
         $telegramService = $this->telegramService;
         if (!$user) {
-            $telegramService->sendMessage($message->chat_id, 'Your user information is not available, please bind your account first', 'markdown');
+            $telegramService->sendMessage($message->chat_id, 'اطلاعات کاربری شما در دسترس نیست، لطفا ابتدا حساب خود را متصل کنید', 'markdown');
             return;
         }
         $user->telegram_id = NULL;
         if (!$user->save()) {
-            abort(500, 'Unbinding failed');
+            abort(500, 'قطع اتصال انجام نشد');
         }
-        $telegramService->sendMessage($message->chat_id, 'Unbundle successfully', 'markdown');
+        $telegramService->sendMessage($message->chat_id, 'قطع اتصال  به ربات تلگرام با موفقیت انجام شد', 'markdown');
     }
 }
