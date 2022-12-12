@@ -67,12 +67,12 @@ class TicketService {
             Cache::put($cacheKey, 1, 1800);
             SendEmailJob::dispatch([
                 'email' => $user->email,
-                'subject' => 'you are' . config('v2board.app_name', 'V2Board') . 'Tickets for were answered',
+                'subject' => 'در سایت' . config('v2board.app_name', 'V2Board') . 'به تیکت شما پاسخ داده شد',
                 'template_name' => 'notify',
                 'template_value' => [
                     'name' => config('v2board.app_name', 'V2Board'),
                     'url' => config('v2board.app_url'),
-                    'content' => "Subject.{$ticket->subject}\r\nResponse to：{$ticketMessage->message}"
+                    'content' => "موضوع تیکت .{$ticket->subject}\r\nپاسخ کارشناس ：{$ticketMessage->message}"
                 ]
             ]);
         }
