@@ -32,6 +32,6 @@ class ReplyTicket extends Telegram {
         );
         $telegramService = $this->telegramService;
         $telegramService->sendMessage($msg->chat_id, "#`{$ticketId}` تیکت با موفقیت پاسخ داده شد", 'markdown');
-        $telegramService->sendMessageWithAdmin("#`{$ticketId}` تیکت برای صادر شده است {$user->email} to reply", true);
+        $telegramService->sendMessageWithAdmin("#`{$ticketId}` پاسخ به ایمیل {$user->email} ارسال شد", true);
     }
 }
