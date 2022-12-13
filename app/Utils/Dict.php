@@ -8,13 +8,10 @@ class Dict
         'gmail.com',
         'protonmail.com',
         'pm.me',
-        'qq.com',
-        '163.com',
         'yahoo.com',
-        'sina.com',
-        '126.com',
         'outlook.com',
-        'yeah.net',
+        'live.com',
+        'hotmail.com',
         'foxmail.com'
     ];
     CONST WITHDRAW_METHOD_WHITELIST_DEFAULT = [
