@@ -13,6 +13,7 @@
     "require": {
         "php": "^7.3.0|^8.0",
         "fideloper/proxy": "^4.4",
+        "firebase/php-jwt": "^6.3",
         "fruitcake/laravel-cors": "^2.0",
         "google/recaptcha": "^1.2",
         "guzzlehttp/guzzle": "^7.4.3",
