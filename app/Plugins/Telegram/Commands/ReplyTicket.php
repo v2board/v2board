@@ -20,7 +20,7 @@ class ReplyTicket extends Telegram {
     {
         $user = User::where('telegram_id', $msg->chat_id)->first();
         if (!$user) {
-            abort(500, 'User does not exist');
+            abort(500, 'کاربر وجود ندارد');
         }
         if (!$msg->text) return;
         if (!($user->is_admin || $user->is_staff)) return;
@@ -31,7 +31,7 @@ class ReplyTicket extends Telegram {
             $user->id
         );
         $telegramService = $this->telegramService;
-        $telegramService->sendMessage($msg->chat_id, "#`{$ticketId}` The Ticket of has been successfully replied", 'markdown');
-        $telegramService->sendMessageWithAdmin("#`{$ticketId}` A ticket for has been issued by {$user->email} to reply", true);
+        $telegramService->sendMessage($msg->chat_id, "#`{$ticketId}` تیکت با موفقیت پاسخ داده شد", 'markdown');
+        $telegramService->sendMessageWithAdmin("#`{$ticketId}` پاسخ به ایمیل {$user->email} ارسال شد", true);
     }
 }
