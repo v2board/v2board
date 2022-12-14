@@ -206,7 +206,6 @@ class AuthController extends Controller
             $password,
             $user->password)
         ) {
-            $passwordErrorCount = Cache::get('PASSWORD_ERROR_LIMIT') || 0;
             Cache::put(
                 CacheKey::get('PASSWORD_ERROR_LIMIT', $email),
                 (int)$passwordErrorCount + 1,
