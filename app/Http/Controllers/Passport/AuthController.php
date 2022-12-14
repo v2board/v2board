@@ -190,6 +190,12 @@ class AuthController extends Controller
         $email = $request->input('email');
         $password = $request->input('password');
 
+        $passwordErrorCount = (int)Cache::get('PASSWORD_ERROR_LIMIT') || 0;
+
+        if ($passwordErrorCount >= 5) {
+            abort(500, __('Incorrect email or password'));
+        }
+
         $user = User::where('email', $email)->first();
         if (!$user) {
             abort(500, __('Incorrect email or password'));
@@ -200,6 +206,12 @@ class AuthController extends Controller
             $password,
             $user->password)
         ) {
+            $passwordErrorCount = Cache::get('PASSWORD_ERROR_LIMIT') || 0;
+            Cache::put(
+                CacheKey::get('PASSWORD_ERROR_LIMIT', $email),
+                (int)$passwordErrorCount + 1,
+                30 * 60
+            );
             abort(500, __('Incorrect email or password'));
         }
 
