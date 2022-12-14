@@ -61,9 +61,9 @@ class ConfigSave extends FormRequest
         'server_push_interval' => 'integer',
         // frontend
         'frontend_theme' => '',
-        'frontend_theme_sidebar' => 'in:dark,light',
-        'frontend_theme_header' => 'in:dark,light',
-        'frontend_theme_color' => 'in:default,darkblue,black,green',
+        'frontend_theme_sidebar' => 'nullable|in:dark,light',
+        'frontend_theme_header' => 'nullable|in:dark,light',
+        'frontend_theme_color' => 'nullable|in:default,darkblue,black,green',
         'frontend_background_url' => 'nullable|url',
         // email
         'email_template' => '',
