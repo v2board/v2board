@@ -190,7 +190,7 @@ class AuthController extends Controller
         $email = $request->input('email');
         $password = $request->input('password');
 
-        $passwordErrorCount = (int)Cache::get(CacheKey::get('PASSWORD_ERROR_LIMIT', $email)) || 0;
+        $passwordErrorCount = (int)Cache::get(CacheKey::get('PASSWORD_ERROR_LIMIT', $email), 0);
 
         if ($passwordErrorCount >= 5) {
             abort(500, __('There are too many password errors, please try again after 30 minutes.'));
