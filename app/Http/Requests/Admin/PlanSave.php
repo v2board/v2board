@@ -27,7 +27,8 @@ class PlanSave extends FormRequest
             'onetime_price' => 'nullable|integer',
             'reset_price' => 'nullable|integer',
             'reset_traffic_method' => 'nullable|integer|in:0,1,2,3,4',
-            'capacity_limit' => 'nullable|integer'
+            'capacity_limit' => 'nullable|integer',
+            'speed_limit' => 'nullable|integer'
         ];
     }
 
@@ -49,7 +50,8 @@ class PlanSave extends FormRequest
             'reset_price.integer' => '流量重置包金额有误',
             'reset_traffic_method.integer' => '流量重置方式格式有误',
             'reset_traffic_method.in' => '流量重置方式格式有误',
-            'capacity_limit.integer' => '容纳用户量限制格式有误'
+            'capacity_limit.integer' => '容纳用户量限制格式有误',
+            'speed_limit.integer' => '限速格式有误'
         ];
     }
 }

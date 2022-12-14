@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Server;
 use App\Services\ServerService;
 use App\Services\UserService;
 use App\Utils\CacheKey;
+use App\Utils\Helper;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\ServerShadowsocks;
@@ -12,12 +13,12 @@ use App\Models\ServerV2ray;
 use App\Models\ServerTrojan;
 use Illuminate\Support\Facades\Cache;
 
-class VProxyController extends Controller
+class UniProxyController extends Controller
 {
     private $nodeType;
     private $nodeInfo;
     private $nodeId;
-    private $token;
+    private $serverService;
 
     public function __construct(Request $request)
     {
@@ -28,25 +29,11 @@ class VProxyController extends Controller
         if ($token !== config('v2board.server_token')) {
             abort(500, 'token is error');
         }
-        $this->token = $token;
         $this->nodeType = $request->input('node_type');
         $this->nodeId = $request->input('node_id');
-        switch ($this->nodeType) {
-            case 'v2ray':
-                $this->nodeInfo = ServerV2ray::find($this->nodeId);
-                break;
-            case 'shadowsocks':
-                $this->nodeInfo = ServerShadowsocks::find($this->nodeId);
-                break;
-            case 'trojan':
-                $this->nodeInfo = ServerTrojan::find($this->nodeId);
-                break;
-            default:
-                break;
-        }
-        if (!$this->nodeInfo) {
-            abort(500, 'server not found');
-        }
+        $this->serverService = new ServerService();
+        $this->nodeInfo = $this->serverService->getServer($this->nodeId, $this->nodeType);
+        if (!$this->nodeInfo) abort(500, 'server is not exist');
     }
 
     // 后端获取用户
@@ -54,20 +41,10 @@ class VProxyController extends Controller
     {
         ini_set('memory_limit', -1);
         Cache::put(CacheKey::get('SERVER_' . strtoupper($this->nodeType) . '_LAST_CHECK_AT', $this->nodeInfo->id), time(), 3600);
-        $serverService = new ServerService();
-        $users = $serverService->getAvailableUsers($this->nodeInfo->group_id);
+        $users = $this->serverService->getAvailableUsers($this->nodeInfo->group_id);
         $users = $users->toArray();
 
         $response['users'] = $users;
-
-        switch ($this->nodeType) {
-            case 'shadowsocks':
-                $response['server'] = [
-                    'cipher' => $this->nodeInfo->cipher,
-                    'server_port' => $this->nodeInfo->server_port
-                ];
-                break;
-        }
 
         $eTag = sha1(json_encode($response));
         if (strpos($request->header('If-None-Match'), $eTag) !== false ) {
@@ -78,17 +55,17 @@ class VProxyController extends Controller
     }
 
     // 后端提交数据
-    public function submit(Request $request)
+    public function push(Request $request)
     {
         $data = file_get_contents('php://input');
         $data = json_decode($data, true);
         Cache::put(CacheKey::get('SERVER_' . strtoupper($this->nodeType) . '_ONLINE_USER', $this->nodeInfo->id), count($data), 3600);
         Cache::put(CacheKey::get('SERVER_' . strtoupper($this->nodeType) . '_LAST_PUSH_AT', $this->nodeInfo->id), time(), 3600);
         $userService = new UserService();
-        foreach ($data as $item) {
-            $u = $item['u'];
-            $d = $item['d'];
-            $userService->trafficFetch($u, $d, $item['user_id'], $this->nodeInfo->toArray(), $this->nodeType);
+        foreach (array_keys($data) as $k) {
+            $u = $data[$k][0];
+            $d = $data[$k][1];
+            $userService->trafficFetch($u, $d, $k, $this->nodeInfo->toArray(), $this->nodeType);
         }
 
         return response([
@@ -101,28 +78,48 @@ class VProxyController extends Controller
     {
         switch ($this->nodeType) {
             case 'shadowsocks':
-                die(json_encode([
+                $response = [
                     'server_port' => $this->nodeInfo->server_port,
                     'cipher' => $this->nodeInfo->cipher,
                     'obfs' => $this->nodeInfo->obfs,
                     'obfs_settings' => $this->nodeInfo->obfs_settings
-                ], JSON_UNESCAPED_UNICODE));
+                ];
+
+                if ($this->nodeInfo->cipher === '2022-blake3-aes-128-gcm') {
+                    $response['server_key'] = Helper::getShadowsocksServerKey($this->nodeInfo->created_at, 16);
+                }
+                if ($this->nodeInfo->cipher === '2022-blake3-aes-256-gcm') {
+                    $response['server_key'] = Helper::getShadowsocksServerKey($this->nodeInfo->created_at, 32);
+                }
                 break;
             case 'v2ray':
-                die(json_encode([
+                $response = [
                     'server_port' => $this->nodeInfo->server_port,
                     'network' => $this->nodeInfo->network,
-                    'cipher' => $this->nodeInfo->cipher,
                     'networkSettings' => $this->nodeInfo->networkSettings,
                     'tls' => $this->nodeInfo->tls
-                ], JSON_UNESCAPED_UNICODE));
+                ];
                 break;
             case 'trojan':
-                die(json_encode([
+                $response = [
                     'host' => $this->nodeInfo->host,
-                    'server_port' => $this->nodeInfo->server_port
-                ], JSON_UNESCAPED_UNICODE));
+                    'server_port' => $this->nodeInfo->server_port,
+                    'server_name' => $this->nodeInfo->server_name
+                ];
                 break;
         }
+        $response['base_config'] = [
+            'push_interval' => config('v2board.server_push_interval', 60),
+            'pull_interval' => config('v2board.server_pull_interval', 60)
+        ];
+        if ($this->nodeInfo['route_id']) {
+            $response['routes'] = $this->serverService->getRoutes($this->nodeInfo['route_id']);
+        }
+        $eTag = sha1(json_encode($response));
+        if (strpos($request->header('If-None-Match'), $eTag) !== false ) {
+            abort(304);
+        }
+
+        return response($response)->header('ETag', "\"{$eTag}\"");
     }
 }

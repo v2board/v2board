@@ -26,8 +26,14 @@ class ServerController extends Controller
             $serverService = new ServerService();
             $servers = $serverService->getAvailableServers($user);
         }
+
+        $eTag = sha1(json_encode(array_column($servers, 'updated_at')));
+        if (strpos($request->header('If-None-Match'), $eTag) !== false ) {
+            abort(304);
+        }
+
         return response([
             'data' => $servers
-        ]);
+        ])->header('ETag', "\"{$eTag}\"");
     }
 }

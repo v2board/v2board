@@ -41,10 +41,13 @@ class PlanController extends Controller
             DB::beginTransaction();
             // update user group id and transfer
             try {
-                User::where('plan_id', $plan->id)->update([
-                    'group_id' => $params['group_id'],
-                    'transfer_enable' => $params['transfer_enable'] * 1073741824
-                ]);
+                if ($request->input('force_update')) {
+                    User::where('plan_id', $plan->id)->update([
+                        'group_id' => $params['group_id'],
+                        'transfer_enable' => $params['transfer_enable'] * 1073741824,
+                        'speed_limit' => $params['speed_limit']
+                    ]);
+                }
                 $plan->update($params);
             } catch (\Exception $e) {
                 DB::rollBack();

@@ -89,16 +89,17 @@ class V2boardInstall extends Command
             while (!$email) {
                 $email = $this->ask('请输入管理员邮箱?');
             }
-            $password = '';
-            while (!$password) {
-                $password = $this->ask('请输入管理员密码?');
-            }
+            $password = Helper::guid(false);
             if (!$this->registerAdmin($email, $password)) {
                 abort(500, '管理员账号注册失败，请重试');
             }
 
             $this->info('一切就绪');
-            $this->info('访问 http(s)://你的站点/admin 进入管理面板');
+            $this->info("管理员邮箱：{$email}");
+            $this->info("管理员密码：{$password}");
+
+            $defaultSecurePath = crc32(config('app.key'));
+            $this->info("访问 http(s)://你的站点/{$defaultSecurePath} 进入管理面板，你可以用户中心修改你的密码。");
         } catch (\Exception $e) {
             $this->error($e->getMessage());
         }
