@@ -107,7 +107,8 @@ class ConfigController extends Controller
                 'currency_symbol' => config('v2board.currency_symbol', '¥'),
                 'register_limit_by_ip_enable' => (int)config('v2board.register_limit_by_ip_enable', 0),
                 'register_limit_count' => config('v2board.register_limit_count', 3),
-                'register_limit_expire' => config('v2board.register_limit_expire', 60)
+                'register_limit_expire' => config('v2board.register_limit_expire', 60),
+                'secure_path' => config('v2board.secure_path', config('v2board.frontend_admin_path', 'admin'))
             ],
             'subscribe' => [
                 'plan_change_enable' => (int)config('v2board.plan_change_enable', 1),
@@ -124,7 +125,6 @@ class ConfigController extends Controller
                 'frontend_theme_header' => config('v2board.frontend_theme_header', 'dark'),
                 'frontend_theme_color' => config('v2board.frontend_theme_color', 'default'),
                 'frontend_background_url' => config('v2board.frontend_background_url'),
-                'frontend_admin_path' => config('v2board.frontend_admin_path', 'admin')
             ],
             'server' => [
                 'server_token' => config('v2board.server_token'),

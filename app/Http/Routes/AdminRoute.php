@@ -8,7 +8,7 @@ class AdminRoute
     public function map(Registrar $router)
     {
         $router->group([
-            'prefix' => 'admin',
+            'prefix' => config('v2board.secure_path', config('v2board.frontend_admin_path', 'admin')),
             'middleware' => 'admin'
         ], function ($router) {
             // Config
