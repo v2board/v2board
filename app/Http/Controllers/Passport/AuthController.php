@@ -193,7 +193,7 @@ class AuthController extends Controller
         $passwordErrorCount = (int)Cache::get(CacheKey::get('PASSWORD_ERROR_LIMIT', $email)) || 0;
 
         if ($passwordErrorCount >= 5) {
-            abort(500, __('Incorrect email or password'));
+            abort(500, __('There are too many password errors, please try again after 30 minutes.'));
         }
 
         $user = User::where('email', $email)->first();
