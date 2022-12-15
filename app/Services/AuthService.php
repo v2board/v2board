@@ -75,4 +75,9 @@ class AuthService
             $sessions
         )) return false;
     }
+
+    public function getSessions()
+    {
+        return (array)Cache::get(CacheKey::get("USER_SESSIONS", $this->user->id), []);
+    }
 }
