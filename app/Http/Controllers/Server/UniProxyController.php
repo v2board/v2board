@@ -109,8 +109,8 @@ class UniProxyController extends Controller
                 break;
         }
         $response['base_config'] = [
-            'push_interval' => config('v2board.server_push_interval', 60),
-            'pull_interval' => config('v2board.server_pull_interval', 60)
+            'push_interval' => (int)config('v2board.server_push_interval', 60),
+            'pull_interval' => (int)config('v2board.server_pull_interval', 60)
         ];
         if ($this->nodeInfo['route_id']) {
             $response['routes'] = $this->serverService->getRoutes($this->nodeInfo['route_id']);
