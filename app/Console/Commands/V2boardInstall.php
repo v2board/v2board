@@ -49,7 +49,7 @@ class V2boardInstall extends Command
             $this->info("   \_/  |_____|____/ \___/ \__,_|_|  \__,_| ");
             if (\File::exists(base_path() . '/.env')) {
                 $defaultSecurePath = hash('crc32b', config('app.key'));
-                $this->info("访问 http(s)://你的站点/{$defaultSecurePath} 进入管理面板，你可以用户中心修改你的密码。");
+                $this->info("访问 http(s)://你的站点/{$defaultSecurePath} 进入管理面板，你可以在用户中心修改你的密码。");
                 abort(500, '如需重新安装请删除目录下.env文件');
             }
 
@@ -101,7 +101,7 @@ class V2boardInstall extends Command
             $this->info("管理员密码：{$password}");
 
             $defaultSecurePath = hash('crc32b', config('app.key'));
-            $this->info("访问 http(s)://你的站点/{$defaultSecurePath} 进入管理面板，你可以用户中心修改你的密码。");
+            $this->info("访问 http(s)://你的站点/{$defaultSecurePath} 进入管理面板，你可以在用户中心修改你的密码。");
         } catch (\Exception $e) {
             $this->error($e->getMessage());
         }

@@ -48,6 +48,6 @@ Route::get('/' . config('v2board.secure_path', config('v2board.frontend_admin_pa
         'background_url' => config('v2board.frontend_background_url'),
         'version' => config('app.version'),
         'logo' => config('v2board.logo'),
-        'secure_path' => config('v2board.secure_path', config('v2board.frontend_admin_path', crc32(config('app.key'))))
+        'secure_path' => config('v2board.secure_path', config('v2board.frontend_admin_path', hash('crc32b', config('app.key'))))
     ]);
 });
