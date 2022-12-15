@@ -639,3 +639,6 @@ CREATE TABLE `v2_server_route` (
                                    `updated_at` int(11) NOT NULL,
                                    PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+ALTER TABLE `v2_server_route`
+    CHANGE `match` `match` text COLLATE 'utf8mb4_general_ci' NOT NULL AFTER `remarks`;

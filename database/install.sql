@@ -198,7 +198,7 @@ DROP TABLE IF EXISTS `v2_server_route`;
 CREATE TABLE `v2_server_route` (
                                    `id` int(11) NOT NULL AUTO_INCREMENT,
                                    `remarks` varchar(255) NOT NULL,
-                                   `match` varchar(255) NOT NULL,
+                                   `match` text NOT NULL,
                                    `action` varchar(11) NOT NULL,
                                    `action_value` varchar(255) DEFAULT NULL,
                                    `created_at` int(11) NOT NULL,
@@ -397,4 +397,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2022-11-27 07:09:04
+-- 2022-12-15 05:24:08
