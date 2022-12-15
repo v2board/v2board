@@ -119,7 +119,8 @@ class ServerService
             ->where('banned', 0)
             ->select([
                 'id',
-                'uuid'
+                'uuid',
+                'speed_limit'
             ])
             ->get();
     }
