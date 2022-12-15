@@ -46,7 +46,7 @@ class ConfigSave extends FormRequest
         'register_limit_by_ip_enable' => 'in:0,1',
         'register_limit_count' => 'integer',
         'register_limit_expire' => 'integer',
-        'secure_path' => 'min:8',
+        'secure_path' => 'min:8|regex:/^[\w-]*$/',
         // subscribe
         'plan_change_enable' => 'in:0,1',
         'reset_traffic_method' => 'in:0,1,2,3,4',
@@ -107,7 +107,8 @@ class ConfigSave extends FormRequest
             'tos_url.url' => '服务条款URL格式不正确，必须携带http(s)://',
             'telegram_discuss_link.url' => 'Telegram群组地址必须为URL格式，必须携带http(s)://',
             'logo.url' => 'LOGO URL格式不正确，必须携带https(s)://',
-            'secure_path.min' => '后台路径长度最小为8位'
+            'secure_path.min' => '后台路径长度最小为8位',
+            'secure_path.regex' => '后台路径只能为字母或数字'
         ];
     }
 }
