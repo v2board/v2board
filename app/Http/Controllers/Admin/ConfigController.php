@@ -177,7 +177,7 @@ class ConfigController extends Controller
                 continue;
             }
             if (array_key_exists($k, $data)) {
-                $config[$k] = $data[$k];
+                $config[$k] = trim($data[$k]);
             }
         }
         $data = var_export($config, 1);
