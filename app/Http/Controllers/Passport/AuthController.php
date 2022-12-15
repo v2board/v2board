@@ -17,7 +17,6 @@ use App\Utils\Helper;
 use App\Utils\Dict;
 use App\Utils\CacheKey;
 use ReCaptcha\ReCaptcha;
-use Firebase\JWT\JWT;
 
 class AuthController extends Controller
 {
@@ -181,7 +180,7 @@ class AuthController extends Controller
         $authService = new AuthService($user);
 
         return response()->json([
-            'data' => $authService->generateAuthData('register')
+            'data' => $authService->generateAuthData($request)
         ]);
     }
 
@@ -220,7 +219,7 @@ class AuthController extends Controller
 
         $authService = new AuthService($user);
         return response([
-            'data' => $authService->generateAuthData('login')
+            'data' => $authService->generateAuthData($request)
         ]);
     }
 
@@ -252,7 +251,7 @@ class AuthController extends Controller
             Cache::forget($key);
             $authService = new AuthService($user);
             return response([
-                'data' => $authService->generateAuthData('token')
+                'data' => $authService->generateAuthData($request)
             ]);
         }
     }

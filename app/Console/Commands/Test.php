@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Utils\Helper;
 use Illuminate\Console\Command;
 
 class Test extends Command

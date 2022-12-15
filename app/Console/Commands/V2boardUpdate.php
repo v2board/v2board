@@ -58,5 +58,7 @@ class V2boardUpdate extends Command
             }
         }
         $this->info('更新完毕，请重新启动队列服务。');
+        \Artisan::call('cache:clear');
+        \Artisan::call('config:cache');
     }
 }
