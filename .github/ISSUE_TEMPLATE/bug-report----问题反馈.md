@@ -7,6 +7,10 @@ assignees: ''
 
 ---
 
+🙇‍♂️🙇‍♂️🙇‍♂️注意：XrayR等非V2Board问题请前往项目方提问
+🙇‍♂️🙇‍♂️🙇‍♂️Note: XrayR and other non-V2Board issues please go to the project side to ask questions
+
+
 The V2Board version number you are using
 当前使用的V2Board版本号
 --------
