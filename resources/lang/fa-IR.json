@@ -83,7 +83,7 @@
     "Email can not be empty": "آدرس ایمیل را وارد کنید",
     "Email format is incorrect": "فرمت ایمیل صحیح نیست",
     "Password can not be empty": "پسورد را حتما وارد کنید",
-    "The traffic usage in :app_name has reached 80%": "میزان ترافیک استفاده شده در :app_name به 80 درصد رسیده است",
+    "The traffic usage in :app_name has reached 80%": "میزان ترافیک مصرف شده در :app_name به 80 درصد رسیده است",
     "The service in :app_name is about to expire": "سرویس در :app_name در شرف منقضی شدن است",
     "The coupon can only be used :limit_use_with_user per person": "کد تخفیف فقط برای هر نفر قابل استفاده است:limit_use_with_user",
     "The coupon code cannot be used for this period": "در حال حاضر نمی توانید از این کد تخفیف استفاده کنید",
