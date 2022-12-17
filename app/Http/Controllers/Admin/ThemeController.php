@@ -25,9 +25,9 @@ class ThemeController extends Controller
     {
         $themeConfigs = [];
         foreach ($this->themes as $theme) {
-            $themeConfigFile = $this->path . "{$theme}/config.php";
+            $themeConfigFile = $this->path . "{$theme}/config.json";
             if (!File::exists($themeConfigFile)) continue;
-            $themeConfig = include($themeConfigFile);
+            $themeConfig = json_decode(File::get($themeConfigFile), true);
             if (!isset($themeConfig['configs']) || !is_array($themeConfig)) continue;
             $themeConfigs[$theme] = $themeConfig;
             if (config("theme.{$theme}")) continue;
