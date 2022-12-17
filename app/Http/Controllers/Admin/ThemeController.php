@@ -60,7 +60,7 @@ class ThemeController extends Controller
         ]);
         $payload['config'] = json_decode(base64_decode($payload['config']), true);
         if (!$payload['config'] || !is_array($payload['config'])) abort(500, '参数有误');
-        $themeConfigFile = public_path("theme/{$payload['name']}/config.php");
+        $themeConfigFile = public_path("theme/{$payload['name']}/config.json");
         if (!File::exists($themeConfigFile)) abort(500, '主题不存在');
         $themeConfig = json_decode(File::get($themeConfigFile), true);
         if (!isset($themeConfig['configs']) || !is_array($themeConfig)) abort(500, '主题配置文件有误');
