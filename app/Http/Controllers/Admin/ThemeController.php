@@ -62,7 +62,8 @@ class ThemeController extends Controller
         if (!$payload['config'] || !is_array($payload['config'])) abort(500, '参数有误');
         $themeConfigFile = public_path("theme/{$payload['name']}/config.php");
         if (!File::exists($themeConfigFile)) abort(500, '主题不存在');
-        $themeConfig = include($themeConfigFile);
+        $themeConfig = json_decode(File::get($themeConfigFile), true);
+        if (!isset($themeConfig['configs']) || !is_array($themeConfig)) abort(500, '主题配置文件有误');
         $validateFields = array_column($themeConfig['configs'], 'field_name');
         $config = [];
         foreach ($validateFields as $validateField) {

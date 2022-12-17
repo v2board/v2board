@@ -27,7 +27,7 @@
         "field_type": "select",
         "select_options": {
             "light": "亮",
-            "dark": "暗",
+            "dark": "暗"
         },
         "default_value": "light"
     }, {
