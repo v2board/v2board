@@ -40,6 +40,9 @@ class RouteController extends Controller
             'action.in' => '动作类型参数有误'
         ]);
         $params['match'] = array_filter($params['match']);
+        // TODO: remove on 1.8.0
+        $params['match'] = json_encode($params['match']);
+        // TODO: remove on 1.8.0
         if ($request->input('id')) {
             try {
                 $route = ServerRoute::find($request->input('id'));
