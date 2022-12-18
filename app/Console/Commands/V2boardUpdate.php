@@ -57,6 +57,7 @@ class V2boardUpdate extends Command
             } catch (\Exception $e) {
             }
         }
-        $this->info('更新完毕，请重新启动队列服务。');
+        \Artisan::call('horizon:terminate');
+        $this->info('更新完毕，队列服务已重启，你无需进行任何操作。');
     }
 }
