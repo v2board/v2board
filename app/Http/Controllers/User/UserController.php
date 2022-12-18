@@ -31,6 +31,18 @@ class UserController extends Controller
         ]);
     }
 
+    public function removeActiveSession(Request $request)
+    {
+        $user = User::find($request->user['id']);
+        if (!$user) {
+            abort(500, __('The user does not exist'));
+        }
+        $authService = new AuthService($user);
+        return response([
+            'data' => $authService->delSession($request->input('session_id'))
+        ]);
+    }
+
     public function checkLogin(Request $request)
     {
         $data = [
