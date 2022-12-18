@@ -152,16 +152,17 @@ class UserController extends Controller
             }
         }
 
-        $data = "email,balance,promotion commission,total traffic,remaining traffic,package expiration time,subscription plan,subscription address\r\n";
+        $data = "email,balance,promotion commission,total traffic,Used,remaining traffic,package expiration time,subscription plan,subscription address\r\n";
         foreach($res as $user) {
             $expireDate = $user['expired_at'] === NULL ? 'Long-term validity' : date('Y-m-d H:i:s', $user['expired_at']);
             $balance = $user['balance'] / 100;
             $commissionBalance = $user['commission_balance'] / 100;
             $transferEnable = $user['transfer_enable'] ? $user['transfer_enable'] / 1073741824 : 0;
+            $UseFlow = (($user['u'] + $user['d']) / 1073741824) ?? 0;
             $notUseFlow = (($user['transfer_enable'] - ($user['u'] + $user['d'])) / 1073741824) ?? 0;
             $planName = $user['plan_name'] ?? 'No subscription';
             $subscribeUrl = Helper::getSubscribeUrl('/api/v1/client/subscribe?token=' . $user['token']);
-            $data .= "{$user['email']},{$balance},{$commissionBalance},{$transferEnable},{$notUseFlow},{$expireDate},{$planName},{$subscribeUrl}\r\n";
+            $data .= "{$user['email']},{$balance},{$commissionBalance},{$transferEnable},{$UseFlow},{$notUseFlow},{$expireDate},{$planName},{$subscribeUrl}\r\n";
         }
         echo "\xEF\xBB\xBF" . $data;
     }
