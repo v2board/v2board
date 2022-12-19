@@ -94,5 +94,5 @@
     "Login to :name": "Login to :name",
     "Sending frequently, please try again later": "Sending frequently, please try again later",
     "Current product is sold out": "Current product is sold out",
-    "There are too many password errors, please try again after 30 minutes.": "There are too many password errors, please try again after 30 minutes."
+    "There are too many password errors, please try again after :minute minutes.": "There are too many password errors, please try again after :minute minutes."
 }
