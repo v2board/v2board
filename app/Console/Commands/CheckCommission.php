@@ -80,15 +80,14 @@ class CheckCommission extends Command
 
     public function payHandle($inviteUserId, Order $order)
     {
+        $level = 3;
         if ((int)config('v2board.commission_distribution_enable', 0)) {
-            $level = 3;
             $commissionShareLevels = [
                 0 => (int)config('v2board.commission_distribution_l1'),
                 1 => (int)config('v2board.commission_distribution_l2'),
                 2 => (int)config('v2board.commission_distribution_l3')
             ];
         } else {
-            $level = 3;
             $commissionShareLevels = [
                 0 => 100
             ];

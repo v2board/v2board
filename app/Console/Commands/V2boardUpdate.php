@@ -58,5 +58,7 @@ class V2boardUpdate extends Command
             }
         }
         $this->info('When the update is finished, please restart the queue service.');
+        \Artisan::call('cache:clear');
+        \Artisan::call('config:cache');
     }
 }

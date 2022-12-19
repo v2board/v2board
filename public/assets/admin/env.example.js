@@ -11,5 +11,7 @@ window.settings = {
   },
   // Background
   background_url: '',
-  logo: ''
+  logo: '',
+  // 需与V2Board设置中的后台路径一致
+  secure_path: 'admin'
 }

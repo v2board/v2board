@@ -52,7 +52,9 @@ class V2boardInstall extends Command
             $this->info("Translated by Mr.Nobody https://tt.vg/v2board");
 
             if (\File::exists(base_path() . '/.env')) {
-                abort(500, 'V2board is already installed, if you want to reinstall it, please delete the .env file in the directory');
+                $defaultSecurePath = hash('crc32b', config('app.key'));
+                $this->info("Visit http(s)://your-site/{$defaultSecurePath} to access the admin panel，You can change your password in the User Center.");
+                abort(500, 'If you need to reinstall, please delete the .env file in the directory');
             }
 
             if (!copy(base_path() . '/.env.example', base_path() . '/.env')) {
@@ -93,16 +95,17 @@ class V2boardInstall extends Command
             while (!$email) {
                 $email = $this->ask('Please enter administrator email');
             }
-            $password = '';
-            while (!$password) {
-                $password = $this->ask('Please enter the administrator password');
-            }
+            $password = Helper::guid(false);
             if (!$this->registerAdmin($email, $password)) {
                 abort(500, 'Administrator account registration failed, please try again');
             }
 
-            $this->info('Finished...Everything is ready');
-            $this->info('Visit http(s)://your-site/admin to access the administration panel');
+            $this->info('Everything ready');
+            $this->info("Administrator e-mail.{$email}");
+            $this->info("Administrator password.{$password}");
+
+            $defaultSecurePath = hash('crc32b', config('app.key'));
+            $this->info("Visit http(s)://your-site/{$defaultSecurePath} to access the admin panel，You can change your password in the User Center.");
         } catch (\Exception $e) {
             $this->error($e->getMessage());
         }

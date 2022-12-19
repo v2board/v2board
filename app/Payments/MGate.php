@@ -32,6 +32,11 @@ class MGate {
                 'label' => 'AppSecret',
                 'description' => '',
                 'type' => 'input',
+            ],
+            'mgate_source_currency' => [
+                'label' => '源货币',
+                'description' => '默认CNY',
+                'type' => 'input'
             ]
         ];
     }
@@ -44,6 +49,9 @@ class MGate {
             'notify_url' => $order['notify_url'],
             'return_url' => $order['return_url']
         ];
+        if (isset($this->config['mgate_source_currency'])) {
+            $params['source_currency'] = $this->config['mgate_source_currency'];
+        }
         $params['app_id'] = $this->config['mgate_app_id'];
         ksort($params);
         $str = http_build_query($params) . $this->config['mgate_app_secret'];

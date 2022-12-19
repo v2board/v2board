@@ -9,19 +9,16 @@
 - Laravel
 
 ## Demo
-[Demo](https://v2board.com)
+[Demo](https://demo.v2board.com)
 
 ## Document
-[Click](https://docs.v2board.com)
+[Click](https://v2board.com)
 
 ## Sponsors
 Thanks to the open source project license provided by [Jetbrains](https://www.jetbrains.com/)
 
 ## Community
-Telegram Channel: [@v2board](https://t.me/v2board)  
-Telegram Group: [@v2board_official](https://t.me/v2board_official)
+🔔Telegram Channel: [@v2board](https://t.me/v2board)  
 
 ## How to Feedback
-We have closed issues due to too much invalid feedback, you can give us your feedback in the following way.
- - Contact us through Community
- - Fork Dev branch commit pull request
+Follow the template in the issue to submit your question correctly, and we will have someone follow up with you.

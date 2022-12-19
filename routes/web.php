@@ -38,7 +38,8 @@ Route::get('/', function (Request $request) {
     return view('theme::' . config('v2board.frontend_theme', 'v2board') . '.dashboard', $renderParams);
 });
 
-Route::get('/' . config('v2board.frontend_admin_path', 'admin'), function () {
+//TODO:: 兼容
+Route::get('/' . config('v2board.secure_path', config('v2board.frontend_admin_path', hash('crc32b', config('app.key')))), function () {
     return view('admin', [
         'title' => config('v2board.app_name', 'V2Board'),
         'theme_sidebar' => config('v2board.frontend_theme_sidebar', 'light'),
@@ -46,6 +47,7 @@ Route::get('/' . config('v2board.frontend_admin_path', 'admin'), function () {
         'theme_color' => config('v2board.frontend_theme_color', 'default'),
         'background_url' => config('v2board.frontend_background_url'),
         'version' => config('app.version'),
-        'logo' => config('v2board.logo')
+        'logo' => config('v2board.logo'),
+        'secure_path' => config('v2board.secure_path', config('v2board.frontend_admin_path', hash('crc32b', config('app.key'))))
     ]);
 });

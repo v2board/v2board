@@ -46,6 +46,7 @@ class ConfigSave extends FormRequest
         'register_limit_by_ip_enable' => 'in:0,1',
         'register_limit_count' => 'integer',
         'register_limit_expire' => 'integer',
+        'secure_path' => '',
         // subscribe
         'plan_change_enable' => 'in:0,1',
         'reset_traffic_method' => 'in:0,1,2,3,4',
@@ -56,17 +57,14 @@ class ConfigSave extends FormRequest
         'show_info_to_server_enable' => 'in:0,1',
         // server
         'server_token' => 'nullable|min:16',
-        'server_license' => 'nullable',
-        'server_log_enable' => 'in:0,1',
-        'server_v2ray_domain' => '',
-        'server_v2ray_protocol' => '',
+        'server_pull_interval' => 'integer',
+        'server_push_interval' => 'integer',
         // frontend
         'frontend_theme' => '',
-        'frontend_theme_sidebar' => 'in:dark,light',
-        'frontend_theme_header' => 'in:dark,light',
-        'frontend_theme_color' => 'in:default,darkblue,black,green',
+        'frontend_theme_sidebar' => 'nullable|in:dark,light',
+        'frontend_theme_header' => 'nullable|in:dark,light',
+        'frontend_theme_color' => 'nullable|in:default,darkblue,black,green',
         'frontend_background_url' => 'nullable|url',
-        'frontend_admin_path' => '',
         // email
         'email_template' => '',
         'email_host' => '',

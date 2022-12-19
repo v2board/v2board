@@ -58,20 +58,22 @@ class InviteController extends Controller
         if ($user->commission_rate) {
             $commission_rate = $user->commission_rate;
         }
+        $uncheck_commission_balance = (int)Order::where('status', 3)
+            ->where('commission_status', 0)
+            ->where('invite_user_id', $request->user['id'])
+            ->sum('commission_balance');
+        if (config('v2board.commission_distribution_enable', 0)) {
+            $uncheck_commission_balance = $uncheck_commission_balance * (config('v2board.commission_distribution_l1') / 100);
+        }
         $stat = [
             //Registered Users
             (int)User::where('invite_user_id', $request->user['id'])->count(),
-            //Effective Commissions
-            (int)Order::where('status', 3)
-                ->where('commission_status', 2)
-                ->where('invite_user_id', $request->user['id'])
-                ->sum('commission_balance'),
-            //Commissions under confirmation
-            (int)Order::where('status', 3)
-                ->where('commission_status', 0)
-                ->where('invite_user_id', $request->user['id'])
-                ->sum('commission_balance'),
-            //Commission rate
+            //有效的佣金
+            (int)CommissionLog::where('invite_user_id', $request->user['id'])
+                ->sum('get_amount'),
+            //确认中的佣金
+            $uncheck_commission_balance,
+            //佣金比例
             (int)$commission_rate,
             //Available Commissions
             (int)$user->commission_balance

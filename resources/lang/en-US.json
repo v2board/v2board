@@ -88,10 +88,11 @@
     "The coupon can only be used :limit_use_with_user per person": "The coupon can only be used :limit_use_with_user per person",
     "The coupon code cannot be used for this period": "The coupon code cannot be used for this period",
     "Request failed, please try again later": "Request failed, please try again later",
-    "Register frequently, please try again after 1 hour": "Register frequently, please try again after 1 hour",
+    "Register frequently, please try again after :minute minute": "Register frequently, please try again after :minute minute",
     "Uh-oh, we've had some problems, we're working on it.": "Uh-oh, we've had some problems, we're working on it",
     "This subscription reset package does not apply to your subscription": "This subscription reset package does not apply to your subscription",
     "Login to :name": "Login to :name",
     "Sending frequently, please try again later": "Sending frequently, please try again later",
-    "Current product is sold out": "Current product is sold out"
+    "Current product is sold out": "Current product is sold out",
+    "There are too many password errors, please try again after 30 minutes.": "There are too many password errors, please try again after 30 minutes."
 }

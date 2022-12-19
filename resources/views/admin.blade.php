@@ -20,7 +20,8 @@
             },
             version: '{{$version}}',
             background_url: '{{$background_url}}',
-            logo: '{{$logo}}'
+            logo: '{{$logo}}',
+            secure_path: '{{$secure_path}}'
         }
     </script>
 </head>

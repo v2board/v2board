@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Client\Protocols;
 
+use App\Utils\Helper;
+
 class Shadowrocket
 {
     public $flag = 'shadowrocket';
@@ -43,6 +45,16 @@ class Shadowrocket
 
     public static function buildShadowsocks($password, $server)
     {
+        if ($server['cipher'] === '2022-blake3-aes-128-gcm') {
+            $serverKey = Helper::getShadowsocksServerKey($server['created_at'], 16);
+            $userKey = Helper::uuidToBase64($password, 16);
+            $password = "{$serverKey}:{$userKey}";
+        }
+        if ($server['cipher'] === '2022-blake3-aes-256-gcm') {
+            $serverKey = Helper::getShadowsocksServerKey($server['created_at'], 32);
+            $userKey = Helper::uuidToBase64($password, 32);
+            $password = "{$serverKey}:{$userKey}";
+        }
         $name = rawurlencode($server['name']);
         $str = str_replace(
             ['+', '/', '='],

@@ -71,6 +71,8 @@ class OrderService
                 break;
         }
 
+        $this->setSpeedLimit($plan->speed_limit);
+
         if (!$this->user->save()) {
             DB::rollBack();
             abort(500, 'Failed to open');
@@ -251,6 +253,11 @@ class OrderService
         }
         DB::commit();
         return true;
+    }
+
+    private function setSpeedLimit($speedLimit)
+    {
+        $this->user->speed_limit = $speedLimit;
     }
 
     private function buyByResetTraffic()

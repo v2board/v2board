@@ -88,10 +88,11 @@
     "The coupon can only be used :limit_use_with_user per person": "该优惠券每人只能用 :limit_use_with_user 次",
     "The coupon code cannot be used for this period": "此优惠券无法用于该付款周期",
     "Request failed, please try again later": "请求失败，请稍后再试",
-    "Register frequently, please try again after 1 hour": "注册频繁，请等待1小时后再次尝试",
+    "Register frequently, please try again after :minute minute": "注册频繁，请等待 :minute 分钟后再次尝试",
     "Uh-oh, we've had some problems, we're working on it.": "遇到了些问题，我们正在进行处理",
     "This subscription reset package does not apply to your subscription": "该订阅重置包不适用于你的订阅",
     "Login to :name": "登入到 :name",
     "Sending frequently, please try again later": "发送频繁，请稍后再试",
-    "Current product is sold out": "当前商品已售罄"
+    "Current product is sold out": "当前商品已售罄",
+    "There are too many password errors, please try again after 30 minutes.": "密码错误次数过多，请 30 分钟后再试"
 }

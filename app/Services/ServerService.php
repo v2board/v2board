@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\ServerLog;
+use App\Models\ServerRoute;
 use App\Models\ServerShadowsocks;
 use App\Models\User;
 use App\Models\ServerV2ray;
@@ -100,9 +101,12 @@ class ServerService
         );
         $tmp = array_column($servers, 'sort');
         array_multisort($tmp, SORT_ASC, $servers);
+        $servers = array_map(function ($server) {
+            $server['port'] = (int)$server['port'];
+            return $server;
+        }, $servers);
         return $servers;
     }
-
 
     public function getAvailableUsers($groupId)
     {
@@ -115,7 +119,8 @@ class ServerService
             ->where('banned', 0)
             ->select([
                 'id',
-                'uuid'
+                'uuid',
+                'speed_limit'
             ])
             ->get();
     }
@@ -179,7 +184,7 @@ class ServerService
         return $server->toArray();
     }
 
-    public function mergeData(&$servers)
+    private function mergeData(&$servers)
     {
         foreach ($servers as $k => $v) {
             $serverType = strtoupper($servers[$k]['type']);
@@ -212,5 +217,24 @@ class ServerService
         $tmp = array_column($servers, 'sort');
         array_multisort($tmp, SORT_ASC, $servers);
         return $servers;
+    }
+
+    public function getRoutes(array $routeIds)
+    {
+        return ServerRoute::select(['id', 'match', 'action', 'action_value'])->whereIn('id', $routeIds)->get();
+    }
+
+    public function getServer($serverId, $serverType)
+    {
+        switch ($serverType) {
+            case 'v2ray':
+                return ServerV2ray::find($serverId);
+            case 'shadowsocks':
+                return ServerShadowsocks::find($serverId);
+            case 'trojan':
+                return ServerTrojan::find($serverId);
+            default:
+                return false;
+        }
     }
 }

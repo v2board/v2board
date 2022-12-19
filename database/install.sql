@@ -162,6 +162,7 @@ CREATE TABLE `v2_plan` (
                            `id` int(11) NOT NULL AUTO_INCREMENT,
                            `group_id` int(11) NOT NULL,
                            `transfer_enable` int(11) NOT NULL,
+                           `speed_limit` int(11) DEFAULT NULL,
                            `name` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
                            `show` tinyint(1) NOT NULL DEFAULT '0',
                            `sort` int(11) DEFAULT NULL,
@@ -193,16 +194,30 @@ CREATE TABLE `v2_server_group` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
+DROP TABLE IF EXISTS `v2_server_route`;
+CREATE TABLE `v2_server_route` (
+                                   `id` int(11) NOT NULL AUTO_INCREMENT,
+                                   `remarks` varchar(255) NOT NULL,
+                                   `match` text NOT NULL,
+                                   `action` varchar(11) NOT NULL,
+                                   `action_value` varchar(255) DEFAULT NULL,
+                                   `created_at` int(11) NOT NULL,
+                                   `updated_at` int(11) NOT NULL,
+                                   PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
 DROP TABLE IF EXISTS `v2_server_shadowsocks`;
 CREATE TABLE `v2_server_shadowsocks` (
                                          `id` int(11) NOT NULL AUTO_INCREMENT,
                                          `group_id` varchar(255) NOT NULL,
+                                         `route_id` varchar(255) DEFAULT NULL,
                                          `parent_id` int(11) DEFAULT NULL,
                                          `tags` varchar(255) DEFAULT NULL,
                                          `name` varchar(255) NOT NULL,
                                          `rate` varchar(11) NOT NULL,
                                          `host` varchar(255) NOT NULL,
-                                         `port` int(11) NOT NULL,
+                                         `port` varchar(11) NOT NULL,
                                          `server_port` int(11) NOT NULL,
                                          `cipher` varchar(255) NOT NULL,
                                          `obfs` char(11) DEFAULT NULL,
@@ -218,14 +233,15 @@ CREATE TABLE `v2_server_shadowsocks` (
 DROP TABLE IF EXISTS `v2_server_trojan`;
 CREATE TABLE `v2_server_trojan` (
                                     `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Node ID',
-                                    `group_id` varchar(255) NOT NULL COMMENT 'Group ID',
-                                    `parent_id` int(11) DEFAULT NULL COMMENT 'Parend ID',
+                                    `group_id` varchar(255) NOT NULL COMMENT 'Node Group',
+                                    `route_id` varchar(255) DEFAULT NULL,
+                                    `parent_id` int(11) DEFAULT NULL COMMENT 'Parent Node',
                                     `tags` varchar(255) DEFAULT NULL COMMENT 'Node Tags',
                                     `name` varchar(255) NOT NULL COMMENT 'Node Name',
-                                    `rate` varchar(11) NOT NULL COMMENT 'Rate',
+                                    `rate` varchar(11) NOT NULL COMMENT 'Multiplier',
                                     `host` varchar(255) NOT NULL COMMENT 'Host Name',
-                                    `port` int(11) NOT NULL COMMENT 'Connection Port',
-                                    `server_port` int(11) NOT NULL COMMENT 'Server Port',
+                                    `port` varchar(11) NOT NULL COMMENT 'Connection Port',
+                                    `server_port` int(11) NOT NULL COMMENT 'Service Port',
                                     `allow_insecure` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Is it allowed to be unsafe',
                                     `server_name` varchar(255) DEFAULT NULL,
                                     `show` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Whether to display',
@@ -240,10 +256,11 @@ DROP TABLE IF EXISTS `v2_server_v2ray`;
 CREATE TABLE `v2_server_v2ray` (
                                    `id` int(11) NOT NULL AUTO_INCREMENT,
                                    `group_id` varchar(255) NOT NULL,
-                                   `name` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
+                                   `route_id` varchar(255) DEFAULT NULL,
+                                   `name` varchar(255) NOT NULL,
                                    `parent_id` int(11) DEFAULT NULL,
                                    `host` varchar(255) NOT NULL,
-                                   `port` char(11) NOT NULL,
+                                   `port` varchar(11) NOT NULL,
                                    `server_port` int(11) NOT NULL,
                                    `tls` tinyint(4) NOT NULL DEFAULT '0',
                                    `tags` varchar(255) DEFAULT NULL,
@@ -259,7 +276,7 @@ CREATE TABLE `v2_server_v2ray` (
                                    `created_at` int(11) NOT NULL,
                                    `updated_at` int(11) NOT NULL,
                                    PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `v2_stat_order`;
@@ -367,6 +384,7 @@ CREATE TABLE `v2_user` (
                            `uuid` varchar(36) NOT NULL,
                            `group_id` int(11) DEFAULT NULL,
                            `plan_id` int(11) DEFAULT NULL,
+                           `speed_limit` int(11) DEFAULT NULL,
                            `remind_expire` tinyint(4) DEFAULT '1',
                            `remind_traffic` tinyint(4) DEFAULT '1',
                            `token` char(32) NOT NULL,
@@ -379,4 +397,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2022-07-07 18:23:17
+-- 2022-12-15 05:24:08

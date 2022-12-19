@@ -3,14 +3,12 @@
 namespace App\Console\Commands;
 
 use App\Models\Plan;
-use App\Models\StatServer;
-use App\Models\StatUser;
 use App\Utils\Helper;
 use Illuminate\Console\Command;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
-class ResetLog extends Command
+class ResetUser extends Command
 {
     protected $builder;
     /**
@@ -18,14 +16,14 @@ class ResetLog extends Command
      *
      * @var string
      */
-    protected $signature = 'reset:log';
+    protected $signature = 'reset:user';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Clear log';
+    protected $description = '重置所有用户信息';
 
     /**
      * Create a new command instance.
@@ -44,7 +42,14 @@ class ResetLog extends Command
      */
     public function handle()
     {
-        StatUser::where('record_at', '<', strtotime('-2 month', time()))->delete();
-        StatServer::where('record_at', '<', strtotime('-2 month', time()))->delete();
+        ini_set('memory_limit', -1);
+        $users = User::all();
+        foreach ($users as $user)
+        {
+            $user->token = Helper::guid();
+            $user->uuid = Helper::guid(true);
+            $user->save();
+            $this->info("已重置用户{$user->email}的安全信息");
+        }
     }
 }
