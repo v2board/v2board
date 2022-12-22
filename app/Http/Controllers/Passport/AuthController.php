@@ -156,6 +156,7 @@ class AuthController extends Controller
                 $user->plan_id = $plan->id;
                 $user->group_id = $plan->group_id;
                 $user->expired_at = time() + (config('v2board.try_out_hour', 1) * 3600);
+                $user->speed_limit = $plan->speed_limit;
             }
         }
 
