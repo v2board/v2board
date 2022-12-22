@@ -88,7 +88,6 @@ class ConfigController extends Controller
                 'logo' => config('v2board.logo'),
                 'force_https' => (int)config('v2board.force_https', 0),
                 'stop_register' => (int)config('v2board.stop_register', 0),
-                'email_verify' => (int)config('v2board.email_verify', 0),
                 'app_name' => config('v2board.app_name', 'V2Board'),
                 'app_description' => config('v2board.app_description', 'V2Board is best!'),
                 'app_url' => config('v2board.app_url'),
@@ -143,6 +142,7 @@ class ConfigController extends Controller
                 'android_download_url' => config('v2board.android_download_url')
             ],
             'safe' => [
+                'email_verify' => (int)config('v2board.email_verify', 0),
                 'safe_mode_enable' => (int)config('v2board.safe_mode_enable', 0),
                 'secure_path' => config('v2board.secure_path', config('v2board.frontend_admin_path', hash('crc32b', config('app.key')))),
                 'email_whitelist_enable' => (int)config('v2board.email_whitelist_enable', 0),
