@@ -87,28 +87,16 @@ class ConfigController extends Controller
             'site' => [
                 'logo' => config('v2board.logo'),
                 'force_https' => (int)config('v2board.force_https', 0),
-                'safe_mode_enable' => (int)config('v2board.safe_mode_enable', 0),
                 'stop_register' => (int)config('v2board.stop_register', 0),
-                'email_verify' => (int)config('v2board.email_verify', 0),
                 'app_name' => config('v2board.app_name', 'V2Board'),
                 'app_description' => config('v2board.app_description', 'V2Board is best!'),
                 'app_url' => config('v2board.app_url'),
                 'subscribe_url' => config('v2board.subscribe_url'),
                 'try_out_plan_id' => (int)config('v2board.try_out_plan_id', 0),
                 'try_out_hour' => (int)config('v2board.try_out_hour', 1),
-                'email_whitelist_enable' => (int)config('v2board.email_whitelist_enable', 0),
-                'email_whitelist_suffix' => config('v2board.email_whitelist_suffix', Dict::EMAIL_WHITELIST_SUFFIX_DEFAULT),
-                'email_gmail_limit_enable' => config('v2board.email_gmail_limit_enable', 0),
-                'recaptcha_enable' => (int)config('v2board.recaptcha_enable', 0),
-                'recaptcha_key' => config('v2board.recaptcha_key'),
-                'recaptcha_site_key' => config('v2board.recaptcha_site_key'),
                 'tos_url' => config('v2board.tos_url'),
                 'currency' => config('v2board.currency', 'CNY'),
                 'currency_symbol' => config('v2board.currency_symbol', '¥'),
-                'register_limit_by_ip_enable' => (int)config('v2board.register_limit_by_ip_enable', 0),
-                'register_limit_count' => config('v2board.register_limit_count', 3),
-                'register_limit_expire' => config('v2board.register_limit_expire', 60),
-                'secure_path' => config('v2board.secure_path', config('v2board.frontend_admin_path', hash('crc32b', config('app.key'))))
             ],
             'subscribe' => [
                 'plan_change_enable' => (int)config('v2board.plan_change_enable', 1),
@@ -152,6 +140,23 @@ class ConfigController extends Controller
                 'macos_download_url' => config('v2board.macos_download_url'),
                 'android_version' => config('v2board.android_version'),
                 'android_download_url' => config('v2board.android_download_url')
+            ],
+            'safe' => [
+                'email_verify' => (int)config('v2board.email_verify', 0),
+                'safe_mode_enable' => (int)config('v2board.safe_mode_enable', 0),
+                'secure_path' => config('v2board.secure_path', config('v2board.frontend_admin_path', hash('crc32b', config('app.key')))),
+                'email_whitelist_enable' => (int)config('v2board.email_whitelist_enable', 0),
+                'email_whitelist_suffix' => config('v2board.email_whitelist_suffix', Dict::EMAIL_WHITELIST_SUFFIX_DEFAULT),
+                'email_gmail_limit_enable' => config('v2board.email_gmail_limit_enable', 0),
+                'recaptcha_enable' => (int)config('v2board.recaptcha_enable', 0),
+                'recaptcha_key' => config('v2board.recaptcha_key'),
+                'recaptcha_site_key' => config('v2board.recaptcha_site_key'),
+                'register_limit_by_ip_enable' => (int)config('v2board.register_limit_by_ip_enable', 0),
+                'register_limit_count' => config('v2board.register_limit_count', 3),
+                'register_limit_expire' => config('v2board.register_limit_expire', 60),
+                'password_limit_enable' => (int)config('v2board.password_limit_enable', 1),
+                'password_limit_count' => config('v2board.password_limit_count', 5),
+                'password_limit_expire' => config('v2board.password_limit_expire', 60)
             ]
         ];
         if ($key && isset($data[$key])) {

@@ -25,9 +25,9 @@ class ThemeController extends Controller
     {
         $themeConfigs = [];
         foreach ($this->themes as $theme) {
-            $themeConfigFile = $this->path . "{$theme}/config.php";
+            $themeConfigFile = $this->path . "{$theme}/config.json";
             if (!File::exists($themeConfigFile)) continue;
-            $themeConfig = include($themeConfigFile);
+            $themeConfig = json_decode(File::get($themeConfigFile), true);
             if (!isset($themeConfig['configs']) || !is_array($themeConfig)) continue;
             $themeConfigs[$theme] = $themeConfig;
             if (config("theme.{$theme}")) continue;
@@ -60,9 +60,10 @@ class ThemeController extends Controller
         ]);
         $payload['config'] = json_decode(base64_decode($payload['config']), true);
         if (!$payload['config'] || !is_array($payload['config'])) abort(500, '参数有误');
-        $themeConfigFile = public_path("theme/{$payload['name']}/config.php");
+        $themeConfigFile = public_path("theme/{$payload['name']}/config.json");
         if (!File::exists($themeConfigFile)) abort(500, '主题不存在');
-        $themeConfig = include($themeConfigFile);
+        $themeConfig = json_decode(File::get($themeConfigFile), true);
+        if (!isset($themeConfig['configs']) || !is_array($themeConfig)) abort(500, '主题配置文件有误');
         $validateFields = array_column($themeConfig['configs'], 'field_name');
         $config = [];
         foreach ($validateFields as $validateField) {

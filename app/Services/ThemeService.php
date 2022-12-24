@@ -18,9 +18,10 @@ class ThemeService
 
     public function init()
     {
-        $themeConfigFile = $this->path . "{$this->theme}/config.php";
-        if (!File::exists($themeConfigFile)) return;
-        $themeConfig = include($themeConfigFile);
+        $themeConfigFile = $this->path . "{$this->theme}/config.json";
+        if (!File::exists($themeConfigFile)) abort(500, "{$this->theme}主题不存在");
+        $themeConfig = json_decode(File::get($themeConfigFile), true);
+        if (!isset($themeConfig['configs']) || !is_array($themeConfig)) abort(500, "{$this->theme}主题配置文件有误");
         $configs = $themeConfig['configs'];
         $data = [];
         foreach ($configs as $config) {

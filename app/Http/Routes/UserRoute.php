@@ -21,11 +21,12 @@ class UserRoute
             $router->get ('/checkLogin', 'User\\UserController@checkLogin');
             $router->post('/transfer', 'User\\UserController@transfer');
             $router->post('/getQuickLoginUrl', 'User\\UserController@getQuickLoginUrl');
+            $router->get ('/getActiveSession', 'User\\UserController@getActiveSession');
+            $router->post('/removeActiveSession', 'User\\UserController@removeActiveSession');
             // Order
             $router->post('/order/save', 'User\\OrderController@save');
             $router->post('/order/checkout', 'User\\OrderController@checkout');
             $router->get ('/order/check', 'User\\OrderController@check');
-            $router->get ('/order/details', 'User\\OrderController@detail');                                            // TODO: 1.7.0 remove
             $router->get ('/order/detail', 'User\\OrderController@detail');
             $router->get ('/order/fetch', 'User\\OrderController@fetch');
             $router->get ('/order/getPaymentMethod', 'User\\OrderController@getPaymentMethod');

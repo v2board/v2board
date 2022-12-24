@@ -42,6 +42,9 @@ class ResetUser extends Command
      */
     public function handle()
     {
+        if (!$this->confirm("确定要重置所有用户安全信息吗？")) {
+            return;
+        }
         ini_set('memory_limit', -1);
         $users = User::all();
         foreach ($users as $user)

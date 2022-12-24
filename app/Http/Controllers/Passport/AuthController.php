@@ -156,6 +156,7 @@ class AuthController extends Controller
                 $user->plan_id = $plan->id;
                 $user->group_id = $plan->group_id;
                 $user->expired_at = time() + (config('v2board.try_out_hour', 1) * 3600);
+                $user->speed_limit = $plan->speed_limit;
             }
         }
 
@@ -189,10 +190,13 @@ class AuthController extends Controller
         $email = $request->input('email');
         $password = $request->input('password');
 
-        $passwordErrorCount = (int)Cache::get(CacheKey::get('PASSWORD_ERROR_LIMIT', $email), 0);
-
-        if ($passwordErrorCount >= 5) {
-            abort(500, __('There are too many password errors, please try again after 30 minutes.'));
+        if ((int)config('v2board.password_limit_enable', 1)) {
+            $passwordErrorCount = (int)Cache::get(CacheKey::get('PASSWORD_ERROR_LIMIT', $email), 0);
+            if ($passwordErrorCount >= (int)config('v2board.password_limit_count', 5)) {
+                abort(500, __('There are too many password errors, please try again after :minute minutes.', [
+                    'minute' => config('v2board.password_limit_expire', 60)
+                ]));
+            }
         }
 
         $user = User::where('email', $email)->first();
@@ -205,11 +209,13 @@ class AuthController extends Controller
             $password,
             $user->password)
         ) {
-            Cache::put(
-                CacheKey::get('PASSWORD_ERROR_LIMIT', $email),
-                (int)$passwordErrorCount + 1,
-                30 * 60
-            );
+            if ((int)config('v2board.password_limit_enable')) {
+                Cache::put(
+                    CacheKey::get('PASSWORD_ERROR_LIMIT', $email),
+                    (int)$passwordErrorCount + 1,
+                    60 * (int)config('v2board.password_limit_expire', 60)
+                );
+            }
             abort(500, __('Incorrect email or password'));
         }
 
