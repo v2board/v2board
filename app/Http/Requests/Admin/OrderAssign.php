@@ -24,11 +24,11 @@ class OrderAssign extends FormRequest
     public function messages()
     {
         return [
-            'plan_id.required' => 'Subscription cannot be empty',
-            'email.required' => 'E-mail can not be empty',
-            'total_amount.required' => 'The payment amount cannot be empty',
-            'period.required' => 'The subscription period cannot be empty',
-            'period.in' => 'Wrong format for subscription cycle'
+            'plan_id.required' => '订阅不能为空',
+            'email.required' => '邮箱不能为空',
+            'total_amount.required' => '支付金额不能为空',
+            'period.required' => '订阅周期不能为空',
+            'period.in' => '订阅周期格式有误'
         ];
     }
 }

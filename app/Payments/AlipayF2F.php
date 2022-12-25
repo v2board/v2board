@@ -28,6 +28,11 @@ class AlipayF2F {
                 'label' => '支付宝公钥',
                 'description' => '',
                 'type' => 'input',
+            ],
+            'product_name' => [
+                'label' => '自定义商品名称',
+                'description' => '将会体现在支付宝账单中',
+                'type' => 'input'
             ]
         ];
     }
@@ -42,7 +47,7 @@ class AlipayF2F {
             $gateway->setAlipayPublicKey($this->config['public_key']); // 可以是路径，也可以是密钥内容
             $gateway->setNotifyUrl($order['notify_url']);
             $gateway->setBizContent([
-                'subject' => config('v2board.app_name', 'V2Board') . ' - 订阅',
+                'subject' => $this->config['product_name'] ?? (config('v2board.app_name', 'V2Board') . ' - 订阅'),
                 'out_trade_no' => $order['trade_no'],
                 'total_amount' => $order['total_amount'] / 100
             ]);

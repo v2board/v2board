@@ -21,7 +21,7 @@ class V2boardStatistics extends Command
      *
      * @var string
      */
-    protected $description = 'Statistical tasks';
+    protected $description = '统计任务';
 
     /**
      * Create a new command instance.

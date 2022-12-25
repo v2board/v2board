@@ -16,7 +16,7 @@ class TicketController extends Controller
             $ticket = Ticket::where('id', $request->input('id'))
                 ->first();
             if (!$ticket) {
-                abort(500, 'Ticket does not exist');
+                abort(500, '工单不存在');
             }
             $ticket['message'] = TicketMessage::where('ticket_id', $ticket->id)->get();
             for ($i = 0; $i < count($ticket['message']); $i++) {
@@ -48,10 +48,10 @@ class TicketController extends Controller
     public function reply(Request $request)
     {
         if (empty($request->input('id'))) {
-            abort(500, 'Parameter error');
+            abort(500, '参数错误');
         }
         if (empty($request->input('message'))) {
-            abort(500, 'Message cannot be empty');
+            abort(500, '消息不能为空');
         }
         $ticketService = new TicketService();
         $ticketService->replyByAdmin(
@@ -67,16 +67,16 @@ class TicketController extends Controller
     public function close(Request $request)
     {
         if (empty($request->input('id'))) {
-            abort(500, 'Parameter error');
+            abort(500, '参数错误');
         }
         $ticket = Ticket::where('id', $request->input('id'))
             ->first();
         if (!$ticket) {
-            abort(500, 'Ticket does not exist');
+            abort(500, '工单不存在');
         }
         $ticket->status = 1;
         if (!$ticket->save()) {
-            abort(500, 'Failure to close');
+            abort(500, '关闭失败');
         }
         return response([
             'data' => true

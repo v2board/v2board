@@ -62,7 +62,7 @@ class StatUserJob implements ShouldQueue
                     'd' => $data['d'] + ($this->d * $this->server['rate'])
                 ]);
             } catch (\Exception $e) {
-                abort(500, 'User statistics update failed');
+                abort(500, '用户统计数据更新失败');
             }
         } else {
             if (!StatUser::create([
@@ -73,7 +73,7 @@ class StatUserJob implements ShouldQueue
                 'record_type' => $this->recordType,
                 'record_at' => $recordAt
             ])) {
-                abort(500, 'User statistics creation failure');
+                abort(500, '用户统计数据创建失败');
             }
         }
     }

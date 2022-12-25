@@ -37,9 +37,9 @@ dns:
 proxies:
 
 proxy-groups:
-  - { name: "$app_name", type: select, proxies: ["Automatic selection", "Failover"] }
-  - { name: "Automatic selection", type: url-test, proxies: [], url: "http://www.gstatic.com/generate_204", interval: 86400 }
-  - { name: "Failover", type: fallback, proxies: [], url: "http://www.gstatic.com/generate_204", interval: 7200 }
+  - { name: "$app_name", type: select, proxies: ["自动选择", "故障转移"] }
+  - { name: "自动选择", type: url-test, proxies: [], url: "http://www.gstatic.com/generate_204", interval: 86400 }
+  - { name: "故障转移", type: fallback, proxies: [], url: "http://www.gstatic.com/generate_204", interval: 7200 }
 
 rules:
   # 自定义规则

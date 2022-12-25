@@ -18,12 +18,12 @@ class V2rayController extends Controller
         if ($request->input('id')) {
             $server = ServerV2ray::find($request->input('id'));
             if (!$server) {
-                abort(500, 'Server does not exist');
+                abort(500, '服务器不存在');
             }
             try {
                 $server->update($params);
             } catch (\Exception $e) {
-                abort(500, 'Failed to save');
+                abort(500, '保存失败');
             }
             return response([
                 'data' => true
@@ -31,7 +31,7 @@ class V2rayController extends Controller
         }
 
         if (!ServerV2ray::create($params)) {
-            abort(500, 'Failed to create');
+            abort(500, '创建失败');
         }
 
         return response([
@@ -44,7 +44,7 @@ class V2rayController extends Controller
         if ($request->input('id')) {
             $server = ServerV2ray::find($request->input('id'));
             if (!$server) {
-                abort(500, 'Node ID does not exist');
+                abort(500, '节点ID不存在');
             }
         }
         return response([
@@ -61,12 +61,12 @@ class V2rayController extends Controller
         $server = ServerV2ray::find($request->input('id'));
 
         if (!$server) {
-            abort(500, 'This server does not exist');
+            abort(500, '该服务器不存在');
         }
         try {
             $server->update($params);
         } catch (\Exception $e) {
-            abort(500, 'Failed to update');
+            abort(500, '保存失败');
         }
 
         return response([
@@ -79,10 +79,10 @@ class V2rayController extends Controller
         $server = ServerV2ray::find($request->input('id'));
         $server->show = 0;
         if (!$server) {
-            abort(500, 'Server does not exist');
+            abort(500, '服务器不存在');
         }
         if (!ServerV2ray::create($server->toArray())) {
-            abort(500, 'Copy failure');
+            abort(500, '复制失败');
         }
 
         return response([

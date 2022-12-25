@@ -34,7 +34,7 @@ class ClientController extends Controller
             // todo 1.5.3 remove
             $class = new V2rayN($user, $servers);
             die($class->handle());
-            die('This client does not support subscriptions at this time');
+            die('该客户端暂不支持进行订阅');
         }
     }
 
@@ -44,19 +44,19 @@ class ClientController extends Controller
         $useTraffic = round($user['u'] / (1024*1024*1024), 2) + round($user['d'] / (1024*1024*1024), 2);
         $totalTraffic = round($user['transfer_enable'] / (1024*1024*1024), 2);
         $remainingTraffic = $totalTraffic - $useTraffic;
-        $expiredDate = $user['expired_at'] ? date('Y-m-d', $user['expired_at']) : 'Long-term validity';
+        $expiredDate = $user['expired_at'] ? date('Y-m-d', $user['expired_at']) : '长期有效';
         $userService = new UserService();
         $resetDay = $userService->getResetDay($user);
         array_unshift($servers, array_merge($servers[0], [
-            'name' => "Package expiration：{$expiredDate}",
+            'name' => "套餐到期：{$expiredDate}",
         ]));
         if ($resetDay) {
             array_unshift($servers, array_merge($servers[0], [
-                'name' => "Remaining until next reset：{$resetDay} day",
+                'name' => "距离下次重置剩余：{$resetDay} 天",
             ]));
         }
         array_unshift($servers, array_merge($servers[0], [
-            'name' => "Remaining traffic：{$remainingTraffic} GB",
+            'name' => "剩余流量：{$remainingTraffic} GB",
         ]));
     }
 }

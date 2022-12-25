@@ -94,5 +94,5 @@
     "Login to :name": "登入到 :name",
     "Sending frequently, please try again later": "发送频繁，请稍后再试",
     "Current product is sold out": "当前商品已售罄",
-    "There are too many password errors, please try again after 30 minutes.": "密码错误次数过多，请 30 分钟后再试"
+    "There are too many password errors, please try again after :minute minutes.": "密码错误次数过多，请 :minute 分钟后再试"
 }

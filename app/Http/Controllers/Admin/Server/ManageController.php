@@ -29,19 +29,19 @@ class ManageController extends Controller
                 case 'shadowsocks':
                     if (!ServerShadowsocks::find($v['value'])->update(['sort' => $k + 1])) {
                         DB::rollBack();
-                        abort(500, 'Failed to save');
+                        abort(500, '保存失败');
                     }
                     break;
                 case 'v2ray':
                     if (!ServerV2ray::find($v['value'])->update(['sort' => $k + 1])) {
                         DB::rollBack();
-                        abort(500, 'Failed to update');
+                        abort(500, '保存失败');
                     }
                     break;
                 case 'trojan':
                     if (!ServerTrojan::find($v['value'])->update(['sort' => $k + 1])) {
                         DB::rollBack();
-                        abort(500, 'Failed to update');
+                        abort(500, '保存失败');
                     }
                     break;
             }

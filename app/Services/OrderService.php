@@ -45,7 +45,7 @@ class OrderService
                 ]);
             } catch (\Exception $e) {
                 DB::rollback();
-                abort(500, 'Failed to open');
+                abort(500, '开通失败');
             }
         }
         switch ((string)$order->period) {
@@ -75,12 +75,12 @@ class OrderService
 
         if (!$this->user->save()) {
             DB::rollBack();
-            abort(500, 'Failed to open');
+            abort(500, '开通失败');
         }
         $order->status = 3;
         if (!$order->save()) {
             DB::rollBack();
-            abort(500, 'Failed to open');
+            abort(500, '开通失败');
         }
 
         DB::commit();
@@ -93,7 +93,7 @@ class OrderService
         if ($order->period === 'reset_price') {
             $order->type = 4;
         } else if ($user->plan_id !== NULL && $order->plan_id !== $user->plan_id && ($user->expired_at > time() || $user->expired_at === NULL)) {
-            if (!(int)config('v2board.plan_change_enable', 1)) abort(500, 'Subscription changes are currently not allowed, please contact customer service or submit a ticketmessage');
+            if (!(int)config('v2board.plan_change_enable', 1)) abort(500, '目前不允许更改订阅，请联系客服或提交工单操作');
             $order->type = 3;
             if ((int)config('v2board.surplus_enable', 1)) $this->getSurplusValue($user, $order);
             if ($order->surplus_amount >= $order->total_amount) {
@@ -102,9 +102,9 @@ class OrderService
             } else {
                 $order->total_amount = $order->total_amount - $order->surplus_amount;
             }
-        } else if ($user->expired_at > time() && $order->plan_id == $user->plan_id) { // The user's subscription has not expired and the purchased subscription is the same as the current subscription === Renewal
+        } else if ($user->expired_at > time() && $order->plan_id == $user->plan_id) { // 用户订阅未过期且购买订阅与当前订阅相同 === 续费
             $order->type = 2;
-        } else { // New Purchases
+        } else { // 新购
             $order->type = 1;
         }
     }
@@ -202,7 +202,7 @@ class OrderService
         $orderSurplusAmount = 0;
         $userSurplusMonth = ($user->expired_at - time()) / 2678400;
         foreach ($orders as $k => $item) {
-            // Compatible with historical residual issues
+            // 兼容历史余留问题
             if ($item->period === 'onetime_price') continue;
             if ($this->orderIsUsed($item)) continue;
             $orderSurplusMonth = $orderSurplusMonth + self::STR_TO_TIME[$item->period];
@@ -210,7 +210,7 @@ class OrderService
         }
         if (!$orderSurplusMonth || !$orderSurplusAmount) return;
         $monthUnitPrice = $orderSurplusAmount / $orderSurplusMonth;
-        // If the user expiration month is greater than the order expiration month
+        // 如果用户过期月大于订单过期月
         if ($userSurplusMonth > $orderSurplusMonth) {
             $orderSurplusAmount = $orderSurplusMonth * $monthUnitPrice;
         } else {
@@ -273,9 +273,9 @@ class OrderService
             $this->user->expired_at = time();
         }
         $this->user->transfer_enable = $plan->transfer_enable * 1073741824;
-        // From one-time conversion to recycling
+        // 从一次性转换到循环
         if ($this->user->expired_at === NULL) $this->buyByResetTraffic();
-        // New Purchases
+        // 新购
         if ($order->type === 1) $this->buyByResetTraffic();
         $this->user->plan_id = $plan->id;
         $this->user->group_id = $plan->group_id;

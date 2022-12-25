@@ -15,13 +15,13 @@ class UserController extends Controller
     public function getUserInfoById(Request $request)
     {
         if (empty($request->input('id'))) {
-            abort(500, 'Parameter error');
+            abort(500, '参数错误');
         }
         $user = User::where('is_admin', 0)
             ->where('id', $request->input('id'))
             ->where('is_staff', 0)
             ->first();
-        if (!$user) abort(500, 'User does not exist');
+        if (!$user) abort(500, '用户不存在');
         return response([
             'data' => $user
         ]);
@@ -32,10 +32,10 @@ class UserController extends Controller
         $params = $request->validated();
         $user = User::find($request->input('id'));
         if (!$user) {
-            abort(500, 'User does not exist');
+            abort(500, '用户不存在');
         }
         if (User::where('email', $params['email'])->first() && $user->email !== $params['email']) {
-            abort(500, 'Email is already in use');
+            abort(500, '邮箱已被使用');
         }
         if (isset($params['password'])) {
             $params['password'] = password_hash($params['password'], PASSWORD_DEFAULT);
@@ -46,7 +46,7 @@ class UserController extends Controller
         if (isset($params['plan_id'])) {
             $plan = Plan::find($params['plan_id']);
             if (!$plan) {
-                abort(500, 'Subscription plans do not exist');
+                abort(500, '订阅计划不存在');
             }
             $params['group_id'] = $plan->group_id;
         }
@@ -54,7 +54,7 @@ class UserController extends Controller
         try {
             $user->update($params);
         } catch (\Exception $e) {
-            abort(500, 'Failed to update');
+            abort(500, '保存失败');
         }
         return response([
             'data' => true
@@ -97,7 +97,7 @@ class UserController extends Controller
                 'banned' => 1
             ]);
         } catch (\Exception $e) {
-            abort(500, 'Processing Failure');
+            abort(500, '处理失败');
         }
 
         return response([

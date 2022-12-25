@@ -22,7 +22,7 @@ class CheckServer extends Command
      *
      * @var string
      */
-    protected $description = 'Node inspection tasks';
+    protected $description = '节点检查任务';
 
     /**
      * Create a new command instance.
@@ -53,7 +53,7 @@ class CheckServer extends Command
             if ($server['last_check_at'] && (time() - $server['last_check_at']) > 1800) {
                 $telegramService = new TelegramService();
                 $message = sprintf(
-                    "Node Drop Notification\r\n----\r\nNode Name：%s\r\nNode Address：%s\r\n",
+                    "节点掉线通知\r\n----\r\n节点名称：%s\r\n节点地址：%s\r\n",
                     $server['name'],
                     $server['host']
                 );

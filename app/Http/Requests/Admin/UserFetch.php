@@ -23,11 +23,11 @@ class UserFetch extends FormRequest
     public function messages()
     {
         return [
-            'filter.*.key.required' => 'The filter key cannot be empty',
-            'filter.*.key.in' => 'Wrong filter key parameters',
-            'filter.*.condition.required' => 'The filter condition cannot be empty',
-            'filter.*.condition.in' => 'Wrong filter condition parameter',
-            'filter.*.value.required' => 'The filter value cannot be empty'
+            'filter.*.key.required' => '过滤键不能为空',
+            'filter.*.key.in' => '过滤键参数有误',
+            'filter.*.condition.required' => '过滤条件不能为空',
+            'filter.*.condition.in' => '过滤条件参数有误',
+            'filter.*.value.required' => '过滤值不能为空'
         ];
     }
 }

@@ -14,7 +14,7 @@ class AuthService
 {
     private $user;
 
-    public function __construct($user)
+    public function __construct(User $user)
     {
         $this->user = $user;
     }
@@ -27,7 +27,9 @@ class AuthService
             'session' => $guid,
         ], config('app.key'), 'HS256');
         self::addSession($this->user->id, $guid, [
-            'ip' => $request->ip()
+            'ip' => $request->ip(),
+            'login_at' => time(),
+            'ua' => $request->userAgent()
         ]);
         return [
             'token' => $this->user->token,
@@ -74,10 +76,23 @@ class AuthService
             $cacheKey,
             $sessions
         )) return false;
+        return true;
     }
 
     public function getSessions()
     {
         return (array)Cache::get(CacheKey::get("USER_SESSIONS", $this->user->id), []);
+    }
+
+    public function delSession($sessionId)
+    {
+        $cacheKey = CacheKey::get("USER_SESSIONS", $this->user->id);
+        $sessions = (array)Cache::get($cacheKey, []);
+        unset($sessions[$sessionId]);
+        if (!Cache::put(
+            $cacheKey,
+            $sessions
+        )) return false;
+        return true;
     }
 }

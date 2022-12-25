@@ -11,7 +11,7 @@ class Coinbase {
     {
         return [
             'coinbase_url' => [
-                'label' => 'Interface Address',
+                'label' => '接口地址',
                 'description' => '',
                 'type' => 'input',
             ],
@@ -31,8 +31,8 @@ class Coinbase {
     public function pay($order) {
 
         $params = [
-            'name' => 'Subscription Package',
-            'description' => 'Order Number ' . $order['trade_no'],
+            'name' => '订阅套餐',
+            'description' => '订单号 ' . $order['trade_no'],
             'pricing_type' => 'fixed_price',
             'local_price' => [
                 'amount' => sprintf('%.2f', $order['total_amount'] / 100),

@@ -19,7 +19,7 @@ class Bind extends Telegram {
         parse_str($subscribeUrl['query'], $query);
         $token = $query['token'];
         if (!$token) {
-            abort(500, 'آدرس اشتراک نامعتبر است');
+            abort(500, 'توکن نامعتبر است');
         }
         $user = User::where('token', $token)->first();
         if (!$user) {

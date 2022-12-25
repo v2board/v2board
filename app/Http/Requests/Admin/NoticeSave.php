@@ -24,10 +24,10 @@ class NoticeSave extends FormRequest
     public function messages()
     {
         return [
-            'title.required' => 'Title cannot be empty',
-            'content.required' => 'Content cannot be empty',
-            'img_url.url' => 'Incorrect image URL format',
-            'tags.array' => 'Incorrect label format'
+            'title.required' => '标题不能为空',
+            'content.required' => '内容不能为空',
+            'img_url.url' => '图片URL格式不正确',
+            'tags.array' => '标签格式不正确'
         ];
     }
 }

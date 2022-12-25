@@ -44,7 +44,8 @@
             logo: '{{$logo}}'
         }
     </script>
-    <script src="/theme/{{$theme}}/assets/i18n/fa-IR.js?v={{$version}}"></script>
+    <script src="/theme/{{$theme}}/assets/i18n/zh-CN.js?v={{$version}}"></script>
+    <script src="/theme/{{$theme}}/assets/i18n/zh-TW.js?v={{$version}}"></script>
     <script src="/theme/{{$theme}}/assets/i18n/en-US.js?v={{$version}}"></script>
     <script src="/theme/{{$theme}}/assets/i18n/ja-JP.js?v={{$version}}"></script>
     <script src="/theme/{{$theme}}/assets/i18n/vi-VN.js?v={{$version}}"></script>
@@ -58,7 +59,6 @@
 <script src="/theme/{{$theme}}/assets/vendors.async.js?v={{$version}}"></script>
 <script src="/theme/{{$theme}}/assets/components.async.js?v={{$version}}"></script>
 <script src="/theme/{{$theme}}/assets/umi.js?v={{$version}}"></script>
-
 @if (file_exists(public_path("/theme/{$theme}/assets/custom.js")))
     <script src="/theme/{{$theme}}/assets/custom.js?v={{$version}}"></script>
 @endif

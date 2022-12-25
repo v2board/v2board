@@ -20,7 +20,7 @@ class ClearUser extends Command
      *
      * @var string
      */
-    protected $description = 'Clear users';
+    protected $description = '清理用户';
 
     /**
      * Create a new command instance.
@@ -45,7 +45,7 @@ class ClearUser extends Command
             ->where('last_login_at', NULL);
         $count = $builder->count();
         if ($builder->delete()) {
-            $this->info("Deleted${count}Users without any data");
+            $this->info("已删除${count}位没有任何数据的用户");
         }
     }
 }

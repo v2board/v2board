@@ -73,7 +73,7 @@ class AlipayF2F {
     {
         $response = Http::get('https://openapi.alipay.com/gateway.do', $this->buildParam())->json();
         $resKey = str_replace('.', '_', $this->method) . '_response';
-        if (!isset($response[$resKey])) throw new \Exception('Request from paypal failed');
+        if (!isset($response[$resKey])) throw new \Exception('从支付宝请求失败');
         $response = $response[$resKey];
         if ($response['msg'] !== 'Success') throw new \Exception($response['sub_msg']);
         $this->response = $response;
@@ -82,7 +82,7 @@ class AlipayF2F {
     public function getQrCodeUrl()
     {
         $response = $this->response;
-        if (!isset($response['qr_code'])) throw new \Exception('Failed to get payment QR code');
+        if (!isset($response['qr_code'])) throw new \Exception('获取付款二维码失败');
         return $response['qr_code'];
     }
 
@@ -112,12 +112,12 @@ class AlipayF2F {
     public function buildQuery($query)
     {
         if (!$query) {
-            throw new \Exception('Parameter construction error');
+            throw new \Exception('参数构造错误');
         }
-        //To sort the parameters
+        //将要 参数 排序
         ksort($query);
 
-        //Reassembly parameters
+        //重新组装参数
         $params = array();
         foreach ($query as $key => $value) {
             $params[] = $key . '=' . $value;
@@ -130,7 +130,7 @@ class AlipayF2F {
     {
         $privateKey = $this->privateKey;
         $p_key = array();
-        //If the private key is 1 line
+        //如果私钥是 1行
         if (!stripos($privateKey, "\n")) {
             $i = 0;
             while ($key_str = substr($privateKey, $i * 64, 64)) {
@@ -141,10 +141,10 @@ class AlipayF2F {
         $privateKey = "-----BEGIN RSA PRIVATE KEY-----\n" . implode("\n", $p_key);
         $privateKey = $privateKey . "\n-----END RSA PRIVATE KEY-----";
 
-        //Private Key
+        //私钥
         $privateId = openssl_pkey_get_private($privateKey, '');
 
-        // Signature
+        // 签名
         $signature = '';
 
         if ("RSA2" == $this->signType) {
@@ -157,7 +157,7 @@ class AlipayF2F {
 
         openssl_free_key($privateId);
 
-        //The encrypted content usually contains special characters, which need to be encoded under
+        //加密后的内容通常含有特殊字符，需要编码转换下
         $signature = base64_encode($signature);
         return $signature;
     }

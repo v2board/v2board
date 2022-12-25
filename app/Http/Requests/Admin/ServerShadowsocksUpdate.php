@@ -22,7 +22,7 @@ class ServerShadowsocksUpdate extends FormRequest
     public function messages()
     {
         return [
-            'show.in' => 'Display status format is incorrect'
+            'show.in' => '显示状态格式不正确'
         ];
     }
 }

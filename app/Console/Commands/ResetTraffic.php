@@ -22,7 +22,7 @@ class ResetTraffic extends Command
      *
      * @var string
      */
-    protected $description = 'Traffic clearing';
+    protected $description = '流量清空';
 
     /**
      * Create a new command instance.

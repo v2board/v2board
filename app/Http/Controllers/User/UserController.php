@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\User\UserTransfer;
 use App\Http\Requests\User\UserUpdate;
 use App\Http\Requests\User\UserChangePassword;
+use App\Services\AuthService;
 use App\Services\UserService;
 use App\Utils\CacheKey;
 use Illuminate\Http\Request;
@@ -18,6 +19,30 @@ use Illuminate\Support\Facades\Cache;
 
 class UserController extends Controller
 {
+    public function getActiveSession(Request $request)
+    {
+        $user = User::find($request->user['id']);
+        if (!$user) {
+            abort(500, __('The user does not exist'));
+        }
+        $authService = new AuthService($user);
+        return response([
+            'data' => $authService->getSessions()
+        ]);
+    }
+
+    public function removeActiveSession(Request $request)
+    {
+        $user = User::find($request->user['id']);
+        if (!$user) {
+            abort(500, __('The user does not exist'));
+        }
+        $authService = new AuthService($user);
+        return response([
+            'data' => $authService->delSession($request->input('session_id'))
+        ]);
+    }
+
     public function checkLogin(Request $request)
     {
         $data = [

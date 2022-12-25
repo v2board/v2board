@@ -2,17 +2,12 @@
 
 namespace App\Services;
 
-use App\Jobs\ServerLogJob;
 use App\Jobs\StatServerJob;
 use App\Jobs\StatUserJob;
 use App\Jobs\TrafficFetchJob;
-use App\Models\InviteCode;
 use App\Models\Order;
 use App\Models\Plan;
-use App\Models\ServerV2ray;
-use App\Models\Ticket;
 use App\Models\User;
-use Illuminate\Support\Facades\DB;
 
 class UserService
 {
@@ -33,9 +28,9 @@ class UserService
         }
         if ((int)$day >= (int)$today) {
             return $day - $today;
-        } else {
-            return $lastDay - $today + $day;
         }
+
+        return $lastDay - $today + $day;
     }
 
     private function calcResetDayByYearFirstDay(): int

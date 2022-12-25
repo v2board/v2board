@@ -25,7 +25,7 @@ class ResetLog extends Command
      *
      * @var string
      */
-    protected $description = 'Clear log';
+    protected $description = '清空日志';
 
     /**
      * Create a new command instance.

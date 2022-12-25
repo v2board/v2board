@@ -60,9 +60,9 @@ class TelegramService {
         $curl->get($this->api . $method . '?' . http_build_query($params));
         $response = $curl->response;
         $curl->close();
-        if (!isset($response->ok)) abort(500, 'Request failed');
+        if (!isset($response->ok)) abort(500, '请求失败');
         if (!$response->ok) {
-            abort(500, 'Error from TG：' . $response->description);
+            abort(500, '来自TG的错误：' . $response->description);
         }
         return $response;
     }

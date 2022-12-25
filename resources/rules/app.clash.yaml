@@ -12,21 +12,21 @@ external-controller: 127.0.0.1:9090
 proxies:
 
 proxy-groups:
-  - { name: "SELECT", type: select, proxies: ["choose automatic", "Failover"] }
-  - { name: "Automatic selection", type: url-test, proxies: [], url: "http://www.gstatic.com/generate_204", interval: 86400 }
-  - { name: "Failover", type: fallback, proxies: [], url: "http://www.gstatic.com/generate_204", interval: 7200 }
+  - { name: "SELECT", type: select, proxies: ["自动选择", "故障转移"] }
+  - { name: "自动选择", type: url-test, proxies: [], url: "http://www.gstatic.com/generate_204", interval: 86400 }
+  - { name: "故障转移", type: fallback, proxies: [], url: "http://www.gstatic.com/generate_204", interval: 7200 }
 
 rules:
-  # custom rules
-  ## You can insert your supplementary custom rules here (please keep the indentation)
+  # 自定义规则
+  ## 您可以在此处插入您补充的自定义规则（请注意保持缩进）
 
-  # Google China Services
+  # Google 中国服务
   - DOMAIN-SUFFIX,services.googleapis.cn,SELECT
   - DOMAIN-SUFFIX,xn--ngstr-lra8j.com,SELECT
 
   # Apple
-  - DOMAIN,safebrowsing.urlsec.qq.com,DIRECT # If you don't trust this service provider or prevent its downloads from consuming excessive bandwidth resources, you can go to Safari settings, turn off the Fraudulent Website Warning feature, and use the REJECT policy.
-  - DOMAIN,safebrowsing.googleapis.com,DIRECT # If you don't trust this service provider or prevent its downloads from consuming excessive bandwidth resources, you can go to Safari settings, turn off the Fraudulent Website Warning feature, and use the REJECT policy.
+  - DOMAIN,safebrowsing.urlsec.qq.com,DIRECT # 如果您并不信任此服务提供商或防止其下载消耗过多带宽资源，可以进入 Safari 设置，关闭 Fraudulent Website Warning 功能，并使用 REJECT 策略。
+  - DOMAIN,safebrowsing.googleapis.com,DIRECT # 如果您并不信任此服务提供商或防止其下载消耗过多带宽资源，可以进入 Safari 设置，关闭 Fraudulent Website Warning 功能，并使用 REJECT 策略。
   - DOMAIN,developer.apple.com,SELECT
   - DOMAIN-SUFFIX,digicert.com,SELECT
   - DOMAIN,ocsp.apple.com,SELECT
@@ -57,9 +57,9 @@ rules:
   - DOMAIN-SUFFIX,apple.com,DIRECT
   - DOMAIN-SUFFIX,apple-cloudkit.com,DIRECT
   - DOMAIN-SUFFIX,apple-mapkit.com,DIRECT
-  # - DOMAIN,e.crashlytics.com,REJECT //Comment This option helps most App developers analyze crash information; if you refuse all crash data statistics and collection, please uncomment #.
+  # - DOMAIN,e.crashlytics.com,REJECT //注释此选项有助于大多数App开发者分析崩溃信息；如果您拒绝一切崩溃数据统计、搜集，请取消 # 注释。
 
-  # Domestic website
+  # 国内网站
   - DOMAIN-SUFFIX,126.com,DIRECT
   - DOMAIN-SUFFIX,126.net,DIRECT
   - DOMAIN-SUFFIX,127.net,DIRECT
@@ -186,7 +186,7 @@ rules:
   - DOMAIN-SUFFIX,zimuzu.tv,DIRECT
   - DOMAIN-SUFFIX,zoho.com,DIRECT
 
-  # Anti-DNS pollution
+  # 抗 DNS 污染
   - DOMAIN-KEYWORD,amazon,SELECT
   - DOMAIN-KEYWORD,google,SELECT
   - DOMAIN-KEYWORD,gmail,SELECT
@@ -202,7 +202,7 @@ rules:
   - DOMAIN-SUFFIX,youtu.be,SELECT
   - DOMAIN-KEYWORD,whatsapp,SELECT
 
-  # Common advertising domain name blocking
+  # 常见广告域名屏蔽
   - DOMAIN-KEYWORD,admarvel,REJECT
   - DOMAIN-KEYWORD,admaster,REJECT
   - DOMAIN-KEYWORD,adsage,REJECT
@@ -231,7 +231,7 @@ rules:
   - DOMAIN-KEYWORD,wlmonitor,REJECT
   - DOMAIN-KEYWORD,zjtoolbar,REJECT
 
-  # foreign website
+  # 国外网站
   - DOMAIN-SUFFIX,9to5mac.com,SELECT
   - DOMAIN-SUFFIX,abpchina.org,SELECT
   - DOMAIN-SUFFIX,adblockplus.org,SELECT
@@ -515,7 +515,7 @@ rules:
   - IP-CIDR6,2001:b28:f23d::/48,SELECT,no-resolve
   - IP-CIDR6,2001:b28:f23f::/48,SELECT,no-resolve
 
-  # Google China services services.googleapis.cn
+  # Google 中国服务 services.googleapis.cn
   - IP-CIDR,120.232.181.162/32,SELECT,no-resolve
   - IP-CIDR,120.241.147.226/32,SELECT,no-resolve
   - IP-CIDR,120.253.253.226/32,SELECT,no-resolve
@@ -548,10 +548,10 @@ rules:
   - IP-CIDR,224.0.0.0/4,DIRECT
   - IP-CIDR6,fe80::/10,DIRECT
 
-  # Remaining unmatched domestic sites
+  # 剩余未匹配的国内网站
   - DOMAIN-SUFFIX,cn,DIRECT
   - DOMAIN-KEYWORD,-cn,DIRECT
 
-  # final rule
+  # 最终规则
   - GEOIP,CN,DIRECT
   - MATCH,SELECT

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en-US">
+<html lang="zh-CN">
 
 <head>
     <meta charset="UTF-8">
-    <title>E-mail verification code</title>
+    <title>邮箱验证码</title>
     <style type="text/css">
         img {
             max-width: 100%;
@@ -125,7 +125,7 @@
                                         <td class="content-block"
                                             style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 16px; color: #4a4a4a; vertical-align: top; margin: 0; padding: 0 0 20px;"
                                             valign="top">
-                                            You are logged in to {{$name}}, please click the link below to log in within 5 minutes. If you have not authorized this login request, please ignore it.
+                                            您正在登入到{{$name}}, 请在 5 分钟内点击下方链接进行登入。如果您未授权该登入请求，请无视。
                                         </td>
                                     </tr>
                                     <tr
@@ -141,7 +141,7 @@
                                         <td class="content-block"
                                             style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 12px; color: #757575; vertical-align: top; margin: 0; padding: 0 0 20px;"
                                             valign="top">
-                                            (This email is sent automatically by the system, please do not reply directly)
+                                            (本邮件由系统自动发出，请勿直接回复)
                                         </td>
                                     </tr>
                                     <tr
@@ -151,7 +151,7 @@
                                             valign="top">
                                             <a href="{{$url}}"
                                                 class="btn-primary"
-                                                style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; color: #fff; text-decoration: none; line-height: 2em; font-weight: bold; text-align: center; cursor: pointer; display: inline-block; border-radius: 5px; text-transform: capitalize; background-color: #0073ba; margin: 0; border-color: #0073ba; border-style: solid; border-width: 8px 20px;">Log in {{$name}}</a>
+                                                style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; color: #fff; text-decoration: none; line-height: 2em; font-weight: bold; text-align: center; cursor: pointer; display: inline-block; border-radius: 5px; text-transform: capitalize; background-color: #0073ba; margin: 0; border-color: #0073ba; border-style: solid; border-width: 8px 20px;">登录 {{$name}}</a>
                                         </td>
                                     </tr>
                                 </table>
@@ -176,9 +176,9 @@
                                     style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 12px; vertical-align: top; color: #999; text-align: center; margin: 0; padding: 0 0 20px;"
                                     align="center" valign="top">
                                     <a href="{{$url}}/#/subscribe"
-                                        style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 12px; color: #999; text-decoration: none; margin: 0;">My Subscriptions</a> |
+                                        style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 12px; color: #999; text-decoration: none; margin: 0;">我的订阅</a> |
                                     <a href="{{$url}}/#/knowledge"
-                                        style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 12px; color: #999; text-decoration: none; margin: 0;">Tutorials</a>
+                                        style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 12px; color: #999; text-decoration: none; margin: 0;">使用教程</a>
                                 </td>
                             </tr>
                         </table>

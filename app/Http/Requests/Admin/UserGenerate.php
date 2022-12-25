@@ -26,8 +26,8 @@ class UserGenerate extends FormRequest
     public function messages()
     {
         return [
-            'generate_count.integer' => 'Generated quantity must be numeric',
-            'generate_count.max' => 'The maximum number of generated is 500'
+            'generate_count.integer' => '生成数量必须为数字',
+            'generate_count.max' => '生成数量最大为500个'
         ];
     }
 }
