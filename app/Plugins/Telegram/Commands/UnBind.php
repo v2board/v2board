@@ -7,20 +7,20 @@ use App\Plugins\Telegram\Telegram;
 
 class UnBind extends Telegram {
     public $command = '/unbind';
-    public $description = 'Unbundle your Telegram account from the website';
+    public $description = '将Telegram账号从网站解绑';
 
     public function handle($message, $match = []) {
         if (!$message->is_private) return;
         $user = User::where('telegram_id', $message->chat_id)->first();
         $telegramService = $this->telegramService;
         if (!$user) {
-            $telegramService->sendMessage($message->chat_id, 'اطلاعات کاربری شما در دسترس نیست، لطفا ابتدا حساب خود را متصل کنید', 'markdown');
+            $telegramService->sendMessage($message->chat_id, '没有查询到您的用户信息，请先绑定账号', 'markdown');
             return;
         }
         $user->telegram_id = NULL;
         if (!$user->save()) {
-            abort(500, 'قطع اتصال انجام نشد');
+            abort(500, '解绑失败');
         }
-        $telegramService->sendMessage($message->chat_id, 'قطع اتصال  به ربات تلگرام با موفقیت انجام شد', 'markdown');
+        $telegramService->sendMessage($message->chat_id, '解绑成功', 'markdown');
     }
 }
