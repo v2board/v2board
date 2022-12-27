@@ -19,7 +19,7 @@ class CheckTicket extends Command
      *
      * @var string
      */
-    protected $description = '工单检查任务';
+    protected $description = 'ticket inspection tasks';
 
     /**
      * Create a new command instance.
