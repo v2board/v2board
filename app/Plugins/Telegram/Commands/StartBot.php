@@ -12,7 +12,12 @@ class StartBot extends Telegram {
     public function handle($message, $match = []) {
         $telegramService = $this->telegramService;
         $text = sprintf(
-            "Welcome to the bot"
+            "Welcome to the bot
+start - start
+bind - Bind your Telegram account to the website
+getlatesturl - Get Url Active From Site
+traffic - Check traffic information
+unbind - Unbundle your Telegram account from the website"
         );
         $telegramService->sendMessage($message->chat_id, $text, 'markdown');
     }
