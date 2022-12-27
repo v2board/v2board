@@ -23,7 +23,7 @@ class ResetUser extends Command
      *
      * @var string
      */
-    protected $description = '重置所有用户信息';
+    protected $description = 'Reset all user information';
 
     /**
      * Create a new command instance.
@@ -42,7 +42,7 @@ class ResetUser extends Command
      */
     public function handle()
     {
-        if (!$this->confirm("确定要重置所有用户安全信息吗？")) {
+        if (!$this->confirm("Sure you want to reset all user security information?")) {
             return;
         }
         ini_set('memory_limit', -1);
@@ -52,7 +52,7 @@ class ResetUser extends Command
             $user->token = Helper::guid();
             $user->uuid = Helper::guid(true);
             $user->save();
-            $this->info("已重置用户{$user->email}的安全信息");
+            $this->info("Reset User{$user->email}Security Information");
         }
     }
 }

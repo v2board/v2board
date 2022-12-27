@@ -22,7 +22,7 @@ class SendRemindMail extends Command
      *
      * @var string
      */
-    protected $description = '发送提醒邮件';
+    protected $description = 'Send reminder e-mails';
 
     /**
      * Create a new command instance.
