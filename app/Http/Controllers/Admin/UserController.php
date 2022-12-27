@@ -158,11 +158,11 @@ class UserController extends Controller
             $balance = $user['balance'] / 100;
             $commissionBalance = $user['commission_balance'] / 100;
             $transferEnable = $user['transfer_enable'] ? $user['transfer_enable'] / 1073741824 : 0;
-            $tUseFlow = (($user['u'] + $user['d']) / 1073741824) ?? 0;
+            $UseFlow = (($user['u'] + $user['d']) / 1073741824) ?? 0;
             $notUseFlow = (($user['transfer_enable'] - ($user['u'] + $user['d'])) / 1073741824) ?? 0;
             $planName = $user['plan_name'] ?? 'No subscriptions';
             $subscribeUrl = Helper::getSubscribeUrl('/api/v1/client/subscribe?token=' . $user['token']);
-            $data .= "{$user['email']},{$balance},{$commissionBalance},{$transferEnable},{$tUseFlow},{$notUseFlow},{$expireDate},{$planName},{$subscribeUrl}\r\n";
+            $data .= "{$user['email']},{$balance},{$commissionBalance},{$transferEnable},{$UseFlow},{$notUseFlow},{$expireDate},{$planName},{$subscribeUrl}\r\n";
         }
         echo "\xEF\xBB\xBF" . $data;
     }
