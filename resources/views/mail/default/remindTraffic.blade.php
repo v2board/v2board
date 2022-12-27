@@ -12,14 +12,14 @@
                         </thead>
                         <tbody>
                         <tr style="padding:40px 40px 0 40px;display:table-cell">
-                            <td style="font-size:24px;line-height:1.5;color:#000;margin-top:40px">流量通知</td>
+                            <td style="font-size:24px;line-height:1.5;color:#000;margin-top:40px">Traffic Notification</td>
                         </tr>
                         <tr>
                             <td style="font-size:14px;color:#333;padding:24px 40px 0 40px">
-                                尊敬的用户您好！
+                                Hello, Dear User！
                                 <br />
                                 <br />
-                                你的流量已经使用80%。为了不造成使用上的影响请合理安排流量的使用。
+                                You have used 80% of your traffic. Please arrange your traffic usage wisely in order not to cause usage disruptions.
                             </td>
                         </tr>
                         <tr style="padding:40px;display:table-cell">
@@ -31,7 +31,7 @@
                     <table width="100%" border="0" cellspacing="0" cellpadding="0">
                         <tbody>
                         <tr>
-                            <td style="padding:20px 40px;font-size:12px;color:#999;line-height:20px;background:#f7f7f7"><a href="{{$url}}" style="font-size:14px;color:#929292">返回{{$name}}</a></td>
+                            <td style="padding:20px 40px;font-size:12px;color:#999;line-height:20px;background:#f7f7f7"><a href="{{$url}}" style="font-size:14px;color:#929292">{{$name}}</a></td>
                         </tr>
                         </tbody>
                     </table>
