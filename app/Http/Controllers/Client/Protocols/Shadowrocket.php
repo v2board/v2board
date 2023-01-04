@@ -78,7 +78,7 @@ class Shadowrocket
             $config['tls'] = 1;
             if ($server['tlsSettings']) {
                 $tlsSettings = $server['tlsSettings'];
-                if (isset($server['type'] === '1' && $tlsSettings['xtls']) && !empty($tlsSettings['xtls']))
+                if ($server['type'] === '1' && isset($tlsSettings['xtls']) && !empty($tlsSettings['xtls']))
                     $config['xtls'] = (int)$tlsSettings['xtls'];
                 if (isset($tlsSettings['allowInsecure']) && !empty($tlsSettings['allowInsecure']))
                     $config['allowInsecure'] = (int)$tlsSettings['allowInsecure'];
@@ -110,11 +110,12 @@ class Shadowrocket
             }
         }
         $query = http_build_query($config, '', '&', PHP_QUERY_RFC3986);
-        if ($server['type'] === '1')
+        if ($server['type'] === '1') {
             $uri = "vless://";
-        else
+        } else {
             $uri = "vmess://";
-        $uri = $uri . "{$userinfo}?{$query}";
+        }
+        $uri .= "{$userinfo}?{$query}";
         $uri .= "\r\n";
         return $uri;
     }
