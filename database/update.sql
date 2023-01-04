@@ -642,3 +642,6 @@ CREATE TABLE `v2_server_route` (
 
 ALTER TABLE `v2_server_route`
     CHANGE `match` `match` text COLLATE 'utf8mb4_general_ci' NOT NULL AFTER `remarks`;
+
+ALTER TABLE `v2_server_v2ray`
+    ADD `protocol` tinyint(1) COLLATE 'utf8mb4_general_ci' NOT NULL DEFAULT '0' AFTER `server_port`;
