@@ -103,6 +103,7 @@ class ServerService
         array_multisort($tmp, SORT_ASC, $servers);
         $servers = array_map(function ($server) {
             $server['port'] = (int)$server['port'];
+            $server['is_online'] = (time() - 300 > $server['last_check_at']) ? 0 : 1;
             return $server;
         }, $servers);
         return $servers;
