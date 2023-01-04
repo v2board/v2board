@@ -104,6 +104,7 @@ class ServerService
         $servers = array_map(function ($server) {
             $server['port'] = (int)$server['port'];
             $server['is_online'] = (time() - 300 > $server['last_check_at']) ? 0 : 1;
+            $server['cache_key'] = "{$server['type']}-{$server['id']}-{$server['updated_at']}-{$server['is_online']}";
             return $server;
         }, $servers);
         return $servers;
