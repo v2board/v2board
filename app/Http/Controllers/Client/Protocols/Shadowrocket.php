@@ -71,9 +71,8 @@ class Shadowrocket
             'tfo' => 1,
             'remark' => $server['name']
         ];
-        if ($server['type'] === '0') {
+        if ($server['type'] === '0')
             $config['alterId'] = 0;
-        }
         if ($server['tls']) {
             $config['tls'] = 1;
             if ($server['tlsSettings']) {
@@ -110,11 +109,10 @@ class Shadowrocket
             }
         }
         $query = http_build_query($config, '', '&', PHP_QUERY_RFC3986);
-        if ($server['type'] === '1') {
+        if ($server['type'] === '1')
             $uri = "vless://";
-        } else {
+        else
             $uri = "vmess://";
-        }
         $uri .= "{$userinfo}?{$query}";
         $uri .= "\r\n";
         return $uri;
