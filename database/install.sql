@@ -262,7 +262,7 @@ CREATE TABLE `v2_server_v2ray` (
                                    `host` varchar(255) NOT NULL,
                                    `port` varchar(11) NOT NULL,
                                    `server_port` int(11) NOT NULL,
-                                   `type` tinyint(1) NOT NULL DEFAULT '0',
+                                   `protocol` tinyint(1) NOT NULL DEFAULT '0',
                                    `tls` tinyint(4) NOT NULL DEFAULT '0',
                                    `tags` varchar(255) DEFAULT NULL,
                                    `rate` varchar(11) NOT NULL,
