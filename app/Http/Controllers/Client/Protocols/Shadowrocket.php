@@ -71,13 +71,13 @@ class Shadowrocket
             'tfo' => 1,
             'remark' => $server['name']
         ];
-        if ($server['protocol'] === 0)
+        if ($server['protocol'] === 'vmess')
             $config['alterId'] = 0;
         if ($server['tls']) {
             $config['tls'] = 1;
             if ($server['tlsSettings']) {
                 $tlsSettings = $server['tlsSettings'];
-                if ($server['protocol'] === 1 && isset($tlsSettings['xtls']) && !empty($tlsSettings['xtls']))
+                if ($server['protocol'] === 'vless' && isset($tlsSettings['xtls']) && !empty($tlsSettings['xtls']))
                     $config['xtls'] = (int)$tlsSettings['xtls'];
                 if (isset($tlsSettings['allowInsecure']) && !empty($tlsSettings['allowInsecure']))
                     $config['allowInsecure'] = (int)$tlsSettings['allowInsecure'];
@@ -109,11 +109,7 @@ class Shadowrocket
             }
         }
         $query = http_build_query($config, '', '&', PHP_QUERY_RFC3986);
-        if ($server['protocol'] === 1)
-            $uri = "vless://";
-        else
-            $uri = "vmess://";
-        $uri .= "{$userinfo}?{$query}";
+        $uri = $server['protocol'] . "://{$userinfo}?{$query}";
         $uri .= "\r\n";
         return $uri;
     }
