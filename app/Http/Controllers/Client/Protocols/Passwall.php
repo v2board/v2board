@@ -23,7 +23,7 @@ class Passwall
 
         foreach ($servers as $item) {
             if ($item['type'] === 'v2ray') {
-                $uri .= self::buildVmess($user['uuid'], $item);
+                $uri .= self::buildV2ray($user['uuid'], $item);
             }
             if ($item['type'] === 'shadowsocks') {
                 $uri .= self::buildShadowsocks($user['uuid'], $item);
@@ -46,7 +46,7 @@ class Passwall
         return "ss://{$str}@{$server['host']}:{$server['port']}#{$name}\r\n";
     }
 
-    public static function buildVmess($uuid, $server)
+    public static function buildV2ray($uuid, $server)
     {
         $config = [
             "v" => "2",
@@ -54,13 +54,14 @@ class Passwall
             "add" => $server['host'],
             "port" => (string)$server['port'],
             "id" => $uuid,
-            "aid" => '0',
             "net" => $server['network'],
             "type" => "none",
             "host" => "",
             "path" => "",
             "tls" => $server['tls'] ? "tls" : "",
         ];
+        if ($server['protocol'] === 'vmess')
+            $config['aid'] = '0';
         if ($server['tls']) {
             if ($server['tlsSettings']) {
                 $tlsSettings = $server['tlsSettings'];
@@ -77,7 +78,7 @@ class Passwall
             $grpcSettings = $server['networkSettings'];
             if (isset($grpcSettings['serviceName'])) $config['path'] = $grpcSettings['serviceName'];
         }
-        return "vmess://" . base64_encode(json_encode($config)) . "\r\n";
+        return $server['protocol'] . "://" . base64_encode(json_encode($config)) . "\r\n";
     }
 
     public static function buildTrojan($password, $server)

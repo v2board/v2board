@@ -41,7 +41,7 @@ class ClashMeta
                 array_push($proxies, $item['name']);
             }
             if ($item['type'] === 'v2ray') {
-                array_push($proxy, self::buildVmess($user['uuid'], $item));
+                array_push($proxy, self::buildV2ray($user['uuid'], $item));
                 array_push($proxies, $item['name']);
             }
             if ($item['type'] === 'trojan') {
@@ -101,15 +101,16 @@ class ClashMeta
         return $array;
     }
 
-    public static function buildVmess($uuid, $server)
+    public static function buildV2ray($uuid, $server)
     {
         $array = [];
         $array['name'] = $server['name'];
-        $array['type'] = 'vmess';
+        $array['type'] = $server['protocol'];
         $array['server'] = $server['host'];
         $array['port'] = $server['port'];
         $array['uuid'] = $uuid;
-        $array['alterId'] = 0;
+        if ($server['protocol'] === 'vmess')
+            $array['alterId'] = 0;
         $array['cipher'] = 'auto';
         $array['udp'] = true;
 
@@ -117,6 +118,8 @@ class ClashMeta
             $array['tls'] = true;
             if ($server['tlsSettings']) {
                 $tlsSettings = $server['tlsSettings'];
+                if ($server['protocol'] === 'vless' && isset($tlsSettings['xtls']) && !empty($tlsSettings['xtls']))
+                    $array['xtls'] = ($tlsSettings['xtls'] ? true : false);
                 if (isset($tlsSettings['allowInsecure']) && !empty($tlsSettings['allowInsecure']))
                     $array['skip-cert-verify'] = ($tlsSettings['allowInsecure'] ? true : false);
                 if (isset($tlsSettings['serverName']) && !empty($tlsSettings['serverName']))

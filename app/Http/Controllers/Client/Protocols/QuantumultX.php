@@ -26,7 +26,7 @@ class QuantumultX
                 $uri .= self::buildShadowsocks($user['uuid'], $item);
             }
             if ($item['type'] === 'v2ray') {
-                $uri .= self::buildVmess($user['uuid'], $item);
+                $uri .= self::buildV2ray($user['uuid'], $item);
             }
             if ($item['type'] === 'trojan') {
                 $uri .= self::buildTrojan($user['uuid'], $item);
@@ -51,10 +51,10 @@ class QuantumultX
         return $uri;
     }
 
-    public static function buildVmess($uuid, $server)
+    public static function buildV2ray($uuid, $server)
     {
         $config = [
-            "vmess={$server['host']}:{$server['port']}",
+            $server['protocol'] . "={$server['host']}:{$server['port']}",
             'method=chacha20-poly1305',
             "password={$uuid}",
             'fast-open=true',
@@ -67,6 +67,8 @@ class QuantumultX
                 array_push($config, 'obfs=over-tls');
             if ($server['tlsSettings']) {
                 $tlsSettings = $server['tlsSettings'];
+                if ($server['protocol'] === 'vless' && isset($tlsSettings['xtls']) && !empty($tlsSettings['xtls']))
+                    array_push($config, 'xtls=' . ($tlsSettings['xtls'] ? 'false' : 'true'));
                 if (isset($tlsSettings['allowInsecure']) && !empty($tlsSettings['allowInsecure']))
                     array_push($config, 'tls-verification=' . ($tlsSettings['allowInsecure'] ? 'false' : 'true'));
                 if (isset($tlsSettings['serverName']) && !empty($tlsSettings['serverName']))
