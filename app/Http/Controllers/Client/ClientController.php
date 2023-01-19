@@ -40,6 +40,7 @@ class ClientController extends Controller
 
     private function setSubscribeInfoToServers(&$servers, $user)
     {
+        if (!isset($servers[0])) return;
         if (!(int)config('v2board.show_info_to_server_enable', 0)) return;
         $useTraffic = round($user['u'] / (1024*1024*1024), 2) + round($user['d'] / (1024*1024*1024), 2);
         $totalTraffic = round($user['transfer_enable'] / (1024*1024*1024), 2);
