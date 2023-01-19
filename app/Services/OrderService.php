@@ -184,41 +184,26 @@ class OrderService
         $order->surplus_order_ids = array_column($orderModel->get()->toArray(), 'id');
     }
 
-    private function orderIsUsed(Order $order):bool
-    {
-        $month = self::STR_TO_TIME[$order->period];
-        $orderExpireDay = strtotime('+' . $month . ' month', $order->created_at);
-        if ($orderExpireDay < time()) return true;
-        return false;
-    }
-
     private function getSurplusValueByPeriod(User $user, Order $order)
     {
         $orderModel = Order::where('user_id', $user->id)
             ->where('period', '!=', 'reset_price')
             ->where('status', 3);
         $orders = $orderModel->get();
-        $orderSurplusMonth = 0;
-        $orderSurplusAmount = 0;
-        $userSurplusMonth = ($user->expired_at - time()) / 2678400;
+        $orderAmountSum = 0;
+        $orderMonthSum = 0;
         foreach ($orders as $k => $item) {
-            // 兼容历史余留问题
             if ($item->period === 'onetime_price') continue;
-            if ($this->orderIsUsed($item)) continue;
-            $orderSurplusMonth = $orderSurplusMonth + self::STR_TO_TIME[$item->period];
-            $orderSurplusAmount = $orderSurplusAmount + ($item['total_amount'] + $item['balance_amount'] + $item['surplus_amount'] - $item['refund_amount']);
+            $orderMonthSum = self::STR_TO_TIME[$item->period] + $orderMonthSum;
+            $orderAmountSum = $orderAmountSum + ($item['total_amount'] + $item['balance_amount'] + $item['surplus_amount'] - $item['refund_amount']);
         }
-        if (!$orderSurplusMonth || !$orderSurplusAmount) return;
-        $monthUnitPrice = $orderSurplusAmount / $orderSurplusMonth;
-        // 如果用户过期月大于订单过期月
-        if ($userSurplusMonth > $orderSurplusMonth) {
-            $orderSurplusAmount = $orderSurplusMonth * $monthUnitPrice;
-        } else {
-            $orderSurplusAmount = $userSurplusMonth * $monthUnitPrice;
-        }
-        if (!$orderSurplusAmount) {
-            return;
-        }
+        $expiredAtByOrder = strtotime("+{$orderMonthSum} month", $orders[0]->created_at);
+        if ($expiredAtByOrder < time()) return;
+        $orderSurplusSecond = $expiredAtByOrder - time();
+        $orderRangeSecond = $expiredAtByOrder - $orders[0]->created_at;
+        $avgPrice = $orderAmountSum / $orderRangeSecond;
+        $orderSurplusAmount = $avgPrice * $orderSurplusSecond;
+        if (!$orderSurplusSecond || !$orderSurplusAmount) return;
         $order->surplus_amount = $orderSurplusAmount > 0 ? $orderSurplusAmount : 0;
         $order->surplus_order_ids = array_column($orders->toArray(), 'id');
     }
