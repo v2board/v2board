@@ -186,27 +186,28 @@ class OrderService
 
     private function getSurplusValueByPeriod(User $user, Order $order)
     {
-        $orderModel = Order::where('user_id', $user->id)
+        $orders = Order::where('user_id', $user->id)
             ->where('period', '!=', 'reset_price')
-            ->where('status', 3);
-        $orders = $orderModel->get();
+            ->where('status', 3)
+            ->get()
+            ->toArray();
         if (!$orders) return;
         $orderAmountSum = 0;
         $orderMonthSum = 0;
-        foreach ($orders as $k => $item) {
-            if ($item->period === 'onetime_price') continue;
-            $orderMonthSum = self::STR_TO_TIME[$item->period] + $orderMonthSum;
+        foreach ($orders as $item) {
+            if ($item['period'] === 'onetime_price') continue;
+            $orderMonthSum = self::STR_TO_TIME[$item['period']] + $orderMonthSum;
             $orderAmountSum = $orderAmountSum + ($item['total_amount'] + $item['balance_amount'] + $item['surplus_amount'] - $item['refund_amount']);
         }
-        $expiredAtByOrder = strtotime("+{$orderMonthSum} month", $orders[0]->created_at);
+        $expiredAtByOrder = strtotime("+{$orderMonthSum} month", $orders[0]['created_at']);
         if ($expiredAtByOrder < time()) return;
         $orderSurplusSecond = $expiredAtByOrder - time();
-        $orderRangeSecond = $expiredAtByOrder - $orders[0]->created_at;
+        $orderRangeSecond = $expiredAtByOrder - $orders[0]['created_at'];
         $avgPrice = $orderAmountSum / $orderRangeSecond;
         $orderSurplusAmount = $avgPrice * $orderSurplusSecond;
         if (!$orderSurplusSecond || !$orderSurplusAmount) return;
         $order->surplus_amount = $orderSurplusAmount > 0 ? $orderSurplusAmount : 0;
-        $order->surplus_order_ids = array_column($orders->toArray(), 'id');
+        $order->surplus_order_ids = array_column($orders, 'id');
     }
 
     public function paid(string $callbackNo)
