@@ -190,6 +190,7 @@ class OrderService
             ->where('period', '!=', 'reset_price')
             ->where('status', 3);
         $orders = $orderModel->get();
+        if (!$orders) return;
         $orderAmountSum = 0;
         $orderMonthSum = 0;
         foreach ($orders as $k => $item) {
