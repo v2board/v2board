@@ -25,8 +25,7 @@ class ServerService
         $v2ray = $model->get();
         for ($i = 0; $i < count($v2ray); $i++) {
             $v2ray[$i]['type'] = 'v2ray';
-            $groupId = $v2ray[$i]['group_id'];
-            if (!in_array($user->group_id, $groupId)) continue;
+            if (!in_array($user->group_id, $v2ray[$i]['group_id'])) continue;
             if (strpos($v2ray[$i]['port'], '-') !== false) {
                 $v2ray[$i]['port'] = Helper::randomPort($v2ray[$i]['port']);
             }
@@ -35,7 +34,7 @@ class ServerService
             } else {
                 $v2ray[$i]['last_check_at'] = Cache::get(CacheKey::get('SERVER_V2RAY_LAST_CHECK_AT', $v2ray[$i]['id']));
             }
-            array_push($servers, $v2ray[$i]->toArray());
+            $servers[] = $v2ray[$i]->toArray();
         }
 
 
@@ -52,8 +51,7 @@ class ServerService
         $trojan = $model->get();
         for ($i = 0; $i < count($trojan); $i++) {
             $trojan[$i]['type'] = 'trojan';
-            $groupId = $trojan[$i]['group_id'];
-            if (!in_array($user->group_id, $groupId)) continue;
+            if (!in_array($user->group_id, $trojan[$i]['group_id'])) continue;
             if (strpos($trojan[$i]['port'], '-') !== false) {
                 $trojan[$i]['port'] = Helper::randomPort($trojan[$i]['port']);
             }
@@ -62,7 +60,7 @@ class ServerService
             } else {
                 $trojan[$i]['last_check_at'] = Cache::get(CacheKey::get('SERVER_TROJAN_LAST_CHECK_AT', $trojan[$i]['id']));
             }
-            array_push($servers, $trojan[$i]->toArray());
+            $servers[] = $trojan[$i]->toArray();
         }
         return $servers;
     }
@@ -74,20 +72,20 @@ class ServerService
         if (!$all) {
             $model->where('show', 1);
         }
-        $shadowsocks = $model->get();
-        for ($i = 0; $i < count($shadowsocks); $i++) {
-            $shadowsocks[$i]['type'] = 'shadowsocks';
-            $groupId = $shadowsocks[$i]['group_id'];
-            if (!in_array($user->group_id, $groupId)) continue;
-            if (strpos($shadowsocks[$i]['port'], '-') !== false) {
-                $shadowsocks[$i]['port'] = Helper::randomPort($shadowsocks[$i]['port']);
+        $shadowsocks = $model->get()->keyBy('id');
+        foreach ($shadowsocks as $key => $v) {
+            $shadowsocks[$key]['type'] = 'shadowsocks';
+            if (!in_array($user->group_id, $v['group_id'])) continue;
+            if (strpos($v['port'], '-') !== false) {
+                $shadowsocks[$key]['port'] = Helper::randomPort($v['port']);
             }
-            if ($shadowsocks[$i]['parent_id']) {
-                $shadowsocks[$i]['last_check_at'] = Cache::get(CacheKey::get('SERVER_SHADOWSOCKS_LAST_CHECK_AT', $shadowsocks[$i]['parent_id']));
+            if ($v['parent_id']) {
+                $shadowsocks[$key]['last_check_at'] = Cache::get(CacheKey::get('SERVER_SHADOWSOCKS_LAST_CHECK_AT', $v['parent_id']));
+                $shadowsocks[$key]['created_at'] = $shadowsocks[$v['parent_id']]['created_at'];
             } else {
-                $shadowsocks[$i]['last_check_at'] = Cache::get(CacheKey::get('SERVER_SHADOWSOCKS_LAST_CHECK_AT', $shadowsocks[$i]['id']));
+                $shadowsocks[$key]['last_check_at'] = Cache::get(CacheKey::get('SERVER_SHADOWSOCKS_LAST_CHECK_AT', $v['id']));
             }
-            array_push($servers, $shadowsocks[$i]->toArray());
+            $servers[] = $shadowsocks[$key]->toArray();
         }
         return $servers;
     }
@@ -101,13 +99,12 @@ class ServerService
         );
         $tmp = array_column($servers, 'sort');
         array_multisort($tmp, SORT_ASC, $servers);
-        $servers = array_map(function ($server) {
+        return array_map(function ($server) {
             $server['port'] = (int)$server['port'];
             $server['is_online'] = (time() - 300 > $server['last_check_at']) ? 0 : 1;
             $server['cache_key'] = "{$server['type']}-{$server['id']}-{$server['updated_at']}-{$server['is_online']}";
             return $server;
         }, $servers);
-        return $servers;
     }
 
     public function getAvailableUsers($groupId)
