@@ -18,21 +18,21 @@ class ServerService
     public function getAvailableV2ray(User $user):array
     {
         $servers = [];
-        $model = ServerV2ray::orderBy('sort', 'ASC')
-            ->where('show', 1);
+        $model = ServerV2ray::orderBy('sort', 'ASC');
         $v2ray = $model->get();
-        for ($i = 0; $i < count($v2ray); $i++) {
-            $v2ray[$i]['type'] = 'v2ray';
-            if (!in_array($user->group_id, $v2ray[$i]['group_id'])) continue;
-            if (strpos($v2ray[$i]['port'], '-') !== false) {
-                $v2ray[$i]['port'] = Helper::randomPort($v2ray[$i]['port']);
+        foreach ($v2ray as $key => $v) {
+            if (!$v['show']) continue;
+            $v2ray[$key]['type'] = 'v2ray';
+            if (!in_array($user->group_id, $v2ray[$key]['group_id'])) continue;
+            if (strpos($v2ray[$key]['port'], '-') !== false) {
+                $v2ray[$key]['port'] = Helper::randomPort($v2ray[$key]['port']);
             }
-            if ($v2ray[$i]['parent_id']) {
-                $v2ray[$i]['last_check_at'] = Cache::get(CacheKey::get('SERVER_V2RAY_LAST_CHECK_AT', $v2ray[$i]['parent_id']));
+            if ($v2ray[$key]['parent_id']) {
+                $v2ray[$key]['last_check_at'] = Cache::get(CacheKey::get('SERVER_V2RAY_LAST_CHECK_AT', $v2ray[$key]['parent_id']));
             } else {
-                $v2ray[$i]['last_check_at'] = Cache::get(CacheKey::get('SERVER_V2RAY_LAST_CHECK_AT', $v2ray[$i]['id']));
+                $v2ray[$key]['last_check_at'] = Cache::get(CacheKey::get('SERVER_V2RAY_LAST_CHECK_AT', $v2ray[$key]['id']));
             }
-            $servers[] = $v2ray[$i]->toArray();
+            $servers[] = $v2ray[$key]->toArray();
         }
 
 
@@ -42,21 +42,21 @@ class ServerService
     public function getAvailableTrojan(User $user):array
     {
         $servers = [];
-        $model = ServerTrojan::orderBy('sort', 'ASC')
-            ->where('show', 1);
+        $model = ServerTrojan::orderBy('sort', 'ASC');
         $trojan = $model->get();
-        for ($i = 0; $i < count($trojan); $i++) {
-            $trojan[$i]['type'] = 'trojan';
-            if (!in_array($user->group_id, $trojan[$i]['group_id'])) continue;
-            if (strpos($trojan[$i]['port'], '-') !== false) {
-                $trojan[$i]['port'] = Helper::randomPort($trojan[$i]['port']);
+        foreach ($trojan as $key => $v) {
+            if (!$v['show']) continue;
+            $trojan[$key]['type'] = 'trojan';
+            if (!in_array($user->group_id, $trojan[$key]['group_id'])) continue;
+            if (strpos($trojan[$key]['port'], '-') !== false) {
+                $trojan[$key]['port'] = Helper::randomPort($trojan[$key]['port']);
             }
-            if ($trojan[$i]['parent_id']) {
-                $trojan[$i]['last_check_at'] = Cache::get(CacheKey::get('SERVER_TROJAN_LAST_CHECK_AT', $trojan[$i]['parent_id']));
+            if ($trojan[$key]['parent_id']) {
+                $trojan[$key]['last_check_at'] = Cache::get(CacheKey::get('SERVER_TROJAN_LAST_CHECK_AT', $trojan[$key]['parent_id']));
             } else {
-                $trojan[$i]['last_check_at'] = Cache::get(CacheKey::get('SERVER_TROJAN_LAST_CHECK_AT', $trojan[$i]['id']));
+                $trojan[$key]['last_check_at'] = Cache::get(CacheKey::get('SERVER_TROJAN_LAST_CHECK_AT', $trojan[$key]['id']));
             }
-            $servers[] = $trojan[$i]->toArray();
+            $servers[] = $trojan[$key]->toArray();
         }
         return $servers;
     }
@@ -64,10 +64,10 @@ class ServerService
     public function getAvailableShadowsocks(User $user)
     {
         $servers = [];
-        $model = ServerShadowsocks::orderBy('sort', 'ASC')
-            ->where('show', 1);
+        $model = ServerShadowsocks::orderBy('sort', 'ASC');
         $shadowsocks = $model->get()->keyBy('id');
         foreach ($shadowsocks as $key => $v) {
+            if (!$v['show']) continue;
             $shadowsocks[$key]['type'] = 'shadowsocks';
             $shadowsocks[$key]['last_check_at'] = Cache::get(CacheKey::get('SERVER_SHADOWSOCKS_LAST_CHECK_AT', $v['id']));
             if (!in_array($user->group_id, $v['group_id'])) continue;
