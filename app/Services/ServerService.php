@@ -15,13 +15,11 @@ use Illuminate\Support\Facades\Cache;
 class ServerService
 {
 
-    public function getV2ray(User $user, $all = false):array
+    public function getAvailableV2ray(User $user):array
     {
         $servers = [];
-        $model = ServerV2ray::orderBy('sort', 'ASC');
-        if (!$all) {
-            $model->where('show', 1);
-        }
+        $model = ServerV2ray::orderBy('sort', 'ASC')
+            ->where('show', 1);
         $v2ray = $model->get();
         for ($i = 0; $i < count($v2ray); $i++) {
             $v2ray[$i]['type'] = 'v2ray';
@@ -41,13 +39,11 @@ class ServerService
         return $servers;
     }
 
-    public function getTrojan(User $user, $all = false):array
+    public function getAvailableTrojan(User $user):array
     {
         $servers = [];
-        $model = ServerTrojan::orderBy('sort', 'ASC');
-        if (!$all) {
-            $model->where('show', 1);
-        }
+        $model = ServerTrojan::orderBy('sort', 'ASC')
+            ->where('show', 1);
         $trojan = $model->get();
         for ($i = 0; $i < count($trojan); $i++) {
             $trojan[$i]['type'] = 'trojan';
@@ -65,37 +61,34 @@ class ServerService
         return $servers;
     }
 
-    public function getShadowsocks(User $user, $all = false)
+    public function getAvailableShadowsocks(User $user)
     {
         $servers = [];
-        $model = ServerShadowsocks::orderBy('sort', 'ASC');
-        if (!$all) {
-            $model->where('show', 1);
-        }
+        $model = ServerShadowsocks::orderBy('sort', 'ASC')
+            ->where('show', 1);
         $shadowsocks = $model->get()->keyBy('id');
         foreach ($shadowsocks as $key => $v) {
             $shadowsocks[$key]['type'] = 'shadowsocks';
+            $shadowsocks[$key]['last_check_at'] = Cache::get(CacheKey::get('SERVER_SHADOWSOCKS_LAST_CHECK_AT', $v['id']));
             if (!in_array($user->group_id, $v['group_id'])) continue;
             if (strpos($v['port'], '-') !== false) {
                 $shadowsocks[$key]['port'] = Helper::randomPort($v['port']);
             }
-            if ($v['parent_id']) {
+            if (isset($shadowsocks[$v['parent_id']])) {
                 $shadowsocks[$key]['last_check_at'] = Cache::get(CacheKey::get('SERVER_SHADOWSOCKS_LAST_CHECK_AT', $v['parent_id']));
                 $shadowsocks[$key]['created_at'] = $shadowsocks[$v['parent_id']]['created_at'];
-            } else {
-                $shadowsocks[$key]['last_check_at'] = Cache::get(CacheKey::get('SERVER_SHADOWSOCKS_LAST_CHECK_AT', $v['id']));
             }
             $servers[] = $shadowsocks[$key]->toArray();
         }
         return $servers;
     }
 
-    public function getAvailableServers(User $user, $all = false)
+    public function getAvailableServers(User $user)
     {
         $servers = array_merge(
-            $this->getShadowsocks($user, $all),
-            $this->getV2ray($user, $all),
-            $this->getTrojan($user, $all)
+            $this->getAvailableShadowsocks($user),
+            $this->getAvailableV2ray($user),
+            $this->getAvailableTrojan($user)
         );
         $tmp = array_column($servers, 'sort');
         array_multisort($tmp, SORT_ASC, $servers);
@@ -156,7 +149,7 @@ class ServerService
         }
     }
 
-    public function getShadowsocksServers()
+    public function getAllShadowsocks()
     {
         $server = ServerShadowsocks::orderBy('sort', 'ASC')->get();
         for ($i = 0; $i < count($server); $i++) {
@@ -165,7 +158,7 @@ class ServerService
         return $server->toArray();
     }
 
-    public function getV2rayServers()
+    public function getAllV2ray()
     {
         $server = ServerV2ray::orderBy('sort', 'ASC')->get();
         for ($i = 0; $i < count($server); $i++) {
@@ -174,7 +167,7 @@ class ServerService
         return $server->toArray();
     }
 
-    public function getTrojanServers()
+    public function getAllTrojan()
     {
         $server = ServerTrojan::orderBy('sort', 'ASC')->get();
         for ($i = 0; $i < count($server); $i++) {
@@ -208,9 +201,9 @@ class ServerService
     public function getAllServers()
     {
         $servers = array_merge(
-            $this->getShadowsocksServers(),
-            $this->getV2rayServers(),
-            $this->getTrojanServers()
+            $this->getAllShadowsocks(),
+            $this->getAllV2ray(),
+            $this->getAllTrojan()
         );
         $this->mergeData($servers);
         $tmp = array_column($servers, 'sort');
