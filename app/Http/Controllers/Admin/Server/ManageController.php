@@ -24,22 +24,22 @@ class ManageController extends Controller
     {
         ini_set('post_max_size', '1m');
         DB::beginTransaction();
-        foreach ($request->input('sorts') as $k => $v) {
+        foreach ($request->input('sorts') ?? [] as $k => $v) {
             switch ($v['key']) {
                 case 'shadowsocks':
-                    if (!ServerShadowsocks::find($v['value'])->update(['sort' => $k + 1])) {
+                    if (!ServerShadowsocks::find($v['value'])->update(['sort' => $v['sort']])) {
                         DB::rollBack();
                         abort(500, '保存失败');
                     }
                     break;
                 case 'v2ray':
-                    if (!ServerV2ray::find($v['value'])->update(['sort' => $k + 1])) {
+                    if (!ServerV2ray::find($v['value'])->update(['sort' => $v['sort']])) {
                         DB::rollBack();
                         abort(500, '保存失败');
                     }
                     break;
                 case 'trojan':
-                    if (!ServerTrojan::find($v['value'])->update(['sort' => $k + 1])) {
+                    if (!ServerTrojan::find($v['value'])->update(['sort' => $v['sort']])) {
                         DB::rollBack();
                         abort(500, '保存失败');
                     }

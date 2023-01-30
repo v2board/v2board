@@ -151,43 +151,44 @@ class ServerService
 
     public function getAllShadowsocks()
     {
-        $server = ServerShadowsocks::orderBy('sort', 'ASC')->get();
-        for ($i = 0; $i < count($server); $i++) {
-            $server[$i]['type'] = 'shadowsocks';
+        $servers = ServerShadowsocks::orderBy('sort', 'ASC')
+            ->get()
+            ->toArray();
+        foreach ($servers as $k => $v) {
+            $servers[$k]['type'] = 'shadowsocks';
         }
-        return $server->toArray();
+        return $servers;
     }
 
     public function getAllV2ray()
     {
-        $server = ServerV2ray::orderBy('sort', 'ASC')->get();
-        for ($i = 0; $i < count($server); $i++) {
-            $server[$i]['type'] = 'v2ray';
+        $servers = ServerV2ray::orderBy('sort', 'ASC')
+            ->get()
+            ->toArray();
+        foreach ($servers as $k => $v) {
+            $servers[$k]['type'] = 'v2ray';
         }
-        return $server->toArray();
+        return $servers;
     }
 
     public function getAllTrojan()
     {
-        $server = ServerTrojan::orderBy('sort', 'ASC')->get();
-        for ($i = 0; $i < count($server); $i++) {
-            $server[$i]['type'] = 'trojan';
+        $servers = ServerTrojan::orderBy('sort', 'ASC')
+            ->get()
+            ->toArray();
+        foreach ($servers as $k => $v) {
+            $servers[$k]['type'] = 'trojan';
         }
-        return $server->toArray();
+        return $servers;
     }
 
     private function mergeData(&$servers)
     {
         foreach ($servers as $k => $v) {
-            $serverType = strtoupper($servers[$k]['type']);
-            $servers[$k]['online'] = Cache::get(CacheKey::get("SERVER_{$serverType}_ONLINE_USER", $servers[$k]['parent_id'] ? $servers[$k]['parent_id'] : $servers[$k]['id']));
-            if ($servers[$k]['parent_id']) {
-                $servers[$k]['last_check_at'] = Cache::get(CacheKey::get("SERVER_{$serverType}_LAST_CHECK_AT", $servers[$k]['parent_id']));
-                $servers[$k]['last_push_at'] = Cache::get(CacheKey::get("SERVER_{$serverType}_LAST_PUSH_AT", $servers[$k]['parent_id']));
-            } else {
-                $servers[$k]['last_check_at'] = Cache::get(CacheKey::get("SERVER_{$serverType}_LAST_CHECK_AT", $servers[$k]['id']));
-                $servers[$k]['last_push_at'] = Cache::get(CacheKey::get("SERVER_{$serverType}_LAST_PUSH_AT", $servers[$k]['id']));
-            }
+            $serverType = strtoupper($v['type']);
+            $servers[$k]['online'] = Cache::get(CacheKey::get("SERVER_{$serverType}_ONLINE_USER", $v['parent_id'] ?? $v['id']));
+            $servers[$k]['last_check_at'] = Cache::get(CacheKey::get("SERVER_{$serverType}_LAST_CHECK_AT", $v['parent_id'] ?? $v['id']));
+            $servers[$k]['last_push_at'] = Cache::get(CacheKey::get("SERVER_{$serverType}_LAST_PUSH_AT", $v['parent_id'] ?? $v['id']));
             if ((time() - 300) >= $servers[$k]['last_check_at']) {
                 $servers[$k]['available_status'] = 0;
             } else if ((time() - 300) >= $servers[$k]['last_push_at']) {
