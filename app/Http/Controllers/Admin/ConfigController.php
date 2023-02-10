@@ -177,7 +177,7 @@ class ConfigController extends Controller
         $data = $request->validated();
         $config = config('v2board');
         foreach (ConfigSave::RULES as $k => $v) {
-            if (!in_array($k, array_keys(ConfigSave::RULES))) {
+            if (!in_array($k, array_keys($data))) {
                 unset($config[$k]);
                 continue;
             }
