@@ -74,7 +74,7 @@ class ClashMeta
             array_unshift($config['rules'], "DOMAIN,{$subsDomain},DIRECT");
         }
 
-        $yaml = Yaml::dump($config);
+        $yaml = Yaml::dump($config, 2, 4, Yaml::DUMP_EMPTY_ARRAY_AS_SEQUENCE);
         $yaml = str_replace('$app_name', config('v2board.app_name', 'V2Board'), $yaml);
         return $yaml;
     }
