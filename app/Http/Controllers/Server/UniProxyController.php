@@ -9,7 +9,7 @@ use App\Utils\Helper;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\ServerShadowsocks;
-use App\Models\ServerV2ray;
+use App\Models\ServerVmess;
 use App\Models\ServerTrojan;
 use Illuminate\Support\Facades\Cache;
 
@@ -30,6 +30,7 @@ class UniProxyController extends Controller
             abort(500, 'token is error');
         }
         $this->nodeType = $request->input('node_type');
+        if ($this->nodeType === 'v2ray') $this->nodeType = 'vmess';
         $this->nodeId = $request->input('node_id');
         $this->serverService = new ServerService();
         $this->nodeInfo = $this->serverService->getServer($this->nodeId, $this->nodeType);
@@ -92,7 +93,7 @@ class UniProxyController extends Controller
                     $response['server_key'] = Helper::getShadowsocksServerKey($this->nodeInfo->created_at, 32);
                 }
                 break;
-            case 'v2ray':
+            case 'vmess':
                 $response = [
                     'server_port' => $this->nodeInfo->server_port,
                     'network' => $this->nodeInfo->network,

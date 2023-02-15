@@ -8,7 +8,7 @@ use App\Utils\CacheKey;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Models\ServerV2ray;
+use App\Models\ServerVmess;
 use App\Models\ServerLog;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -37,11 +37,11 @@ class DeepbworkController extends Controller
     {
         ini_set('memory_limit', -1);
         $nodeId = $request->input('node_id');
-        $server = ServerV2ray::find($nodeId);
+        $server = ServerVmess::find($nodeId);
         if (!$server) {
             abort(500, 'fail');
         }
-        Cache::put(CacheKey::get('SERVER_V2RAY_LAST_CHECK_AT', $server->id), time(), 3600);
+        Cache::put(CacheKey::get('SERVER_VMESS_LAST_CHECK_AT', $server->id), time(), 3600);
         $serverService = new ServerService();
         $users = $serverService->getAvailableUsers($server->group_id);
         $result = [];
@@ -69,7 +69,7 @@ class DeepbworkController extends Controller
     public function submit(Request $request)
     {
 //         Log::info('serverSubmitData:' . $request->input('node_id') . ':' . file_get_contents('php://input'));
-        $server = ServerV2ray::find($request->input('node_id'));
+        $server = ServerVmess::find($request->input('node_id'));
         if (!$server) {
             return response([
                 'ret' => 0,
@@ -78,13 +78,13 @@ class DeepbworkController extends Controller
         }
         $data = file_get_contents('php://input');
         $data = json_decode($data, true);
-        Cache::put(CacheKey::get('SERVER_V2RAY_ONLINE_USER', $server->id), count($data), 3600);
-        Cache::put(CacheKey::get('SERVER_V2RAY_LAST_PUSH_AT', $server->id), time(), 3600);
+        Cache::put(CacheKey::get('SERVER_VMESS_ONLINE_USER', $server->id), count($data), 3600);
+        Cache::put(CacheKey::get('SERVER_VMESS_LAST_PUSH_AT', $server->id), time(), 3600);
         $userService = new UserService();
         foreach ($data as $item) {
             $u = $item['u'];
             $d = $item['d'];
-            $userService->trafficFetch($u, $d, $item['user_id'], $server->toArray(), 'v2ray');
+            $userService->trafficFetch($u, $d, $item['user_id'], $server->toArray(), 'vmess');
         }
 
         return response([
@@ -112,7 +112,7 @@ class DeepbworkController extends Controller
 
     private function getV2RayConfig(int $nodeId, int $localPort)
     {
-        $server = ServerV2ray::find($nodeId);
+        $server = ServerVmess::find($nodeId);
         if (!$server) {
             abort(500, '节点不存在');
         }
@@ -129,7 +129,7 @@ class DeepbworkController extends Controller
         return $json;
     }
 
-    private function setDns(ServerV2ray $server, object $json)
+    private function setDns(ServerVmess $server, object $json)
     {
         if ($server->dnsSettings) {
             $dns = $server->dnsSettings;
@@ -142,7 +142,7 @@ class DeepbworkController extends Controller
         }
     }
 
-    private function setNetwork(ServerV2ray $server, object $json)
+    private function setNetwork(ServerVmess $server, object $json)
     {
         if ($server->networkSettings) {
             switch ($server->network) {
@@ -171,7 +171,7 @@ class DeepbworkController extends Controller
         }
     }
 
-    private function setRule(ServerV2ray $server, object $json)
+    private function setRule(ServerVmess $server, object $json)
     {
         $domainRules = array_filter(explode(PHP_EOL, config('v2board.server_v2ray_domain')));
         $protocolRules = array_filter(explode(PHP_EOL, config('v2board.server_v2ray_protocol')));
@@ -211,7 +211,7 @@ class DeepbworkController extends Controller
         }
     }
 
-    private function setTls(ServerV2ray $server, object $json)
+    private function setTls(ServerVMess $server, object $json)
     {
         if ((int)$server->tls) {
             $tlsSettings = $server->tlsSettings;

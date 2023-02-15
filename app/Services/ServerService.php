@@ -6,7 +6,7 @@ use App\Models\ServerLog;
 use App\Models\ServerRoute;
 use App\Models\ServerShadowsocks;
 use App\Models\User;
-use App\Models\ServerV2ray;
+use App\Models\ServerVmess;
 use App\Models\ServerTrojan;
 use App\Utils\CacheKey;
 use App\Utils\Helper;
@@ -15,24 +15,24 @@ use Illuminate\Support\Facades\Cache;
 class ServerService
 {
 
-    public function getAvailableV2ray(User $user):array
+    public function getAvailableVmess(User $user):array
     {
         $servers = [];
-        $model = ServerV2ray::orderBy('sort', 'ASC');
-        $v2ray = $model->get();
-        foreach ($v2ray as $key => $v) {
+        $model = ServerVmess::orderBy('sort', 'ASC');
+        $vmess = $model->get();
+        foreach ($vmess as $key => $v) {
             if (!$v['show']) continue;
-            $v2ray[$key]['type'] = 'v2ray';
-            if (!in_array($user->group_id, $v2ray[$key]['group_id'])) continue;
-            if (strpos($v2ray[$key]['port'], '-') !== false) {
-                $v2ray[$key]['port'] = Helper::randomPort($v2ray[$key]['port']);
+            $vmess[$key]['type'] = 'vmess';
+            if (!in_array($user->group_id, $vmess[$key]['group_id'])) continue;
+            if (strpos($vmess[$key]['port'], '-') !== false) {
+                $vmess[$key]['port'] = Helper::randomPort($vmess[$key]['port']);
             }
-            if ($v2ray[$key]['parent_id']) {
-                $v2ray[$key]['last_check_at'] = Cache::get(CacheKey::get('SERVER_V2RAY_LAST_CHECK_AT', $v2ray[$key]['parent_id']));
+            if ($vmess[$key]['parent_id']) {
+                $vmess[$key]['last_check_at'] = Cache::get(CacheKey::get('SERVER_VMESS_LAST_CHECK_AT', $vmess[$key]['parent_id']));
             } else {
-                $v2ray[$key]['last_check_at'] = Cache::get(CacheKey::get('SERVER_V2RAY_LAST_CHECK_AT', $v2ray[$key]['id']));
+                $vmess[$key]['last_check_at'] = Cache::get(CacheKey::get('SERVER_VMESS_LAST_CHECK_AT', $vmess[$key]['id']));
             }
-            $servers[] = $v2ray[$key]->toArray();
+            $servers[] = $vmess[$key]->toArray();
         }
 
 
@@ -87,7 +87,7 @@ class ServerService
     {
         $servers = array_merge(
             $this->getAvailableShadowsocks($user),
-            $this->getAvailableV2ray($user),
+            $this->getAvailableVmess($user),
             $this->getAvailableTrojan($user)
         );
         $tmp = array_column($servers, 'sort');
@@ -160,13 +160,13 @@ class ServerService
         return $servers;
     }
 
-    public function getAllV2ray()
+    public function getAllVMess()
     {
-        $servers = ServerV2ray::orderBy('sort', 'ASC')
+        $servers = ServerVmess::orderBy('sort', 'ASC')
             ->get()
             ->toArray();
         foreach ($servers as $k => $v) {
-            $servers[$k]['type'] = 'v2ray';
+            $servers[$k]['type'] = 'vmess';
         }
         return $servers;
     }
@@ -203,7 +203,7 @@ class ServerService
     {
         $servers = array_merge(
             $this->getAllShadowsocks(),
-            $this->getAllV2ray(),
+            $this->getAllVMess(),
             $this->getAllTrojan()
         );
         $this->mergeData($servers);
@@ -227,8 +227,8 @@ class ServerService
     public function getServer($serverId, $serverType)
     {
         switch ($serverType) {
-            case 'v2ray':
-                return ServerV2ray::find($serverId);
+            case 'vmess':
+                return ServerVmess::find($serverId);
             case 'shadowsocks':
                 return ServerShadowsocks::find($serverId);
             case 'trojan':

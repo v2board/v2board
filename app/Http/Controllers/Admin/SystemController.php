@@ -9,7 +9,7 @@ use App\Utils\CacheKey;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\ServerGroup;
-use App\Models\ServerV2ray;
+use App\Models\ServerVmess;
 use App\Models\Plan;
 use App\Models\User;
 use App\Models\Ticket;

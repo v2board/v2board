@@ -8,7 +8,7 @@ use App\Services\UserService;
 use App\Utils\CacheKey;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
-use App\Models\ServerV2ray;
+use App\Models\ServerVmess;
 use App\Models\ServerLog;
 use App\Models\User;
 

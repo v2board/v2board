@@ -642,3 +642,12 @@ CREATE TABLE `v2_server_route` (
 
 ALTER TABLE `v2_server_route`
     CHANGE `match` `match` text COLLATE 'utf8mb4_general_ci' NOT NULL AFTER `remarks`;
+
+ALTER TABLE `v2_order`
+    ADD UNIQUE `trade_no` (`trade_no`);
+
+ALTER TABLE `v2_plan`
+    CHANGE `content` `content` text COLLATE 'utf8mb4_general_ci' NULL AFTER `renew`;
+
+ALTER TABLE `v2_plan`
+    COLLATE 'utf8mb4_general_ci';

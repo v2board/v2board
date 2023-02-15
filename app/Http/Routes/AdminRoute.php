@@ -45,14 +45,14 @@ class AdminRoute
                 $router->post('viewConfig', 'Admin\\Server\\TrojanController@viewConfig');
             });
             $router->group([
-                'prefix' => 'server/v2ray'
+                'prefix' => 'server/vmess'
             ], function ($router) {
-                $router->get ('fetch', 'Admin\\Server\\V2rayController@fetch');
-                $router->post('save', 'Admin\\Server\\V2rayController@save');
-                $router->post('drop', 'Admin\\Server\\V2rayController@drop');
-                $router->post('update', 'Admin\\Server\\V2rayController@update');
-                $router->post('copy', 'Admin\\Server\\V2rayController@copy');
-                $router->post('sort', 'Admin\\Server\\V2rayController@sort');
+                $router->get ('fetch', 'Admin\\Server\\VmessController@fetch');
+                $router->post('save', 'Admin\\Server\\VmessController@save');
+                $router->post('drop', 'Admin\\Server\\VmessController@drop');
+                $router->post('update', 'Admin\\Server\\VmessController@update');
+                $router->post('copy', 'Admin\\Server\\VmessController@copy');
+                $router->post('sort', 'Admin\\Server\\VmessController@sort');
             });
             $router->group([
                 'prefix' => 'server/shadowsocks'

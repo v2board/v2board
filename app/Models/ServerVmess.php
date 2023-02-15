@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ServerV2ray extends Model
+class ServerVmess extends Model
 {
     protected $table = 'v2_server_v2ray';
     protected $dateFormat = 'U';

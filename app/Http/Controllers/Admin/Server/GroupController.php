@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin\Server;
 use App\Models\Plan;
 use App\Models\ServerShadowsocks;
 use App\Models\ServerTrojan;
-use App\Models\ServerV2ray;
+use App\Models\ServerVmess;
 use App\Models\ServerGroup;
 use App\Models\User;
 use App\Services\ServerService;
@@ -65,7 +65,7 @@ class GroupController extends Controller
             }
         }
 
-        $servers = ServerV2ray::all();
+        $servers = ServerVmess::all();
         foreach ($servers as $server) {
             if (in_array($request->input('id'), $server->group_id)) {
                 abort(500, '该组已被节点所使用，无法删除');
