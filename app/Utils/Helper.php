@@ -31,7 +31,7 @@ class Helper
     public static function generateOrderNo(): string
     {
         $randomChar = mt_rand(10000, 99999);
-        return date('YmdHms') . $randomChar;
+        return date('YmdHms') . substr(microtime(), 2, 6) . $randomChar;
     }
 
     public static function exchange($from, $to)
