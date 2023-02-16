@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ServerVmess extends Model
 {
-    protected $table = 'v2_server_v2ray';
+    protected $table = 'v2_server_vmess';
     protected $dateFormat = 'U';
     protected $guarded = ['id'];
     protected $casts = [
