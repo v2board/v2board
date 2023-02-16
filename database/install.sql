@@ -253,8 +253,8 @@ CREATE TABLE `v2_server_trojan` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='trojan伺服器表';
 
 
-DROP TABLE IF EXISTS `v2_server_v2ray`;
-CREATE TABLE `v2_server_v2ray` (
+DROP TABLE IF EXISTS `v2_server_vmess`;
+CREATE TABLE `v2_server_vmess` (
                                    `id` int(11) NOT NULL AUTO_INCREMENT,
                                    `group_id` varchar(255) NOT NULL,
                                    `route_id` varchar(255) DEFAULT NULL,
@@ -398,4 +398,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2023-02-15 06:46:53
+-- 2023-02-16 10:52:13

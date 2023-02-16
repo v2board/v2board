@@ -651,3 +651,6 @@ ALTER TABLE `v2_plan`
 
 ALTER TABLE `v2_plan`
     COLLATE 'utf8mb4_general_ci';
+
+ALTER TABLE `v2_server_v2ray`
+    RENAME TO `v2_server_vmess`;
