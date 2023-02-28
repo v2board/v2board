@@ -188,21 +188,26 @@ class OrderService
     {
         $orders = Order::where('user_id', $user->id)
             ->where('period', '!=', 'reset_price')
+            ->where('period', '!=', 'onetime_price')
             ->where('status', 3)
             ->get()
             ->toArray();
         if (!$orders) return;
         $orderAmountSum = 0;
         $orderMonthSum = 0;
+        $lastValidateAt = 0;
         foreach ($orders as $item) {
-            if ($item['period'] === 'onetime_price') continue;
-            $orderMonthSum = self::STR_TO_TIME[$item['period']] + $orderMonthSum;
+            $period = self::STR_TO_TIME[$item['period']];
+            if (strtotime("+{$period} month", $item['created_at']) < time()) continue;
+            $lastValidateAt = $item['created_at'];
+            $orderMonthSum = $period + $orderMonthSum;
             $orderAmountSum = $orderAmountSum + ($item['total_amount'] + $item['balance_amount'] + $item['surplus_amount'] - $item['refund_amount']);
         }
-        $expiredAtByOrder = strtotime("+{$orderMonthSum} month", $orders[0]['created_at']);
+        if (!$lastValidateAt) return;
+        $expiredAtByOrder = strtotime("+{$orderMonthSum} month", $lastValidateAt);
         if ($expiredAtByOrder < time()) return;
         $orderSurplusSecond = $expiredAtByOrder - time();
-        $orderRangeSecond = $expiredAtByOrder - $orders[0]['created_at'];
+        $orderRangeSecond = $expiredAtByOrder - $lastValidateAt;
         $avgPrice = $orderAmountSum / $orderRangeSecond;
         $orderSurplusAmount = $avgPrice * $orderSurplusSecond;
         if (!$orderSurplusSecond || !$orderSurplusAmount) return;
