@@ -34,6 +34,7 @@ class Clash
         } else {
             $config = Yaml::parseFile($defaultConfig);
         }
+        $this->patch($config);
         $proxy = [];
         $proxies = [];
 
@@ -172,5 +173,12 @@ class Clash
     private function isRegex($exp)
     {
         return @preg_match($exp, null) !== false;
+    }
+
+    private function patch(&$config)
+    {
+        // fix clash x dns mode
+        preg_match('#(ClashX)[/ ]([0-9.]*)#', $_SERVER['HTTP_USER_AGENT'], $matches);
+        if ($matches[2] < '1.96.2') $config['dns']['enhanced-mode'] = 'redir-host';
     }
 }
