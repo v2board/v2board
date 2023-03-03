@@ -179,6 +179,6 @@ class Clash
     {
         // fix clash x dns mode
         preg_match('#(ClashX)[/ ]([0-9.]*)#', $_SERVER['HTTP_USER_AGENT'], $matches);
-        if ($matches[2] < '1.96.2') $config['dns']['enhanced-mode'] = 'redir-host';
+        if (isset($matches[2]) && $matches[2] < '1.96.2') $config['dns']['enhanced-mode'] = 'redir-host';
     }
 }
