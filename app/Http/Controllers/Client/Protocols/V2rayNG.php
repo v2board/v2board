@@ -62,6 +62,7 @@ class V2rayNG
             "tls" => $server['tls'] ? "tls" : "",
         ];
         if ($server['tls']) {
+            $config['fp'] = "chrome";
             if ($server['tlsSettings']) {
                 $tlsSettings = $server['tlsSettings'];
                 if (isset($tlsSettings['serverName']) && !empty($tlsSettings['serverName']))
@@ -86,7 +87,8 @@ class V2rayNG
         $query = http_build_query([
             'allowInsecure' => $server['allow_insecure'],
             'peer' => $server['server_name'],
-            'sni' => $server['server_name']
+            'sni' => $server['server_name'],
+            'fp' => "chrome"
         ]);
         $uri = "trojan://{$password}@{$server['host']}:{$server['port']}?{$query}#{$name}";
         $uri .= "\r\n";
