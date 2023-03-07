@@ -266,7 +266,7 @@ CREATE TABLE `v2_server_vmess` (
                                    `tls` tinyint(4) NOT NULL DEFAULT '0',
                                    `tags` varchar(255) DEFAULT NULL,
                                    `rate` varchar(11) NOT NULL,
-                                   `network` text NOT NULL,
+                                   `network` varchar(11) NOT NULL,
                                    `rules` text,
                                    `networkSettings` text,
                                    `tlsSettings` text,
@@ -398,4 +398,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2023-02-16 10:52:13
+-- 2023-03-07 13:10:15
