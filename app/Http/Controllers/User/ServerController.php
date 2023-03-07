@@ -8,7 +8,7 @@ use App\Services\UserService;
 use App\Utils\CacheKey;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
-use App\Models\ServerV2ray;
+use App\Models\ServerVmess;
 use App\Models\ServerLog;
 use App\Models\User;
 
@@ -26,8 +26,7 @@ class ServerController extends Controller
             $serverService = new ServerService();
             $servers = $serverService->getAvailableServers($user);
         }
-
-        $eTag = sha1(json_encode(array_column($servers, 'updated_at')));
+        $eTag = sha1(json_encode(array_column($servers, 'cache_key')));
         if (strpos($request->header('If-None-Match'), $eTag) !== false ) {
             abort(304);
         }

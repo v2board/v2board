@@ -2,21 +2,21 @@
 
 namespace App\Http\Controllers\Admin\Server;
 
-use App\Http\Requests\Admin\ServerV2raySave;
-use App\Http\Requests\Admin\ServerV2rayUpdate;
+use App\Http\Requests\Admin\ServerVmessSave;
+use App\Http\Requests\Admin\ServerVmessUpdate;
 use App\Services\ServerService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\ServerV2ray;
+use App\Models\ServerVmess;
 
-class V2rayController extends Controller
+class VmessController extends Controller
 {
-    public function save(ServerV2raySave $request)
+    public function save(ServerVmessSave $request)
     {
         $params = $request->validated();
 
         if ($request->input('id')) {
-            $server = ServerV2ray::find($request->input('id'));
+            $server = ServerVmess::find($request->input('id'));
             if (!$server) {
                 abort(500, '服务器不存在');
             }
@@ -30,7 +30,7 @@ class V2rayController extends Controller
             ]);
         }
 
-        if (!ServerV2ray::create($params)) {
+        if (!ServerVmess::create($params)) {
             abort(500, '创建失败');
         }
 
@@ -42,7 +42,7 @@ class V2rayController extends Controller
     public function drop(Request $request)
     {
         if ($request->input('id')) {
-            $server = ServerV2ray::find($request->input('id'));
+            $server = ServerVmess::find($request->input('id'));
             if (!$server) {
                 abort(500, '节点ID不存在');
             }
@@ -52,13 +52,13 @@ class V2rayController extends Controller
         ]);
     }
 
-    public function update(ServerV2rayUpdate $request)
+    public function update(ServerVmessUpdate $request)
     {
         $params = $request->only([
             'show',
         ]);
 
-        $server = ServerV2ray::find($request->input('id'));
+        $server = ServerVmess::find($request->input('id'));
 
         if (!$server) {
             abort(500, '该服务器不存在');
@@ -76,12 +76,12 @@ class V2rayController extends Controller
 
     public function copy(Request $request)
     {
-        $server = ServerV2ray::find($request->input('id'));
+        $server = ServerVmess::find($request->input('id'));
         $server->show = 0;
         if (!$server) {
             abort(500, '服务器不存在');
         }
-        if (!ServerV2ray::create($server->toArray())) {
+        if (!ServerVmess::create($server->toArray())) {
             abort(500, '复制失败');
         }
 

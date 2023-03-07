@@ -41,7 +41,7 @@ class Surge
                 // [Proxy Group]
                 $proxyGroup .= $item['name'] . ', ';
             }
-            if ($item['type'] === 'v2ray') {
+            if ($item['type'] === 'vmess') {
                 // [Proxy]
                 $proxies .= self::buildVmess($user['uuid'], $item);
                 // [Proxy Group]
@@ -65,7 +65,7 @@ class Surge
 
         // Subscription link
         $subsURL = Helper::getSubscribeUrl("/api/v1/client/subscribe?token={$user['token']}");
-        $subsDomain = $_SERVER['SERVER_NAME'];
+        $subsDomain = $_SERVER['HTTP_HOST'];
         $subsURL = 'https://' . $subsDomain . '/api/v1/client/subscribe?token=' . $user['token'];
 
         $config = str_replace('$subs_link', $subsURL, $config);

@@ -26,7 +26,7 @@ class AuthController extends Controller
             abort(404);
         }
         $params = $request->validate([
-            'email' => 'required|email',
+            'email' => 'required|email:strict',
             'redirect' => 'nullable'
         ]);
 
