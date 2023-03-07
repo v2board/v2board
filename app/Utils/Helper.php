@@ -9,7 +9,7 @@ class Helper
         return base64_encode(substr($uuid, 0, $length));
     }
 
-    public static function getShadowsocksServerKey($timestamp, $length)
+    public static function getServerKey($timestamp, $length)
     {
         return base64_encode(substr(md5($timestamp), 0, $length));
     }
