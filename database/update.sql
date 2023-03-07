@@ -654,3 +654,6 @@ ALTER TABLE `v2_plan`
 
 ALTER TABLE `v2_server_v2ray`
     RENAME TO `v2_server_vmess`;
+
+ALTER TABLE `v2_server_vmess`
+    CHANGE `network` `network` varchar(11) COLLATE 'utf8mb4_general_ci' NOT NULL AFTER `rate`;
