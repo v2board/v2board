@@ -657,3 +657,26 @@ ALTER TABLE `v2_server_v2ray`
 
 ALTER TABLE `v2_server_vmess`
     CHANGE `network` `network` varchar(11) COLLATE 'utf8mb4_general_ci' NOT NULL AFTER `rate`;
+
+DROP TABLE IF EXISTS `v2_server_hysteria`;
+CREATE TABLE `v2_server_hysteria` (
+                                      `id` int(11) NOT NULL AUTO_INCREMENT,
+                                      `group_id` varchar(255) NOT NULL,
+                                      `route_id` varchar(255) DEFAULT NULL,
+                                      `name` varchar(255) NOT NULL,
+                                      `parent_id` int(11) DEFAULT NULL,
+                                      `host` varchar(255) NOT NULL,
+                                      `port` varchar(11) NOT NULL,
+                                      `server_port` int(11) NOT NULL,
+                                      `tags` varchar(255) DEFAULT NULL,
+                                      `rate` varchar(11) NOT NULL,
+                                      `show` tinyint(1) NOT NULL DEFAULT '0',
+                                      `sort` int(11) DEFAULT NULL,
+                                      `up_mbps` int(11) NOT NULL,
+                                      `down_mbps` int(11) NOT NULL,
+                                      `server_name` varchar(64) DEFAULT NULL,
+                                      `insecure` tinyint(1) NOT NULL DEFAULT '0',
+                                      `created_at` int(11) NOT NULL,
+                                      `updated_at` int(11) NOT NULL,
+                                      PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
