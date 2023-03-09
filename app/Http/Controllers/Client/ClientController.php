@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Client;
 
-use App\Http\Controllers\Client\Protocols\V2rayN;
+use App\Http\Controllers\Client\Protocols\General;
 use App\Http\Controllers\Controller;
 use App\Services\ServerService;
 use Illuminate\Http\Request;
@@ -31,7 +31,8 @@ class ClientController extends Controller
                     }
                 }
             }
-            die('该客户端暂不支持进行订阅');
+            $class = new General($user, $servers);
+            die($class->handle());
         }
     }
 
