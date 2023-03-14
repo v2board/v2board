@@ -5,9 +5,9 @@ namespace App\Http\Controllers\Client\Protocols;
 
 use App\Utils\Helper;
 
-class V2rayN
+class General
 {
-    public $flag = 'v2rayn';
+    public $flag = 'general';
     private $servers;
     private $user;
 
@@ -74,7 +74,6 @@ class V2rayN
             "tls" => $server['tls'] ? "tls" : "",
         ];
         if ($server['tls']) {
-            $config['fp'] = "chrome";
             if ($server['tlsSettings']) {
                 $tlsSettings = $server['tlsSettings'];
                 if (isset($tlsSettings['serverName']) && !empty($tlsSettings['serverName']))
@@ -99,8 +98,7 @@ class V2rayN
         $query = http_build_query([
             'allowInsecure' => $server['allow_insecure'],
             'peer' => $server['server_name'],
-            'sni' => $server['server_name'],
-            'fp' => "chrome"
+            'sni' => $server['server_name']
         ]);
         $uri = "trojan://{$password}@{$server['host']}:{$server['port']}?{$query}#{$name}";
         $uri .= "\r\n";

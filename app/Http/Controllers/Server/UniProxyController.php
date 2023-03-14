@@ -87,10 +87,10 @@ class UniProxyController extends Controller
                 ];
 
                 if ($this->nodeInfo->cipher === '2022-blake3-aes-128-gcm') {
-                    $response['server_key'] = Helper::getShadowsocksServerKey($this->nodeInfo->created_at, 16);
+                    $response['server_key'] = Helper::getServerKey($this->nodeInfo->created_at, 16);
                 }
                 if ($this->nodeInfo->cipher === '2022-blake3-aes-256-gcm') {
-                    $response['server_key'] = Helper::getShadowsocksServerKey($this->nodeInfo->created_at, 32);
+                    $response['server_key'] = Helper::getServerKey($this->nodeInfo->created_at, 32);
                 }
                 break;
             case 'vmess':
@@ -105,7 +105,17 @@ class UniProxyController extends Controller
                 $response = [
                     'host' => $this->nodeInfo->host,
                     'server_port' => $this->nodeInfo->server_port,
-                    'server_name' => $this->nodeInfo->server_name
+                    'server_name' => $this->nodeInfo->server_name,
+                ];
+                break;
+            case 'hysteria':
+                $response = [
+                    'host' => $this->nodeInfo->host,
+                    'server_port' => $this->nodeInfo->server_port,
+                    'server_name' => $this->nodeInfo->server_name,
+                    'up_mbps' => $this->nodeInfo->up_mbps,
+                    'down_mbps' => $this->nodeInfo->down_mbps,
+                    'obfs' => Helper::getServerKey($this->nodeInfo->created_at, 16)
                 ];
                 break;
         }

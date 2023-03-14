@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Client;
 
-use App\Http\Controllers\Client\Protocols\V2rayN;
+use App\Http\Controllers\Client\Protocols\General;
 use App\Http\Controllers\Controller;
 use App\Services\ServerService;
 use Illuminate\Http\Request;
@@ -23,7 +23,7 @@ class ClientController extends Controller
             $servers = $serverService->getAvailableServers($user);
             $this->setSubscribeInfoToServers($servers, $user);
             if ($flag) {
-                foreach (glob(app_path('Http//Controllers//Client//Protocols') . '/*.php') as $file) {
+                foreach (array_reverse(glob(app_path('Http//Controllers//Client//Protocols') . '/*.php')) as $file) {
                     $file = 'App\\Http\\Controllers\\Client\\Protocols\\' . basename($file, '.php');
                     $class = new $file($user, $servers);
                     if (strpos($flag, $class->flag) !== false) {
@@ -31,10 +31,8 @@ class ClientController extends Controller
                     }
                 }
             }
-            // todo 1.5.3 remove
-            $class = new V2rayN($user, $servers);
+            $class = new General($user, $servers);
             die($class->handle());
-            die('该客户端暂不支持进行订阅');
         }
     }
 

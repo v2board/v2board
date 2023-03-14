@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin\Server;
 
+use App\Models\ServerHysteria;
 use App\Models\ServerVmess;
 use App\Models\ServerShadowsocks;
 use App\Models\ServerTrojan;
@@ -40,6 +41,12 @@ class ManageController extends Controller
                     break;
                 case 'trojan':
                     if (!ServerTrojan::find($v['value'])->update(['sort' => $v['sort']])) {
+                        DB::rollBack();
+                        abort(500, '保存失败');
+                    }
+                    break;
+                case 'hysteria':
+                    if (!ServerHysteria::find($v['value'])->update(['sort' => $v['sort']])) {
                         DB::rollBack();
                         abort(500, '保存失败');
                     }

@@ -64,6 +64,16 @@ class AdminRoute
                 $router->post('copy', 'Admin\\Server\\ShadowsocksController@copy');
                 $router->post('sort', 'Admin\\Server\\ShadowsocksController@sort');
             });
+            $router->group([
+                'prefix' => 'server/hysteria'
+            ], function ($router) {
+                $router->get ('fetch', 'Admin\\Server\\HysteriaController@fetch');
+                $router->post('save', 'Admin\\Server\\HysteriaController@save');
+                $router->post('drop', 'Admin\\Server\\HysteriaController@drop');
+                $router->post('update', 'Admin\\Server\\HysteriaController@update');
+                $router->post('copy', 'Admin\\Server\\HysteriaController@copy');
+                $router->post('sort', 'Admin\\Server\\HysteriaController@sort');
+            });
             // Order
             $router->get ('/order/fetch', 'Admin\\OrderController@fetch');
             $router->post('/order/update', 'Admin\\OrderController@update');
