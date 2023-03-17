@@ -680,3 +680,6 @@ CREATE TABLE `v2_server_hysteria` (
                                       `updated_at` int(11) NOT NULL,
                                       PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+ALTER TABLE `v2_plan`
+    ADD `capacity_limit` int(11) NULL AFTER `reset_traffic_method`;
