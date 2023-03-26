@@ -79,6 +79,7 @@ class ServerService
                 $servers[$key]['last_check_at'] = Cache::get(CacheKey::get('SERVER_HYSTERIA_LAST_CHECK_AT', $v['parent_id']));
                 $servers[$key]['created_at'] = $servers[$v['parent_id']]['created_at'];
             }
+            $servers[$key]['server_key'] = Helper::getServerKey($servers[$key]['created_at'], 16);
             $availableServers[] = $servers[$key]->toArray();
         }
         return $availableServers;
