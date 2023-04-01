@@ -84,7 +84,7 @@ class AuthService
         return (array)Cache::get(CacheKey::get("USER_SESSIONS", $this->user->id), []);
     }
 
-    public function delSession($sessionId)
+    public function removeSession($sessionId)
     {
         $cacheKey = CacheKey::get("USER_SESSIONS", $this->user->id);
         $sessions = (array)Cache::get($cacheKey, []);
@@ -94,5 +94,11 @@ class AuthService
             $sessions
         )) return false;
         return true;
+    }
+
+    public function removeAllSession()
+    {
+        $cacheKey = CacheKey::get("USER_SESSIONS", $this->user->id);
+        return Cache::forget($cacheKey);
     }
 }

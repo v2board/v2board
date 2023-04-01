@@ -5,9 +5,7 @@ namespace App\Http\Controllers\Client;
 use App\Http\Controllers\Controller;
 use App\Services\ServerService;
 use App\Services\UserService;
-use App\Utils\Clash;
 use Illuminate\Http\Request;
-use App\Models\ServerV2ray;
 use Illuminate\Support\Facades\File;
 use Symfony\Component\Yaml\Yaml;
 
@@ -44,7 +42,7 @@ class AppController extends Controller
                 array_push($proxy, Protocols\Clash::buildShadowsocks($user['uuid'], $item));
                 array_push($proxies, $item['name']);
             }
-            if ($item['type'] === 'v2ray') {
+            if ($item['type'] === 'vmess') {
                 array_push($proxy, Protocols\Clash::buildVmess($user['uuid'], $item));
                 array_push($proxies, $item['name']);
             }

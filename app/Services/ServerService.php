@@ -6,7 +6,7 @@ use App\Models\ServerLog;
 use App\Models\ServerRoute;
 use App\Models\ServerShadowsocks;
 use App\Models\User;
-use App\Models\ServerV2ray;
+use App\Models\ServerVmess;
 use App\Models\ServerTrojan;
 use App\Utils\CacheKey;
 use App\Utils\Helper;
@@ -15,97 +15,89 @@ use Illuminate\Support\Facades\Cache;
 class ServerService
 {
 
-    public function getV2ray(User $user, $all = false):array
+    public function getAvailableVmess(User $user):array
     {
         $servers = [];
-        $model = ServerV2ray::orderBy('sort', 'ASC');
-        if (!$all) {
-            $model->where('show', 1);
-        }
-        $v2ray = $model->get();
-        for ($i = 0; $i < count($v2ray); $i++) {
-            $v2ray[$i]['type'] = 'v2ray';
-            $groupId = $v2ray[$i]['group_id'];
-            if (!in_array($user->group_id, $groupId)) continue;
-            if (strpos($v2ray[$i]['port'], '-') !== false) {
-                $v2ray[$i]['port'] = Helper::randomPort($v2ray[$i]['port']);
+        $model = ServerVmess::orderBy('sort', 'ASC');
+        $vmess = $model->get();
+        foreach ($vmess as $key => $v) {
+            if (!$v['show']) continue;
+            $vmess[$key]['type'] = 'vmess';
+            if (!in_array($user->group_id, $vmess[$key]['group_id'])) continue;
+            if (strpos($vmess[$key]['port'], '-') !== false) {
+                $vmess[$key]['port'] = Helper::randomPort($vmess[$key]['port']);
             }
-            if ($v2ray[$i]['parent_id']) {
-                $v2ray[$i]['last_check_at'] = Cache::get(CacheKey::get('SERVER_V2RAY_LAST_CHECK_AT', $v2ray[$i]['parent_id']));
+            if ($vmess[$key]['parent_id']) {
+                $vmess[$key]['last_check_at'] = Cache::get(CacheKey::get('SERVER_VMESS_LAST_CHECK_AT', $vmess[$key]['parent_id']));
             } else {
-                $v2ray[$i]['last_check_at'] = Cache::get(CacheKey::get('SERVER_V2RAY_LAST_CHECK_AT', $v2ray[$i]['id']));
+                $vmess[$key]['last_check_at'] = Cache::get(CacheKey::get('SERVER_VMESS_LAST_CHECK_AT', $vmess[$key]['id']));
             }
-            array_push($servers, $v2ray[$i]->toArray());
+            $servers[] = $vmess[$key]->toArray();
         }
 
 
         return $servers;
     }
 
-    public function getTrojan(User $user, $all = false):array
+    public function getAvailableTrojan(User $user):array
     {
         $servers = [];
         $model = ServerTrojan::orderBy('sort', 'ASC');
-        if (!$all) {
-            $model->where('show', 1);
-        }
         $trojan = $model->get();
-        for ($i = 0; $i < count($trojan); $i++) {
-            $trojan[$i]['type'] = 'trojan';
-            $groupId = $trojan[$i]['group_id'];
-            if (!in_array($user->group_id, $groupId)) continue;
-            if (strpos($trojan[$i]['port'], '-') !== false) {
-                $trojan[$i]['port'] = Helper::randomPort($trojan[$i]['port']);
+        foreach ($trojan as $key => $v) {
+            if (!$v['show']) continue;
+            $trojan[$key]['type'] = 'trojan';
+            if (!in_array($user->group_id, $trojan[$key]['group_id'])) continue;
+            if (strpos($trojan[$key]['port'], '-') !== false) {
+                $trojan[$key]['port'] = Helper::randomPort($trojan[$key]['port']);
             }
-            if ($trojan[$i]['parent_id']) {
-                $trojan[$i]['last_check_at'] = Cache::get(CacheKey::get('SERVER_TROJAN_LAST_CHECK_AT', $trojan[$i]['parent_id']));
+            if ($trojan[$key]['parent_id']) {
+                $trojan[$key]['last_check_at'] = Cache::get(CacheKey::get('SERVER_TROJAN_LAST_CHECK_AT', $trojan[$key]['parent_id']));
             } else {
-                $trojan[$i]['last_check_at'] = Cache::get(CacheKey::get('SERVER_TROJAN_LAST_CHECK_AT', $trojan[$i]['id']));
+                $trojan[$key]['last_check_at'] = Cache::get(CacheKey::get('SERVER_TROJAN_LAST_CHECK_AT', $trojan[$key]['id']));
             }
-            array_push($servers, $trojan[$i]->toArray());
+            $servers[] = $trojan[$key]->toArray();
         }
         return $servers;
     }
 
-    public function getShadowsocks(User $user, $all = false)
+    public function getAvailableShadowsocks(User $user)
     {
         $servers = [];
         $model = ServerShadowsocks::orderBy('sort', 'ASC');
-        if (!$all) {
-            $model->where('show', 1);
-        }
-        $shadowsocks = $model->get();
-        for ($i = 0; $i < count($shadowsocks); $i++) {
-            $shadowsocks[$i]['type'] = 'shadowsocks';
-            $groupId = $shadowsocks[$i]['group_id'];
-            if (!in_array($user->group_id, $groupId)) continue;
-            if (strpos($shadowsocks[$i]['port'], '-') !== false) {
-                $shadowsocks[$i]['port'] = Helper::randomPort($shadowsocks[$i]['port']);
+        $shadowsocks = $model->get()->keyBy('id');
+        foreach ($shadowsocks as $key => $v) {
+            if (!$v['show']) continue;
+            $shadowsocks[$key]['type'] = 'shadowsocks';
+            $shadowsocks[$key]['last_check_at'] = Cache::get(CacheKey::get('SERVER_SHADOWSOCKS_LAST_CHECK_AT', $v['id']));
+            if (!in_array($user->group_id, $v['group_id'])) continue;
+            if (strpos($v['port'], '-') !== false) {
+                $shadowsocks[$key]['port'] = Helper::randomPort($v['port']);
             }
-            if ($shadowsocks[$i]['parent_id']) {
-                $shadowsocks[$i]['last_check_at'] = Cache::get(CacheKey::get('SERVER_SHADOWSOCKS_LAST_CHECK_AT', $shadowsocks[$i]['parent_id']));
-            } else {
-                $shadowsocks[$i]['last_check_at'] = Cache::get(CacheKey::get('SERVER_SHADOWSOCKS_LAST_CHECK_AT', $shadowsocks[$i]['id']));
+            if (isset($shadowsocks[$v['parent_id']])) {
+                $shadowsocks[$key]['last_check_at'] = Cache::get(CacheKey::get('SERVER_SHADOWSOCKS_LAST_CHECK_AT', $v['parent_id']));
+                $shadowsocks[$key]['created_at'] = $shadowsocks[$v['parent_id']]['created_at'];
             }
-            array_push($servers, $shadowsocks[$i]->toArray());
+            $servers[] = $shadowsocks[$key]->toArray();
         }
         return $servers;
     }
 
-    public function getAvailableServers(User $user, $all = false)
+    public function getAvailableServers(User $user)
     {
         $servers = array_merge(
-            $this->getShadowsocks($user, $all),
-            $this->getV2ray($user, $all),
-            $this->getTrojan($user, $all)
+            $this->getAvailableShadowsocks($user),
+            $this->getAvailableVmess($user),
+            $this->getAvailableTrojan($user)
         );
         $tmp = array_column($servers, 'sort');
         array_multisort($tmp, SORT_ASC, $servers);
-        $servers = array_map(function ($server) {
+        return array_map(function ($server) {
             $server['port'] = (int)$server['port'];
+            $server['is_online'] = (time() - 300 > $server['last_check_at']) ? 0 : 1;
+            $server['cache_key'] = "{$server['type']}-{$server['id']}-{$server['updated_at']}-{$server['is_online']}";
             return $server;
         }, $servers);
-        return $servers;
     }
 
     public function getAvailableUsers($groupId)
@@ -157,45 +149,46 @@ class ServerService
         }
     }
 
-    public function getShadowsocksServers()
+    public function getAllShadowsocks()
     {
-        $server = ServerShadowsocks::orderBy('sort', 'ASC')->get();
-        for ($i = 0; $i < count($server); $i++) {
-            $server[$i]['type'] = 'shadowsocks';
+        $servers = ServerShadowsocks::orderBy('sort', 'ASC')
+            ->get()
+            ->toArray();
+        foreach ($servers as $k => $v) {
+            $servers[$k]['type'] = 'shadowsocks';
         }
-        return $server->toArray();
+        return $servers;
     }
 
-    public function getV2rayServers()
+    public function getAllVMess()
     {
-        $server = ServerV2ray::orderBy('sort', 'ASC')->get();
-        for ($i = 0; $i < count($server); $i++) {
-            $server[$i]['type'] = 'v2ray';
+        $servers = ServerVmess::orderBy('sort', 'ASC')
+            ->get()
+            ->toArray();
+        foreach ($servers as $k => $v) {
+            $servers[$k]['type'] = 'vmess';
         }
-        return $server->toArray();
+        return $servers;
     }
 
-    public function getTrojanServers()
+    public function getAllTrojan()
     {
-        $server = ServerTrojan::orderBy('sort', 'ASC')->get();
-        for ($i = 0; $i < count($server); $i++) {
-            $server[$i]['type'] = 'trojan';
+        $servers = ServerTrojan::orderBy('sort', 'ASC')
+            ->get()
+            ->toArray();
+        foreach ($servers as $k => $v) {
+            $servers[$k]['type'] = 'trojan';
         }
-        return $server->toArray();
+        return $servers;
     }
 
     private function mergeData(&$servers)
     {
         foreach ($servers as $k => $v) {
-            $serverType = strtoupper($servers[$k]['type']);
-            $servers[$k]['online'] = Cache::get(CacheKey::get("SERVER_{$serverType}_ONLINE_USER", $servers[$k]['parent_id'] ? $servers[$k]['parent_id'] : $servers[$k]['id']));
-            if ($servers[$k]['parent_id']) {
-                $servers[$k]['last_check_at'] = Cache::get(CacheKey::get("SERVER_{$serverType}_LAST_CHECK_AT", $servers[$k]['parent_id']));
-                $servers[$k]['last_push_at'] = Cache::get(CacheKey::get("SERVER_{$serverType}_LAST_PUSH_AT", $servers[$k]['parent_id']));
-            } else {
-                $servers[$k]['last_check_at'] = Cache::get(CacheKey::get("SERVER_{$serverType}_LAST_CHECK_AT", $servers[$k]['id']));
-                $servers[$k]['last_push_at'] = Cache::get(CacheKey::get("SERVER_{$serverType}_LAST_PUSH_AT", $servers[$k]['id']));
-            }
+            $serverType = strtoupper($v['type']);
+            $servers[$k]['online'] = Cache::get(CacheKey::get("SERVER_{$serverType}_ONLINE_USER", $v['parent_id'] ?? $v['id']));
+            $servers[$k]['last_check_at'] = Cache::get(CacheKey::get("SERVER_{$serverType}_LAST_CHECK_AT", $v['parent_id'] ?? $v['id']));
+            $servers[$k]['last_push_at'] = Cache::get(CacheKey::get("SERVER_{$serverType}_LAST_PUSH_AT", $v['parent_id'] ?? $v['id']));
             if ((time() - 300) >= $servers[$k]['last_check_at']) {
                 $servers[$k]['available_status'] = 0;
             } else if ((time() - 300) >= $servers[$k]['last_push_at']) {
@@ -209,9 +202,9 @@ class ServerService
     public function getAllServers()
     {
         $servers = array_merge(
-            $this->getShadowsocksServers(),
-            $this->getV2rayServers(),
-            $this->getTrojanServers()
+            $this->getAllShadowsocks(),
+            $this->getAllVMess(),
+            $this->getAllTrojan()
         );
         $this->mergeData($servers);
         $tmp = array_column($servers, 'sort');
@@ -234,8 +227,8 @@ class ServerService
     public function getServer($serverId, $serverType)
     {
         switch ($serverType) {
-            case 'v2ray':
-                return ServerV2ray::find($serverId);
+            case 'vmess':
+                return ServerVmess::find($serverId);
             case 'shadowsocks':
                 return ServerShadowsocks::find($serverId);
             case 'trojan':

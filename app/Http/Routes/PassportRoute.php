@@ -20,7 +20,6 @@ class PassportRoute
             // Comm
             $router->post('/comm/sendEmailVerify', 'Passport\\CommController@sendEmailVerify');
             $router->post('/comm/pv', 'Passport\\CommController@pv');
-            $router->get ('/comm/config', 'Guest\\CommController@config');                                              // TODO:REMOVE:1.7.0
         });
     }
 }

@@ -7,6 +7,7 @@ use App\Http\Requests\Admin\UserGenerate;
 use App\Http\Requests\Admin\UserSendMail;
 use App\Http\Requests\Admin\UserUpdate;
 use App\Jobs\SendEmailJob;
+use App\Services\AuthService;
 use App\Services\UserService;
 use App\Utils\Helper;
 use Illuminate\Http\Request;
@@ -126,6 +127,11 @@ class UserController extends Controller
             }
         } else {
             $params['invite_user_id'] = null;
+        }
+
+        if (isset($params['banned']) && (int)$params['banned'] === 1) {
+            $authService = new AuthService($user);
+            $authService->removeAllSession();
         }
 
         try {

@@ -44,6 +44,9 @@ class UserService
         $md = date('m-d', $expiredAt);
         $nowYear = strtotime(date("Y-{$md}"));
         $nextYear = strtotime('+1 year', $nowYear);
+        if ($nowYear > time()) {
+            return (int)(($nowYear - time()) / 86400);
+        }
         return (int)(($nextYear - time()) / 86400);
     }
 

@@ -39,7 +39,7 @@ class UserController extends Controller
         }
         $authService = new AuthService($user);
         return response([
-            'data' => $authService->delSession($request->input('session_id'))
+            'data' => $authService->removeSession($request->input('session_id'))
         ]);
     }
 

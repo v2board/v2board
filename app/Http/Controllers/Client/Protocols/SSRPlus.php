@@ -22,7 +22,7 @@ class SSRPlus
         $uri = '';
 
         foreach ($servers as $item) {
-            if ($item['type'] === 'v2ray') {
+            if ($item['type'] === 'vmess') {
                 $uri .= self::buildVmess($user['uuid'], $item);
             }
             if ($item['type'] === 'shadowsocks') {
