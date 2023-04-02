@@ -120,6 +120,7 @@ class Clash
         $array['udp'] = true;
 
         if ($server['tls']) {
+            $array['cipher'] = 'zero';
             $array['tls'] = true;
             if ($server['tlsSettings']) {
                 $tlsSettings = $server['tlsSettings'];
@@ -143,6 +144,8 @@ class Clash
                 if (isset($wsSettings['headers']['Host']) && !empty($wsSettings['headers']['Host']))
                     $array['ws-headers'] = ['Host' => $wsSettings['headers']['Host']];
             }
+            $array['max-early-data'] = 2048;
+            $array['early-data-header-name'] = 'Sec-WebSocket-Protocol';
         }
         if ($server['network'] === 'grpc') {
             $array['network'] = 'grpc';
