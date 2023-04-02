@@ -75,6 +75,7 @@ class V2rayN
         ];
         if ($server['tls']) {
             $config['fp'] = "chrome";
+            $config['scy'] = "zero";
             if ($server['tlsSettings']) {
                 $tlsSettings = $server['tlsSettings'];
                 if (isset($tlsSettings['serverName']) && !empty($tlsSettings['serverName']))
