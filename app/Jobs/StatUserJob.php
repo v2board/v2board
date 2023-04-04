@@ -21,7 +21,7 @@ class StatUserJob implements ShouldQueue
     protected $recordType;
 
     public $tries = 3;
-    public $timeout = 60;
+    public $timeout = 10;
 
     /**
      * Create a new job instance.

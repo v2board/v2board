@@ -19,7 +19,7 @@ class StatServerJob implements ShouldQueue
     protected $recordType;
 
     public $tries = 3;
-    public $timeout = 60;
+    public $timeout = 10;
 
     /**
      * Create a new job instance.
@@ -53,16 +53,8 @@ class StatServerJob implements ShouldQueue
             ->where('server_id', $this->server['id'])
             ->where('server_type', $this->protocol)
             ->first();
-        if ($data) {
-            try {
-                $data->update([
-                    'u' => $data['u'] + $this->u,
-                    'd' => $data['d'] + $this->d
-                ]);
-            } catch (\Exception $e) {
-                abort(500, '节点统计数据更新失败');
-            }
-        } else {
+
+        if (!$data) {
             if (!StatServer::create([
                 'server_id' => $this->server['id'],
                 'server_type' => $this->protocol,
@@ -73,6 +65,16 @@ class StatServerJob implements ShouldQueue
             ])) {
                 abort(500, '节点统计数据创建失败');
             }
+            return;
+        }
+
+        try {
+            $data->update([
+                'u' => $data['u'] + $this->u,
+                'd' => $data['d'] + $this->d
+            ]);
+        } catch (\Exception $e) {
+            abort(500, '节点统计数据更新失败');
         }
     }
 }
