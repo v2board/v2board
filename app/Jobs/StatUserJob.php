@@ -67,10 +67,6 @@ class StatUserJob implements ShouldQueue
 
         try {
                 StatUser::upsert($values, $uniqueBy, $update);
-                $data = StatUser::where('record_at', $recordAt)
-                    ->where('server_rate', $this->server['rate'])
-                    ->where('user_id', $this->userId)
-                    ->first();
         } catch (\Exception $e) {
             abort(500, '用户统计数据更新失败');
         }
