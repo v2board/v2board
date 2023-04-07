@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Models\StatServer;
+use Illuminate\Support\Facades\DB;
 use App\Models\StatUser;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -21,7 +21,7 @@ class StatUserJob implements ShouldQueue
     protected $recordType;
 
     public $tries = 3;
-    public $timeout = 10;
+    public $timeout = 60;
 
     /**
      * Create a new job instance.
@@ -50,31 +50,29 @@ class StatUserJob implements ShouldQueue
         if ($this->recordType === 'm') {
             //
         }
+        // upsert
+        $values = [
+            'user_id' => $this->userId,
+            'server_rate' => $this->server['rate'],
+            'u' => $this->u,
+            'd' => $this->d,
+            'record_type' => $this->recordType,
+            'record_at' => $recordAt
+        ];
+        $uniqueBy = ['record_at', 'server_rate', 'user_id'];
+        $update = [
+            'u' => DB::raw('u+' . ($this->u * $this->server['rate'])),
+            'd' => DB::raw('d+' . ($this->d * $this->server['rate']))
+        ];
 
-        $data = StatUser::where('record_at', $recordAt)
-            ->where('server_rate', $this->server['rate'])
-            ->where('user_id', $this->userId)
-            ->first();
-        if ($data) {
-            try {
-                $data->update([
-                    'u' => $data['u'] + ($this->u * $this->server['rate']),
-                    'd' => $data['d'] + ($this->d * $this->server['rate'])
-                ]);
-            } catch (\Exception $e) {
-                abort(500, '用户统计数据更新失败');
-            }
-        } else {
-            if (!StatUser::create([
-                'user_id' => $this->userId,
-                'server_rate' => $this->server['rate'],
-                'u' => $this->u,
-                'd' => $this->d,
-                'record_type' => $this->recordType,
-                'record_at' => $recordAt
-            ])) {
-                abort(500, '用户统计数据创建失败');
-            }
+        try {
+                StatUser::upsert($values, $uniqueBy, $update);
+                $data = StatUser::where('record_at', $recordAt)
+                    ->where('server_rate', $this->server['rate'])
+                    ->where('user_id', $this->userId)
+                    ->first();
+        } catch (\Exception $e) {
+            abort(500, '用户统计数据更新失败');
         }
     }
 }
