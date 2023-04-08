@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Client\Protocols;
 
+use App\Utils\Helper;
+
 class Shadowsocks
 {
     public $flag = 'shadowsocks';
@@ -30,7 +32,7 @@ class Shadowsocks
 
         foreach ($servers as $item) {
             if ($item['type'] === 'shadowsocks'
-                && in_array($item['cipher'], ['aes-128-gcm', 'aes-256-gcm', 'aes-192-gcm', 'chacha20-ietf-poly1305'])
+                && in_array($item['cipher'], ['aes-128-gcm', 'aes-256-gcm', 'aes-192-gcm', 'chacha20-ietf-poly1305', '2022-blake3-aes-128-gcm', '2022-blake3-aes-256-gcm'])
             ) {
                 array_push($configs, self::SIP008($item, $user));
             }
@@ -46,12 +48,23 @@ class Shadowsocks
 
     public static function SIP008($server, $user)
     {
+        $password = $user['uuid'];
+        if ($server['cipher'] === '2022-blake3-aes-128-gcm') {
+            $serverKey = Helper::getShadowsocksServerKey($server['created_at'], 16);
+            $userKey = Helper::uuidToBase64($password, 16);
+            $password = "{$serverKey}:{$userKey}";
+        }
+        if ($server['cipher'] === '2022-blake3-aes-256-gcm') {
+            $serverKey = Helper::getShadowsocksServerKey($server['created_at'], 32);
+            $userKey = Helper::uuidToBase64($password, 32);
+            $password = "{$serverKey}:{$userKey}";
+        }
         $config = [
             "id" => $server['id'],
             "remarks" => $server['name'],
             "server" => $server['host'],
             "server_port" => $server['port'],
-            "password" => $user['uuid'],
+            "password" => $password,
             "method" => $server['cipher']
         ];
         return $config;
