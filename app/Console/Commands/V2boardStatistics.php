@@ -66,10 +66,11 @@ class V2boardStatistics extends Command
                 'record_at' => $recordAt
             ])) {
                 DB::rollback();
-                break;
+                throw new \Exception('stat user fail');
             }
         }
         DB::commit();
+        $statService->clearStatUser();
     }
 
     private function statOrder()

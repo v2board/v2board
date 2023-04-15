@@ -7,7 +7,7 @@ class StatisticalService {
     protected $userStats;
     protected $recordAt;
 
-    public function __construct($recordAt = '')
+    public function __construct($recordAt = NULL)
     {
         ini_set('memory_limit', -1);
         $this->recordAt = $recordAt ?? strtotime(date('Y-m-d'));
@@ -49,5 +49,10 @@ class StatisticalService {
             }
         }
         return $stats;
+    }
+
+    public function clearStatUser()
+    {
+        Cache::forget("stat_user_{$this->recordAt}");
     }
 }
