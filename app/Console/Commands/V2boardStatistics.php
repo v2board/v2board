@@ -2,10 +2,13 @@
 
 namespace App\Console\Commands;
 
+use App\Models\StatUser;
+use App\Services\StatisticalService;
 use Illuminate\Console\Command;
 use App\Models\Order;
 use App\Models\StatOrder;
 use App\Models\CommissionLog;
+use Illuminate\Support\Facades\DB;
 
 class V2boardStatistics extends Command
 {
@@ -42,6 +45,31 @@ class V2boardStatistics extends Command
     {
         ini_set('memory_limit', -1);
         $this->statOrder();
+    }
+
+    private function statUser()
+    {
+        $createdAt = time();
+        $recordAt = strtotime('-1 day', strtotime(date('Y-m-d')));
+        $statService = new StatisticalService($recordAt);
+        $stats = $statService->getStatUser();
+        DB::beginTransaction();
+        foreach ($stats as $stat) {
+            if (!StatUser::insert([
+                'user_id' => $stat['user_Id'],
+                'u' => $stat['u'],
+                'd' => $stat['d'],
+                'server_rate' => $stat['server_rate'],
+                'created_at' => $createdAt,
+                'updated_at' => $createdAt,
+                'record_type' => 'd',
+                'record_at' => $recordAt
+            ])) {
+                DB::rollback();
+                break;
+            }
+        }
+        DB::commit();
     }
 
     private function statOrder()

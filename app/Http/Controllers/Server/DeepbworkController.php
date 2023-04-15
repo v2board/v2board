@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Server;
 
 use App\Services\ServerService;
+use App\Services\StatisticalService;
 use App\Services\UserService;
 use App\Utils\CacheKey;
 use Illuminate\Http\Request;
@@ -81,11 +82,16 @@ class DeepbworkController extends Controller
         Cache::put(CacheKey::get('SERVER_VMESS_ONLINE_USER', $server->id), count($data), 3600);
         Cache::put(CacheKey::get('SERVER_VMESS_LAST_PUSH_AT', $server->id), time(), 3600);
         $userService = new UserService();
+        $statData = [];
         foreach ($data as $item) {
             $u = $item['u'];
             $d = $item['d'];
             $userService->trafficFetch($u, $d, $item['user_id'], $server->toArray(), 'vmess');
+            $statData[$item['user_id']] = [$u, $d];
         }
+
+        $statService = new StatisticalService();
+        $statService->statUser($server['rate'], $statData);
 
         return response([
             'ret' => 1,

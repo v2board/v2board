@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Server;
 
 use App\Services\ServerService;
+use App\Services\StatisticalService;
 use App\Services\UserService;
 use App\Utils\CacheKey;
 use App\Utils\Helper;
@@ -68,6 +69,9 @@ class UniProxyController extends Controller
             $d = $data[$k][1];
             $userService->trafficFetch($u, $d, $k, $this->nodeInfo->toArray(), $this->nodeType);
         }
+
+        $statService = new StatisticalService();
+        $statService->statUser($this->nodeInfo->rate, $data);
 
         return response([
             'data' => true

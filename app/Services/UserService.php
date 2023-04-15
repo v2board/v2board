@@ -172,6 +172,5 @@ class UserService
     {
         TrafficFetchJob::dispatch($u, $d, $userId, $server, $protocol);
         StatServerJob::dispatch($u, $d, $server, $protocol, 'd');
-        StatUserJob::dispatch($u, $d, $userId, $server, $protocol, 'd');
     }
 }
