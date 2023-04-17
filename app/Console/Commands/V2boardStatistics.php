@@ -45,6 +45,7 @@ class V2boardStatistics extends Command
     {
         ini_set('memory_limit', -1);
         $this->statOrder();
+        $this->statUser();
     }
 
     private function statUser()
@@ -56,7 +57,7 @@ class V2boardStatistics extends Command
         DB::beginTransaction();
         foreach ($stats as $stat) {
             if (!StatUser::insert([
-                'user_id' => $stat['user_Id'],
+                'user_id' => $stat['user_id'],
                 'u' => $stat['u'],
                 'd' => $stat['d'],
                 'server_rate' => $stat['server_rate'],
