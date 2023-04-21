@@ -37,6 +37,7 @@ class KnowledgeController extends Controller
                 ),
                 $knowledge['body']
             );
+            $this->apple($knowledge['body']);
             return response([
                 'data' => $knowledge
             ]);
@@ -70,4 +71,49 @@ class KnowledgeController extends Controller
             }
         }
     }
+
+    private function apple(&$body)
+    {
+        try{
+            $req = json_decode($this->api_request_curl('https://yoursite.com'), true);
+            $status = ['正在检测', '状态正常', '状态异常', '等待检测'];
+            foreach ($req as $k => $v) {
+                $body = str_replace("{{ausername$k}}", $v["username"], $body);
+                $body = str_replace("{{apassword$k}}", $v["password"], $body);
+                $body = str_replace("{{astatus$k}}", $status[$v["status"]], $body);
+                $body = str_replace("{{atime$k}}", $v["time"], $body);
+            }
+        }catch (\Exception $error) {
+            foreach (range(0,99) as $k) {
+                $body = str_replace("{{ausername$k}}", "获取错误", $body);
+                $body = str_replace("{{apassword$k}}", "获取错误", $body);
+                $body = str_replace("{{astatus$k}}", "获取错误", $body);
+                $body = str_replace("{{atime$k}}", "获取错误", $body);
+            }
+        }
+    }
+
+    private function api_request_curl($url) {
+        if (empty($url)) return '';
+
+        $curl = curl_init();
+        curl_setopt($curl,CURLOPT_URL, $url);
+        curl_setopt($curl,CURLOPT_TIMEOUT, 30);
+        curl_setopt($curl,CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+
+        curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+            'Content-Type: application/json',
+            'Accept: application/json, text/plain, */*'
+        ));
+
+        $result = curl_exec($curl);
+        if($result === false){
+            throw new Exception('Http request message :'.curl_error($curl));
+        }
+
+        curl_close($curl);
+        return $result;
+    }
+
 }
