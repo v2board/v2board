@@ -25,7 +25,7 @@
                                 佣金已自动进入余额，可在个人中心-我的钱包查看。
                                 <br />
                                 <br />
-                                ----V2Pass敬上  Have a nice day!
+                                ----{{$name}}敬上  Have a nice day!
                             </td>
                         </tr>
                         <tr style="padding:40px;display:table-cell">

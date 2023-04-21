@@ -31,7 +31,7 @@
                                 AD： Emby影视库震撼来袭，主流媒体视频一网打尽，您可以联系客服获取试用。
                                 <br />
                                 <br />
-                                ----V2Pass敬上
+                                ----{{$name}}敬上
                             </td>
                         </tr>
                         <tr style="padding:40px;display:table-cell">
