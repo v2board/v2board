@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Services\MailService; //重要 必须加这行
 use App\Models\CommissionLog;
 use Illuminate\Console\Command;
 use App\Models\Order;
@@ -51,7 +52,7 @@ class CheckCommission extends Command
             Order::where('commission_status', 0)
                 ->where('invite_user_id', '!=', NULL)
                 ->whereNotIn('status', [0, 2])
-                ->where('updated_at', '<=', strtotime('-3 day', time()))
+                ->where('updated_at', '<=', strtotime('-1 day', time()))
                 ->update([
                     'commission_status' => 1
                 ]);
@@ -100,6 +101,9 @@ class CheckCommission extends Command
             if (!$commissionBalance) continue;
             if ((int)config('v2board.withdraw_close_enable', 0)) {
                 $inviter->balance = $inviter->balance + $commissionBalance;
+                //发邮件给 inviter //blance是余额 commission_balance是佣金
+                $mailService = new MailService();
+                $mailService->remindCommissionGotten($inviter,$commissionBalance/100);
             } else {
                 $inviter->commission_balance = $inviter->commission_balance + $commissionBalance;
             }
