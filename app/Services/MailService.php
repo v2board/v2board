@@ -45,6 +45,39 @@ class MailService
         ]);
     }
 
+    ////用户购买套餐后，发邮件提示更新订阅
+    public function remindUpdateSub(User $user)
+    {
+        SendEmailJob::dispatch([
+            'email' => $user->email,
+            'subject' => __('您的服务已开通', [
+                'app_name' =>  config('v2board.app_name', 'V2board')
+            ]),
+            'template_name' => 'remindUpdateSub',
+            'template_value' => [
+                'name' => config('v2board.app_name', 'V2Board'),
+                'url' => config('v2board.app_url')
+            ]
+        ]);
+    }
+
+    ////受邀用户购买套餐后，发邮件给邀请用户，表示佣金到账了
+    public function remindCommissionGotten(User $user, $commission)
+    {
+        SendEmailJob::dispatch([
+            'email' => $user->email,
+            'subject' => __('佣金已到账~', [
+                'app_name' =>  config('v2board.app_name', 'V2board')
+            ]),
+            'template_name' => 'remindCommissionGotten',
+            'template_value' => [
+                'name' => config('v2board.app_name', 'V2Board'),
+                'url' => config('v2board.app_url'),
+                'rate' => config('v2board.invite_commission'),
+                'commission' => $commission
+            ]
+        ]);
+    }
     private function remindTrafficIsWarnValue($u, $d, $transfer_enable)
     {
         $ud = $u + $d;

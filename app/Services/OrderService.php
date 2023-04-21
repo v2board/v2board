@@ -84,6 +84,10 @@ class OrderService
         }
 
         DB::commit();
+        ////调用邮件提醒
+        $mailService = new MailService();
+        $mailService->remindUpdateSub($this->user);//必须是这个参数
+        ////调用邮件提醒
     }
 
 

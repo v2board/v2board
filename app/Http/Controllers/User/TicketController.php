@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Models\Plan;//要加这个
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\TicketSave;
 use App\Http\Requests\User\TicketWithdraw;
@@ -72,7 +73,12 @@ class TicketController extends Controller
             abort(500, __('Failed to open ticket'));
         }
         DB::commit();
-        $this->sendNotify($ticket, $request->input('message'));
+        //        第一处改动
+        $email = User::where('id', $request->user['id'])->value('email');
+        $planID = User::where('id', $request->user['id'])->value('plan_id');
+        $planName = Plan::where('id', $planID)->value('name');
+        $this->sendNotify($ticket, $request->input('message'),$email,$planName);
+        //        第一处改动
         return response([
             'data' => true
         ]);
@@ -106,7 +112,12 @@ class TicketController extends Controller
         )) {
             abort(500, __('Ticket reply failed'));
         }
-        $this->sendNotify($ticket, $request->input('message'));
+        //        第二处改动
+        $email = User::where('id', $request->user['id'])->value('email');
+        $planID = User::where('id', $request->user['id'])->value('plan_id');
+        $planName = Plan::where('id', $planID)->value('name');
+        $this->sendNotify($ticket, $request->input('message'),$email,$planName);
+        //        第二处改动
         return response([
             'data' => true
         ]);
@@ -190,9 +201,9 @@ class TicketController extends Controller
         ]);
     }
 
-    private function sendNotify(Ticket $ticket, string $message)
+    private function sendNotify(Ticket $ticket, string $message, string $email, string $planName)//第三处改动，增加2个参数
     {
         $telegramService = new TelegramService();
-        $telegramService->sendMessageWithAdmin("📮工单提醒 #{$ticket->id}\n———————————————\n主题：\n`{$ticket->subject}`\n内容：\n`{$message}`", true);
+        $telegramService->sendMessageWithAdmin("📮工单提醒 #{$ticket->id}\n———————————————\n用户： {$email}\n套餐:{$planName}\n主题：\n`{$ticket->subject}`\n内容：\n`{$message}`", true);
     }
 }
