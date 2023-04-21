@@ -14,6 +14,9 @@ class InviteController extends Controller
 {
     public function save(Request $request)
     {
+        if (User::where('id', $request->user['id'])->value('plan_id') < 2) {
+            abort(500, __('仅付费用户可以邀请！'));
+        }
         if (InviteCode::where('user_id', $request->user['id'])->where('status', 0)->count() >= config('v2board.invite_gen_limit', 5)) {
             abort(500, __('The maximum number of creations has been reached'));
         }
