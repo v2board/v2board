@@ -7,6 +7,7 @@ use App\Models\ServerRoute;
 use App\Models\ServerShadowsocks;
 use App\Models\User;
 use App\Models\ServerVmess;
+use App\Models\ServerXray;
 use App\Models\ServerTrojan;
 use App\Utils\CacheKey;
 use App\Utils\Helper;
@@ -33,6 +34,30 @@ class ServerService
                 $vmess[$key]['last_check_at'] = Cache::get(CacheKey::get('SERVER_VMESS_LAST_CHECK_AT', $vmess[$key]['id']));
             }
             $servers[] = $vmess[$key]->toArray();
+        }
+
+
+        return $servers;
+    }
+
+    public function getAvailableVless(User $user):array
+    {
+        $servers = [];
+        $model = ServerXray::orderBy('sort', 'ASC');
+        $vless = $model->get();
+        foreach ($vless as $key => $v) {
+            if (!$v['show']) continue;
+            $vless[$key]['type'] = 'vless';
+            if (!in_array($user->group_id, $vless[$key]['group_id'])) continue;
+            if (strpos($vless[$key]['port'], '-') !== false) {
+                $vless[$key]['port'] = Helper::randomPort($vless[$key]['port']);
+            }
+            if ($vless[$key]['parent_id']) {
+                $vless[$key]['last_check_at'] = Cache::get(CacheKey::get('SERVER_XRAY_LAST_CHECK_AT', $vless[$key]['parent_id']));
+            } else {
+                $vless[$key]['last_check_at'] = Cache::get(CacheKey::get('SERVER_XRAY_LAST_CHECK_AT', $vless[$key]['id']));
+            }
+            $servers[] = $vless[$key]->toArray();
         }
 
 
@@ -88,6 +113,7 @@ class ServerService
         $servers = array_merge(
             $this->getAvailableShadowsocks($user),
             $this->getAvailableVmess($user),
+            $this->getAvailableVless($user),
             $this->getAvailableTrojan($user)
         );
         $tmp = array_column($servers, 'sort');
@@ -171,6 +197,17 @@ class ServerService
         return $servers;
     }
 
+    public function getAllVless()
+    {
+        $servers = ServerXray::orderBy('sort', 'ASC')
+            ->get()
+            ->toArray();
+        foreach ($servers as $k => $v) {
+            $servers[$k]['type'] = 'vless';
+        }
+        return $servers;
+    }
+
     public function getAllTrojan()
     {
         $servers = ServerTrojan::orderBy('sort', 'ASC')
@@ -204,6 +241,7 @@ class ServerService
         $servers = array_merge(
             $this->getAllShadowsocks(),
             $this->getAllVMess(),
+            $this->getAllVless(),
             $this->getAllTrojan()
         );
         $this->mergeData($servers);
@@ -229,6 +267,8 @@ class ServerService
         switch ($serverType) {
             case 'vmess':
                 return ServerVmess::find($serverId);
+            case 'vless':
+                return ServerXray::find($serverId);
             case 'shadowsocks':
                 return ServerShadowsocks::find($serverId);
             case 'trojan':

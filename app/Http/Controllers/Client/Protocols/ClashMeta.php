@@ -44,6 +44,10 @@ class ClashMeta
                 array_push($proxy, self::buildVmess($user['uuid'], $item));
                 array_push($proxies, $item['name']);
             }
+            if ($item['type'] === 'vless') {
+                array_push($proxy, self::buildVless($user['uuid'], $item));
+                array_push($proxies, $item['name']);
+            }
             if ($item['type'] === 'trojan') {
                 array_push($proxy, self::buildTrojan($user['uuid'], $item));
                 array_push($proxies, $item['name']);
@@ -148,6 +152,47 @@ class ClashMeta
             }
         }
 
+        return $array;
+    }
+
+    public static function buildVless($uuid, $server)
+    {
+        $array = [];
+        $array['name'] = $server['name'];
+        $array['type'] = 'vless';
+        $array['server'] = $server['host'];
+        $array['port'] = $server['port'];
+        $array['uuid'] = $uuid;
+        $array['client-fingerprint'] = 'chrome';
+        $array['tls'] = true;
+        $array['udp'] = true;
+        $array['servername'] = $server['servername'];
+        $array['reality-opts']['public-key'] = $server['public_key']; //$ xray x25519
+        $array['servername']['short-id'] = $server['short_id']; //$ openssl rand -hex 8
+
+        //Reference: https://clash-meta.wiki/config/proxies/vless/
+        //VLESS-TCP and VLESS-WS are not considered because of safety problem.
+        //VLESS-xtls-rprx-vision is not considered because it needs ssl configuration.
+
+        //Due to the feature of reality that domains and ssl certificates are not required,
+        //only two protocol combinations below are considered. Please acknowledge that.
+
+        //1. VLESS-XTLS-uTLS-REALITY
+        if ($server['network'] === 'tcp') {
+            $array['network'] = 'tcp';
+            $array['flow'] = 'xtls-rprx-vision';
+        }
+
+        //2. VLESS-gRPC-uTLS-REALITY
+        if ($server['network'] === 'grpc') {
+            $array['network'] = 'grpc';
+            $array['flow'] = '';
+            if ($server['networkSettings']) {
+                $grpcSettings = $server['networkSettings'];
+                $array['grpc-opts'] = [];
+                if (isset($grpcSettings['serviceName'])) $array['grpc-opts']['grpc-service-name'] = $grpcSettings['serviceName'];
+            }
+        }
         return $array;
     }
 
