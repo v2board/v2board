@@ -35,6 +35,9 @@ class Shadowrocket
             if ($item['type'] === 'vmess') {
                 $uri .= self::buildVmess($user['uuid'], $item);
             }
+            if ($item['type'] === 'vless') {
+                $uri .= self::buildVless($user['uuid'], $item);
+            }
             if ($item['type'] === 'trojan') {
                 $uri .= self::buildTrojan($user['uuid'], $item);
             }
@@ -110,6 +113,44 @@ class Shadowrocket
         $uri .= "\r\n";
         return $uri;
     }
+
+    public static function buildVless($uuid, $server)
+    {
+        $userinfo = base64_encode('auto:' . $uuid . '@' . $server['host'] . ':' . $server['port']);
+        $config = [
+            'tfo' => 1,
+            'remark' => $server['name'],
+            'alterId' => 0
+        ];
+        if ($server['tls']) {
+            $config['tls'] = 1;
+            if ($server['realitySettings']) {
+                $realitySettings = $server['realitySettings'];
+                if (isset($realitySettings['allowInsecure']) && !empty($realitySettings['allowInsecure']))
+                    $config['allowInsecure'] = (int)$realitySettings['allowInsecure'];
+                if (isset($realitySettings['serverName']) && !empty($realitySettings['serverName']))
+                    $config['peer'] = $realitySettings['serverName'];
+            }
+        }
+        if ($server['network'] === 'grpc') {
+            $config['obfs'] = "grpc";
+            if ($server['networkSettings']) {
+                $grpcSettings = $server['networkSettings'];
+                if (isset($grpcSettings['serviceName']) && !empty($grpcSettings['serviceName']))
+                    $config['path'] = $grpcSettings['serviceName'];
+            }
+            if (isset($realitySettings)) {
+                $config['host'] = $realitySettings['serverName'];
+            } else {
+                $config['host'] = $server['host'];
+            }
+        }
+        $query = http_build_query($config, '', '&', PHP_QUERY_RFC3986);
+        $uri = "vless://{$userinfo}?{$query}";
+        $uri .= "\r\n";
+        return $uri;
+    }
+
 
     public static function buildTrojan($password, $server)
     {

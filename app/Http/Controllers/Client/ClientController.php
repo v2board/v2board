@@ -48,16 +48,25 @@ class ClientController extends Controller
         $expiredDate = $user['expired_at'] ? date('Y-m-d', $user['expired_at']) : '长期有效';
         $userService = new UserService();
         $resetDay = $userService->getResetDay($user);
-        array_unshift($servers, array_merge($servers[0], [
-            'name' => "套餐到期：{$expiredDate}",
+
+        array_unshift($servers, array_merge($servers[3], [
+            'name' => "💡到期前及时续费，防止失联",
         ]));
-        if ($resetDay) {
-            array_unshift($servers, array_merge($servers[0], [
-                'name' => "距离下次重置剩余：{$resetDay} 天",
+
+        array_unshift($servers, array_merge($servers[3], [
+            'name' => "💡用全局模式可加速打开官网",
+        ]));
+
+        $planId= $user['plan_id'];
+        if($planId==1){
+            $expireHour = $user['expired_at'] ? round(($user['expired_at']-time())/60) : '长期有效';
+            array_unshift($servers, array_merge($servers[3], [
+                'name' => "💡流量{$useTraffic}|{$totalTraffic}G $expireHour 分钟后过期",
+            ]));
+        }else{
+            array_unshift($servers, array_merge($servers[3], [
+                'name' => "💡流量{$useTraffic}|{$totalTraffic}G 到期{$expiredDate} {$resetDay}天后重置",
             ]));
         }
-        array_unshift($servers, array_merge($servers[0], [
-            'name' => "剩余流量：{$remainingTraffic} GB",
-        ]));
     }
 }

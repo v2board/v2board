@@ -64,6 +64,16 @@ class AdminRoute
                 $router->post('copy', 'Admin\\Server\\ShadowsocksController@copy');
                 $router->post('sort', 'Admin\\Server\\ShadowsocksController@sort');
             });
+            $router->group([
+                'prefix' => 'server/xray'
+            ], function ($router) {
+                $router->get ('fetch', 'Admin\\Server\\XrayController@fetch');
+                $router->post('save', 'Admin\\Server\\XrayController@save');
+                $router->post('drop', 'Admin\\Server\\XrayController@drop');
+                $router->post('update', 'Admin\\Server\\XrayController@update');
+                $router->post('copy', 'Admin\\Server\\XrayController@copy');
+                $router->post('sort', 'Admin\\Server\\XrayController@sort');
+            });
             // Order
             $router->get ('/order/fetch', 'Admin\\OrderController@fetch');
             $router->post('/order/update', 'Admin\\OrderController@update');

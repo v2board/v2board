@@ -101,6 +101,14 @@ class UniProxyController extends Controller
                     'tls' => $this->nodeInfo->tls
                 ];
                 break;
+            case 'vless':
+                $response = [
+                    'server_port' => $this->nodeInfo->server_port,
+                    'network' => $this->nodeInfo->network,
+                    'networkSettings' => $this->nodeInfo->networkSettings,
+                    'reality' => $this->nodeInfo->reality
+                ];
+                break;
             case 'trojan':
                 $response = [
                     'host' => $this->nodeInfo->host,
