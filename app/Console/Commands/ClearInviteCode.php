@@ -52,7 +52,7 @@ class ClearInviteCode extends Command
                 }
             }
 
-            if($user->plan_id >= 6 && (time() - $user->updated_at) > 432000){
+            if(($user->plan_id == 6 or $user->plan_id == 7) && (time() - $user->updated_at) > 432000){
                 if (InviteCode::where('user_id', $user->id)->delete()) {
                     $this->info("已删除用户(长期套餐)ID为{$user->id}的邀请码");
                 }
