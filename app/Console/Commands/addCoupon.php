@@ -51,6 +51,7 @@ class addCoupon extends Command
         $base = $this->argument('random_number');
         $number = rand($base - 2, $base + 2);
 
+
         if ($number > 0){
             if(Coupon::where('ended_at', '!=', NULL)
                 ->where('ended_at', '>', time())

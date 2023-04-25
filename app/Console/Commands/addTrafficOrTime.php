@@ -50,6 +50,7 @@ class addTrafficOrTime extends Command
         ini_set('memory_limit', -1);
         $this->info("功能：批量添加用户流量或者到期时间\n");
 
+
         $type = $this->argument('type');
         $plan_id = $this->argument('plan_id');
         $value = $this->argument('value');
