@@ -119,30 +119,26 @@ class Shadowrocket
         $userinfo = base64_encode('auto:' . $uuid . '@' . $server['host'] . ':' . $server['port']);
         $config = [
             'tfo' => 1,
-            'remark' => $server['name'],
-            'alterId' => 0
+            'remark' => $server['name']
         ];
-        if ($server['tls']) {
-            $config['tls'] = 1;
+        if ($server['reality']) {
+            $config['reality'] = 1;
+            $config['flow'] = 'xtls-rprx-vision';
+            $config['fingerprint'] = 'chrome';
+            $config['publicKey'] = $server['public_key'];
+            $config['shortID'] = $server['short_id'];;
             if ($server['realitySettings']) {
                 $realitySettings = $server['realitySettings'];
-                if (isset($realitySettings['allowInsecure']) && !empty($realitySettings['allowInsecure']))
-                    $config['allowInsecure'] = (int)$realitySettings['allowInsecure'];
-                if (isset($realitySettings['serverName']) && !empty($realitySettings['serverName']))
-                    $config['peer'] = $realitySettings['serverName'];
+                $config['host'] = $realitySettings['serverName'];//SNI
             }
         }
         if ($server['network'] === 'grpc') {
             $config['obfs'] = "grpc";
+            $config['flow'] = '';
             if ($server['networkSettings']) {
                 $grpcSettings = $server['networkSettings'];
                 if (isset($grpcSettings['serviceName']) && !empty($grpcSettings['serviceName']))
-                    $config['path'] = $grpcSettings['serviceName'];
-            }
-            if (isset($realitySettings)) {
-                $config['host'] = $realitySettings['serverName'];
-            } else {
-                $config['host'] = $server['host'];
+                    $config['path'] = $grpcSettings['serviceName'];// grpc path
             }
         }
         $query = http_build_query($config, '', '&', PHP_QUERY_RFC3986);

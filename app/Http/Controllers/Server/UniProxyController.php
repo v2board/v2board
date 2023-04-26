@@ -106,7 +106,9 @@ class UniProxyController extends Controller
                     'server_port' => $this->nodeInfo->server_port,
                     'network' => $this->nodeInfo->network,
                     'networkSettings' => $this->nodeInfo->networkSettings,
-                    'reality' => $this->nodeInfo->reality
+                    'reality' => $this->nodeInfo->reality,
+                    'public_key' => $this->nodeInfo->public_key,
+                    'short_id' => $this->nodeInfo->short_id
                 ];
                 break;
             case 'trojan':
