@@ -26,7 +26,7 @@ class ClashMeta
         header('profile-update-interval: 24');
         header("content-disposition:attachment;filename*=UTF-8''".rawurlencode($appName));
         $defaultConfig = base_path() . '/resources/rules/default.clash.yaml';
-        $customConfig = base_path() . '/resources/rules/custom.clash.yaml';
+        $customConfig = base_path() . '/resources/rules/custom.clashmeta.yaml';
         if (\File::exists($customConfig)) {
             $config = Yaml::parseFile($customConfig);
         } else {
@@ -102,6 +102,7 @@ class ClashMeta
         $array['port'] = $server['port'];
         $array['cipher'] = $server['cipher'];
         $array['password'] = $password;
+        //$array['udp-over-tcp'] = true;
         $array['udp'] = true;
         return $array;
     }
