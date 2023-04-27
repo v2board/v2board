@@ -23,7 +23,7 @@ class ClientController extends Controller
             $servers = $serverService->getAvailableServers($user);
             $this->setSubscribeInfoToServers($servers, $user);
             if ($flag) {
-                foreach (glob(app_path('Http//Controllers//Client//Protocols') . '/*.php') as $file) {
+                foreach (array_reverse(glob(app_path('Http//Controllers//Client//Protocols') . '/*.php')) as $file) {
                     $file = 'App\\Http\\Controllers\\Client\\Protocols\\' . basename($file, '.php');
                     $class = new $file($user, $servers);
                     if (strpos($flag, $class->flag) !== false) {
