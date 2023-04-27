@@ -158,31 +158,30 @@ class ClashMeta
 
     public static function buildVless($uuid, $server)
     {
+        //Reference: https://clash-meta.wiki/config/proxies/vless/
+
+        //VLESS-TCP and VLESS-WS are not considered because of safety problem such as tls in tls.
+        //VLESS-xtls-rprx-vision is not considered because it needs ssl configuration.
+        //Therefore,
+        //only two protocol combinations below are considered. Please acknowledge that.
+
         $array = [];
         $array['name'] = $server['name'];
         $array['type'] = 'vless';
         $array['server'] = $server['host'];
         $array['port'] = $server['port'];
         $array['uuid'] = $uuid;
-        $array['client-fingerprint'] = 'chrome';
         $array['tls'] = true;
         $array['udp'] = true;
-        $array['servername'] = $server['servername'];
-        $array['reality-opts']['public-key'] = $server['public_key']; //$ xray x25519
-        $array['servername']['short-id'] = $server['short_id']; //$ openssl rand -hex 8
-
-        //Reference: https://clash-meta.wiki/config/proxies/vless/
-        //VLESS-TCP and VLESS-WS are not considered because of safety problem.
-        //VLESS-xtls-rprx-vision is not considered because it needs ssl configuration.
-
-        //Due to the feature of reality that domains and ssl certificates are not required,
-        //only two protocol combinations below are considered. Please acknowledge that.
 
         //1. VLESS-XTLS-uTLS-REALITY
-        if ($server['network'] === 'tcp') {
-            $array['network'] = 'tcp';
-            $array['flow'] = 'xtls-rprx-vision';
-        }
+        $array['network'] = 'tcp';
+        $array['flow'] = 'xtls-rprx-vision';
+
+        $array['servername'] = $server['realitySettings']['serverName'];
+        $array['reality-opts']['public-key'] = $server['public_key']; //$ xray x25519
+        $array['servername']['short-id'] = $server['short_id']; //$ openssl rand -hex 8
+        $array['client-fingerprint'] = 'chrome';
 
         //2. VLESS-gRPC-uTLS-REALITY
         if ($server['network'] === 'grpc') {
