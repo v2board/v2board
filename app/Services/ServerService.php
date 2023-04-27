@@ -53,9 +53,9 @@ class ServerService
                 $vless[$key]['port'] = Helper::randomPort($vless[$key]['port']);
             }
             if ($vless[$key]['parent_id']) {
-                $vless[$key]['last_check_at'] = Cache::get(CacheKey::get('SERVER_XRAY_LAST_CHECK_AT', $vless[$key]['parent_id']));
+                $vless[$key]['last_check_at'] = Cache::get(CacheKey::get('SERVER_VLESS_LAST_CHECK_AT', $vless[$key]['parent_id']));
             } else {
-                $vless[$key]['last_check_at'] = Cache::get(CacheKey::get('SERVER_XRAY_LAST_CHECK_AT', $vless[$key]['id']));
+                $vless[$key]['last_check_at'] = Cache::get(CacheKey::get('SERVER_VLESS_LAST_CHECK_AT', $vless[$key]['id']));
             }
             $servers[] = $vless[$key]->toArray();
         }
