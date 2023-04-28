@@ -49,12 +49,12 @@ class Shadowrocket
     public static function buildShadowsocks($password, $server)
     {
         if ($server['cipher'] === '2022-blake3-aes-128-gcm') {
-            $serverKey = Helper::getShadowsocksServerKey($server['created_at'], 16);
+            $serverKey = Helper::getServerKey($server['created_at'], 16);
             $userKey = Helper::uuidToBase64($password, 16);
             $password = "{$serverKey}:{$userKey}";
         }
         if ($server['cipher'] === '2022-blake3-aes-256-gcm') {
-            $serverKey = Helper::getShadowsocksServerKey($server['created_at'], 32);
+            $serverKey = Helper::getServerKey($server['created_at'], 32);
             $userKey = Helper::uuidToBase64($password, 32);
             $password = "{$serverKey}:{$userKey}";
         }
@@ -65,6 +65,8 @@ class Shadowrocket
             base64_encode("{$server['cipher']}:{$password}")
         );
         return "ss://{$str}@{$server['host']}:{$server['port']}#{$name}\r\n";
+
+        //ss://MjAyMi1ibGFrZTMtYWVzLTEyOC1nY206WVRabU1EZG1NekUzTlRVeVlXUmpaZz09OllqaG1NV1UyTkdRdE5qUXdOaTAwTmc9PQ@shcmmm.chinayyds.top:61036#ss2022-test
     }
 
     public static function buildVmess($uuid, $server)
