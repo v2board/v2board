@@ -185,7 +185,6 @@ return [
                 'maxProcesses' => (int)ceil($parser->getRam()['total'] / 1024 / 1024 / 1024 * 6),
                 'tries' => 1,
                 'balanceCooldown' => 3,
-                'balanceMaxShift' => 1000,
             ],
         ],
     ],
