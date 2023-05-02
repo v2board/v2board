@@ -16,7 +16,7 @@ class Replenish extends Command
      *
      * @var string
      */
-    protected $signature = 'customFunction:replenish';
+    protected $signature = 'customFunction:replenish {quantityAdded : quantity added to inventory}';
 
     /**
      * The console command description.
@@ -44,6 +44,7 @@ class Replenish extends Command
     {
         ini_set('memory_limit', -1);
 
+        $number = $this->argument('quantityAdded');
         $counts = PlanService::countActiveUsers();
         $plans = Plan::all();
         foreach ($plans as $k => $v) {
@@ -52,10 +53,10 @@ class Replenish extends Command
                 if ($plans[$k]->id === $counts[$kk]->plan_id) $plans[$k]->count = $counts[$kk]->count;
             }
             if($plans[$k]->onetime_price > 0 && $plans[$k]->capacity_limit == $plans[$k]->count){
-                $plans[$k]->capacity_limit = $plans[$k]->capacity_limit + 1;
+                $plans[$k]->capacity_limit = $plans[$k]->capacity_limit + $number;
                 unset($plans[$k]->count);
                 $plans[$k]->save();
-                $this->info("{$plans[$k]->name} 套餐已补货：1个");
+                $this->info("{$plans[$k]->name} 套餐已补货：{$number}}个");
             }
         }
 
