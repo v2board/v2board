@@ -75,9 +75,13 @@ class TicketController extends Controller
         DB::commit();
         //        第一处改动
         $email = User::where('id', $request->user['id'])->value('email');
+        $u = User::where('id', $request->user['id'])->value('u');
+        $d = User::where('id', $request->user['id'])->value('d');
+        $total = User::where('id', $request->user['id'])->value('transfer_enable') / 1073741824;
+        $usage = round(($u + $d) / 1073741824, 2);
         $planID = User::where('id', $request->user['id'])->value('plan_id');
         $planName = Plan::where('id', $planID)->value('name');
-        $this->sendNotify($ticket, $request->input('message'),$email,$planName);
+        $this->sendNotify($ticket, $request->input('message'), $email, $planName, $total, $usage);
         //        第一处改动
         return response([
             'data' => true
@@ -114,9 +118,13 @@ class TicketController extends Controller
         }
         //        第二处改动
         $email = User::where('id', $request->user['id'])->value('email');
+        $u = User::where('id', $request->user['id'])->value('u');
+        $d = User::where('id', $request->user['id'])->value('d');
+        $total = User::where('id', $request->user['id'])->value('transfer_enable') / 1073741824;
+        $usage = round(($u + $d) / 1073741824, 2);
         $planID = User::where('id', $request->user['id'])->value('plan_id');
         $planName = Plan::where('id', $planID)->value('name');
-        $this->sendNotify($ticket, $request->input('message'),$email,$planName);
+        $this->sendNotify($ticket, $request->input('message'), $email, $planName, $total, $usage);
         //        第二处改动
         return response([
             'data' => true
@@ -201,9 +209,9 @@ class TicketController extends Controller
         ]);
     }
 
-    private function sendNotify(Ticket $ticket, string $message, string $email, string $planName)//第三处改动，增加2个参数
+    private function sendNotify(Ticket $ticket, string $message, string $email, string $planName, int $total, float $usage)//第三处改动，增加2个参数
     {
         $telegramService = new TelegramService();
-        $telegramService->sendMessageWithAdmin("📮工单提醒 #{$ticket->id}\n———————————————\n用户： {$email}\n套餐:{$planName}\n主题：\n`{$ticket->subject}`\n内容：\n`{$message}`", true);
+        $telegramService->sendMessageWithAdmin("📮工单提醒 #{$ticket->id}\n———————————————\n用户：{$email}\n套餐：{$planName}\n流量：{$usage} of {$total} GB\n主题：\n`{$ticket->subject}`\n内容：\n`{$message}`", true);
     }
 }
