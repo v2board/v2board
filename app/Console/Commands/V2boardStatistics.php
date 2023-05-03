@@ -59,7 +59,8 @@ class V2boardStatistics extends Command
         $recordAt = strtotime('-1 day', strtotime(date('Y-m-d')));
         $statService = new StatisticalService();
         $statService->setStartAt($recordAt);
-        $stats = $statService->getStatUser();
+        $statService->setServerStats();
+        $stats = $statService->getStatServer();
         DB::beginTransaction();
         foreach ($stats as $stat) {
             if (!StatServer::insert([
@@ -86,6 +87,7 @@ class V2boardStatistics extends Command
         $recordAt = strtotime('-1 day', strtotime(date('Y-m-d')));
         $statService = new StatisticalService();
         $statService->setStartAt($recordAt);
+        $statService->setUserStats();
         $stats = $statService->getStatUser();
         DB::beginTransaction();
         foreach ($stats as $stat) {
@@ -109,9 +111,11 @@ class V2boardStatistics extends Command
 
     private function stat()
     {
-        $startAt = strtotime('-1 day', strtotime(date('Y-m-d')));
+        $endAt = strtotime(date('Y-m-d'));
+        $startAt = strtotime('-1 day', $endAt);
         $statisticalService = new StatisticalService();
-        $statisticalService->setRecordAt($startAt);
+        $statisticalService->setStartAt($startAt);
+        $statisticalService->setEndAt($endAt);
         $data = $statisticalService->generateStatData();
         $statistic = Stat::where('record_at', $startAt)
             ->where('record_type', 'd')
