@@ -52,11 +52,7 @@ class StatisticalService {
             $startAt = strtotime(date('Y-m-d'));
             $endAt = strtotime('+1 day', $startAt);
         }
-        $data = [
-            'record_type' => 'd',
-            'paid_rate' => 0,
-            'record_at' => $startAt
-        ];
+        $data = [];
         $data['order_count'] = Order::where('created_at', '>=', $startAt)
             ->where('created_at', '<', $endAt)
             ->count();

@@ -36,24 +36,24 @@ class StatController extends Controller
                 ->get()
                 ->makeHidden(['record_at', 'created_at', 'updated_at', 'id', 'record_type'])
                 ->toArray();
-            $stats = array_reduce($stats, function($carry, $item) {
-                foreach($item as $key => $value) {
-                    if(isset($carry[$key]) && $carry[$key]) {
-                        $carry[$key] += $value;
-                    } else {
-                        $carry[$key] = $value;
-                    }
-                }
-                return $carry;
-            }, []);
-            return [
-                'data' => $stats
-            ];
         }
 
         $statisticalService = new StatisticalService();
+        $stats = array_merge($stats ?? [], [$statisticalService->generateStatData()]);
+
+        $stats = array_reduce($stats, function($carry, $item) {
+            foreach($item as $key => $value) {
+                if(isset($carry[$key]) && $carry[$key]) {
+                    $carry[$key] += $value;
+                } else {
+                    $carry[$key] = $value;
+                }
+            }
+            return $carry;
+        }, []);
+
         return [
-            'data' => $statisticalService->generateStatData()
+            'data' => $stats
         ];
     }
 
@@ -106,12 +106,12 @@ class StatController extends Controller
             $result[] = [
                 'type' => '收款金额',
                 'date' => $date,
-                'value' => $statistic['order_total'] / 100
+                'value' => $statistic['paid_total'] / 100
             ];
             $result[] = [
                 'type' => '收款笔数',
                 'date' => $date,
-                'value' => $statistic['order_count']
+                'value' => $statistic['paid_count']
             ];
             $result[] = [
                 'type' => '佣金金额(已发放)',
@@ -141,12 +141,12 @@ class StatController extends Controller
         $startAt = strtotime('-1 day', strtotime(date('Y-m-d')));
         $endAt = strtotime(date('Y-m-d'));
         $statistics = StatServer::select([
-                'server_id',
-                'server_type',
-                'u',
-                'd',
-                DB::raw('(u+d) as total')
-            ])
+            'server_id',
+            'server_type',
+            'u',
+            'd',
+            DB::raw('(u+d) as total')
+        ])
             ->where('record_at', '>=', $startAt)
             ->where('record_at', '<', $endAt)
             ->where('record_type', 'd')

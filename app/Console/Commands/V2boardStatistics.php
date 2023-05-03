@@ -117,6 +117,8 @@ class V2boardStatistics extends Command
         $statisticalService->setStartAt($startAt);
         $statisticalService->setEndAt($endAt);
         $data = $statisticalService->generateStatData();
+        $data['record_at'] = $startAt;
+        $data['record_type'] = 'd';
         $statistic = Stat::where('record_at', $startAt)
             ->where('record_type', 'd')
             ->first();
