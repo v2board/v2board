@@ -683,3 +683,17 @@ CREATE TABLE `v2_server_hysteria` (
 
 ALTER TABLE `v2_plan`
     ADD `capacity_limit` int(11) NULL AFTER `reset_traffic_method`;
+
+ALTER TABLE `v2_stat_order`
+    CHANGE `record_at` `record_at` int(11) NOT NULL AFTER `id`,
+    CHANGE `record_type` `record_type` char(1) COLLATE 'utf8_general_ci' NOT NULL AFTER `record_at`,
+    CHANGE `order_count` `order_count` int(11) NOT NULL COMMENT '订单数量' AFTER `record_type`,
+    CHANGE `order_amount` `order_total` int(11) NOT NULL COMMENT '订单合计' AFTER `order_count`,
+    CHANGE `commission_count` `commission_count` int(11) NOT NULL AFTER `order_total`,
+    CHANGE `commission_amount` `commission_total` int(11) NOT NULL COMMENT '佣金合计' AFTER `commission_count`,
+    ADD `paid_count` int(11) NOT NULL AFTER `commission_total`,
+    ADD `paid_total` int(11) NOT NULL AFTER `paid_count`,
+    ADD `register_count` int(11) NOT NULL AFTER `paid_total`,
+    ADD `invite_count` int(11) NOT NULL AFTER `register_count`,
+    ADD `transfer_used_total` varchar(32) NOT NULL AFTER `invite_count`,
+    RENAME TO `v2_stat`;

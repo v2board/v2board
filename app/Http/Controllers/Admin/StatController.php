@@ -7,6 +7,7 @@ use App\Models\ServerShadowsocks;
 use App\Models\ServerTrojan;
 use App\Models\StatUser;
 use App\Services\ServerService;
+use App\Services\StatisticalService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\ServerGroup;
@@ -15,16 +16,50 @@ use App\Models\Plan;
 use App\Models\User;
 use App\Models\Ticket;
 use App\Models\Order;
-use App\Models\StatOrder;
+use App\Models\Stat;
 use App\Models\StatServer;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class StatController extends Controller
 {
+    public function getStat(Request $request)
+    {
+        $params = $request->validate([
+            'start_at' => '',
+            'end_at' => ''
+        ]);
+
+        if (isset($params['start_at']) && isset($params['end_at'])) {
+            $stats = Stat::where('record_at', '>=', $params['start_at'])
+                ->where('record_at', '<', $params['end_at'])
+                ->get()
+                ->makeHidden(['record_at', 'created_at', 'updated_at', 'id', 'record_type'])
+                ->toArray();
+            $stats = array_reduce($stats, function($carry, $item) {
+                foreach($item as $key => $value) {
+                    if(isset($carry[$key]) && $carry[$key]) {
+                        $carry[$key] += $value;
+                    } else {
+                        $carry[$key] = $value;
+                    }
+                }
+                return $carry;
+            }, []);
+            return [
+                'data' => $stats
+            ];
+        }
+
+        $statisticalService = new StatisticalService();
+        return [
+            'data' => $statisticalService->generateStatData()
+        ];
+    }
+
     public function getOverride(Request $request)
     {
-        return response([
+        return [
             'data' => [
                 'month_income' => Order::where('created_at', '>=', strtotime(date('Y-m-1')))
                     ->where('created_at', '<', time())
@@ -55,12 +90,12 @@ class StatController extends Controller
                     ->where('created_at', '<', strtotime(date('Y-m-1')))
                     ->sum('get_amount'),
             ]
-        ]);
+        ];
     }
 
     public function getOrder(Request $request)
     {
-        $statistics = StatOrder::where('record_type', 'd')
+        $statistics = Stat::where('record_type', 'd')
             ->limit(31)
             ->orderBy('record_at', 'DESC')
             ->get()
@@ -68,31 +103,31 @@ class StatController extends Controller
         $result = [];
         foreach ($statistics as $statistic) {
             $date = date('m-d', $statistic['record_at']);
-            array_push($result, [
+            $result[] = [
                 'type' => '收款金额',
                 'date' => $date,
-                'value' => $statistic['order_amount'] / 100
-            ]);
-            array_push($result, [
+                'value' => $statistic['order_total'] / 100
+            ];
+            $result[] = [
                 'type' => '收款笔数',
                 'date' => $date,
                 'value' => $statistic['order_count']
-            ]);
-            array_push($result, [
+            ];
+            $result[] = [
                 'type' => '佣金金额(已发放)',
                 'date' => $date,
-                'value' => $statistic['commission_amount'] / 100
-            ]);
-            array_push($result, [
+                'value' => $statistic['commission_total'] / 100
+            ];
+            $result[] = [
                 'type' => '佣金笔数(已发放)',
                 'date' => $date,
                 'value' => $statistic['commission_count']
-            ]);
+            ];
         }
         $result = array_reverse($result);
-        return response([
+        return [
             'data' => $result
-        ]);
+        ];
     }
 
     public function getServerLastRank()
@@ -128,9 +163,9 @@ class StatController extends Controller
             $statistics[$k]['total'] = $statistics[$k]['total'] / 1073741824;
         }
         array_multisort(array_column($statistics, 'total'), SORT_DESC, $statistics);
-        return response([
+        return [
             'data' => $statistics
-        ]);
+        ];
     }
 
     public function getStatUser(Request $request)
@@ -150,5 +185,6 @@ class StatController extends Controller
             'total' => $total
         ];
     }
+
 }
 

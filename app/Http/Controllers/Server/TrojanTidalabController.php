@@ -88,6 +88,8 @@ class TrojanTidalabController extends Controller
         }
 
         $statService = new StatisticalService();
+        $statService->setStartAt(strtotime(date('Y-m-d')));
+        $statService->setUserStats();
         $statService->statUser($server['rate'], $statData);
 
         return response([

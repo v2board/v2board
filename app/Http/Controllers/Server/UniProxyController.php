@@ -71,7 +71,11 @@ class UniProxyController extends Controller
         }
 
         $statService = new StatisticalService();
+        $statService->setStartAt(strtotime(date('Y-m-d')));
+        $statService->setUserStats();
         $statService->statUser($this->nodeInfo->rate, $data);
+        $statService->setServerStats();
+        $statService->statServer($this->nodeId, $this->nodeType, $data);
 
         return response([
             'data' => true

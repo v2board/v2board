@@ -2,11 +2,13 @@
 
 namespace App\Console\Commands;
 
+use App\Models\StatServer;
 use App\Models\StatUser;
+use App\Models\User;
 use App\Services\StatisticalService;
 use Illuminate\Console\Command;
 use App\Models\Order;
-use App\Models\StatOrder;
+use App\Models\Stat;
 use App\Models\CommissionLog;
 use Illuminate\Support\Facades\DB;
 
@@ -43,16 +45,47 @@ class V2boardStatistics extends Command
      */
     public function handle()
     {
+        $startAt = microtime(true);
         ini_set('memory_limit', -1);
-        $this->statOrder();
         $this->statUser();
+        $this->statServer();
+        $this->stat();
+        $this->info('耗时' . (microtime(true) - $startAt));
+    }
+
+    private function statServer()
+    {
+        $createdAt = time();
+        $recordAt = strtotime('-1 day', strtotime(date('Y-m-d')));
+        $statService = new StatisticalService();
+        $statService->setStartAt($recordAt);
+        $stats = $statService->getStatUser();
+        DB::beginTransaction();
+        foreach ($stats as $stat) {
+            if (!StatServer::insert([
+                'server_id' => $stat['server_id'],
+                'server_type' => $stat['server_type'],
+                'u' => $stat['u'],
+                'd' => $stat['d'],
+                'created_at' => $createdAt,
+                'updated_at' => $createdAt,
+                'record_type' => 'd',
+                'record_at' => $recordAt
+            ])) {
+                DB::rollback();
+                throw new \Exception('stat server fail');
+            }
+        }
+        DB::commit();
+        $statService->clearStatServer();
     }
 
     private function statUser()
     {
         $createdAt = time();
         $recordAt = strtotime('-1 day', strtotime(date('Y-m-d')));
-        $statService = new StatisticalService($recordAt);
+        $statService = new StatisticalService();
+        $statService->setStartAt($recordAt);
         $stats = $statService->getStatUser();
         DB::beginTransaction();
         foreach ($stats as $stat) {
@@ -74,34 +107,19 @@ class V2boardStatistics extends Command
         $statService->clearStatUser();
     }
 
-    private function statOrder()
+    private function stat()
     {
-        $endAt = strtotime(date('Y-m-d'));
-        $startAt = strtotime('-1 day', $endAt);
-        $orderBuilder = Order::where('paid_at', '>=', $startAt)
-            ->where('paid_at', '<', $endAt)
-            ->whereNotIn('status', [0, 2]);
-        $orderCount = $orderBuilder->count();
-        $orderAmount = $orderBuilder->sum('total_amount');
-        $commissionLogBuilder = CommissionLog::where('created_at', '>=', $startAt)
-            ->where('created_at', '<', $endAt);
-        $commissionCount = $commissionLogBuilder->count();
-        $commissionAmount = $commissionLogBuilder->sum('get_amount');
-        $data = [
-            'order_count' => $orderCount,
-            'order_amount' => $orderAmount,
-            'commission_count' => $commissionCount,
-            'commission_amount' => $commissionAmount,
-            'record_type' => 'd',
-            'record_at' => $startAt
-        ];
-        $statistic = StatOrder::where('record_at', $startAt)
+        $startAt = strtotime('-1 day', strtotime(date('Y-m-d')));
+        $statisticalService = new StatisticalService();
+        $statisticalService->setRecordAt($startAt);
+        $data = $statisticalService->generateStatData();
+        $statistic = Stat::where('record_at', $startAt)
             ->where('record_type', 'd')
             ->first();
         if ($statistic) {
             $statistic->update($data);
             return;
         }
-        StatOrder::create($data);
+        Stat::create($data);
     }
 }

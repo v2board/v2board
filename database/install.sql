@@ -1,4 +1,4 @@
--- Adminer 4.8.1 MySQL 5.7.29 dump
+-- Adminer 4.7.7 MySQL dump
 
 SET NAMES utf8;
 SET time_zone = '+00:00';
@@ -304,19 +304,24 @@ CREATE TABLE `v2_server_vmess` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
-DROP TABLE IF EXISTS `v2_stat_order`;
-CREATE TABLE `v2_stat_order` (
-                                 `id` int(11) NOT NULL AUTO_INCREMENT,
-                                 `order_count` int(11) NOT NULL COMMENT '订单数量',
-                                 `order_amount` int(11) NOT NULL COMMENT '订单合计',
-                                 `commission_count` int(11) NOT NULL,
-                                 `commission_amount` int(11) NOT NULL COMMENT '佣金合计',
-                                 `record_type` char(1) NOT NULL,
-                                 `record_at` int(11) NOT NULL,
-                                 `created_at` int(11) NOT NULL,
-                                 `updated_at` int(11) NOT NULL,
-                                 PRIMARY KEY (`id`),
-                                 UNIQUE KEY `record_at` (`record_at`)
+DROP TABLE IF EXISTS `v2_stat`;
+CREATE TABLE `v2_stat` (
+                           `id` int(11) NOT NULL AUTO_INCREMENT,
+                           `record_at` int(11) NOT NULL,
+                           `record_type` char(1) NOT NULL,
+                           `order_count` int(11) NOT NULL COMMENT '订单数量',
+                           `order_total` int(11) NOT NULL COMMENT '订单合计',
+                           `commission_count` int(11) NOT NULL,
+                           `commission_total` int(11) NOT NULL COMMENT '佣金合计',
+                           `paid_count` int(11) NOT NULL,
+                           `paid_total` int(11) NOT NULL,
+                           `register_count` int(11) NOT NULL,
+                           `invite_count` int(11) NOT NULL,
+                           `transfer_used_total` varchar(32) NOT NULL,
+                           `created_at` int(11) NOT NULL,
+                           `updated_at` int(11) NOT NULL,
+                           PRIMARY KEY (`id`),
+                           UNIQUE KEY `record_at` (`record_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='订单统计';
 
 
@@ -422,4 +427,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2023-03-08 06:17:49
+-- 2023-05-03 07:27:22
