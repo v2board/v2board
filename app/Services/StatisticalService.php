@@ -74,7 +74,7 @@ class StatisticalService {
         $commissionLogBuilder = CommissionLog::where('created_at', '>=', $startAt)
             ->where('created_at', '<', $endAt);
         $data['commission_count'] = $commissionLogBuilder->count();
-        $data['commission_amount'] = $commissionLogBuilder->sum('get_amount');
+        $data['commission_total'] = $commissionLogBuilder->sum('get_amount');
         $data['register_count'] = User::where('created_at', '>=', $startAt)
             ->where('created_at', '<', $endAt)
             ->count();
