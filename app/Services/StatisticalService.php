@@ -175,4 +175,36 @@ class StatisticalService {
     {
         Cache::forget("stat_server_{$this->startAt}");
     }
+
+    public function getStatRecord($type)
+    {
+        switch ($type) {
+            case "order_total": {
+                return Stat::select([
+                    '*',
+                    DB::raw('order_total / 100 as order_total')
+                ])
+                    ->where('record_at', '>=', $this->startAt)
+                    ->where('record_at', '<', $this->endAt)
+                    ->orderBy('record_at', 'ASC')
+                    ->get();
+            }
+            case "commission_total": {
+                return Stat::select([
+                    '*',
+                    DB::raw('commission_total / 100 as commission_total')
+                ])
+                    ->where('record_at', '>=', $this->startAt)
+                    ->where('record_at', '<', $this->endAt)
+                    ->orderBy('record_at', 'ASC')
+                    ->get();
+            }
+            case "register_count": {
+                return Stat::where('record_at', '>=', $this->startAt)
+                    ->where('record_at', '<', $this->endAt)
+                    ->orderBy('record_at', 'ASC')
+                    ->get();
+            }
+        }
+    }
 }

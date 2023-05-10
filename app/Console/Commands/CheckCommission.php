@@ -50,7 +50,7 @@ class CheckCommission extends Command
         if ((int)config('v2board.commission_auto_check_enable', 1)) {
             Order::where('commission_status', 0)
                 ->where('invite_user_id', '!=', NULL)
-                ->whereNotIn('status', [0, 2])
+                ->where('status', 3)
                 ->where('updated_at', '<=', strtotime('-3 day', time()))
                 ->update([
                     'commission_status' => 1

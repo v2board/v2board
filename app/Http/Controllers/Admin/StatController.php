@@ -57,6 +57,22 @@ class StatController extends Controller
         ];
     }
 
+    public function getStatRecord(Request $request)
+    {
+        $request->validate([
+            'type' => 'required|in:order_total,commission_total,register_count',
+            'start_at' => '',
+            'end_at'
+        ]);
+
+        $statisticalService = new StatisticalService();
+        $statisticalService->setStartAt($request->input('start_at'));
+        $statisticalService->setEndAt($request->input('end_at'));
+        return [
+            'data' => $statisticalService->getStatRecord($request->input('type'))
+        ];
+    }
+
     public function getOverride(Request $request)
     {
         return [
