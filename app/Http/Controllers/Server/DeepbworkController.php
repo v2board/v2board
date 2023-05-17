@@ -82,18 +82,12 @@ class DeepbworkController extends Controller
         Cache::put(CacheKey::get('SERVER_VMESS_ONLINE_USER', $server->id), count($data), 3600);
         Cache::put(CacheKey::get('SERVER_VMESS_LAST_PUSH_AT', $server->id), time(), 3600);
         $userService = new UserService();
-        $statData = [];
-        foreach ($data as $item) {
-            $u = $item['u'];
-            $d = $item['d'];
-            $userService->trafficFetch($u, $d, $item['user_id'], $server->toArray(), 'vmess');
-            $statData[$item['user_id']] = [$u, $d];
-        }
+        $formatData = [];
 
-        $statService = new StatisticalService();
-        $statService->setStartAt(strtotime(date('Y-m-d')));
-        $statService->setUserStats();
-        $statService->statUser($server['rate'], $statData);
+        foreach ($data as $item) {
+            $formatData[$item['user_id']] = [$item['u'], $item['d']];
+        }
+        $userService->trafficFetch($server->toArray(), 'vmess', $formatData);
 
         return response([
             'ret' => 1,

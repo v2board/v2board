@@ -85,30 +85,26 @@ class StatisticalService {
         return $data;
     }
 
-    public function statServer($serverId, $serverType, $data)
+    public function statServer($serverId, $serverType, $u, $d)
     {
-        foreach (array_keys($data) as $key) {
-            $this->serverStats[$serverType] = $this->serverStats[$serverType] ?? [];
-            if (isset($this->serverStats[$serverType][$serverId])) {
-                $this->serverStats[$serverType][$serverId][0] += $data[$key][0];
-                $this->serverStats[$serverType][$serverId][1] += $data[$key][1];
-            } else {
-                $this->serverStats[$serverType][$serverId] = $data[$key];
-            }
+        $this->serverStats[$serverType] = $this->serverStats[$serverType] ?? [];
+        if (isset($this->serverStats[$serverType][$serverId])) {
+            $this->serverStats[$serverType][$serverId][0] += $u;
+            $this->serverStats[$serverType][$serverId][1] += $d;
+        } else {
+            $this->serverStats[$serverType][$serverId] = [$u, $d];
         }
         Cache::set("stat_server_{$this->startAt}", json_encode($this->serverStats));
     }
 
-    public function statUser($rate, $data)
+    public function statUser($rate, $userId, $u, $d)
     {
-        foreach (array_keys($data) as $key) {
-            $this->userStats[$rate] = $this->userStats[$rate] ?? [];
-            if (isset($this->userStats[$rate][$key])) {
-                $this->userStats[$rate][$key][0] += $data[$key][0];
-                $this->userStats[$rate][$key][1] += $data[$key][1];
-            } else {
-                $this->userStats[$rate][$key] = $data[$key];
-            }
+        $this->userStats[$rate] = $this->userStats[$rate] ?? [];
+        if (isset($this->userStats[$rate][$userId])) {
+            $this->userStats[$rate][$userId][0] += $u;
+            $this->userStats[$rate][$userId][1] += $d;
+        } else {
+            $this->userStats[$rate][$userId] = [$u, $d];
         }
         Cache::set("stat_user_{$this->startAt}", json_encode($this->userStats));
     }

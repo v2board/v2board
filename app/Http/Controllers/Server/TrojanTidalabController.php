@@ -79,18 +79,11 @@ class TrojanTidalabController extends Controller
         Cache::put(CacheKey::get('SERVER_TROJAN_ONLINE_USER', $server->id), count($data), 3600);
         Cache::put(CacheKey::get('SERVER_TROJAN_LAST_PUSH_AT', $server->id), time(), 3600);
         $userService = new UserService();
-        $statData = [];
+        $formatData = [];
         foreach ($data as $item) {
-            $u = $item['u'];
-            $d = $item['d'];
-            $userService->trafficFetch($u, $d, $item['user_id'], $server->toArray(), 'trojan');
-            $statData[$item['user_id']] = [$u, $d];
+            $formatData[$item['user_id']] = [$item['u'], $item['d']];
         }
-
-        $statService = new StatisticalService();
-        $statService->setStartAt(strtotime(date('Y-m-d')));
-        $statService->setUserStats();
-        $statService->statUser($server['rate'], $statData);
+        $userService->trafficFetch($server->toArray(), 'trojan', $formatData);
 
         return response([
             'ret' => 1,

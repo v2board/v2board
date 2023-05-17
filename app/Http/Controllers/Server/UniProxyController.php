@@ -64,18 +64,7 @@ class UniProxyController extends Controller
         Cache::put(CacheKey::get('SERVER_' . strtoupper($this->nodeType) . '_ONLINE_USER', $this->nodeInfo->id), count($data), 3600);
         Cache::put(CacheKey::get('SERVER_' . strtoupper($this->nodeType) . '_LAST_PUSH_AT', $this->nodeInfo->id), time(), 3600);
         $userService = new UserService();
-        foreach (array_keys($data) as $k) {
-            $u = $data[$k][0];
-            $d = $data[$k][1];
-            $userService->trafficFetch($u, $d, $k, $this->nodeInfo->toArray(), $this->nodeType);
-        }
-
-        $statService = new StatisticalService();
-        $statService->setStartAt(strtotime(date('Y-m-d')));
-        $statService->setUserStats();
-        $statService->statUser($this->nodeInfo->rate, $data);
-        $statService->setServerStats();
-        $statService->statServer($this->nodeId, $this->nodeType, $data);
+        $userService->trafficFetch($this->nodeInfo->toArray(), $this->nodeType, $data);
 
         return response([
             'data' => true
