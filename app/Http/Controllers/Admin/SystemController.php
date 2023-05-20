@@ -22,7 +22,8 @@ class SystemController extends Controller
         return response([
             'data' => [
                 'schedule' => $this->getScheduleStatus(),
-                'horizon' => $this->getHorizonStatus()
+                'horizon' => $this->getHorizonStatus(),
+                'schedule_last_runtime' => Cache::get(CacheKey::get('SCHEDULE_LAST_CHECK_AT', null))
             ]
         ]);
     }

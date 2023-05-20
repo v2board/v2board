@@ -5,6 +5,7 @@ use App\Models\CommissionLog;
 use App\Models\Order;
 use App\Models\Stat;
 use App\Models\StatServer;
+use App\Models\StatUser;
 use App\Models\User;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -175,10 +176,10 @@ class StatisticalService {
     public function getStatRecord($type)
     {
         switch ($type) {
-            case "order_total": {
+            case "paid_total": {
                 return Stat::select([
                     '*',
-                    DB::raw('order_total / 100 as order_total')
+                    DB::raw('paid_total / 100 as paid_total')
                 ])
                     ->where('record_at', '>=', $this->startAt)
                     ->where('record_at', '<', $this->endAt)
@@ -200,6 +201,47 @@ class StatisticalService {
                     ->where('record_at', '<', $this->endAt)
                     ->orderBy('record_at', 'ASC')
                     ->get();
+            }
+        }
+    }
+
+    public function getRanking($type, $limit = 20)
+    {
+        switch ($type) {
+            case 'server_traffic_rank': {
+                return StatServer::select([
+                    'server_id',
+                    'server_type',
+                    DB::raw('sum(u) as u'),
+                    DB::raw('sum(d) as d'),
+                    DB::raw('sum(u) + sum(d) as total')
+                ])
+                    ->where('record_at', '>=', $this->startAt)
+                    ->where('record_at', '<', $this->endAt)
+                    ->groupBy('server_id', 'server_type')
+                    ->orderBy('total', 'DESC')
+                    ->limit($limit)
+                    ->get();
+            }
+            case 'user_consumption_rank': {
+                $stats = StatUser::select([
+                    'user_id',
+                    DB::raw('sum(u) as u'),
+                    DB::raw('sum(d) as d'),
+                    DB::raw('sum(u) + sum(d) as total')
+                ])
+                    ->where('record_at', '>=', $this->startAt)
+                    ->where('record_at', '<', $this->endAt)
+                    ->groupBy('user_id')
+                    ->orderBy('total', 'DESC')
+                    ->limit($limit)
+                    ->get();
+                $users = User::whereIn('id', $stats->pluck('user_id')->toArray())->get()->keyBy('id');
+                foreach ($stats as $k => $v) {
+                    if (!isset($users[$v['user_id']])) continue;
+                    $stats[$k]['email'] = $users[$v['user_id']]['email'];
+                }
+                return $stats;
             }
         }
     }
