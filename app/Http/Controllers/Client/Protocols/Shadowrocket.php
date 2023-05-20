@@ -82,6 +82,15 @@ class Shadowrocket
                     $config['peer'] = $tlsSettings['serverName'];
             }
         }
+        if ($server['network'] === 'tcp') {
+            if ($server['networkSettings']) {
+                $tcpSettings = $server['networkSettings'];
+                if (isset($tcpSettings['header']['type']) && !empty($tcpSettings['header']['type']))
+                    $config['obfs'] = $tcpSettings['header']['type'];
+                if (isset($tcpSettings['header']['request']['path'][0]) && !empty($tcpSettings['header']['request']['path'][0]))
+                    $config['path'] = $tcpSettings['header']['request']['path'][0];
+            }
+        }
         if ($server['network'] === 'ws') {
             $config['obfs'] = "websocket";
             if ($server['networkSettings']) {
