@@ -120,6 +120,7 @@ class ClashMeta
 
         if ($server['tls']) {
             $array['tls'] = true;
+            $array['cipher'] = 'zero';
             if ($server['tlsSettings']) {
                 $tlsSettings = $server['tlsSettings'];
                 if (isset($tlsSettings['allowInsecure']) && !empty($tlsSettings['allowInsecure']))
