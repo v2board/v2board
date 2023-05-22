@@ -66,6 +66,7 @@ class SagerNet
             "security" => $server['tls'] ? "tls" : "",
         ];
         if ($server['tls']) {
+            $config['fp'] = "randomized";
             if ($server['tlsSettings']) {
                 $tlsSettings = $server['tlsSettings'];
                 if (isset($tlsSettings['serverName']) && !empty($tlsSettings['serverName']))
@@ -95,7 +96,8 @@ class SagerNet
         $query = http_build_query([
             'allowInsecure' => $server['allow_insecure'],
             'peer' => $server['server_name'],
-            'sni' => $server['server_name']
+            'sni' => $server['server_name'],
+            'fp' => "randomized"
         ]);
         $uri = "trojan://{$uuid}@{$server['host']}:{$server['port']}?{$query}#{$name}";
         $uri .= "\r\n";
