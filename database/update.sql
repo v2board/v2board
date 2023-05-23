@@ -574,9 +574,6 @@ ALTER TABLE `v2_server_shadowsocks`
 ALTER TABLE `v2_server_trojan`
     CHANGE `port` `port` varchar(11) NOT NULL COMMENT '连接端口' AFTER `host`;
 
-DELETE FROM `v2_stat_server`
-WHERE `server_type` = 'vmess';
-
 ALTER TABLE `v2_server_shadowsocks`
     ADD `route_id` varchar(255) COLLATE 'utf8mb4_general_ci' NULL AFTER `group_id`;
 
