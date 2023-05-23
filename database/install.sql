@@ -81,6 +81,23 @@ CREATE TABLE `v2_knowledge` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='知識庫';
 
 
+DROP TABLE IF EXISTS `v2_log`;
+CREATE TABLE `v2_log` (
+                          `id` int(11) NOT NULL AUTO_INCREMENT,
+                          `title` varchar(255) NOT NULL,
+                          `level` varchar(11) DEFAULT NULL,
+                          `host` varchar(255) DEFAULT NULL,
+                          `uri` varchar(255) NOT NULL,
+                          `method` varchar(11) NOT NULL,
+                          `data` text,
+                          `ip` varchar(128) DEFAULT NULL,
+                          `context` text,
+                          `created_at` int(11) NOT NULL,
+                          `updated_at` int(11) NOT NULL,
+                          PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
 DROP TABLE IF EXISTS `v2_mail_log`;
 CREATE TABLE `v2_mail_log` (
                                `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -163,8 +180,8 @@ CREATE TABLE `v2_plan` (
                            `id` int(11) NOT NULL AUTO_INCREMENT,
                            `group_id` int(11) NOT NULL,
                            `transfer_enable` int(11) NOT NULL,
-                           `speed_limit` int(11) DEFAULT NULL,
                            `name` varchar(255) NOT NULL,
+                           `speed_limit` int(11) DEFAULT NULL,
                            `show` tinyint(1) NOT NULL DEFAULT '0',
                            `sort` int(11) DEFAULT NULL,
                            `renew` tinyint(1) NOT NULL DEFAULT '1',
@@ -408,8 +425,8 @@ CREATE TABLE `v2_user` (
                            `transfer_enable` bigint(20) NOT NULL DEFAULT '0',
                            `banned` tinyint(1) NOT NULL DEFAULT '0',
                            `is_admin` tinyint(1) NOT NULL DEFAULT '0',
-                           `is_staff` tinyint(1) NOT NULL DEFAULT '0',
                            `last_login_at` int(11) DEFAULT NULL,
+                           `is_staff` tinyint(1) NOT NULL DEFAULT '0',
                            `last_login_ip` int(11) DEFAULT NULL,
                            `uuid` varchar(36) NOT NULL,
                            `group_id` int(11) DEFAULT NULL,
@@ -418,8 +435,8 @@ CREATE TABLE `v2_user` (
                            `remind_expire` tinyint(4) DEFAULT '1',
                            `remind_traffic` tinyint(4) DEFAULT '1',
                            `token` char(32) NOT NULL,
-                           `remarks` text,
                            `expired_at` bigint(20) DEFAULT '0',
+                           `remarks` text,
                            `created_at` int(11) NOT NULL,
                            `updated_at` int(11) NOT NULL,
                            PRIMARY KEY (`id`),
@@ -427,4 +444,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2023-05-03 07:27:22
+-- 2023-05-23 17:01:12

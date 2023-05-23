@@ -107,17 +107,6 @@ CREATE TABLE `v2_coupon` (
 ALTER TABLE `v2_order`
 ADD `discount_amount` int(11) NULL AFTER `total_amount`;
 
-CREATE TABLE `v2_tutorial` (
-  `id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  `title` varchar(255) COLLATE 'utf8mb4_general_ci' NOT NULL,
-  `description` varchar(255) COLLATE 'utf8mb4_general_ci' NOT NULL,
-  `icon` varchar(255) COLLATE 'utf8mb4_general_ci' NOT NULL,
-  `steps` text NULL,
-  `show` tinyint(1) NOT NULL DEFAULT '0',
-  `created_at` int(11) NOT NULL,
-  `updated_at` int(11) NOT NULL
-);
-
 ALTER TABLE `v2_server_log`
 CHANGE `rate` `rate` decimal(10,2) NOT NULL AFTER `d`;
 
@@ -374,20 +363,6 @@ ADD UNIQUE `server_id_server_type_record_at` (`server_id`, `server_type`, `recor
 ALTER TABLE `v2_stat_server`
 ADD INDEX `record_at` (`record_at`),
 ADD INDEX `server_id` (`server_id`);
-
-CREATE TABLE `v2_stat_order` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `order_count` int(11) NOT NULL COMMENT '订单数量',
-  `order_amount` int(11) NOT NULL COMMENT '订单合计',
-  `commission_count` int(11) NOT NULL,
-  `commission_amount` int(11) NOT NULL COMMENT '佣金合计',
-  `record_type` char(1) NOT NULL,
-  `record_at` int(11) NOT NULL,
-  `created_at` int(11) NOT NULL,
-  `updated_at` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `record_at` (`record_at`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='订单统计';
 
 ALTER TABLE `v2_user`
 DROP `enable`;
@@ -697,3 +672,18 @@ ALTER TABLE `v2_stat_order`
     ADD `invite_count` int(11) NOT NULL AFTER `register_count`,
     ADD `transfer_used_total` varchar(32) NOT NULL AFTER `invite_count`,
     RENAME TO `v2_stat`;
+
+CREATE TABLE `v2_log` (
+                          `id` int(11) NOT NULL AUTO_INCREMENT,
+                          `title` varchar(255) NOT NULL,
+                          `level` varchar(11) DEFAULT NULL,
+                          `host` varchar(255) DEFAULT NULL,
+                          `uri` varchar(255) NOT NULL,
+                          `method` varchar(11) NOT NULL,
+                          `data` text,
+                          `ip` varchar(128) DEFAULT NULL,
+                          `context` text,
+                          `created_at` int(11) NOT NULL,
+                          `updated_at` int(11) NOT NULL,
+                          PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

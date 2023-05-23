@@ -209,40 +209,75 @@ class StatisticalService {
     {
         switch ($type) {
             case 'server_traffic_rank': {
-                return StatServer::select([
-                    'server_id',
-                    'server_type',
-                    DB::raw('sum(u) as u'),
-                    DB::raw('sum(d) as d'),
-                    DB::raw('sum(u) + sum(d) as total')
-                ])
-                    ->where('record_at', '>=', $this->startAt)
-                    ->where('record_at', '<', $this->endAt)
-                    ->groupBy('server_id', 'server_type')
-                    ->orderBy('total', 'DESC')
-                    ->limit($limit)
-                    ->get();
+                return $this->buildServerTrafficRank($limit);
             }
             case 'user_consumption_rank': {
-                $stats = StatUser::select([
-                    'user_id',
-                    DB::raw('sum(u) as u'),
-                    DB::raw('sum(d) as d'),
-                    DB::raw('sum(u) + sum(d) as total')
-                ])
-                    ->where('record_at', '>=', $this->startAt)
-                    ->where('record_at', '<', $this->endAt)
-                    ->groupBy('user_id')
-                    ->orderBy('total', 'DESC')
-                    ->limit($limit)
-                    ->get();
-                $users = User::whereIn('id', $stats->pluck('user_id')->toArray())->get()->keyBy('id');
-                foreach ($stats as $k => $v) {
-                    if (!isset($users[$v['user_id']])) continue;
-                    $stats[$k]['email'] = $users[$v['user_id']]['email'];
-                }
-                return $stats;
+                return $this->buildUserConsumptionRank($limit);
+            }
+            case 'invite_rank': {
+                return $this->buildInviteRank($limit);
             }
         }
+    }
+
+    private function buildInviteRank($limit)
+    {
+        $stats = User::select([
+            'invite_user_id',
+            DB::raw('count(*) as count')
+        ])
+            ->where('created_at', '>=', $this->startAt)
+            ->where('created_at', '<', $this->endAt)
+            ->whereNotNull('invite_user_id')
+            ->groupBy('invite_user_id')
+            ->orderBy('count', 'DESC')
+            ->limit($limit)
+            ->get();
+
+        $users = User::whereIn('id', $stats->pluck('invite_user_id')->toArray())->get()->keyBy('id');
+        foreach ($stats as $k => $v) {
+            if (!isset($users[$v['invite_user_id']])) continue;
+            $stats[$k]['email'] = $users[$v['invite_user_id']]['email'];
+        }
+        return $stats;
+    }
+
+    private function buildUserConsumptionRank($limit)
+    {
+        $stats = StatUser::select([
+            'user_id',
+            DB::raw('sum(u) as u'),
+            DB::raw('sum(d) as d'),
+            DB::raw('sum(u) + sum(d) as total')
+        ])
+            ->where('record_at', '>=', $this->startAt)
+            ->where('record_at', '<', $this->endAt)
+            ->groupBy('user_id')
+            ->orderBy('total', 'DESC')
+            ->limit($limit)
+            ->get();
+        $users = User::whereIn('id', $stats->pluck('user_id')->toArray())->get()->keyBy('id');
+        foreach ($stats as $k => $v) {
+            if (!isset($users[$v['user_id']])) continue;
+            $stats[$k]['email'] = $users[$v['user_id']]['email'];
+        }
+        return $stats;
+    }
+
+    private function buildServerTrafficRank($limit)
+    {
+        return StatServer::select([
+            'server_id',
+            'server_type',
+            DB::raw('sum(u) as u'),
+            DB::raw('sum(d) as d'),
+            DB::raw('sum(u) + sum(d) as total')
+        ])
+            ->where('record_at', '>=', $this->startAt)
+            ->where('record_at', '<', $this->endAt)
+            ->groupBy('server_id', 'server_type')
+            ->orderBy('total', 'DESC')
+            ->limit($limit)
+            ->get();
     }
 }

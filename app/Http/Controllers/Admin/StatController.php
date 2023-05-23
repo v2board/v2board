@@ -36,10 +36,12 @@ class StatController extends Controller
                 ->get()
                 ->makeHidden(['record_at', 'created_at', 'updated_at', 'id', 'record_type'])
                 ->toArray();
+        } else {
+            $statisticalService = new StatisticalService();
+            return [
+                'data' => $statisticalService->generateStatData()
+            ];
         }
-
-        $statisticalService = new StatisticalService();
-        $stats = array_merge($stats ?? [], [$statisticalService->generateStatData()]);
 
         $stats = array_reduce($stats, function($carry, $item) {
             foreach($item as $key => $value) {
@@ -60,9 +62,9 @@ class StatController extends Controller
     public function getStatRecord(Request $request)
     {
         $request->validate([
-            'type' => 'required|in:order_total,commission_total,register_count',
+            'type' => 'required|in:paid_total,commission_total,register_count',
             'start_at' => '',
-            'end_at'
+            'end_at' => ''
         ]);
 
         $statisticalService = new StatisticalService();
@@ -70,6 +72,23 @@ class StatController extends Controller
         $statisticalService->setEndAt($request->input('end_at'));
         return [
             'data' => $statisticalService->getStatRecord($request->input('type'))
+        ];
+    }
+
+    public function getRanking(Request $request)
+    {
+        $request->validate([
+            'type' => 'required|in:server_traffic_rank,user_consumption_rank,invite_rank',
+            'start_at' => '',
+            'end_at' => '',
+            'limit' => 'nullable|integer'
+        ]);
+
+        $statisticalService = new StatisticalService();
+        $statisticalService->setStartAt($request->input('start_at'));
+        $statisticalService->setEndAt($request->input('end_at'));
+        return [
+            'data' => $statisticalService->getRanking($request->input('type'), $request->input('limit') ?? 20)
         ];
     }
 
