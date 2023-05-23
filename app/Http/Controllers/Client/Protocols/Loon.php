@@ -69,7 +69,7 @@ class Loon
             "{$server['name']}=vmess",
             "{$server['host']}",
             "{$server['port']}",
-            'aes-128-gcm',
+            'auto',
             "{$uuid}",
             'fast-open=false',
             'udp=true',
@@ -78,6 +78,15 @@ class Loon
 
         if ($server['network'] === 'tcp') {
             array_push($config, 'transport=tcp');
+            if ($server['networkSettings']) {
+                $tcpSettings = $server['networkSettings'];
+                if (isset($tcpSettings['header']['type']) && !empty($tcpSettings['header']['type']))
+                    $config = str_replace('transport=tcp', "transport={$tcpSettings['header']['type']}", $config);
+                if (isset($tcpSettings['header']['request']['path'][0]) && !empty($tcpSettings['header']['request']['path'][0]))
+                    array_push($config, "path={$tcpSettings['header']['request']['path'][0]}");
+                if (isset($tcpSettings['header']['Host']) && !empty($tcpSettings['header']['Host']))
+                    array_push($config, "host={$tcpSettings['header']['Host']}");
+            }
         }
         if ($server['tls']) {
             if ($server['network'] === 'tcp')
