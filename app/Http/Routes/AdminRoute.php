@@ -97,6 +97,8 @@ class AdminRoute
             $router->get ('/stat/getServerLastRank', 'Admin\\StatController@getServerLastRank');
             $router->get ('/stat/getOrder', 'Admin\\StatController@getOrder');
             $router->get ('/stat/getStatUser', 'Admin\\StatController@getStatUser');
+            $router->get ('/stat/getRanking', 'Admin\\StatController@getRanking');
+            $router->get ('/stat/getStatRecord', 'Admin\\StatController@getStatRecord');
             // Notice
             $router->get ('/notice/fetch', 'Admin\\NoticeController@fetch');
             $router->post('/notice/save', 'Admin\\NoticeController@save');
@@ -132,6 +134,7 @@ class AdminRoute
             $router->get ('/system/getQueueStats', 'Admin\\SystemController@getQueueStats');
             $router->get ('/system/getQueueWorkload', 'Admin\\SystemController@getQueueWorkload');
             $router->get ('/system/getQueueMasters', '\\Laravel\\Horizon\\Http\\Controllers\\MasterSupervisorController@index');
+            $router->get ('/system/getSystemLog', 'Admin\\SystemController@getSystemLog');
             // Theme
             $router->get ('/theme/getThemes', 'Admin\\ThemeController@getThemes');
             $router->post('/theme/saveThemeConfig', 'Admin\\ThemeController@saveThemeConfig');
