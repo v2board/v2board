@@ -5,9 +5,9 @@ namespace App\Http\Controllers\Client\Protocols;
 
 use App\Utils\Helper;
 
-class V2rayN
+class General
 {
-    public $flag = 'v2rayn';
+    public $flag = 'general';
     private $servers;
     private $user;
 

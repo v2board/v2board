@@ -45,6 +45,7 @@ class SendRemindMail extends Command
         $mailService = new MailService();
         foreach ($users as $user) {
             if ($user->remind_expire) $mailService->remindExpire($user);
+            if ($user->remind_traffic) $mailService->remindTraffic($user);
         }
     }
 }

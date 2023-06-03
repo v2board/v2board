@@ -116,7 +116,7 @@ class AuthController extends Controller
             if (empty($request->input('email_code'))) {
                 abort(500, __('Email verification code cannot be empty'));
             }
-            if (Cache::get(CacheKey::get('EMAIL_VERIFY_CODE', $request->input('email'))) !== $request->input('email_code')) {
+            if ((string)Cache::get(CacheKey::get('EMAIL_VERIFY_CODE', $request->input('email'))) !== (string)$request->input('email_code')) {
                 abort(500, __('Incorrect email verification code'));
             }
         }
@@ -286,7 +286,7 @@ class AuthController extends Controller
 
     public function forget(AuthForget $request)
     {
-        if (Cache::get(CacheKey::get('EMAIL_VERIFY_CODE', $request->input('email'))) !== $request->input('email_code')) {
+        if ((string)Cache::get(CacheKey::get('EMAIL_VERIFY_CODE', $request->input('email'))) !== (string)$request->input('email_code')) {
             abort(500, __('Incorrect email verification code'));
         }
         $user = User::where('email', $request->input('email'))->first();

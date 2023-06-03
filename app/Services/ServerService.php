@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\ServerHysteria;
 use App\Models\ServerLog;
 use App\Models\ServerRoute;
 use App\Models\ServerShadowsocks;
@@ -61,6 +62,29 @@ class ServerService
         return $servers;
     }
 
+    public function getAvailableHysteria(User $user)
+    {
+        $availableServers = [];
+        $model = ServerHysteria::orderBy('sort', 'ASC');
+        $servers = $model->get()->keyBy('id');
+        foreach ($servers as $key => $v) {
+            if (!$v['show']) continue;
+            $servers[$key]['type'] = 'hysteria';
+            $servers[$key]['last_check_at'] = Cache::get(CacheKey::get('SERVER_HYSTERIA_LAST_CHECK_AT', $v['id']));
+            if (!in_array($user->group_id, $v['group_id'])) continue;
+            if (strpos($v['port'], '-') !== false) {
+                $servers[$key]['port'] = Helper::randomPort($v['port']);
+            }
+            if (isset($servers[$v['parent_id']])) {
+                $servers[$key]['last_check_at'] = Cache::get(CacheKey::get('SERVER_HYSTERIA_LAST_CHECK_AT', $v['parent_id']));
+                $servers[$key]['created_at'] = $servers[$v['parent_id']]['created_at'];
+            }
+            $servers[$key]['server_key'] = Helper::getServerKey($servers[$key]['created_at'], 16);
+            $availableServers[] = $servers[$key]->toArray();
+        }
+        return $availableServers;
+    }
+
     public function getAvailableShadowsocks(User $user)
     {
         $servers = [];
@@ -88,7 +112,8 @@ class ServerService
         $servers = array_merge(
             $this->getAvailableShadowsocks($user),
             $this->getAvailableVmess($user),
-            $this->getAvailableTrojan($user)
+            $this->getAvailableTrojan($user),
+            $this->getAvailableHysteria($user)
         );
         $tmp = array_column($servers, 'sort');
         array_multisort($tmp, SORT_ASC, $servers);
@@ -182,6 +207,17 @@ class ServerService
         return $servers;
     }
 
+    public function getAllHysteria()
+    {
+        $servers = ServerHysteria::orderBy('sort', 'ASC')
+            ->get()
+            ->toArray();
+        foreach ($servers as $k => $v) {
+            $servers[$k]['type'] = 'hysteria';
+        }
+        return $servers;
+    }
+
     private function mergeData(&$servers)
     {
         foreach ($servers as $k => $v) {
@@ -204,7 +240,8 @@ class ServerService
         $servers = array_merge(
             $this->getAllShadowsocks(),
             $this->getAllVMess(),
-            $this->getAllTrojan()
+            $this->getAllTrojan(),
+            $this->getAllHysteria()
         );
         $this->mergeData($servers);
         $tmp = array_column($servers, 'sort');
@@ -233,6 +270,8 @@ class ServerService
                 return ServerShadowsocks::find($serverId);
             case 'trojan':
                 return ServerTrojan::find($serverId);
+            case 'hysteria':
+                return ServerHysteria::find($serverId);
             default:
                 return false;
         }

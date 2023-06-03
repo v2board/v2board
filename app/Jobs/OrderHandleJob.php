@@ -15,6 +15,8 @@ class OrderHandleJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
     protected $order;
 
+    public $tries = 3;
+    public $timeout = 5;
     /**
      * Create a new job instance.
      *

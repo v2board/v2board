@@ -223,7 +223,11 @@ class OrderService
         $order->paid_at = time();
         $order->callback_no = $callbackNo;
         if (!$order->save()) return false;
-        OrderHandleJob::dispatch($order->trade_no);
+        try {
+            OrderHandleJob::dispatchNow($order->trade_no);
+        } catch (\Exception $e) {
+            return false;
+        }
         return true;
     }
 

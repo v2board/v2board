@@ -175,7 +175,6 @@ return [
                 'queue' => [
                     'order_handle',
                     'traffic_fetch',
-                    'stat',
                     'send_email',
                     'send_email_mass',
                     'send_telegram',
@@ -184,7 +183,7 @@ return [
                 'minProcesses' => 1,
                 'maxProcesses' => (int)ceil($parser->getRam()['total'] / 1024 / 1024 / 1024 * 6),
                 'tries' => 1,
-                'nice' => 0,
+                'balanceCooldown' => 3,
             ],
         ],
     ],

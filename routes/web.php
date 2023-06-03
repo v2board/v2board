@@ -23,7 +23,6 @@ Route::get('/', function (Request $request) {
     $renderParams = [
         'title' => config('v2board.app_name', 'V2Board'),
         'theme' => config('v2board.frontend_theme', 'v2board'),
-        'theme_path' => '/theme/' . config('v2board.frontend_theme', 'v2board') . '/assets/',
         'version' => config('app.version'),
         'description' => config('v2board.app_description', 'V2Board is best'),
         'logo' => config('v2board.logo')

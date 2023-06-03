@@ -7,7 +7,7 @@ use Symfony\Component\Yaml\Yaml;
 
 class ClashMeta
 {
-    public $flag = 'clashmeta';
+    public $flag = 'meta';
     private $servers;
     private $user;
 
@@ -68,6 +68,10 @@ class ClashMeta
             if ($isFilter) continue;
             $config['proxy-groups'][$k]['proxies'] = array_merge($config['proxy-groups'][$k]['proxies'], $proxies);
         }
+        $config['proxy-groups'] = array_filter($config['proxy-groups'], function($group) {
+            return $group['proxies'];
+        });
+        $config['proxy-groups'] = array_values($config['proxy-groups']);
         // Force the current subscription domain to be a direct rule
         $subsDomain = $_SERVER['HTTP_HOST'];
         if ($subsDomain) {
@@ -82,12 +86,12 @@ class ClashMeta
     public static function buildShadowsocks($password, $server)
     {
         if ($server['cipher'] === '2022-blake3-aes-128-gcm') {
-            $serverKey = Helper::getShadowsocksServerKey($server['created_at'], 16);
+            $serverKey = Helper::getServerKey($server['created_at'], 16);
             $userKey = Helper::uuidToBase64($password, 16);
             $password = "{$serverKey}:{$userKey}";
         }
         if ($server['cipher'] === '2022-blake3-aes-256-gcm') {
-            $serverKey = Helper::getShadowsocksServerKey($server['created_at'], 32);
+            $serverKey = Helper::getServerKey($server['created_at'], 32);
             $userKey = Helper::uuidToBase64($password, 32);
             $password = "{$serverKey}:{$userKey}";
         }
@@ -123,6 +127,11 @@ class ClashMeta
                 if (isset($tlsSettings['serverName']) && !empty($tlsSettings['serverName']))
                     $array['servername'] = $tlsSettings['serverName'];
             }
+        }
+        if ($server['network'] === 'tcp') {
+            $tcpSettings = $server['networkSettings'];
+            if (isset($tcpSettings['header']['type'])) $array['network'] = $tcpSettings['header']['type'];
+            if (isset($tcpSettings['header']['request']['path'][0])) $array['http-opts']['path'] = $tcpSettings['header']['request']['path'][0];
         }
         if ($server['network'] === 'ws') {
             $array['network'] = 'ws';

@@ -9,7 +9,7 @@ class AdminRoute
     {
         $router->group([
             'prefix' => config('v2board.secure_path', config('v2board.frontend_admin_path', hash('crc32b', config('app.key')))),
-            'middleware' => 'admin'
+            'middleware' => ['admin', 'log']
         ], function ($router) {
             // Config
             $router->get ('/config/fetch', 'Admin\\ConfigController@fetch');
@@ -64,6 +64,16 @@ class AdminRoute
                 $router->post('copy', 'Admin\\Server\\ShadowsocksController@copy');
                 $router->post('sort', 'Admin\\Server\\ShadowsocksController@sort');
             });
+            $router->group([
+                'prefix' => 'server/hysteria'
+            ], function ($router) {
+                $router->get ('fetch', 'Admin\\Server\\HysteriaController@fetch');
+                $router->post('save', 'Admin\\Server\\HysteriaController@save');
+                $router->post('drop', 'Admin\\Server\\HysteriaController@drop');
+                $router->post('update', 'Admin\\Server\\HysteriaController@update');
+                $router->post('copy', 'Admin\\Server\\HysteriaController@copy');
+                $router->post('sort', 'Admin\\Server\\HysteriaController@sort');
+            });
             // Order
             $router->get ('/order/fetch', 'Admin\\OrderController@fetch');
             $router->post('/order/update', 'Admin\\OrderController@update');
@@ -81,11 +91,14 @@ class AdminRoute
             $router->post('/user/ban', 'Admin\\UserController@ban');
             $router->post('/user/resetSecret', 'Admin\\UserController@resetSecret');
             $router->post('/user/setInviteUser', 'Admin\\UserController@setInviteUser');
-            // StatOrder
+            // Stat
+            $router->get ('/stat/getStat', 'Admin\\StatController@getStat');
             $router->get ('/stat/getOverride', 'Admin\\StatController@getOverride');
             $router->get ('/stat/getServerLastRank', 'Admin\\StatController@getServerLastRank');
             $router->get ('/stat/getOrder', 'Admin\\StatController@getOrder');
             $router->get ('/stat/getStatUser', 'Admin\\StatController@getStatUser');
+            $router->get ('/stat/getRanking', 'Admin\\StatController@getRanking');
+            $router->get ('/stat/getStatRecord', 'Admin\\StatController@getStatRecord');
             // Notice
             $router->get ('/notice/fetch', 'Admin\\NoticeController@fetch');
             $router->post('/notice/save', 'Admin\\NoticeController@save');
@@ -121,6 +134,7 @@ class AdminRoute
             $router->get ('/system/getQueueStats', 'Admin\\SystemController@getQueueStats');
             $router->get ('/system/getQueueWorkload', 'Admin\\SystemController@getQueueWorkload');
             $router->get ('/system/getQueueMasters', '\\Laravel\\Horizon\\Http\\Controllers\\MasterSupervisorController@index');
+            $router->get ('/system/getSystemLog', 'Admin\\SystemController@getSystemLog');
             // Theme
             $router->get ('/theme/getThemes', 'Admin\\ThemeController@getThemes');
             $router->post('/theme/saveThemeConfig', 'Admin\\ThemeController@saveThemeConfig');

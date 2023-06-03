@@ -33,6 +33,11 @@ class StripeCheckout {
                 'label' => 'WebHook 密钥签名',
                 'description' => '',
                 'type' => 'input',
+            ],
+            'stripe_custom_field_name' => [
+                'label' => '自定义字段名称',
+                'description' => '例如可设置为“联系方式”，以便及时与客户取得联系',
+                'type' => 'input',
             ]
         ];
     }
@@ -44,6 +49,7 @@ class StripeCheckout {
         if (!$exchange) {
             abort(500, __('Currency conversion has timed out, please try again later'));
         }
+        $customFieldName = isset($this->config['stripe_custom_field_name']) ? $this->config['stripe_custom_field_name'] : 'Contact Infomation';
 
         $params = [
             'success_url' => $order['return_url'],
@@ -61,7 +67,16 @@ class StripeCheckout {
                     'quantity' => 1
                 ]
             ],
-            'mode' => 'payment'
+            'mode' => 'payment',
+            'invoice_creation' => ['enabled' => true],
+            'phone_number_collection' => ['enabled' => true],
+            'custom_fields' => [
+                [
+                    'key' => 'contactinfo',
+                    'label' => ['type' => 'custom', 'custom' => $customFieldName],
+                    'type' => 'text',
+                ],
+            ],
             // 'customer_email' => $user['email'] not support
 
         ];

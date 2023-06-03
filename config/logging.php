@@ -16,7 +16,7 @@ return [
     |
     */
 
-    'default' => env('LOG_CHANNEL', 'stack'),
+    'default' => 'mysql',
 
     /*
     |--------------------------------------------------------------------------
@@ -34,6 +34,11 @@ return [
     */
 
     'channels' => [
+        'mysql' => [
+            'driver' => 'custom',
+            'via' => App\Logging\MysqlLogger::class,
+        ],
+
         'stack' => [
             'driver' => 'stack',
             'channels' => ['daily'],

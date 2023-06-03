@@ -20,7 +20,7 @@ class TrafficFetchJob implements ShouldQueue
     protected $protocol;
 
     public $tries = 3;
-    public $timeout = 3;
+    public $timeout = 10;
 
     /**
      * Create a new job instance.
@@ -50,8 +50,8 @@ class TrafficFetchJob implements ShouldQueue
         $user->t = time();
         $user->u = $user->u + ($this->u * $this->server['rate']);
         $user->d = $user->d + ($this->d * $this->server['rate']);
-        if (!$user->save()) throw new \Exception('流量更新失败');
-        $mailService = new MailService();
-        $mailService->remindTraffic($user);
+        if (!$user->save()) {
+            info("流量更新失败\n未记录用户ID:{$this->userId}\n未记录上行:{$user->u}\n未记录下行:{$user->d}");
+        }
     }
 }

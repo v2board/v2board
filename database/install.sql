@@ -1,4 +1,4 @@
--- Adminer 4.8.1 MySQL 5.7.29 dump
+-- Adminer 4.7.7 MySQL dump
 
 SET NAMES utf8;
 SET time_zone = '+00:00';
@@ -79,6 +79,23 @@ CREATE TABLE `v2_knowledge` (
                                 `updated_at` int(11) NOT NULL COMMENT '更新時間',
                                 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='知識庫';
+
+
+DROP TABLE IF EXISTS `v2_log`;
+CREATE TABLE `v2_log` (
+                          `id` int(11) NOT NULL AUTO_INCREMENT,
+                          `title` varchar(255) NOT NULL,
+                          `level` varchar(11) DEFAULT NULL,
+                          `host` varchar(255) DEFAULT NULL,
+                          `uri` varchar(255) NOT NULL,
+                          `method` varchar(11) NOT NULL,
+                          `data` text,
+                          `ip` varchar(128) DEFAULT NULL,
+                          `context` text,
+                          `created_at` int(11) NOT NULL,
+                          `updated_at` int(11) NOT NULL,
+                          PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `v2_mail_log`;
@@ -163,8 +180,8 @@ CREATE TABLE `v2_plan` (
                            `id` int(11) NOT NULL AUTO_INCREMENT,
                            `group_id` int(11) NOT NULL,
                            `transfer_enable` int(11) NOT NULL,
-                           `speed_limit` int(11) DEFAULT NULL,
                            `name` varchar(255) NOT NULL,
+                           `speed_limit` int(11) DEFAULT NULL,
                            `show` tinyint(1) NOT NULL DEFAULT '0',
                            `sort` int(11) DEFAULT NULL,
                            `renew` tinyint(1) NOT NULL DEFAULT '1',
@@ -193,6 +210,30 @@ CREATE TABLE `v2_server_group` (
                                    `updated_at` int(11) NOT NULL,
                                    PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+DROP TABLE IF EXISTS `v2_server_hysteria`;
+CREATE TABLE `v2_server_hysteria` (
+                                      `id` int(11) NOT NULL AUTO_INCREMENT,
+                                      `group_id` varchar(255) NOT NULL,
+                                      `route_id` varchar(255) DEFAULT NULL,
+                                      `name` varchar(255) NOT NULL,
+                                      `parent_id` int(11) DEFAULT NULL,
+                                      `host` varchar(255) NOT NULL,
+                                      `port` varchar(11) NOT NULL,
+                                      `server_port` int(11) NOT NULL,
+                                      `tags` varchar(255) DEFAULT NULL,
+                                      `rate` varchar(11) NOT NULL,
+                                      `show` tinyint(1) NOT NULL DEFAULT '0',
+                                      `sort` int(11) DEFAULT NULL,
+                                      `up_mbps` int(11) NOT NULL,
+                                      `down_mbps` int(11) NOT NULL,
+                                      `server_name` varchar(64) DEFAULT NULL,
+                                      `insecure` tinyint(1) NOT NULL DEFAULT '0',
+                                      `created_at` int(11) NOT NULL,
+                                      `updated_at` int(11) NOT NULL,
+                                      PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `v2_server_route`;
@@ -280,19 +321,24 @@ CREATE TABLE `v2_server_vmess` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
-DROP TABLE IF EXISTS `v2_stat_order`;
-CREATE TABLE `v2_stat_order` (
-                                 `id` int(11) NOT NULL AUTO_INCREMENT,
-                                 `order_count` int(11) NOT NULL COMMENT '订单数量',
-                                 `order_amount` int(11) NOT NULL COMMENT '订单合计',
-                                 `commission_count` int(11) NOT NULL,
-                                 `commission_amount` int(11) NOT NULL COMMENT '佣金合计',
-                                 `record_type` char(1) NOT NULL,
-                                 `record_at` int(11) NOT NULL,
-                                 `created_at` int(11) NOT NULL,
-                                 `updated_at` int(11) NOT NULL,
-                                 PRIMARY KEY (`id`),
-                                 UNIQUE KEY `record_at` (`record_at`)
+DROP TABLE IF EXISTS `v2_stat`;
+CREATE TABLE `v2_stat` (
+                           `id` int(11) NOT NULL AUTO_INCREMENT,
+                           `record_at` int(11) NOT NULL,
+                           `record_type` char(1) NOT NULL,
+                           `order_count` int(11) NOT NULL COMMENT '订单数量',
+                           `order_total` int(11) NOT NULL COMMENT '订单合计',
+                           `commission_count` int(11) NOT NULL,
+                           `commission_total` int(11) NOT NULL COMMENT '佣金合计',
+                           `paid_count` int(11) NOT NULL,
+                           `paid_total` int(11) NOT NULL,
+                           `register_count` int(11) NOT NULL,
+                           `invite_count` int(11) NOT NULL,
+                           `transfer_used_total` varchar(32) NOT NULL,
+                           `created_at` int(11) NOT NULL,
+                           `updated_at` int(11) NOT NULL,
+                           PRIMARY KEY (`id`),
+                           UNIQUE KEY `record_at` (`record_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='订单统计';
 
 
@@ -379,8 +425,8 @@ CREATE TABLE `v2_user` (
                            `transfer_enable` bigint(20) NOT NULL DEFAULT '0',
                            `banned` tinyint(1) NOT NULL DEFAULT '0',
                            `is_admin` tinyint(1) NOT NULL DEFAULT '0',
-                           `is_staff` tinyint(1) NOT NULL DEFAULT '0',
                            `last_login_at` int(11) DEFAULT NULL,
+                           `is_staff` tinyint(1) NOT NULL DEFAULT '0',
                            `last_login_ip` int(11) DEFAULT NULL,
                            `uuid` varchar(36) NOT NULL,
                            `group_id` int(11) DEFAULT NULL,
@@ -389,8 +435,8 @@ CREATE TABLE `v2_user` (
                            `remind_expire` tinyint(4) DEFAULT '1',
                            `remind_traffic` tinyint(4) DEFAULT '1',
                            `token` char(32) NOT NULL,
-                           `remarks` text,
                            `expired_at` bigint(20) DEFAULT '0',
+                           `remarks` text,
                            `created_at` int(11) NOT NULL,
                            `updated_at` int(11) NOT NULL,
                            PRIMARY KEY (`id`),
@@ -398,4 +444,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2023-03-07 13:10:15
+-- 2023-05-23 17:01:12

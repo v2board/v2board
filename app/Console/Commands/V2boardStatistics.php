@@ -2,10 +2,15 @@
 
 namespace App\Console\Commands;
 
+use App\Models\StatServer;
+use App\Models\StatUser;
+use App\Models\User;
+use App\Services\StatisticalService;
 use Illuminate\Console\Command;
 use App\Models\Order;
-use App\Models\StatOrder;
+use App\Models\Stat;
 use App\Models\CommissionLog;
+use Illuminate\Support\Facades\DB;
 
 class V2boardStatistics extends Command
 {
@@ -40,38 +45,87 @@ class V2boardStatistics extends Command
      */
     public function handle()
     {
+        $startAt = microtime(true);
         ini_set('memory_limit', -1);
-        $this->statOrder();
+        $this->statUser();
+        $this->statServer();
+        $this->stat();
+        $this->info('耗时' . (microtime(true) - $startAt));
     }
 
-    private function statOrder()
+    private function statServer()
+    {
+        $createdAt = time();
+        $recordAt = strtotime('-1 day', strtotime(date('Y-m-d')));
+        $statService = new StatisticalService();
+        $statService->setStartAt($recordAt);
+        $statService->setServerStats();
+        $stats = $statService->getStatServer();
+        DB::beginTransaction();
+        foreach ($stats as $stat) {
+            if (!StatServer::insert([
+                'server_id' => $stat['server_id'],
+                'server_type' => $stat['server_type'],
+                'u' => $stat['u'],
+                'd' => $stat['d'],
+                'created_at' => $createdAt,
+                'updated_at' => $createdAt,
+                'record_type' => 'd',
+                'record_at' => $recordAt
+            ])) {
+                DB::rollback();
+                throw new \Exception('stat server fail');
+            }
+        }
+        DB::commit();
+        $statService->clearStatServer();
+    }
+
+    private function statUser()
+    {
+        $createdAt = time();
+        $recordAt = strtotime('-1 day', strtotime(date('Y-m-d')));
+        $statService = new StatisticalService();
+        $statService->setStartAt($recordAt);
+        $statService->setUserStats();
+        $stats = $statService->getStatUser();
+        DB::beginTransaction();
+        foreach ($stats as $stat) {
+            if (!StatUser::insert([
+                'user_id' => $stat['user_id'],
+                'u' => $stat['u'],
+                'd' => $stat['d'],
+                'server_rate' => $stat['server_rate'],
+                'created_at' => $createdAt,
+                'updated_at' => $createdAt,
+                'record_type' => 'd',
+                'record_at' => $recordAt
+            ])) {
+                DB::rollback();
+                throw new \Exception('stat user fail');
+            }
+        }
+        DB::commit();
+        $statService->clearStatUser();
+    }
+
+    private function stat()
     {
         $endAt = strtotime(date('Y-m-d'));
         $startAt = strtotime('-1 day', $endAt);
-        $orderBuilder = Order::where('paid_at', '>=', $startAt)
-            ->where('paid_at', '<', $endAt)
-            ->whereNotIn('status', [0, 2]);
-        $orderCount = $orderBuilder->count();
-        $orderAmount = $orderBuilder->sum('total_amount');
-        $commissionLogBuilder = CommissionLog::where('created_at', '>=', $startAt)
-            ->where('created_at', '<', $endAt);
-        $commissionCount = $commissionLogBuilder->count();
-        $commissionAmount = $commissionLogBuilder->sum('get_amount');
-        $data = [
-            'order_count' => $orderCount,
-            'order_amount' => $orderAmount,
-            'commission_count' => $commissionCount,
-            'commission_amount' => $commissionAmount,
-            'record_type' => 'd',
-            'record_at' => $startAt
-        ];
-        $statistic = StatOrder::where('record_at', $startAt)
+        $statisticalService = new StatisticalService();
+        $statisticalService->setStartAt($startAt);
+        $statisticalService->setEndAt($endAt);
+        $data = $statisticalService->generateStatData();
+        $data['record_at'] = $startAt;
+        $data['record_type'] = 'd';
+        $statistic = Stat::where('record_at', $startAt)
             ->where('record_type', 'd')
             ->first();
         if ($statistic) {
             $statistic->update($data);
             return;
         }
-        StatOrder::create($data);
+        Stat::create($data);
     }
 }

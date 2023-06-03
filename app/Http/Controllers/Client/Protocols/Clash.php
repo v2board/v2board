@@ -34,7 +34,6 @@ class Clash
         } else {
             $config = Yaml::parseFile($defaultConfig);
         }
-        $this->patch($config);
         $proxy = [];
         $proxies = [];
 
@@ -78,6 +77,11 @@ class Clash
             if ($isFilter) continue;
             $config['proxy-groups'][$k]['proxies'] = array_merge($config['proxy-groups'][$k]['proxies'], $proxies);
         }
+
+        $config['proxy-groups'] = array_filter($config['proxy-groups'], function($group) {
+            return $group['proxies'];
+        });
+        $config['proxy-groups'] = array_values($config['proxy-groups']);
         // Force the current subscription domain to be a direct rule
         $subsDomain = $_SERVER['HTTP_HOST'];
         if ($subsDomain) {
@@ -123,6 +127,11 @@ class Clash
                 if (isset($tlsSettings['serverName']) && !empty($tlsSettings['serverName']))
                     $array['servername'] = $tlsSettings['serverName'];
             }
+        }
+        if ($server['network'] === 'tcp') {
+            $tcpSettings = $server['networkSettings'];
+            if (isset($tcpSettings['header']['type'])) $array['network'] = $tcpSettings['header']['type'];
+            if (isset($tcpSettings['header']['request']['path'][0])) $array['http-opts']['path'] = $tcpSettings['header']['request']['path'][0];
         }
         if ($server['network'] === 'ws') {
             $array['network'] = 'ws';
@@ -173,12 +182,5 @@ class Clash
     private function isRegex($exp)
     {
         return @preg_match($exp, null) !== false;
-    }
-
-    private function patch(&$config)
-    {
-        // fix clash x dns mode
-        preg_match('#(ClashX)[/ ]([0-9.]*)#', $_SERVER['HTTP_USER_AGENT'], $matches);
-        if (isset($matches[2]) && $matches[2] < '1.96.2') $config['dns']['enhanced-mode'] = 'redir-host';
     }
 }
