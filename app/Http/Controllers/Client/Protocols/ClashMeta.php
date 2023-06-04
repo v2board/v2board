@@ -7,7 +7,7 @@ use Symfony\Component\Yaml\Yaml;
 
 class ClashMeta
 {
-    public $flag = 'clashmeta';
+    public $flag = 'meta';
     private $servers;
     private $user;
 
