@@ -61,24 +61,28 @@ class V2boardStatistics extends Command
         $statService->setStartAt($recordAt);
         $statService->setServerStats();
         $stats = $statService->getStatServer();
-        DB::beginTransaction();
-        foreach ($stats as $stat) {
-            if (!StatServer::insert([
-                'server_id' => $stat['server_id'],
-                'server_type' => $stat['server_type'],
-                'u' => $stat['u'],
-                'd' => $stat['d'],
-                'created_at' => $createdAt,
-                'updated_at' => $createdAt,
-                'record_type' => 'd',
-                'record_at' => $recordAt
-            ])) {
-                DB::rollback();
-                throw new \Exception('stat server fail');
+        try {
+            DB::beginTransaction();
+            foreach ($stats as $stat) {
+                if (!StatServer::insert([
+                    'server_id' => $stat['server_id'],
+                    'server_type' => $stat['server_type'],
+                    'u' => $stat['u'],
+                    'd' => $stat['d'],
+                    'created_at' => $createdAt,
+                    'updated_at' => $createdAt,
+                    'record_type' => 'd',
+                    'record_at' => $recordAt
+                ])) {
+                    throw new \Exception('stat server fail');
+                }
             }
+            DB::commit();
+            $statService->clearStatServer();
+        } catch (\Exception $e) {
+            DB::rollback();
+            $this->error($e->getMessage());
         }
-        DB::commit();
-        $statService->clearStatServer();
     }
 
     private function statUser()
@@ -89,24 +93,28 @@ class V2boardStatistics extends Command
         $statService->setStartAt($recordAt);
         $statService->setUserStats();
         $stats = $statService->getStatUser();
-        DB::beginTransaction();
-        foreach ($stats as $stat) {
-            if (!StatUser::insert([
-                'user_id' => $stat['user_id'],
-                'u' => $stat['u'],
-                'd' => $stat['d'],
-                'server_rate' => $stat['server_rate'],
-                'created_at' => $createdAt,
-                'updated_at' => $createdAt,
-                'record_type' => 'd',
-                'record_at' => $recordAt
-            ])) {
-                DB::rollback();
-                throw new \Exception('stat user fail');
+        try {
+            DB::beginTransaction();
+            foreach ($stats as $stat) {
+                if (!StatUser::insert([
+                    'user_id' => $stat['user_id'],
+                    'u' => $stat['u'],
+                    'd' => $stat['d'],
+                    'server_rate' => $stat['server_rate'],
+                    'created_at' => $createdAt,
+                    'updated_at' => $createdAt,
+                    'record_type' => 'd',
+                    'record_at' => $recordAt
+                ])) {
+                    throw new \Exception('stat user fail');
+                }
             }
+            DB::commit();
+            $statService->clearStatUser();
+        } catch (\Exception $e) {
+            DB::rollback();
+            $this->error($e->getMessage());
         }
-        DB::commit();
-        $statService->clearStatUser();
     }
 
     private function stat()
