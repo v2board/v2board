@@ -62,6 +62,7 @@ class V2rayNG
             "tls" => $server['tls'] ? "tls" : "",
         ];
         if ($server['tls']) {
+            $config['scy'] = "zero";
             if ($server['tlsSettings']) {
                 $tlsSettings = $server['tlsSettings'];
                 if (isset($tlsSettings['serverName']) && !empty($tlsSettings['serverName']))
