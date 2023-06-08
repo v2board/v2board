@@ -14,6 +14,7 @@ use Laravel\Horizon\Contracts\MetricsRepository;
 use Laravel\Horizon\Contracts\SupervisorRepository;
 use Laravel\Horizon\Contracts\WorkloadRepository;
 use Laravel\Horizon\WaitTimeCalculator;
+use App\Models\Log as LogModel;
 
 class SystemController extends Controller
 {
@@ -101,5 +102,18 @@ class SystemController extends Controller
             return $master->status === 'paused';
         })->count();
     }
-}
 
+    public function getSystemLog(Request $request) {
+        $current = $request->input('current') ? $request->input('current') : 1;
+        $pageSize = $request->input('page_size') >= 10 ? $request->input('page_size') : 10;
+        $builder = LogModel::orderBy('created_at', 'DESC')
+            ->setFilterAllowKeys('level');
+        $total = $builder->count();
+        $res = $builder->forPage($current, $pageSize)
+            ->get();
+        return response([
+            'data' => $res,
+            'total' => $total
+        ]);
+    }
+}
