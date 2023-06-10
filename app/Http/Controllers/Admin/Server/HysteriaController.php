@@ -2,34 +2,18 @@
 
 namespace App\Http\Controllers\Admin\Server;
 
-use App\Http\Requests\Admin\ServerVmessSave;
-use App\Http\Requests\Admin\ServerVmessUpdate;
+use App\Http\Requests\Admin\ServerHysteriaSave;
+use App\Http\Requests\Admin\ServerHysteriaUpdate;
 use App\Models\ServerHysteria;
-use App\Services\ServerService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\ServerVmess;
 
 class HysteriaController extends Controller
 {
-    public function save(Request $request)
+    public function save(ServerHysteriaSave $request)
     {
-        $params = $request->validate([
-            'show' => '',
-            'name' => 'required',
-            'group_id' => 'required|array',
-            'route_id' => 'nullable|array',
-            'parent_id' => 'nullable|integer',
-            'host' => 'required',
-            'port' => 'required',
-            'server_port' => 'required',
-            'tags' => 'nullable|array',
-            'rate' => 'required|numeric',
-            'up_mbps' => 'required|numeric|min:1',
-            'down_mbps' => 'required|numeric|min:1',
-            'server_name' => 'nullable',
-            'insecure' => 'required|in:0,1'
-        ]);
+        $params = $request->validate();
 
         if ($request->input('id')) {
             $server = ServerHysteria::find($request->input('id'));
@@ -68,7 +52,7 @@ class HysteriaController extends Controller
         ]);
     }
 
-    public function update(Request $request)
+    public function update(ServerHysteriaUpdate $request)
     {
         $request->validate([
             'show' => 'in:0,1'
