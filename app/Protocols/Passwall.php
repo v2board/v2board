@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\V1\Client\Protocols;
+namespace App\Protocols;
 
 
-class SSRPlus
+class Passwall
 {
-    public $flag = 'ssrplus';
+    public $flag = 'passwall';
     private $servers;
     private $user;
 
@@ -67,6 +67,11 @@ class SSRPlus
                 if (isset($tlsSettings['serverName']) && !empty($tlsSettings['serverName']))
                     $config['sni'] = $tlsSettings['serverName'];
             }
+        }
+        if ((string)$server['network'] === 'tcp') {
+            $tcpSettings = $server['networkSettings'];
+            if (isset($tcpSettings['header']['type'])) $config['type'] = $tcpSettings['header']['type'];
+            if (isset($tcpSettings['header']['request']['path'][0])) $config['path'] = $tcpSettings['header']['request']['path'][0];
         }
         if ((string)$server['network'] === 'ws') {
             $wsSettings = $server['networkSettings'];

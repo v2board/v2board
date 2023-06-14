@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\V1\Client\Protocols;
+namespace App\Protocols;
 
-class SagerNet
+
+class SSRPlus
 {
-    public $flag = 'sagernet';
+    public $flag = 'ssrplus';
     private $servers;
     private $user;
 
@@ -34,62 +35,52 @@ class SagerNet
         return base64_encode($uri);
     }
 
-    public static function buildShadowsocks($uuid, $server)
+    public static function buildShadowsocks($password, $server)
     {
         $name = rawurlencode($server['name']);
         $str = str_replace(
             ['+', '/', '='],
             ['-', '_', ''],
-            base64_encode("{$server['cipher']}:{$uuid}")
+            base64_encode("{$server['cipher']}:{$password}")
         );
         return "ss://{$str}@{$server['host']}:{$server['port']}#{$name}\r\n";
-    }
-
-    public static function buildShadowsocksSIP008($uuid, $server)
-    {
-        $config = [
-            "id" => $server['id'],
-            "remarks" => $server['name'],
-            "server" => $server['host'],
-            "server_port" => $server['port'],
-            "password" => $uuid,
-            "method" => $server['cipher']
-        ];
-        return $config;
     }
 
     public static function buildVmess($uuid, $server)
     {
         $config = [
-            "encryption" => "none",
-            "type" => urlencode($server['network']),
-            "security" => $server['tls'] ? "tls" : "",
+            "v" => "2",
+            "ps" => $server['name'],
+            "add" => $server['host'],
+            "port" => (string)$server['port'],
+            "id" => $uuid,
+            "aid" => '0',
+            "net" => $server['network'],
+            "type" => "none",
+            "host" => "",
+            "path" => "",
+            "tls" => $server['tls'] ? "tls" : "",
         ];
         if ($server['tls']) {
             if ($server['tlsSettings']) {
                 $tlsSettings = $server['tlsSettings'];
                 if (isset($tlsSettings['serverName']) && !empty($tlsSettings['serverName']))
-                    $config['sni'] = urlencode($tlsSettings['serverName']);
+                    $config['sni'] = $tlsSettings['serverName'];
             }
-        }
-        if ((string)$server['network'] === 'tcp') {
-            $tcpSettings = $server['networkSettings'];
-            if (isset($tcpSettings['header']['type'])) $config['type'] = $tcpSettings['header']['type'];
-            if (isset($tcpSettings['header']['request']['path'][0])) $config['path'] = $tcpSettings['header']['request']['path'][0];
         }
         if ((string)$server['network'] === 'ws') {
             $wsSettings = $server['networkSettings'];
             if (isset($wsSettings['path'])) $config['path'] = $wsSettings['path'];
-            if (isset($wsSettings['headers']['Host'])) $config['host'] = urlencode($wsSettings['headers']['Host']);
+            if (isset($wsSettings['headers']['Host'])) $config['host'] = $wsSettings['headers']['Host'];
         }
         if ((string)$server['network'] === 'grpc') {
             $grpcSettings = $server['networkSettings'];
-            if (isset($grpcSettings['serviceName'])) $config['serviceName'] = urlencode($grpcSettings['serviceName']);
+            if (isset($grpcSettings['serviceName'])) $config['path'] = $grpcSettings['serviceName'];
         }
-        return "vmess://" . $uuid . "@" . $server['host'] . ":" . $server['port'] . "?" . http_build_query($config) . "#" . urlencode($server['name']) . "\r\n";
+        return "vmess://" . base64_encode(json_encode($config)) . "\r\n";
     }
 
-    public static function buildTrojan($uuid, $server)
+    public static function buildTrojan($password, $server)
     {
         $name = rawurlencode($server['name']);
         $query = http_build_query([
@@ -97,8 +88,9 @@ class SagerNet
             'peer' => $server['server_name'],
             'sni' => $server['server_name']
         ]);
-        $uri = "trojan://{$uuid}@{$server['host']}:{$server['port']}?{$query}#{$name}";
+        $uri = "trojan://{$password}@{$server['host']}:{$server['port']}?{$query}#{$name}";
         $uri .= "\r\n";
         return $uri;
     }
+
 }

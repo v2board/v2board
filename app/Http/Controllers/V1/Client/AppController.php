@@ -39,11 +39,11 @@ class AppController extends Controller
                     'chacha20-ietf-poly1305'
                 ])
             ) {
-                array_push($proxy, \App\Http\Controllers\V1\Client\Protocols\Clash::buildShadowsocks($user['uuid'], $item));
+                array_push($proxy, \App\Protocols\Clash::buildShadowsocks($user['uuid'], $item));
                 array_push($proxies, $item['name']);
             }
             if ($item['type'] === 'vmess') {
-                array_push($proxy, \App\Http\Controllers\V1\Client\Protocols\Clash::buildVmess($user['uuid'], $item));
+                array_push($proxy, \App\Protocols\Clash::buildVmess($user['uuid'], $item));
                 array_push($proxies, $item['name']);
             }
             if ($item['type'] === 'trojan') {

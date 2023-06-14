@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\V1\Client;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\V1\Client\Protocols\General;
+use App\Protocols\General;
 use App\Services\ServerService;
 use App\Services\UserService;
 use App\Utils\Helper;
@@ -24,8 +24,8 @@ class ClientController extends Controller
             $servers = $serverService->getAvailableServers($user);
             $this->setSubscribeInfoToServers($servers, $user);
             if ($flag) {
-                foreach (array_reverse(glob(app_path('Http//Controllers//Client//Protocols') . '/*.php')) as $file) {
-                    $file = 'App\\Http\\Controllers\\Client\\Protocols\\' . basename($file, '.php');
+                foreach (array_reverse(glob(app_path('Protocols') . '/*.php')) as $file) {
+                    $file = 'App\\Protocols\\' . basename($file, '.php');
                     $class = new $file($user, $servers);
                     if (strpos($flag, $class->flag) !== false) {
                         die($class->handle());

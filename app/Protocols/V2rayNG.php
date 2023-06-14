@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\V1\Client\Protocols;
+namespace App\Protocols;
 
 
 class V2rayNG

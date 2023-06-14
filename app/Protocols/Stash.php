@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\V1\Client\Protocols;
+namespace App\Protocols;
 
-use phpDocumentor\Reflection\Types\Self_;
 use Symfony\Component\Yaml\Yaml;
 
-class Clash
+class Stash
 {
-    public $flag = 'clash';
+    public $flag = 'stash';
     private $servers;
     private $user;
 
@@ -24,8 +23,8 @@ class Clash
         $appName = config('v2board.app_name', 'V2Board');
         header("subscription-userinfo: upload={$user['u']}; download={$user['d']}; total={$user['transfer_enable']}; expire={$user['expired_at']}");
         header('profile-update-interval: 24');
-        header("content-disposition:attachment;filename*=UTF-8''".rawurlencode($appName));
-        header("profile-web-page-url:" . config('v2board.app_url'));
+        header("content-disposition: filename*=UTF-8''".rawurlencode($appName));
+        // 暂时使用clash配置文件，后续根据Stash更新情况更新
         $defaultConfig = base_path() . '/resources/rules/default.clash.yaml';
         $customConfig = base_path() . '/resources/rules/custom.clash.yaml';
         if (\File::exists($customConfig)) {
@@ -60,7 +59,7 @@ class Clash
 
         $config['proxies'] = array_merge($config['proxies'] ? $config['proxies'] : [], $proxy);
         foreach ($config['proxy-groups'] as $k => $v) {
-            if (!is_array($config['proxy-groups'][$k]['proxies'])) $config['proxy-groups'][$k]['proxies'] = [];
+            if (!is_array($config['proxy-groups'][$k]['proxies'])) continue;
             $isFilter = false;
             foreach ($config['proxy-groups'][$k]['proxies'] as $src) {
                 foreach ($proxies as $dst) {
@@ -76,7 +75,6 @@ class Clash
             if ($isFilter) continue;
             $config['proxy-groups'][$k]['proxies'] = array_merge($config['proxy-groups'][$k]['proxies'], $proxies);
         }
-
         $config['proxy-groups'] = array_filter($config['proxy-groups'], function($group) {
             return $group['proxies'];
         });
@@ -152,7 +150,7 @@ class Clash
             if ($server['networkSettings']) {
                 $grpcSettings = $server['networkSettings'];
                 $array['grpc-opts'] = [];
-                if (isset($grpcSettings['serviceName'])) $array['grpc-opts']['grpc-service-name'] = $grpcSettings['serviceName'];
+                if (isset($grpcSettings['serviceName']))  $array['grpc-opts']['grpc-service-name'] = $grpcSettings['serviceName'];
             }
         }
 
@@ -173,13 +171,17 @@ class Clash
         return $array;
     }
 
-    private function isMatch($exp, $str)
-    {
-        return @preg_match($exp, $str);
-    }
-
     private function isRegex($exp)
     {
         return @preg_match($exp, null) !== false;
+    }
+
+    private function isMatch($exp, $str)
+    {
+        try {
+            return preg_match($exp, $str);
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 }
