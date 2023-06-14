@@ -33,6 +33,9 @@ class General
             if ($item['type'] === 'trojan') {
                 $uri .= self::buildTrojan($user['uuid'], $item);
             }
+            if ($item['type'] === 'hysteria') {
+                $uri .= self::buildHysteria($user['uuid'], $item);
+            }
         }
         return base64_encode($uri);
     }
@@ -106,6 +109,24 @@ class General
             'sni' => $server['server_name']
         ]);
         $uri = "trojan://{$password}@{$server['host']}:{$server['port']}?{$query}#{$name}";
+        $uri .= "\r\n";
+        return $uri;
+    }
+
+    public static function buildHysteria($password, $server)
+    {
+     	$name = rawurlencode($server['name']);
+        $query = http_build_query([
+            'protocol' => 'udp',
+            'auth' => $password,
+            'allowInsecure' => $server['insecure'],
+            'peer' => $server['server_name'],
+            'upmbps' => $server['up_mbps'],
+            'downmbps' => $server['up_mbps'],
+            'alpn' => 'h3',
+            'obfsParam' => $server['server_key']
+        ]);
+        $uri = "hysteria://{$server['host']}:{$server['port']}?{$query}#{$name}";
         $uri .= "\r\n";
         return $uri;
     }
