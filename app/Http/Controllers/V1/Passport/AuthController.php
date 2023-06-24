@@ -286,7 +286,11 @@ class AuthController extends Controller
 
     public function forget(AuthForget $request)
     {
+        $forgetRequestLimitKey = CacheKey::get('FORGET_REQUEST_LIMIT', $request->input('email'));
+        $forgetRequestLimit = (int)Cache::get($forgetRequestLimitKey);
+        if ($forgetRequestLimit >= 3) abort(500, __('Reset failed, Please try again later'));
         if ((string)Cache::get(CacheKey::get('EMAIL_VERIFY_CODE', $request->input('email'))) !== (string)$request->input('email_code')) {
+            Cache::put($forgetRequestLimitKey, $forgetRequestLimit ? $forgetRequestLimit + 1 : 1, 300);
             abort(500, __('Incorrect email verification code'));
         }
         $user = User::where('email', $request->input('email'))->first();
