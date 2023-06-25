@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Passport\CommSendEmailVerify;
 use App\Jobs\SendEmailJob;
 use App\Models\InviteCode;
+use App\Models\User;
 use App\Utils\CacheKey;
 use App\Utils\Dict;
 use Illuminate\Http\Exceptions\HttpResponseException;
