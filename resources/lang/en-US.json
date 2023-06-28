@@ -35,6 +35,8 @@
     "Reset failed": "Reset failed",
     "Save failed": "Save failed",
     "Subscription has expired or no active subscription, unable to purchase Data Reset Package": "Subscription has expired or no active subscription, unable to purchase Data Reset Package",
+    "Current subscription and Data Reset package do not match, unable to purchase Data Reset Package": "Current subscription and Data Reset package do not match, unable to purchase Data Reset Package",
+    "The traffic usage of the current subscription has not reached 80%, unable to purchase Data Reset Package": "The traffic usage of the current subscription has not reached 80%, unable to purchase Data Reset Package",
     "Subscription plan does not exist": "Subscription plan does not exist",
     "The coupon code cannot be used for this subscription": "The coupon code cannot be used for this subscription",
     "The current required minimum withdrawal commission is :limit": "The current required minimum withdrawal commission is :limit",

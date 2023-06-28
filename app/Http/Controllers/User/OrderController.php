@@ -97,6 +97,16 @@ class OrderController extends Controller
             if (!$userService->isAvailable($user) || $plan->id !== $user->plan_id) {
                 abort(500, __('Subscription has expired or no active subscription, unable to purchase Data Reset Package'));
             }
+            if ($plan->id !== $user->plan_id) {
+                abort(500, __('Current subscription and Data Reset package do not match, unable to purchase Data Reset Package'));
+            }
+            $upload = round($user['u'] / (1024*1024*1024), 2);
+            $download = round($user['d'] / (1024*1024*1024), 2);
+            $useTraffic = $upload + $download;
+            $totalTraffic = round($user['transfer_enable'] / (1024*1024*1024), 2);
+            if ($useTraffic < $totalTraffic * 0.8) {
+                abort(500, __('The traffic usage of the current subscription has not reached 80%, unable to purchase Data Reset Package'));
+            }
         }
 
         if ((!$plan->show && !$plan->renew) || (!$plan->show && $user->plan_id !== $plan->id)) {
