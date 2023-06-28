@@ -27,6 +27,8 @@
     "This subscription cannot be renewed, please change to another subscription": "该订阅无法续费，请更换其它订阅",
     "This payment period cannot be purchased, please choose another period": "该订阅周期无法进行购买，请选择其它周期",
     "Subscription has expired or no active subscription, unable to purchase Data Reset Package": "订阅已过期或无有效订阅，无法购买重置包",
+    "Current subscription and Data Reset package do not match, unable to purchase Data Reset Package": "当前套餐和重置包套餐不符，无法购买重置包",
+    "The traffic usage of the current subscription has not reached 80%, unable to purchase Data Reset Package": "当前订阅的流量使用并未达到80%，无法购买重置包",
     "This subscription has expired, please change to another subscription": "订阅已过期，请更换其它订阅",
     "Coupon failed": "优惠券使用失败",
     "Insufficient balance": "余额不足",
