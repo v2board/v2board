@@ -306,7 +306,7 @@ CREATE TABLE `v2_server_vless` (
                                    `server_port` int(11) NOT NULL,
                                    `tls` tinyint(1) NOT NULL,
                                    `tls_settings` text,
-                                   `flow` varchar(11) DEFAULT NULL,
+                                   `flow` varchar(64) DEFAULT NULL,
                                    `network` varchar(11) NOT NULL,
                                    `network_settings` text,
                                    `tags` text,

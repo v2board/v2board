@@ -21,7 +21,7 @@ class VlessController extends Controller
             'server_port' => 'required',
             'tls' => 'required|in:0,1',
             'tls_settings' => 'nullable|array',
-            'flow' => 'nullable',
+            'flow' => 'nullable|in:xtls-rprx-vision',
             'network' => 'required',
             'network_settings' => 'nullable|array',
             'tags' => 'nullable|array',
@@ -30,7 +30,7 @@ class VlessController extends Controller
             'sort' => 'nullable'
         ]);
 
-        if ((int)$params['tls_settings']['reality']) {
+        if (isset($params['tls_settings']) && (int)$params['tls_settings']['reality']) {
             $keyPair = SodiumCompat::crypto_box_keypair();
             if (!isset($params['tls_settings']['public_key'])) {
                 $params['tls_settings']['public_key'] = base64_encode(SodiumCompat::crypto_box_publickey($keyPair));
