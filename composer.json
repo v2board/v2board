@@ -23,7 +23,8 @@
         "linfo/linfo": "^4.0",
         "php-curl-class/php-curl-class": "^8.6",
         "stripe/stripe-php": "^7.36.1",
-        "symfony/yaml": "^4.3"
+        "symfony/yaml": "^4.3",
+        "paragonie/sodium_compat": "^1.20"
     },
     "require-dev": {
         "facade/ignition": "^2.3.6",

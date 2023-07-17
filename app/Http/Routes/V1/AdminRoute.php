@@ -36,43 +36,42 @@ class AdminRoute
             $router->group([
                 'prefix' => 'server/trojan'
             ], function ($router) {
-                $router->get ('fetch', 'V1\\Admin\\Server\\TrojanController@fetch');
                 $router->post('save', 'V1\\Admin\\Server\\TrojanController@save');
                 $router->post('drop', 'V1\\Admin\\Server\\TrojanController@drop');
                 $router->post('update', 'V1\\Admin\\Server\\TrojanController@update');
                 $router->post('copy', 'V1\\Admin\\Server\\TrojanController@copy');
-                $router->post('sort', 'V1\\Admin\\Server\\TrojanController@sort');
-                $router->post('viewConfig', 'V1\\Admin\\Server\\TrojanController@viewConfig');
             });
             $router->group([
                 'prefix' => 'server/vmess'
             ], function ($router) {
-                $router->get ('fetch', 'V1\\Admin\\Server\\VmessController@fetch');
                 $router->post('save', 'V1\\Admin\\Server\\VmessController@save');
                 $router->post('drop', 'V1\\Admin\\Server\\VmessController@drop');
                 $router->post('update', 'V1\\Admin\\Server\\VmessController@update');
                 $router->post('copy', 'V1\\Admin\\Server\\VmessController@copy');
-                $router->post('sort', 'V1\\Admin\\Server\\VmessController@sort');
             });
             $router->group([
                 'prefix' => 'server/shadowsocks'
             ], function ($router) {
-                $router->get ('fetch', 'V1\\Admin\\Server\\ShadowsocksController@fetch');
                 $router->post('save', 'V1\\Admin\\Server\\ShadowsocksController@save');
                 $router->post('drop', 'V1\\Admin\\Server\\ShadowsocksController@drop');
                 $router->post('update', 'V1\\Admin\\Server\\ShadowsocksController@update');
                 $router->post('copy', 'V1\\Admin\\Server\\ShadowsocksController@copy');
-                $router->post('sort', 'V1\\Admin\\Server\\ShadowsocksController@sort');
             });
             $router->group([
                 'prefix' => 'server/hysteria'
             ], function ($router) {
-                $router->get ('fetch', 'V1\\Admin\\Server\\HysteriaController@fetch');
                 $router->post('save', 'V1\\Admin\\Server\\HysteriaController@save');
                 $router->post('drop', 'V1\\Admin\\Server\\HysteriaController@drop');
                 $router->post('update', 'V1\\Admin\\Server\\HysteriaController@update');
                 $router->post('copy', 'V1\\Admin\\Server\\HysteriaController@copy');
-                $router->post('sort', 'V1\\Admin\\Server\\HysteriaController@sort');
+            });
+            $router->group([
+                'prefix' => 'server/vless'
+            ], function ($router) {
+                $router->post('save', 'V1\\Admin\\Server\\VlessController@save');
+                $router->post('drop', 'V1\\Admin\\Server\\VlessController@drop');
+                $router->post('update', 'V1\\Admin\\Server\\VlessController@update');
+                $router->post('copy', 'V1\\Admin\\Server\\VlessController@copy');
             });
             // Order
             $router->get ('/order/fetch', 'V1\\Admin\\OrderController@fetch');
