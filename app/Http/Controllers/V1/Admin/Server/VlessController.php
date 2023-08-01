@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ServerVless;
 use Illuminate\Http\Request;
 use ParagonIE_Sodium_Compat as SodiumCompat;
+use App\Utils\Helper;
 
 class VlessController extends Controller
 {
@@ -19,7 +20,7 @@ class VlessController extends Controller
             'host' => 'required',
             'port' => 'required',
             'server_port' => 'required',
-            'tls' => 'required|in:0,1',
+            'tls' => 'required|in:0,1,2',
             'tls_settings' => 'nullable|array',
             'flow' => 'nullable|in:xtls-rprx-vision',
             'network' => 'required',
@@ -30,13 +31,14 @@ class VlessController extends Controller
             'sort' => 'nullable'
         ]);
 
-        if (isset($params['tls_settings']) && (int)$params['tls_settings']['reality']) {
+        if (isset($params['tls']) && (int)$params['tls'] === 2) {
             $keyPair = SodiumCompat::crypto_box_keypair();
+            $params['tls_settings'] = $params['tls_settings'] ?? [];
             if (!isset($params['tls_settings']['public_key'])) {
-                $params['tls_settings']['public_key'] = base64_encode(SodiumCompat::crypto_box_publickey($keyPair));
+                $params['tls_settings']['public_key'] = Helper::base64EncodeUrlSafe(SodiumCompat::crypto_box_publickey($keyPair));
             }
             if (!isset($params['tls_settings']['private_key'])) {
-                $params['tls_settings']['private_key'] = base64_encode(SodiumCompat::crypto_box_secretkey($keyPair));
+                $params['tls_settings']['private_key'] = Helper::base64EncodeUrlSafe(SodiumCompat::crypto_box_secretkey($keyPair));
             }
         }
 

@@ -120,4 +120,10 @@ class Helper
         $portRange = explode('-', $range);
         return rand($portRange[0], $portRange[1]);
     }
+
+    public static function base64EncodeUrlSafe($data)
+    {
+        $encoded = base64_encode($data);
+        return str_replace(['+', '/', '='], ['-', '_', ''], $encoded);
+    }
 }
