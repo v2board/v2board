@@ -8,6 +8,7 @@ use App\Models\Order;
 use App\Models\ServerShadowsocks;
 use App\Models\ServerTrojan;
 use App\Models\ServerVmess;
+use App\Models\ServerHysteria;
 use App\Models\Stat;
 use App\Models\StatServer;
 use App\Models\StatUser;
@@ -99,7 +100,8 @@ class StatController extends Controller
             'shadowsocks' => ServerShadowsocks::where('parent_id', null)->get()->toArray(),
             'v2ray' => ServerVmess::where('parent_id', null)->get()->toArray(),
             'trojan' => ServerTrojan::where('parent_id', null)->get()->toArray(),
-            'vmess' => ServerVmess::where('parent_id', null)->get()->toArray()
+            'vmess' => ServerVmess::where('parent_id', null)->get()->toArray(),
+            'hysteria' => ServerHysteria::where('parent_id', null)->get()->toArray()
         ];
         $startAt = strtotime('-1 day', strtotime(date('Y-m-d')));
         $endAt = strtotime(date('Y-m-d'));
