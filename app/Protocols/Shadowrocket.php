@@ -35,6 +35,9 @@ class Shadowrocket
             if ($item['type'] === 'vmess') {
                 $uri .= self::buildVmess($user['uuid'], $item);
             }
+            if ($item['type'] === 'vless') {
+                $uri .= self::buildVless($user['uuid'], $item);
+            }
             if ($item['type'] === 'trojan') {
                 $uri .= self::buildTrojan($user['uuid'], $item);
             }
@@ -116,6 +119,96 @@ class Shadowrocket
         }
         $query = http_build_query($config, '', '&', PHP_QUERY_RFC3986);
         $uri = "vmess://{$userinfo}?{$query}";
+        $uri .= "\r\n";
+        return $uri;
+    }
+
+    public static function buildVless($uuid, $server)
+    {
+        $userinfo = base64_encode('auto:' . $uuid . '@' . $server['host'] . ':' . $server['port']);
+        $config = [
+            'tfo' => 1,
+            'remark' => $server['name'],
+            'alterId' => 0
+        ];
+
+        // 判断是否开启xtls
+        if(isset($server['flow']) && !blank($server['flow'])){
+            $xtlsMap = [
+                'none' => 0,
+                'xtls-rprx-direct' => 1,
+                'xtls-rprx-vision' => 2
+            ];
+            // 判断 flow 的值是否在 xtlsMap 中存在
+            if (array_key_exists($server['flow'], $xtlsMap)) {
+                $config['tls'] = 1;
+                $config['xtls'] = $xtlsMap[$server['flow']];
+            }
+        }
+
+        if ($server['tls']) {
+            switch($server['tls']){
+                case 1:
+                    $config['tls'] = 1;
+                    if ($server['tlsSettings']) {
+                        $tlsSettings = $server['tlsSettings'];
+                        if (isset($tlsSettings['allowInsecure']) && !empty($tlsSettings['allowInsecure']))
+                            $config['allowInsecure'] = (int)$tlsSettings['allowInsecure'];
+                        if (isset($tlsSettings['serverName']) && !empty($tlsSettings['serverName']))
+                            $config['peer'] = $tlsSettings['serverName'];
+                    }
+                    break;
+                case 2:
+                    $config['tls'] = 1;
+                    if (!isset($server['network_settings'])) break;
+                    $networkSettings = $server['network_settings'];
+                    if (isset($networkSettings['reality-opts'])){
+                        $realitySettings = $networkSettings['reality-opts'];
+                        $config['sni'] = $realitySettings['sni'];
+                        $config['pbk'] = $realitySettings['public-key'];
+                        $config['sid'] = $realitySettings['short-id'];
+                        $fingerprints = ['chrome', 'firefox', 'safari', 'ios', 'android', 'edge', '360', 'qq']; //随机客户端指纹
+                        $config['fp'] = $fingerprints[rand(0,count($fingerprints) - 1)];
+                    }
+                    break;
+            }
+
+        }
+        if ($server['network'] === 'tcp') {
+            if ($server['network_settings']) {
+                $tcpSettings = $server['network_settings'];
+                if (isset($tcpSettings['header']['type']) && !empty($tcpSettings['header']['type']))
+                    $config['obfs'] = $tcpSettings['header']['type'];
+                if (isset($tcpSettings['header']['request']['path'][0]) && !empty($tcpSettings['header']['request']['path'][0]))
+                    $config['path'] = $tcpSettings['header']['request']['path'][0];
+            }
+        }
+        if ($server['network'] === 'ws') {
+            $config['obfs'] = "websocket";
+            if ($server['network_settings']) {
+                $wsSettings = $server['network_settings'];
+                if (isset($wsSettings['path']) && !empty($wsSettings['path']))
+                    $config['path'] = $wsSettings['path'];
+                if (isset($wsSettings['headers']['Host']) && !empty($wsSettings['headers']['Host']))
+                    $config['obfsParam'] = $wsSettings['headers']['Host'];
+            }
+        }
+        if ($server['network'] === 'grpc') {
+            $config['obfs'] = "grpc";
+            if ($server['network_settings']) {
+                $grpcSettings = $server['network_settings'];
+                if (isset($grpcSettings['serviceName']) && !empty($grpcSettings['serviceName']))
+                    $config['path'] = $grpcSettings['serviceName'];
+            }
+            if (isset($tlsSettings)) {
+                $config['host'] = $tlsSettings['serverName'];
+            } else {
+                $config['host'] = $server['host'];
+            }
+        }
+
+        $query = http_build_query($config, '', '&', PHP_QUERY_RFC3986);
+        $uri = "vless" . "://{$userinfo}?{$query}";
         $uri .= "\r\n";
         return $uri;
     }

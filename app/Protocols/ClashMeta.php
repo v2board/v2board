@@ -48,6 +48,10 @@ class ClashMeta
                 array_push($proxy, self::buildTrojan($user['uuid'], $item));
                 array_push($proxies, $item['name']);
             }
+            if ($item['type'] === 'vless') {
+                array_push($proxy, self::buildVless($user['uuid'], $item));
+                array_push($proxies, $item['name']);
+            }
         }
 
         $config['proxies'] = array_merge($config['proxies'] ? $config['proxies'] : [], $proxy);
@@ -154,6 +158,81 @@ class ClashMeta
                 $grpcSettings = $server['networkSettings'];
                 $array['grpc-opts'] = [];
                 if (isset($grpcSettings['serviceName'])) $array['grpc-opts']['grpc-service-name'] = $grpcSettings['serviceName'];
+            }
+        }
+
+        return $array;
+    }
+
+    public static function buildVless($password, $server){
+        $array = [];
+        $array['name'] = $server['name'];
+        $array['type'] = 'vless';
+        $array['server'] = $server['host'];
+        $array['port'] = $server['port'];
+        $array['uuid'] = $password;
+        $array['alterId'] = 0;
+        $array['cipher'] = 'auto';
+        $array['udp'] = true;
+
+        // XTLS流控算法
+        if($server['flow']) ($array['flow'] = $server['flow']);
+
+        if ($server['tls']) {
+            switch($server['tls']){
+                case 1:  //开启TLS
+                    $array['tls'] = true;
+                    if ($server['tls_settings']) {
+                        $tlsSettings = $server['tls_settings'];
+                        if (isset($tlsSettings['allowInsecure']) && !empty($tlsSettings['allowInsecure']))
+                            $array['skip-cert-verify'] = ($tlsSettings['allowInsecure'] ? true : false);
+                        if (isset($tlsSettings['serverName']) && !empty($tlsSettings['serverName']))
+                            $array['servername'] = $tlsSettings['serverName'];
+                    }
+                    break;
+                case 2:  //开启reality
+                    $array['tls'] = true;
+                    $networkSettings = $server['network_settings'];
+                    if(isset($networkSettings['reality-opts'])
+                    && ($realitySettings = $networkSettings['reality-opts'])
+                    && $realitySettings['public-key']
+                    && $realitySettings['short-id']
+                    && $realitySettings['sni']){
+                        $array['servername'] = $realitySettings['sni'];
+                        $array['reality-opts'] = [
+                            'public-key' => $realitySettings['public-key'],
+                            'short-id' => $realitySettings['short-id']
+                        ];
+                    };
+                    $fingerprints = ['chrome', 'firefox', 'safari', 'ios', 'android', 'edge', '360', 'qq']; //随机客户端指纹
+                    $array['client-fingerprint'] = $fingerprints[rand(0,count($fingerprints) - 1)];
+                    break;
+            }
+        }
+
+        if ($server['network'] === 'ws') {
+            $array['network'] = 'ws';
+            if ($server['networkSettings']) {
+                $wsSettings = $server['networkSettings'];
+                $array['ws-opts'] = [];
+                if (isset($wsSettings['path']) && !empty($wsSettings['path']))
+                    $array['ws-opts']['path'] = $wsSettings['path'];
+                if (isset($wsSettings['headers']['Host']) && !empty($wsSettings['headers']['Host']))
+                    $array['ws-opts']['headers'] = ['Host' => $wsSettings['headers']['Host']];
+                if (isset($wsSettings['path']) && !empty($wsSettings['path']))
+                    $array['ws-path'] = $wsSettings['path'];
+                if (isset($wsSettings['headers']['Host']) && !empty($wsSettings['headers']['Host']))
+                    $array['ws-headers'] = ['Host' => $wsSettings['headers']['Host']];
+            }
+        }
+        if ($server['network'] === 'grpc') {
+            $array['network'] = 'grpc';
+            if ($server['networkSettings']) {
+                $grpcSettings = $server['networkSettings'];
+                $array['grpc-opts'] = [];
+                if (isset($grpcSettings['serviceName'])) {
+                    $array['grpc-opts']['grpc-service-name'] = $grpcSettings['serviceName'];
+                };
             }
         }
 

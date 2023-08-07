@@ -27,6 +27,9 @@ class General
             if ($item['type'] === 'vmess') {
                 $uri .= self::buildVmess($user['uuid'], $item);
             }
+            if ($item['type'] === 'vless') {
+                $uri .= self::buildVless($user['uuid'], $item);
+            }
             if ($item['type'] === 'shadowsocks') {
                 $uri .= self::buildShadowsocks($user['uuid'], $item);
             }
@@ -95,6 +98,70 @@ class General
             if (isset($grpcSettings['serviceName'])) $config['path'] = $grpcSettings['serviceName'];
         }
         return "vmess://" . base64_encode(json_encode($config)) . "\r\n";
+    }
+
+    public static function buildVless($uuid, $server){
+        $host = $server['host']; //节点地址
+        $port = $server['port']; //节点端口
+        $name = $server['name']; //节点名称
+
+        $config = [
+            'mode' => 'multi', //grpc传输模式
+            'security' => '', //传输层安全 tls/reality
+            'encryption' => 'none', //加密方式
+            'type' => $server['network'], //传输协议
+        ];
+        // 判断是否开启XTLS
+        if($server['flow']) ($config['flow'] = $server['flow']);
+        // 如果开启TLS
+        if ($server['tls']) {
+            switch($server['tls']){
+                case 1:
+                    if ($server['tlsSettings']) {
+                        $tlsSettings = $server['tlsSettings'];
+                        if (isset($tlsSettings['serverName']) && !empty($tlsSettings['serverName']))
+                            $config['sni'] = $tlsSettings['serverName'];
+                            $config['security'] = "tls";
+                    }
+                    break;
+                case 2: //reality
+                    $config['security'] = "reality";
+                    if(!isset($server['network_settings'])) break;
+
+                    $networkSettings = $server['network_settings'];
+                    if(isset($networkSettings['reality-opts'])
+                    && ($realitySettings = $networkSettings['reality-opts'])
+                    && $realitySettings['public-key']
+                    && $realitySettings['short-id']
+                    && $realitySettings['sni']){
+                        $config['pbk'] = $realitySettings['public-key'];
+                        $config['sid'] = $realitySettings['short-id'];
+                        $config['sni'] = $realitySettings['sni'];
+                        $config['servername'] = $realitySettings['sni'];
+                        $config['spx'] = "/";
+                        $fingerprints = ['chrome', 'firefox', 'safari', 'ios', 'android', 'edge', '360', 'qq']; //随机客户端指纹
+                        $config['fp'] = $fingerprints[rand(0,count($fingerprints) - 1)];
+                    };
+                    break;
+            }
+        }
+        // 如果传输协议为ws
+        if ((string)$server['network'] === 'ws') {
+            $wsSettings = $server['networkSettings'];
+            if (isset($wsSettings['path'])) $config['path'] = $wsSettings['path'];
+            if (isset($wsSettings['headers']['Host'])) $config['host'] = $wsSettings['headers']['Host'];
+        }
+        // 传输协议为grpc
+        if ((string)$server['network'] === 'grpc') {
+            $grpcSettings = $server['networkSettings'];
+            if (isset($grpcSettings['serviceName'])) $config['serviceName'] = $grpcSettings['serviceName'];
+        }
+
+        $user = $uuid . '@' . $host . ':' . $port;
+        $query = http_build_query($config);
+        $fragment = urlencode($name);
+        $link = sprintf("vless://%s?%s#%s\r\n", $user, $query, $fragment);
+        return $link;
     }
 
     public static function buildTrojan($password, $server)
