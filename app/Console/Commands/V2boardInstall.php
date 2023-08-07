@@ -65,27 +65,8 @@ class V2boardInstall extends Command
             ]);
             \Artisan::call('config:clear');
             \Artisan::call('config:cache');
-            try {
-                DB::connection()->getPdo();
-            } catch (\Exception $e) {
-                abort(500, '数据库连接失败');
-            }
-            $file = \File::get(base_path() . '/database/install.sql');
-            if (!$file) {
-                abort(500, '数据库文件不存在');
-            }
-            $sql = str_replace("\n", "", $file);
-            $sql = preg_split("/;/", $sql);
-            if (!is_array($sql)) {
-                abort(500, '数据库文件格式有误');
-            }
             $this->info('正在导入数据库请稍等...');
-            foreach ($sql as $item) {
-                try {
-                    DB::select(DB::raw($item));
-                } catch (\Exception $e) {
-                }
-            }
+            $this->call("migrate");
             $this->info('数据库导入完成');
             $email = '';
             while (!$email) {
