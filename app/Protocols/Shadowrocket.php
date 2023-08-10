@@ -41,6 +41,9 @@ class Shadowrocket
             if ($item['type'] === 'trojan') {
                 $uri .= self::buildTrojan($user['uuid'], $item);
             }
+            if ($item['type'] === 'hysteria') {
+                $uri .= self::buildHysteria($user['uuid'], $item);
+            }
         }
         return base64_encode($uri);
     }
@@ -221,6 +224,22 @@ class Shadowrocket
             'peer' => $server['server_name']
         ]);
         $uri = "trojan://{$password}@{$server['host']}:{$server['port']}?{$query}&tfo=1#{$name}";
+        $uri .= "\r\n";
+        return $uri;
+    }
+
+    public static function buildHysteria($password, $server)
+    {
+        $query = http_build_query([
+            "auth" => $password,
+            "upmbps" => $server['up_mbps'],
+            "downmbps" => $server['down_mbps'],
+            "obfs"      =>"xplus",
+            "obfsParam"  => $server['server_key'],
+            "protocol" => 'udp',
+            "peer" => $server['server_name']
+        ]);
+        $uri = "hysteria://{$server['host']}:{$server['port']}?{$query}#{$server['name']}";
         $uri .= "\r\n";
         return $uri;
     }
