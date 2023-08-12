@@ -5,6 +5,8 @@ namespace App\Http\Controllers\V1\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\CommissionLog;
 use App\Models\Order;
+use App\Models\ServerHysteria;
+use App\Models\ServerVless;
 use App\Models\ServerShadowsocks;
 use App\Models\ServerTrojan;
 use App\Models\ServerVmess;
@@ -99,7 +101,9 @@ class StatController extends Controller
             'shadowsocks' => ServerShadowsocks::where('parent_id', null)->get()->toArray(),
             'v2ray' => ServerVmess::where('parent_id', null)->get()->toArray(),
             'trojan' => ServerTrojan::where('parent_id', null)->get()->toArray(),
-            'vmess' => ServerVmess::where('parent_id', null)->get()->toArray()
+            'vmess' => ServerVmess::where('parent_id', null)->get()->toArray(),
+            'hysteria' => ServerHysteria::where('parent_id', null)->get()->toArray(),
+            'vless' => ServerVless::where('parent_id', null)->get()->toArray(),
         ];
         $startAt = strtotime('-1 day', strtotime(date('Y-m-d')));
         $endAt = strtotime(date('Y-m-d'));

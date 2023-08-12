@@ -170,7 +170,7 @@ class Shadowrocket
                         $config['sni'] = $realitySettings['sni'];
                         $config['pbk'] = $realitySettings['public-key'];
                         $config['sid'] = $realitySettings['short-id'];
-                        $fingerprints = ['chrome', 'firefox', 'safari', 'ios', 'android', 'edge', '360', 'qq']; //随机客户端指纹
+                        $fingerprints = ['chrome', 'firefox', 'safari', 'ios', 'edge', '360', 'qq']; //随机客户端指纹
                         $config['fp'] = $fingerprints[rand(0,count($fingerprints) - 1)];
                     }
                     break;
@@ -239,7 +239,7 @@ class Shadowrocket
             "protocol" => 'udp',
             "peer" => $server['server_name']
         ]);
-        $uri = "hysteria://{$server['host']}:{$server['port']}?{$query}#{$server['name']}";
+        $uri = "hysteria://{$server['host']}:{$server['port']}?{$query}#【Hy】{$server['name']}";
         $uri .= "\r\n";
         return $uri;
     }

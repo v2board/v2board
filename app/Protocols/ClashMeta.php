@@ -54,7 +54,7 @@ class ClashMeta
             }
             if ($item['type'] === 'hysteria') {
                 array_push($proxy, self::buildHysteria($user['uuid'], $item));
-                array_push($proxies, $item['name']);
+                array_push($proxies, "【Hy】" . $item['name']);
             }
         }
 
@@ -208,7 +208,7 @@ class ClashMeta
                             'short-id' => $realitySettings['short-id']
                         ];
                     };
-                    $fingerprints = ['chrome', 'firefox', 'safari', 'ios', 'android', 'edge', '360', 'qq']; //随机客户端指纹
+                    $fingerprints = ['chrome', 'firefox', 'safari', 'ios', 'edge', '360', 'qq']; //随机客户端指纹
                     $array['client-fingerprint'] = $fingerprints[rand(0,count($fingerprints) - 1)];
                     break;
             }
@@ -261,10 +261,10 @@ class ClashMeta
     {
         // dd($server);
         $array = [];
-        $array['name'] = $server['name'];
+        $array['name'] = "【Hy】" . $server['name'];
         $array['type'] = 'hysteria';
         $array['server'] = $server['host'];
-        $arrry['sni'] = $server['server_name'];
+        $array['sni'] = $server['server_name'];
         $array['port'] = $server['port'];
         $array['auth_str'] = $password;
         $array['protocol'] = 'udp';

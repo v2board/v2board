@@ -57,6 +57,8 @@ class UniProxyController extends Controller
     {
         $data = file_get_contents('php://input');
         $data = json_decode($data, true);
+        $ip = $request->ip();
+        // Cache::tags()/
         Cache::put(CacheKey::get('SERVER_' . strtoupper($this->nodeType) . '_ONLINE_USER', $this->nodeInfo->id), count($data), 3600);
         Cache::put(CacheKey::get('SERVER_' . strtoupper($this->nodeType) . '_LAST_PUSH_AT', $this->nodeInfo->id), time(), 3600);
         $userService = new UserService();

@@ -139,7 +139,7 @@ class V2rayN
                         $config['sid'] = $realitySettings['short-id'];
                         $config['sni'] = $realitySettings['sni'];
                         $config['spx'] = "/";
-                        $fingerprints = ['chrome', 'firefox', 'safari', 'ios', 'android', 'edge', '360', 'qq']; //随机客户端指纹
+                        $fingerprints = ['chrome', 'firefox', 'safari', 'ios', 'edge', '360', 'qq']; //随机客户端指纹
                         $config['fp'] = $fingerprints[rand(0,count($fingerprints) - 1)];
                     };
                     break;
