@@ -14,7 +14,9 @@ yum install -y wget && wget -O install.sh http://www.aapanel.com/script/install_
 选择使用LNMP的环境安装方式勾选如下信息
 
 ☑️ Nginx 1.17
+
 ☑️ MySQL 5.6
+
 ☑️ PHP 7.4
 
 选择 Fast 快速编译后进行安装。
