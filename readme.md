@@ -1,5 +1,8 @@
 <img src="https://avatars.githubusercontent.com/u/56885001?s=200&v=4" alt="logo" width="130" height="130" align="right"/>
 
+## 本分支需要配合修改过的XrayR后端进行使用
+https://github.com/wyx2685/XrayR
+
 # **V2Board**
 
 - PHP7.3+
