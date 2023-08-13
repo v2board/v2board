@@ -684,3 +684,32 @@ CREATE TABLE `v2_log` (
                           `updated_at` int(11) NOT NULL,
                           PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+ALTER TABLE `v2_log`
+    CHANGE `title` `title` text COLLATE 'utf8mb4_general_ci' NOT NULL AFTER `id`;
+
+CREATE TABLE `v2_server_vless` (
+                                   `id` int(11) NOT NULL AUTO_INCREMENT,
+                                   `group_id` text NOT NULL,
+                                   `route_id` text,
+                                   `name` varchar(255) NOT NULL,
+                                   `parent_id` int(11) DEFAULT NULL,
+                                   `host` varchar(255) NOT NULL,
+                                   `port` int(11) NOT NULL,
+                                   `server_port` int(11) NOT NULL,
+                                   `tls` tinyint(1) NOT NULL,
+                                   `tls_settings` text,
+                                   `flow` varchar(11) DEFAULT NULL,
+                                   `network` varchar(11) NOT NULL,
+                                   `network_settings` text,
+                                   `tags` text,
+                                   `rate` varchar(11) NOT NULL,
+                                   `show` tinyint(1) NOT NULL DEFAULT '0',
+                                   `sort` int(11) DEFAULT NULL,
+                                   `created_at` int(11) NOT NULL,
+                                   `updated_at` int(11) NOT NULL,
+                                   PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+ALTER TABLE `v2_server_vless`
+    CHANGE `flow` `flow` varchar(64) COLLATE 'utf8mb4_general_ci' NULL AFTER `tls_settings`;
