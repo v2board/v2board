@@ -208,7 +208,7 @@ class ClashMeta
                             'short-id' => $realitySettings['short-id']
                         ];
                     };
-                    $fingerprints = ['chrome', 'firefox', 'safari', 'ios', 'edge', '360', 'qq']; //随机客户端指纹
+                    $fingerprints = ['chrome', 'firefox', 'safari', 'ios', 'edge', 'qq']; //随机客户端指纹
                     $array['client-fingerprint'] = $fingerprints[rand(0,count($fingerprints) - 1)];
                     break;
             }
