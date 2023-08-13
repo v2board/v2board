@@ -23,6 +23,7 @@ class ManageController extends Controller
         $params = $request->only(
                 'shadowsocks',
                 'vmess',
+                'vless',
                 'trojan',
                 'hysteria'
             ) ?? [];

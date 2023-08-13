@@ -25,6 +25,9 @@ class V2rayNG
             if ($item['type'] === 'vmess') {
                 $uri .= self::buildVmess($user['uuid'], $item);
             }
+            if ($item['type'] === 'vless') {
+                $uri .= self::buildVless($user['uuid'], $item);
+            }
             if ($item['type'] === 'shadowsocks') {
                 $uri .= self::buildShadowsocks($user['uuid'], $item);
             }
@@ -84,6 +87,49 @@ class V2rayNG
         }
         return "vmess://" . base64_encode(json_encode($config)) . "\r\n";
     }
+
+    public static function buildVless($uuid, $server)
+    {
+        $config = [
+            "v" => "2",
+            "ps" => $server['name'],
+            "add" => $server['host'],
+            "port" => (string)$server['port'],
+            "id" => $uuid,
+            "aid" => '0',
+            "net" => $server['network'],
+            "type" => "none",
+            "host" => "",
+            "path" => "",
+            "tls" => $server['tls'] ? "tls" : "",
+            "flow" => $server['flow'],
+            "sni" => "",
+        ];
+        if ($server['tls']) {
+            if ($server['tls_settings']) {
+                $tlsSettings = $server['tls_settings'];
+                if (isset($tlsSettings['serverName']) && !empty($tlsSettings['serverName']))
+                    $config['sni'] = $tlsSettings['serverName'];
+            }
+        }
+        if ((string)$server['network'] === 'tcp') {
+            $tcpSettings = $server['network_settings'];
+            if (isset($tcpSettings['header']['type'])) $config['type'] = $tcpSettings['header']['type'];
+            if (isset($tcpSettings['header']['request']['path'][0])) $config['path'] = $tcpSettings['header']['request']['path'][0];
+        }
+        if ((string)$server['network'] === 'ws') {
+            $wsSettings = $server['network_settings'];
+            if (isset($wsSettings['path'])) $config['path'] = $wsSettings['path'];
+            if (isset($wsSettings['headers']['Host'])) $config['host'] = $wsSettings['headers']['Host'];
+        }
+        if ((string)$server['network'] === 'grpc') {
+            $grpcSettings = $server['network_settings'];
+            if (isset($grpcSettings['serviceName'])) $config['path'] = $grpcSettings['serviceName'];
+        }
+//reality继续修
+        return "vless://{$uuid}@{$server['host']}:{$server['port']}?security={$config['tls']}&encryption=none&headerType={$config['type']}&type={$server['network']}&flow={$server['flow']}&fp=chrome#${server['name']}"  . "\r\n";
+    }
+
 
     public static function buildTrojan($password, $server)
     {

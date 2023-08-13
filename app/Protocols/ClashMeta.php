@@ -44,6 +44,10 @@ class ClashMeta
                 array_push($proxy, self::buildVmess($user['uuid'], $item));
                 array_push($proxies, $item['name']);
             }
+            if ($item['type'] === 'vless') {
+                array_push($proxy, self::buildVless($user['uuid'], $item));
+                array_push($proxies, $item['name']);
+            }
             if ($item['type'] === 'trojan') {
                 array_push($proxy, self::buildTrojan($user['uuid'], $item));
                 array_push($proxies, $item['name']);
@@ -157,6 +161,34 @@ class ClashMeta
             }
         }
 
+        return $array;
+    }
+
+    public static function buildVless($uuid, $server)
+    {
+        $array = [];
+        $array['name'] = $server['name'];
+        $array['type'] = 'vless';
+        $array['server'] = $server['host'];
+        $array['port'] = $server['port'];
+        $array['uuid'] = $uuid;
+        $array['flow'] = $server['flow'];
+        $array['client-fingerprint'] = 'chrome';
+        $array['udp'] = true;
+
+        if ($server['tls']) {
+            $array['tls'] = true;
+            if ($server['tls_settings']) {
+                $tlsSettings = $server['tls_settings'];
+                if (isset($tlsSettings['server_name']) && !empty($tlsSettings['server_name']))
+                    $array['servername'] = $tlsSettings['server_name'];
+            }
+        }
+
+        if ($server['network'] === 'tcp') {
+            $tcpSettings = $server['network_settings'];
+        }
+//ws和grpc需要继续修
         return $array;
     }
 
