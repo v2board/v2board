@@ -108,20 +108,25 @@ class General
             "add" => $server['host'],
             "port" => (string)$server['port'],
             "id" => $uuid,
-            "aid" => '0',
             "net" => $server['network'],
             "type" => "none",
             "host" => "",
             "path" => "",
-            "tls" => $server['tls'] ? "tls" : "",
+            "tls" => $server['tls'] !=0 ? ($server['tls'] == 2 ? "reality":"tls") : "",
             "flow" => $server['flow'],
             "sni" => "",
+            "pbk" => "",
+            "sid" =>"",
         ];
         if ($server['tls']) {
             if ($server['tls_settings']) {
                 $tlsSettings = $server['tls_settings'];
-                if (isset($tlsSettings['serverName']) && !empty($tlsSettings['serverName']))
-                    $config['sni'] = $tlsSettings['serverName'];
+                if (isset($tlsSettings['server_name']) && !empty($tlsSettings['server_name']))
+                    $config['sni'] = $tlsSettings['server_name'];
+                if ($server['tls'] == 2) {
+                   $config['pbk'] = $tlsSettings['public_key'];
+                   $config['sid'] = $tlsSettings['shortId'];
+                }
             }
         }
         if ((string)$server['network'] === 'tcp') {
@@ -138,8 +143,12 @@ class General
             $grpcSettings = $server['network_settings'];
             if (isset($grpcSettings['serviceName'])) $config['path'] = $grpcSettings['serviceName'];
         }
-//reality需要继续修
-        return "vless://{$uuid}@{$server['host']}:{$server['port']}?security={$config['tls']}&encryption=none&headerType={$config['type']}&type={$server['network']}&flow={$server['flow']}&fp=chrome#${server['name']}"  . "\r\n";
+//grpc需要继续修
+        if ($server['tls'] == 2) {
+            return "vless://{$uuid}@{$config['add']}:{$server['port']}?type={$config['net']}&encryption=none&security={$config['tls']}&path={$config['path']}&host={$config['host']}&headerType={$config['type']}&flow={$server['flow']}&fp=chrome&sni={$config['sni']}&pbk={$config['pbk']}&sid={$config['sid']}#${config['ps']}"  . "\r\n";
+
+        }
+        return "vless://{$uuid}@{$config['add']}:{$server['port']}?type={$config['net']}&encryption=none&security={$config['tls']}&path={$config['path']}&host={$config['host']}&headerType={$config['type']}&flow={$server['flow']}&fp=chrome&sni={$config['sni']}#${config['ps']}"  . "\r\n";
     }
 
     public static function buildTrojan($password, $server)
