@@ -126,7 +126,7 @@ class Shadowrocket
     {
         $config = [
             "v" => "2",
-            "ps" => $server['name'],
+            "ps" => Helper::encodeURIComponent($server['name']),
             "add" => $server['host'],
             "port" => (string)$server['port'],
             "id" => $uuid,
@@ -154,12 +154,12 @@ class Shadowrocket
         if ((string)$server['network'] === 'tcp') {
             $tcpSettings = $server['network_settings'];
             if (isset($tcpSettings['header']['type'])) $config['type'] = $tcpSettings['header']['type'];
-            if (isset($tcpSettings['header']['request']['path'][0])) $config['path'] = $tcpSettings['header']['request']['path'][0];
+            if (isset($tcpSettings['header']['request']['path'][0])) $config['path'] = Helper::encodeURIComponent($tcpSettings['header']['request']['path'][0]);
         }
         if ((string)$server['network'] === 'ws') {
             $wsSettings = $server['network_settings'];
-            if (isset($wsSettings['path'])) $config['path'] = $wsSettings['path'];
-            if (isset($wsSettings['headers']['Host'])) $config['host'] = $wsSettings['headers']['Host'];
+            if (isset($wsSettings['path'])) $config['path'] = Helper::encodeURIComponent($wsSettings['path']);
+            if (isset($wsSettings['headers']['Host'])) $config['host'] = Helper::encodeURIComponent($wsSettings['headers']['Host']);
         }
         if ((string)$server['network'] === 'grpc') {
             $grpcSettings = $server['network_settings'];
@@ -168,7 +168,6 @@ class Shadowrocket
 //grpc需要继续修
         if ($server['tls'] == 2) {
             return "vless://{$uuid}@{$config['add']}:{$server['port']}?type={$config['net']}&encryption=none&security={$config['tls']}&path={$config['path']}&host={$config['host']}&headerType={$config['type']}&flow={$server['flow']}&fp=chrome&sni={$config['sni']}&pbk={$config['pbk']}&sid={$config['sid']}#${config['ps']}"  . "\r\n";
-
         }
         return "vless://{$uuid}@{$config['add']}:{$server['port']}?type={$config['net']}&encryption=none&security={$config['tls']}&path={$config['path']}&host={$config['host']}&headerType={$config['type']}&flow={$server['flow']}&fp=chrome&sni={$config['sni']}#${config['ps']}"  . "\r\n";
     }
