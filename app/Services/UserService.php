@@ -175,8 +175,9 @@ class UserService
         $statService->setUserStats();
         $statService->setServerStats();
         foreach (array_keys($data) as $userId) {
-            $u = $data[$userId][0];
-            $d = $data[$userId][1];
+            $u = (int)$data[$userId][0] ?? 0;
+            $d = (int)$data[$userId][1] ?? 0;
+            if (!$u && !$d) continue;
             TrafficFetchJob::dispatch($u, $d, $userId, $server, $protocol);
             $statService->statServer($server['id'], $protocol, $u, $d);
             $statService->statUser($server['rate'], $userId, $u, $d);

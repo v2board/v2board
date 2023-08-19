@@ -143,7 +143,6 @@ CREATE TABLE `v2_order` (
                             `surplus_amount` int(11) DEFAULT NULL COMMENT '剩余价值',
                             `refund_amount` int(11) DEFAULT NULL COMMENT '退款金额',
                             `balance_amount` int(11) DEFAULT NULL COMMENT '使用余额',
-                            `surplus_order_ids` text COMMENT '折抵订单',
                             `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0待支付1开通中2已取消3已完成4已折抵',
                             `commission_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0待确认1发放中2有效3无效',
                             `commission_balance` int(11) NOT NULL DEFAULT '0',
@@ -196,6 +195,8 @@ CREATE TABLE `v2_plan` (
                            `reset_price` int(11) DEFAULT NULL,
                            `reset_traffic_method` tinyint(1) DEFAULT NULL,
                            `capacity_limit` int(11) DEFAULT NULL,
+                           `daily_unit_price` int(11) DEFAULT NULL,
+                           `transfer_unit_price` int(11) DEFAULT NULL,
                            `created_at` int(11) NOT NULL,
                            `updated_at` int(11) NOT NULL,
                            PRIMARY KEY (`id`)
@@ -469,4 +470,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2023-07-17 07:38:59
+-- 2023-09-06 07:17:40
