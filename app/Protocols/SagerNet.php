@@ -120,11 +120,11 @@ class SagerNet
         $output .= "?" . "type={$config['type']}" . "&encryption={$config['encryption']}" . "&security={$config['security']}";
         
         if ($server['tls']) {
+            if ($config['flow'] !="") $output .= "&flow={$config['flow']}";
             if ($server['tls_settings']) {
                 $tlsSettings = $server['tls_settings'];
                 if (isset($tlsSettings['server_name']) && !empty($tlsSettings['server_name'])) $config['sni'] = $tlsSettings['server_name'];
                 $output .= "&sni={$config['sni']}";
-                if ($config['flow'] !="") $output .= "&flow={$config['flow']}";
                 if ($server['tls'] == 2) {
                     $config['pbk'] = $tlsSettings['public_key'];
                     $config['sid'] = $tlsSettings['shortId'];
