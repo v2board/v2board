@@ -172,7 +172,7 @@ class ClashMeta
         $array['server'] = $server['host'];
         $array['port'] = $server['port'];
         $array['uuid'] = $uuid;
-        $array['flow'] = $server['flow'];
+        $array['flow'] = !empty($server['flow']) ? $server['flow']: "";
         $array['client-fingerprint'] = 'chrome';
         $array['udp'] = true;
 

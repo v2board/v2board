@@ -51,6 +51,10 @@ class Stash
                 array_push($proxy, self::buildVmess($user['uuid'], $item));
                 array_push($proxies, $item['name']);
             }
+            if ($item['type'] === 'vless') {
+                array_push($proxy, self::buildVless($user['uuid'], $item));
+                array_push($proxies, $item['name']);
+            }
             if ($item['type'] === 'trojan') {
                 array_push($proxy, self::buildTrojan($user['uuid'], $item));
                 array_push($proxies, $item['name']);
@@ -157,6 +161,63 @@ class Stash
         return $array;
     }
 
+    public static function buildVless($uuid, $server)
+    {
+        $array = [];
+        $array['name'] = $server['name'];
+        $array['type'] = 'vless';
+        $array['server'] = $server['host'];
+        $array['port'] = $server['port'];
+        $array['uuid'] = $uuid;
+        $array['flow'] = !empty($server['flow']) ? $server['flow']: "";
+        $array['client-fingerprint'] = 'chrome';
+        $array['udp'] = true;
+
+        if ($server['tls']) {
+            $array['tls'] = true;
+            if ($server['tls_settings']) {
+                $tlsSettings = $server['tls_settings'];
+                if (isset($tlsSettings['server_name']) && !empty($tlsSettings['server_name']))
+                   $array['servername'] = $tlsSettings['server_name'];
+                if ($server['tls'] == 2) {
+                   $array['reality-opts'] = [];
+                   $array['reality-opts']['public-key'] = $tlsSettings['public_key'];
+                   $array['reality-opts']['short-id'] = $tlsSettings['shortId'];
+                }
+            }
+        }
+
+        if ($server['network'] === 'tcp') {
+            $tcpSettings = $server['network_settings'];
+        }
+
+        if ($server['network'] === 'ws') {
+            $array['network'] = 'ws';
+            if ($server['network_settings']) {
+                $wsSettings = $server['network_settings'];
+                $array['ws-opts'] = [];
+                if (isset($wsSettings['path']) && !empty($wsSettings['path']))
+                    $array['ws-opts']['path'] = $wsSettings['path'];
+                if (isset($wsSettings['headers']['Host']) && !empty($wsSettings['headers']['Host']))
+                    $array['ws-opts']['headers'] = ['Host' => $wsSettings['headers']['Host']];
+                if (isset($wsSettings['path']) && !empty($wsSettings['path']))
+                    $array['ws-path'] = $wsSettings['path'];
+                if (isset($wsSettings['headers']['Host']) && !empty($wsSettings['headers']['Host']))
+                    $array['ws-headers'] = ['Host' => $wsSettings['headers']['Host']];
+            }
+        }
+        if ($server['network'] === 'grpc') {
+            $array['network'] = 'grpc';
+            if ($server['network_settings']) {
+                $grpcSettings = $server['network_settings'];
+                $array['grpc-opts'] = [];
+                if (isset($grpcSettings['serviceName'])) $array['grpc-opts']['grpc-service-name'] = $grpcSettings['serviceName'];
+            }
+        }
+
+        return $array;
+    }
+    
     public static function buildTrojan($password, $server)
     {
         $array = [];
