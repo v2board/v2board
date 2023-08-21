@@ -168,7 +168,7 @@ class SagerNet
         }
         if ((string)$server['network'] === 'grpc') {
             $grpcSettings = $server['network_settings'];
-            if (isset($grpcSettings['serviceName'])) $config['serviceName'] = $grpcSettings['serviceName'];
+            if (isset($grpcSettings['serviceName'])) $config['serviceName'] = Helper::encodeURIComponent($grpcSettings['serviceName']);
             if (isset($grpcSettings['multiMode'])) $config['mode'] = $grpcSettings['multiMode'] ? "multi" : "gun";
             $output .= "&serviceName={$config['serviceName']}" . "&mode={$config['mode']}";
         }
