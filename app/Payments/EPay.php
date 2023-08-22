@@ -25,6 +25,10 @@ class EPay {
                 'label' => 'KEY',
                 'description' => '',
                 'type' => 'input',
+            ],
+            'alert1' => [
+                'type' => 'alert',
+                'content' => '开户请联系：<a href="https://t.me/smogate">@smogate</a>'
             ]
         ];
     }
