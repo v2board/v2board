@@ -36,9 +36,9 @@ class Helper
 
     public static function exchange($from, $to)
     {
-        $result = file_get_contents('https://api.exchangerate.host/latest?symbols=' . $to . '&base=' . $from);
+        $result = file_get_contents("https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/" . $from . "/" . $to . ".json");
         $result = json_decode($result, true);
-        return $result['rates'][$to];
+        return $result[$to];
     }
 
     public static function randomChar($len, $special = false)

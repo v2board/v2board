@@ -1,8 +1,5 @@
 <?php
 
-/**
- * 自己写别抄，抄NMB抄
- */
 namespace App\Payments;
 
 use Stripe\Source;
