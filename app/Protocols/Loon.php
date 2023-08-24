@@ -35,6 +35,8 @@ class Loon
             }
             if ($item['type'] === 'vmess') {
                 $uri .= self::buildVmess($user['uuid'], $item);
+            }elseif ($item['type'] === 'vless') {
+                $uri .= self::buildVless($user['uuid'], $item);
             }
             if ($item['type'] === 'trojan') {
                 $uri .= self::buildTrojan($user['uuid'], $item);
@@ -113,6 +115,60 @@ class Loon
         return $uri;
     }
 
+    public static function buildVless($uuid, $server)
+    {
+        $config = [
+            "{$server['name']}=vless",
+            "{$server['host']}",
+            "{$server['port']}",
+            "{$uuid}",
+            'fast-open=false',
+            'udp=true',
+            "alterId=0"
+        ];
+
+        if ($server['network'] === 'tcp') {
+            array_push($config, 'transport=tcp');
+            if ($server['network_settings']) {
+                $tcpSettings = $server['network_settings'];
+                if (isset($tcpSettings['header']['type']) && !empty($tcpSettings['header']['type']))
+                    $config = str_replace('transport=tcp', "transport={$tcpSettings['header']['type']}", $config);
+                if (isset($tcpSettings['header']['request']['path'][0]) && !empty($tcpSettings['header']['request']['path'][0]))
+                    array_push($config, "path={$tcpSettings['header']['request']['path'][0]}");
+                if (isset($tcpSettings['header']['Host']) && !empty($tcpSettings['header']['Host']))
+                    array_push($config, "host={$tcpSettings['header']['Host']}");
+            }
+        }
+        if ($server['tls'] === 1) {
+            array_push($config, 'over-tls=true');
+            if ($server['network'] === 'tcp')
+                
+            if ($server['tls_settings']) {
+                $tlsSettings = $server['tls_settings'];
+                if (isset($tlsSettings['allow_insecure']) && !empty($tlsSettings['allow_insecure']))
+                    array_push($config, 'skip-cert-verify=' . ($tlsSettings['allow_insecure'] ? 'true' : 'false'));
+                if (isset($tlsSettings['server_name']) && !empty($tlsSettings['server_name']))
+                    array_push($config, "tls-name={$tlsSettings['server_name']}");
+            }
+        }elseif($server['tls'] === 2){ // reality 暂不被 loon 支持 
+            return '';
+        }
+        if ($server['network'] === 'ws') {
+            array_push($config, 'transport=ws');
+            if ($server['network_settings']) {
+                $wsSettings = $server['network_settings'];
+                if (isset($wsSettings['path']) && !empty($wsSettings['path']))
+                    array_push($config, "path={$wsSettings['path']}");
+                if (isset($wsSettings['headers']['Host']) && !empty($wsSettings['headers']['Host']))
+                    array_push($config, "host={$wsSettings['headers']['Host']}");
+            }
+        }
+
+        $uri = implode(',', $config);
+        $uri .= "\r\n";
+        return $uri;
+    }
+    
     public static function buildTrojan($password, $server)
     {
         $config = [
