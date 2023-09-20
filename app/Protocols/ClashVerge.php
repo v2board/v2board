@@ -217,7 +217,15 @@ class ClashVerge
                 if (isset($grpcSettings['serviceName'])) $array['grpc-opts']['grpc-service-name'] = $grpcSettings['serviceName'];
             }
         }
-
+        if ($server['network'] === 'h2') {
+            $array['network'] = 'h2';
+            if ($server['network_settings']) {
+                $h2Settings = $server['network_settings'];
+                $array['h2-opts'] = [];
+                if (isset($h2Settings['host'])) $array['h2-opts']['host'] = array($h2Settings['host']);
+                if (isset($h2Settings['path'])) $array['h2-opts']['path'] = $h2Settings['path'];
+            }
+        }
         return $array;
     }
 
