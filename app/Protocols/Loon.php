@@ -89,8 +89,7 @@ class Loon
             }
         }
         if ($server['tls']) {
-            if ($server['network'] === 'tcp')
-                array_push($config, 'over-tls=true');
+            array_push($config, 'over-tls=true');
             if ($server['tlsSettings']) {
                 $tlsSettings = $server['tlsSettings'];
                 if (isset($tlsSettings['allowInsecure']) && !empty($tlsSettings['allowInsecure']))
