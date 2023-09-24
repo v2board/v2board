@@ -169,7 +169,9 @@ class Stash
         $array['server'] = $server['host'];
         $array['port'] = $server['port'];
         $array['uuid'] = $uuid;
-        $array['flow'] = !empty($server['flow']) ? $server['flow']: "";
+        $array['flow'] = (function($value){
+            return in_array($value, [null, 'none', 'xtls-rprx-origin','xtls-rprx-direct','xtls-rprx-splice'], true) ? $value : null;
+        })($server['flow'] ?? null);
         $array['client-fingerprint'] = 'chrome';
         $array['udp'] = true;
 
