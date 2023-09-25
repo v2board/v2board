@@ -94,6 +94,16 @@ class UniProxyController extends Controller
                     'tls' => $this->nodeInfo->tls
                 ];
                 break;
+            case 'vless':
+                $response = [
+                    'server_port' => $this->nodeInfo->server_port,
+                    'network' => $this->nodeInfo->network,
+                    'networkSettings' => $this->nodeInfo->network_settings,
+                    'tls' => $this->nodeInfo->tls,
+                    'flow' => $this->nodeInfo->flow,
+                    'tls_settings' => $this->nodeInfo->tls_settings
+                ];
+                break;
             case 'trojan':
                 $response = [
                     'host' => $this->nodeInfo->host,
@@ -103,22 +113,13 @@ class UniProxyController extends Controller
                 break;
             case 'hysteria':
                 $response = [
+                    'version' => $this->nodeInfo->version,
                     'host' => $this->nodeInfo->host,
                     'server_port' => $this->nodeInfo->server_port,
                     'server_name' => $this->nodeInfo->server_name,
                     'up_mbps' => $this->nodeInfo->up_mbps,
                     'down_mbps' => $this->nodeInfo->down_mbps,
                     'obfs' => Helper::getServerKey($this->nodeInfo->created_at, 16)
-                ];
-                break;
-            case "vless":
-                $response = [
-                    'server_port' => $this->nodeInfo->server_port,
-                    'network' => $this->nodeInfo->network,
-                    'networkSettings' => $this->nodeInfo->network_settings,
-                    'tls' => $this->nodeInfo->tls,
-                    'flow' => $this->nodeInfo->flow,
-                    'tls_settings' => $this->nodeInfo->tls_settings
                 ];
                 break;
         }
