@@ -33,14 +33,12 @@ class ServerService
             } else {
                 $server[$key]['last_check_at'] = Cache::get(CacheKey::get('SERVER_VLESS_LAST_CHECK_AT', $server[$key]['id']));
             }
-
-            $servers[] = $server[$key]->toArray();
-            
             if (isset($server[$key]['tls_settings'])) {
                 if (isset($server[$key]['tls_settings']['private_key'])) {
-                    $servers[$key]['tls_settings']['private_key'] = "*";
+                    $server[$key]['tls_settings']=array_diff_key($server[$key]['tls_settings'],array('private_key'=>''));
                 }
             }
+            $servers[] = $server[$key]->toArray();
         }
 
 
