@@ -712,3 +712,6 @@ CREATE TABLE `v2_server_vless` (
 
 ALTER TABLE `v2_server_vless`
     CHANGE `flow` `flow` varchar(64) COLLATE 'utf8mb4_general_ci' NULL AFTER `tls_settings`;
+
+ALTER TABLE `v2_server_hysteria`
+    ADD `version` int(11) NOT NULL AFTER `id`;
