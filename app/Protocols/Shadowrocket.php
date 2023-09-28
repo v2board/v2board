@@ -143,10 +143,10 @@ class Shadowrocket
             "pbk" => "",
             "sid" =>"",
         ];
-        
+
         $output = "vless://" . $uuid . "@" . $config['add'] . ":" . $config['port'];
         $output .= "?" . "type={$config['type']}" . "&encryption={$config['encryption']}" . "&security={$config['security']}";
-        
+
         if ($server['tls']) {
             if ($config['flow'] !="") $output .= "&flow={$config['flow']}";
             if ($server['tls_settings']) {
@@ -155,7 +155,7 @@ class Shadowrocket
                 $output .= "&sni={$config['sni']}";
                 if ($server['tls'] == 2) {
                     $config['pbk'] = $tlsSettings['public_key'];
-                    $config['sid'] = $tlsSettings['shortId'];
+                    $config['sid'] = $tlsSettings['short_id'];
                     $output .= "&pbk={$config['pbk']}" . "&sid={$config['sid']}";
                 }
             }
@@ -170,7 +170,7 @@ class Shadowrocket
             if (isset($kcpSettings['header']['type'])) $config['headerType'] = $kcpSettings['header']['type'];
             if (isset($kcpSettings['seed'])) $config['path'] = Helper::encodeURIComponent($kcpSettings['seed']);
             $output .= "&headerType={$config['headerType']}" . "&seed={$config['path']}";
-        }        
+        }
         if ((string)$server['network'] === 'ws') {
             $wsSettings = $server['network_settings'];
             if (isset($wsSettings['path'])) $config['path'] = Helper::encodeURIComponent($wsSettings['path']);
@@ -187,11 +187,11 @@ class Shadowrocket
             $quicSettings = $server['network_settings'];
             if (isset($quicSettings['security'])) $config['quicSecurity'] = $quicSettings['security'];
             if (isset($quicSettings['header']['type'])) $config['headerType'] = $quicSettings['header']['type'];
-            
+
             $output .= "&quicSecurity={$config['quicSecurity']}" . "&headerType={$config['headerType']}";
-            
+
             if ((string)$quicSettings['security'] !== 'none' && isset($quicSettings['key'])) $config['path'] = Helper::encodeURIComponent($quicSettings['key']);
-            
+
             $output .= "&key={$config['path']}";
         }
         if ((string)$server['network'] === 'grpc') {

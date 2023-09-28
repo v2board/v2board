@@ -120,10 +120,10 @@ class General
             "pbk" => "",
             "sid" =>"",
         ];
-        
+
         $output = "vless://" . $uuid . "@" . $config['add'] . ":" . $config['port'];
         $output .= "?" . "type={$config['type']}" . "&encryption={$config['encryption']}" . "&security={$config['security']}";
-        
+
         if ($server['tls']) {
             if ($config['flow'] !="") $output .= "&flow={$config['flow']}";
             if ($server['tls_settings']) {
@@ -132,7 +132,7 @@ class General
                 $output .= "&sni={$config['sni']}";
                 if ($server['tls'] == 2) {
                     $config['pbk'] = $tlsSettings['public_key'];
-                    $config['sid'] = $tlsSettings['shortId'];
+                    $config['sid'] = $tlsSettings['short_id'];
                     $output .= "&pbk={$config['pbk']}" . "&sid={$config['sid']}";
                 }
             }

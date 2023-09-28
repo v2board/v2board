@@ -184,7 +184,7 @@ class Stash
                 if ($server['tls'] == 2) {
                    $array['reality-opts'] = [];
                    $array['reality-opts']['public-key'] = $tlsSettings['public_key'];
-                   $array['reality-opts']['short-id'] = $tlsSettings['shortId'];
+                   $array['reality-opts']['short-id'] = $tlsSettings['short_id'];
                 }
             }
         }
