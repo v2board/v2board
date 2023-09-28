@@ -720,3 +720,7 @@ ADD `transfer_unit_price` int(11) NULL AFTER `daily_unit_price`;
 
 ALTER TABLE `v2_order`
 DROP `surplus_order_ids`;
+
+ALTER TABLE `v2_server_hysteria`
+    ADD `ignore_client_bandwidth` tinyint(1) NOT NULL DEFAULT '0' AFTER `insecure`,
+ADD `obfs_type` varchar(11) NULL AFTER `ignore_client_bandwidth`;

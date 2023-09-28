@@ -108,7 +108,9 @@ class UniProxyController extends Controller
                     'server_name' => $this->nodeInfo->server_name,
                     'up_mbps' => $this->nodeInfo->up_mbps,
                     'down_mbps' => $this->nodeInfo->down_mbps,
-                    'obfs' => Helper::getServerKey($this->nodeInfo->created_at, 16)
+                    'obfs' => Helper::getServerKey($this->nodeInfo->created_at, 16),
+                    'obfs_type' => $this->nodeInfo->obfs_type,
+                    'ignore_client_bandwidth' => !!$this->nodeInfo->ignore_client_bandwidth
                 ];
                 break;
             case "vless":

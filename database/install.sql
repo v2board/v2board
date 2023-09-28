@@ -231,6 +231,8 @@ CREATE TABLE `v2_server_hysteria` (
                                       `down_mbps` int(11) NOT NULL,
                                       `server_name` varchar(64) DEFAULT NULL,
                                       `insecure` tinyint(1) NOT NULL DEFAULT '0',
+                                      `ignore_client_bandwidth` tinyint(1) NOT NULL DEFAULT '0',
+                                      `obfs_type` varchar(11) DEFAULT NULL,
                                       `created_at` int(11) NOT NULL,
                                       `updated_at` int(11) NOT NULL,
                                       PRIMARY KEY (`id`)
@@ -470,4 +472,4 @@ CREATE TABLE `v2_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- 2023-09-06 07:17:40
+-- 2023-09-24 19:19:32

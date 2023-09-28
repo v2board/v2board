@@ -24,7 +24,9 @@ class HysteriaController extends Controller
             'up_mbps' => 'required|numeric|min:1',
             'down_mbps' => 'required|numeric|min:1',
             'server_name' => 'nullable',
-            'insecure' => 'required|in:0,1'
+            'insecure' => 'required|in:0,1',
+            'obfs_type' => 'nullable|in:salamander',
+            'ignore_client_bandwidth' => 'required|in:0,1'
         ]);
 
         if ($request->input('id')) {

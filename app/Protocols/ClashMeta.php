@@ -48,6 +48,10 @@ class ClashMeta
                 array_push($proxy, self::buildTrojan($user['uuid'], $item));
                 array_push($proxies, $item['name']);
             }
+            if ($item['type'] === 'vless') {
+                array_push($proxy, self::buildVless($user['uuid'], $item));
+                array_push($proxies, $item['name']);
+            }
         }
 
         $config['proxies'] = array_merge($config['proxies'] ? $config['proxies'] : [], $proxy);
@@ -152,6 +156,78 @@ class ClashMeta
             $array['network'] = 'grpc';
             if ($server['networkSettings']) {
                 $grpcSettings = $server['networkSettings'];
+                $array['grpc-opts'] = [];
+                if (isset($grpcSettings['serviceName'])) $array['grpc-opts']['grpc-service-name'] = $grpcSettings['serviceName'];
+            }
+        }
+
+        return $array;
+    }
+
+    public static function buildVless($uuid, $server)
+    {
+        $array = [];
+        $array['name'] = $server['name'];
+        $array['type'] = 'vless';
+        $array['server'] = $server['host'];
+        $array['port'] = $server['port'];
+        $array['uuid'] = $uuid;
+        $array['udp'] = true;
+
+        if ($server['tls'] === 1) {
+            $array['tls'] = true;
+            if ($server['tls_settings']) {
+                $tlsSettings = $server['tls_settings'];
+                if (isset($tlsSettings['allow_insecure']) && !empty($tlsSettings['allow_insecure']))
+                    $array['skip-cert-verify'] = ($tlsSettings['allow_insecure'] ? true : false);
+                if (isset($tlsSettings['server_name']) && !empty($tlsSettings['server_name']))
+                    $array['servername'] = $tlsSettings['server_name'];
+            }
+        }
+
+        if (isset($server['flow']) && $server['flow']) {
+            $array['flow'] = $server['flow'];
+            $array['client-fingerprint'] = 'chrome';
+        }
+
+        if ($server['tls'] === 2) {
+            $array['client-fingerprint'] = 'chrome';
+            $array['tls'] = true;
+            $array['reality-opts'] = [];
+            if ($server['tls_settings']) {
+                $tlsSettings = $server['tls_settings'];
+                if (isset($tlsSettings['allow_insecure']) && !empty($tlsSettings['allow_insecure']))
+                    $array['skip-cert-verify'] = ($tlsSettings['allow_insecure'] ? true : false);
+                if (isset($tlsSettings['server_name']) && !empty($tlsSettings['server_name']))
+                    $array['servername'] = $tlsSettings['server_name'];
+                if (isset($tlsSettings['public_key'])) $array['reality-opts']['public-key'] = $tlsSettings['public_key'];
+            }
+        }
+
+        if ($server['network'] === 'tcp') {
+            $tcpSettings = $server['network_settings'];
+            if (isset($tcpSettings['header']['type'])) $array['network'] = $tcpSettings['header']['type'];
+            if (isset($tcpSettings['header']['request']['path'][0])) $array['http-opts']['path'] = $tcpSettings['header']['request']['path'][0];
+        }
+        if ($server['network'] === 'ws') {
+            $array['network'] = 'ws';
+            if ($server['network_settings']) {
+                $wsSettings = $server['network_settings'];
+                $array['ws-opts'] = [];
+                if (isset($wsSettings['path']) && !empty($wsSettings['path']))
+                    $array['ws-opts']['path'] = $wsSettings['path'];
+                if (isset($wsSettings['headers']['Host']) && !empty($wsSettings['headers']['Host']))
+                    $array['ws-opts']['headers'] = ['Host' => $wsSettings['headers']['Host']];
+                if (isset($wsSettings['path']) && !empty($wsSettings['path']))
+                    $array['ws-path'] = $wsSettings['path'];
+                if (isset($wsSettings['headers']['Host']) && !empty($wsSettings['headers']['Host']))
+                    $array['ws-headers'] = ['Host' => $wsSettings['headers']['Host']];
+            }
+        }
+        if ($server['network'] === 'grpc') {
+            $array['network'] = 'grpc';
+            if ($server['network_settings']) {
+                $grpcSettings = $server['network_settings'];
                 $array['grpc-opts'] = [];
                 if (isset($grpcSettings['serviceName'])) $array['grpc-opts']['grpc-service-name'] = $grpcSettings['serviceName'];
             }
