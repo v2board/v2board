@@ -715,3 +715,7 @@ ALTER TABLE `v2_server_vless`
 
 ALTER TABLE `v2_server_hysteria`
     ADD `version` int(11) NOT NULL AFTER `id`;
+
+UPDATE v2_server_vless
+    SET tls_settings = REPLACE(tls_settings, 'shortId', 'short_id');
+
