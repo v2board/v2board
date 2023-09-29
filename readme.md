@@ -2,9 +2,11 @@
 
 [![](https://img.shields.io/badge/TgChat-@UnOfficialV2board讨论-blue.svg)](https://t.me/unofficialV2board)
 
-## 本分支需要配合修改过的XrayR后端进行使用
-https://github.com/wyx2685/XrayR
-
+## 本分支支持的后端
+ 
+ - [修改版XrayR](https://github.com/wyx2685/XrayR)
+ - [V2bX](https://github.com/InazumaV/V2bX)
+   
 # **V2Board**
 
 - PHP7.3+
