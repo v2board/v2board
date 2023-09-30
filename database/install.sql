@@ -229,6 +229,8 @@ CREATE TABLE `v2_server_hysteria` (
                                       `sort` int(11) DEFAULT NULL,
                                       `up_mbps` int(11) NOT NULL,
                                       `down_mbps` int(11) NOT NULL,
+                                      `obfs` varchar(64) DEFAULT NULL,
+                                      `obfs_password` varchar(255) DEFAULT NULL,
                                       `server_name` varchar(64) DEFAULT NULL,
                                       `insecure` tinyint(1) NOT NULL DEFAULT '0',
                                       `created_at` int(11) NOT NULL,

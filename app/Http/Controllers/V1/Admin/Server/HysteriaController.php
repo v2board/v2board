@@ -4,6 +4,7 @@ namespace App\Http\Controllers\V1\Admin\Server;
 
 use App\Http\Controllers\Controller;
 use App\Models\ServerHysteria;
+use App\Utils\Helper;
 use Illuminate\Http\Request;
 
 class HysteriaController extends Controller
@@ -24,9 +25,17 @@ class HysteriaController extends Controller
             'rate' => 'required|numeric',
             'up_mbps' => 'required|numeric|min:1',
             'down_mbps' => 'required|numeric|min:1',
+            'obfs' => 'nullable',
+            'obfs_password' => 'nullable',
             'server_name' => 'nullable',
             'insecure' => 'required|in:0,1'
         ]);
+
+        if(isset($params['obfs'])) {
+            if(!isset($params['obfs_password']))  $params['obfs_password'] = Helper::getServerKey($request->input('created_at'), 16);
+        } else {
+            $params['obfs_password'] = null;
+        }
 
         if ($request->input('id')) {
             $server = ServerHysteria::find($request->input('id'));

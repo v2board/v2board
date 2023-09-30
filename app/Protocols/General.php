@@ -36,6 +36,9 @@ class General
             if ($item['type'] === 'trojan') {
                 $uri .= self::buildTrojan($user['uuid'], $item);
             }
+            if ($item['type'] === 'hysteria') {
+                $uri .= self::buildHysteria($user['uuid'], $item);
+            }
         }
         return base64_encode($uri);
     }
@@ -147,7 +150,7 @@ class General
             if (isset($kcpSettings['header']['type'])) $config['headerType'] = $kcpSettings['header']['type'];
             if (isset($kcpSettings['seed'])) $config['path'] = Helper::encodeURIComponent($kcpSettings['seed']);
             $output .= "&headerType={$config['headerType']}" . "&seed={$config['path']}";
-        }        
+        }
         if ((string)$server['network'] === 'ws') {
             $wsSettings = $server['network_settings'];
             if (isset($wsSettings['path'])) $config['path'] = Helper::encodeURIComponent($wsSettings['path']);
@@ -164,11 +167,11 @@ class General
             $quicSettings = $server['network_settings'];
             if (isset($quicSettings['security'])) $config['quicSecurity'] = $quicSettings['security'];
             if (isset($quicSettings['header']['type'])) $config['headerType'] = $quicSettings['header']['type'];
-            
+
             $output .= "&quicSecurity={$config['quicSecurity']}" . "&headerType={$config['headerType']}";
-            
+
             if ((string)$quicSettings['security'] !== 'none' && isset($quicSettings['key'])) $config['path'] = Helper::encodeURIComponent($quicSettings['key']);
-            
+
             $output .= "&key={$config['path']}";
         }
         if ((string)$server['network'] === 'grpc') {
@@ -192,6 +195,35 @@ class General
         ]);
         $uri = "trojan://{$password}@{$server['host']}:{$server['port']}?{$query}#{$name}";
         $uri .= "\r\n";
+        return $uri;
+    }
+
+    public static function buildHysteria($password, $server)
+    {
+        $remote = filter_var($server['host'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) ? '[' . $server['host'] . ']' : $server['host'];
+     	$name = Helper::encodeURIComponent($server['name']);
+
+        if ($server['version'] == 2) {
+            $uri = "hysteria2://{$password}@{$remote}:{$server['port']}/?insecure={$server['insecure']}&sni={$server['server_name']}";
+            if (isset($server['obfs']) && isset($server['obfs_password'])) {
+                $uri .= "&obfs={$server['obfs']}&obfs-password={$server['obfs_password']}";
+            }
+        } else {
+            $uri = "hysteria://{$remote}:{$server['port']}/?";
+            $query = http_build_query([
+                'protocol' => 'udp',
+                'auth' => $password,
+                'insecure' => $server['insecure'],
+                'peer' => $server['server_name']
+                //'upmbps' => $server['up_mbps'],
+                //'downmbps' => $server['up_mbps']
+            ]);
+            $uri .= $query;
+            if (isset($server['obfs']) && isset($server['obfs_password'])) {
+                $uri .= "&obfs={$server['obfs']}&obfsParam{$server['obfs_password']}";
+            }
+        }
+        $uri .= "#{$name}\r\n";
         return $uri;
     }
 

@@ -52,6 +52,10 @@ class ClashMeta
                 array_push($proxy, self::buildTrojan($user['uuid'], $item));
                 array_push($proxies, $item['name']);
             }
+            if ($item['type'] === 'hysteria') {
+                array_push($proxy, self::buildHysteria($user['uuid'], $item));
+                array_push($proxies, $item['name']);
+            }
         }
 
         $config['proxies'] = array_merge($config['proxies'] ? $config['proxies'] : [], $proxy);
@@ -241,6 +245,38 @@ class ClashMeta
         $array['udp'] = true;
         if (!empty($server['server_name'])) $array['sni'] = $server['server_name'];
         if (!empty($server['allow_insecure'])) $array['skip-cert-verify'] = ($server['allow_insecure'] ? true : false);
+        return $array;
+    }
+
+    public static function buildHysteria($password, $server)
+    {
+        $array = [];
+        $array['name'] = $server['name'];
+        $array['server'] = $server['host'];
+        $array['port'] = $server['port'];
+        $array['udp'] = true;
+        //Todo:完善客户端上下行
+        //$array['up'] = $server['up_mbps'];
+        //$array['down'] = $server['down_mbps'];
+
+        if (isset($server['server_name'])) $array['sni'] = $server['server_name'];
+
+        if ($server['version'] === 2) {
+            $array['type'] = 'hysteria2';
+            $array['password'] = $password;
+            if (isset($server['obfs'])){
+                $array['obfs'] = $server['obfs'];
+                $array['obfs-password'] = $server['obfs_password'];
+            }
+        } else {
+            $array['type'] = 'hysteria';
+            $array['auth_str'] = $password;
+            if (isset($server['obfs']) && isset($server['obfs_password'])){
+                $array['obfs'] = $server['obfs_password'];
+            }
+            $array['protocol'] = 'udp';
+        }
+
         return $array;
     }
 

@@ -716,6 +716,10 @@ ALTER TABLE `v2_server_vless`
 ALTER TABLE `v2_server_hysteria`
     ADD `version` int(11) NOT NULL AFTER `id`;
 
+ALTER TABLE `v2_server_hysteria`
+    ADD `obfs` varchar(64) NULL AFTER `down_mbps`,
+    ADD `obfs_password` varchar(255) NULL AFTER `obfs`;
+
 UPDATE v2_server_vless
     SET tls_settings = REPLACE(tls_settings, 'shortId', 'short_id');
 

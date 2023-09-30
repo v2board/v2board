@@ -28,6 +28,7 @@ class UniProxyController extends Controller
         }
         $this->nodeType = $request->input('node_type');
         if ($this->nodeType === 'v2ray') $this->nodeType = 'vmess';
+        if ($this->nodeType === 'hysteria2') $this->nodeType = 'hysteria';
         $this->nodeId = $request->input('node_id');
         $this->serverService = new ServerService();
         $this->nodeInfo = $this->serverService->getServer($this->nodeId, $this->nodeType);
@@ -118,9 +119,14 @@ class UniProxyController extends Controller
                     'server_port' => $this->nodeInfo->server_port,
                     'server_name' => $this->nodeInfo->server_name,
                     'up_mbps' => $this->nodeInfo->up_mbps,
-                    'down_mbps' => $this->nodeInfo->down_mbps,
-                    'obfs' => Helper::getServerKey($this->nodeInfo->created_at, 16)
+                    'down_mbps' => $this->nodeInfo->down_mbps
                 ];
+                if ($this->nodeInfo->version == 1) {
+                   $response['obfs'] = $this->nodeInfo->obfs_password ?? null;
+                } elseif ($this->nodeInfo->version == 2) {
+                   $response['obfs'] = $this->nodeInfo->obfs ?? null;
+                   $response['obfs-password'] = $this->nodeInfo->obfs_password ?? null;
+                }
                 break;
         }
         $response['base_config'] = [
