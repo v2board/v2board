@@ -41,6 +41,9 @@ class Shadowrocket
             if ($item['type'] === 'trojan') {
                 $uri .= self::buildTrojan($user['uuid'], $item);
             }
+            if ($item['type'] === 'hysteria') {
+                $uri .= self::buildHysteria($user['uuid'], $item);
+            }
         }
         return base64_encode($uri);
     }
@@ -122,7 +125,7 @@ class Shadowrocket
         $uri .= "\r\n";
         return $uri;
     }
-    
+
     public static function buildVless($uuid, $server)
     {
         $config = [
@@ -214,6 +217,35 @@ class Shadowrocket
         ]);
         $uri = "trojan://{$password}@{$server['host']}:{$server['port']}?{$query}&tfo=1#{$name}";
         $uri .= "\r\n";
+        return $uri;
+    }
+
+    public static function buildHysteria($password, $server)
+    {
+        $remote = filter_var($server['host'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) ? '[' . $server['host'] . ']' : $server['host'];
+     	$name = Helper::encodeURIComponent($server['name']);
+
+        if ($server['version'] == 2) {
+            $uri = "hysteria2://{$password}@{$remote}:{$server['port']}/?insecure={$server['insecure']}&sni={$server['server_name']}";
+            if (isset($server['obfs']) && isset($server['obfs_password'])) {
+                $uri .= "&obfs={$server['obfs']}&obfs-password={$server['obfs_password']}";
+            }
+        } else {
+            $uri = "hysteria://{$remote}:{$server['port']}/?";
+            $query = http_build_query([
+                'protocol' => 'udp',
+                'auth' => $password,
+                'insecure' => $server['insecure'],
+                'peer' => $server['server_name']
+                //'upmbps' => $server['up_mbps'],
+                //'downmbps' => $server['up_mbps']
+            ]);
+            $uri .= $query;
+            if (isset($server['obfs']) && isset($server['obfs_password'])) {
+                $uri .= "&obfs={$server['obfs']}&obfsParam{$server['obfs_password']}";
+            }
+        }
+        $uri .= "#{$name}\r\n";
         return $uri;
     }
 }
