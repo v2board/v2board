@@ -255,9 +255,6 @@ class ClashMeta
         $array['server'] = $server['host'];
         $array['port'] = $server['port'];
         $array['udp'] = true;
-        //Todo:完善客户端上下行
-        //$array['up'] = $server['up_mbps'];
-        //$array['down'] = $server['down_mbps'];
 
         if (isset($server['server_name'])) $array['sni'] = $server['server_name'];
 
@@ -274,6 +271,9 @@ class ClashMeta
             if (isset($server['obfs']) && isset($server['obfs_password'])){
                 $array['obfs'] = $server['obfs_password'];
             }
+            //Todo:完善客户端上下行
+            $array['up'] = $server['up_mbps'];
+            $array['down'] = $server['down_mbps'];
             $array['protocol'] = 'udp';
         }
 

@@ -215,8 +215,8 @@ class General
                 'auth' => $password,
                 'insecure' => $server['insecure'],
                 'peer' => $server['server_name']
-                //'upmbps' => $server['up_mbps'],
-                //'downmbps' => $server['up_mbps']
+                'upmbps' => $server['up_mbps'],
+                'downmbps' => $server['up_mbps']
             ]);
             $uri .= $query;
             if (isset($server['obfs']) && isset($server['obfs_password'])) {
