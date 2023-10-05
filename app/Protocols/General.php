@@ -214,7 +214,7 @@ class General
                 'protocol' => 'udp',
                 'auth' => $password,
                 'insecure' => $server['insecure'],
-                'peer' => $server['server_name']
+                'peer' => $server['server_name'],
                 'upmbps' => $server['up_mbps'],
                 'downmbps' => $server['up_mbps']
             ]);
