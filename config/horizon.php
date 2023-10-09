@@ -175,6 +175,7 @@ return [
                 'queue' => [
                     'order_handle',
                     'traffic_fetch',
+                    'stat',
                     'send_email',
                     'send_email_mass',
                     'send_telegram',

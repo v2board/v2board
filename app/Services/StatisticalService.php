@@ -30,7 +30,7 @@ class StatisticalService {
     }
 
     public function setServerStats() {
-        $this->serverStats = Cache::store('file')->get("stat_server_{$this->startAt}");
+        $this->serverStats = Cache::get("stat_server_{$this->startAt}");
         $this->serverStats = json_decode($this->serverStats, true) ?? [];
         if (!is_array($this->serverStats)) {
             $this->serverStats = [];
@@ -38,7 +38,7 @@ class StatisticalService {
     }
 
     public function setUserStats() {
-        $this->userStats = Cache::store('file')->get("stat_user_{$this->startAt}");
+        $this->userStats = Cache::get("stat_user_{$this->startAt}");
         $this->userStats = json_decode($this->userStats, true) ?? [];
         if (!is_array($this->userStats)) {
             $this->userStats = [];
@@ -95,7 +95,7 @@ class StatisticalService {
         } else {
             $this->serverStats[$serverType][$serverId] = [$u, $d];
         }
-        Cache::store('file')->set("stat_server_{$this->startAt}", json_encode($this->serverStats));
+        Cache::put("stat_server_{$this->startAt}", json_encode($this->serverStats), 6000);
     }
 
     public function statUser($rate, $userId, $u, $d)
@@ -107,7 +107,7 @@ class StatisticalService {
         } else {
             $this->userStats[$rate][$userId] = [$u, $d];
         }
-        Cache::store('file')->set("stat_user_{$this->startAt}", json_encode($this->userStats));
+        Cache::put("stat_user_{$this->startAt}", json_encode($this->userStats), 6000);
     }
 
     public function getStatUserByUserID($userId): array
@@ -165,12 +165,12 @@ class StatisticalService {
 
     public function clearStatUser()
     {
-        Cache::store('file')->forget("stat_user_{$this->startAt}");
+        Cache::forget("stat_user_{$this->startAt}");
     }
 
     public function clearStatServer()
     {
-        Cache::store('file')->forget("stat_server_{$this->startAt}");
+        Cache::forget("stat_server_{$this->startAt}");
     }
 
     public function getStatRecord($type)
