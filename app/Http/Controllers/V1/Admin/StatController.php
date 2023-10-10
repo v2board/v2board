@@ -5,7 +5,7 @@ namespace App\Http\Controllers\V1\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\CommissionLog;
 use App\Models\Order;
-use App\Models\ServerHyteria;
+use App\Models\ServerHysteria;
 use App\Models\ServerShadowsocks;
 use App\Models\ServerTrojan;
 use App\Models\ServerVmess;
