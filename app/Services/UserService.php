@@ -178,10 +178,11 @@ class UserService
             $u = $data[$userId][0];
             $d = $data[$userId][1];
             StatServerJob::dispatch($u, $d, $server, $protocol, 'd');
-            StatUserJob::dispatch($u, $d, $userId, $server, $protocol, 'd');
+            //StatUserJob::dispatch($u, $d, $userId, $server, $protocol, 'd');
             TrafficFetchJob::dispatch($u, $d, $userId, $server, $protocol);
             //$statService->statServer($server['id'], $protocol, $u, $d);
             //$statService->statUser($server['rate'], $userId, $u, $d);
         }
+        StatUserJob::dispatch($data, $server, $protocol, 'd');
     }
 }
