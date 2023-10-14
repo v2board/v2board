@@ -87,6 +87,7 @@ class UserController extends Controller
             ->select([
                 'email',
                 'transfer_enable',
+                'device_limit',
                 'last_login_at',
                 'created_at',
                 'banned',
@@ -138,6 +139,7 @@ class UserController extends Controller
                 'u',
                 'd',
                 'transfer_enable',
+                'device_limit',
                 'email',
                 'uuid'
             ])

@@ -723,3 +723,8 @@ ALTER TABLE `v2_server_hysteria`
 UPDATE v2_server_vless
     SET tls_settings = REPLACE(tls_settings, 'shortId', 'short_id');
 
+ALTER TABLE `v2_plan`
+    ADD `device_limit` int(11) NULL AFTER `transfer_enable`;
+
+ALTER TABLE `v2_user`
+    ADD `device_limit` int(11) NULL AFTER `transfer_enable`;
