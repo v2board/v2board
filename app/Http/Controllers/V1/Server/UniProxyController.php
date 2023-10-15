@@ -104,7 +104,7 @@ class UniProxyController extends Controller
             $expired_array = [];
             foreach($oldips_array as $nodetypeid => $oldips) {
                 if ($updateAt - $oldips['lastupdateAt'] > 300){
-                    $expired_array[$nodeid] = '';
+                    $expired_array[$nodetypeid] = '';
                 }
             }
             // 清理过期数据并存回缓存
