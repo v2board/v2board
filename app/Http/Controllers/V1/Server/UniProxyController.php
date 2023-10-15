@@ -47,7 +47,7 @@ class UniProxyController extends Controller
             $count =0;
             $ips_array = Cache::get('ALIVE_IP_USER_'. $user['id']);
             if ($ips_array) {
-                foreach ($ips_array as $nodeid => $ip_array) {
+                foreach ($ips_array as $nodetypeid => $ip_array) {
                     foreach ($ip_array['aliveips'] as $ip) {
                         $count++;
                     }
@@ -99,10 +99,10 @@ class UniProxyController extends Controller
             $oldips_array = Cache::get('ALIVE_IP_USER_'. $k) ?? [];
 
             // 更新节点数据
-            $oldips_array[$this->nodeId] = ['aliveips' => $v, 'lastupdateAt' => $updateAt];
+            $oldips_array[$this->nodeType . $this->nodeId] = ['aliveips' => $v, 'lastupdateAt' => $updateAt];
             //删除过期节点在线数据
             $expired_array = [];
-            foreach($oldips_array as $nodeid => $oldips) {
+            foreach($oldips_array as $nodetypeid => $oldips) {
                 if ($updateAt - $oldips['lastupdateAt'] > 300){
                     $expired_array[$nodeid] = '';
                 }
