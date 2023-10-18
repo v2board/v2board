@@ -43,6 +43,20 @@ class UniProxyController extends Controller
         $users = $this->serverService->getAvailableUsers($this->nodeInfo->group_id);
         $users = $users->toArray();
 
+        $users = array_map(function ($user) {
+            $count =0;
+            $ips_array = Cache::get('ALIVE_IP_USER_'. $user['id']);
+            if ($ips_array) {
+                foreach ($ips_array as $nodetypeid => $ip_array) {
+                    foreach ($ip_array['aliveips'] as $ip) {
+                        $count++;
+                    }
+                }
+            }
+            $user['alive_ip'] = $count;
+            return $user;
+        }, $users);
+
         $response['users'] = $users;
 
         $eTag = sha1(json_encode($response));
@@ -62,6 +76,41 @@ class UniProxyController extends Controller
         Cache::put(CacheKey::get('SERVER_' . strtoupper($this->nodeType) . '_LAST_PUSH_AT', $this->nodeInfo->id), time(), 3600);
         $userService = new UserService();
         $userService->trafficFetch($this->nodeInfo->toArray(), $this->nodeType, $data);
+
+        return response([
+            'data' => true
+        ]);
+    }
+
+    // 后端提交在线数据
+    public function alive(Request $request)
+    {
+        $data = file_get_contents('php://input');
+        $data = json_decode($data, true);
+        if ($data === null && json_last_error() !== JSON_ERROR_NONE) {
+            // JSON decoding error
+            return response([
+                'error' => 'Invalid online data'
+            ], 400);
+        }
+
+        foreach ($data as $k => $v) {
+            $updateAt = time();
+            $oldips_array = Cache::get('ALIVE_IP_USER_'. $k) ?? [];
+
+            // 更新节点数据
+            $oldips_array[$this->nodeType . $this->nodeId] = ['aliveips' => $v, 'lastupdateAt' => $updateAt];
+            //删除过期节点在线数据
+            $expired_array = [];
+            foreach($oldips_array as $nodetypeid => $oldips) {
+                if ($updateAt - $oldips['lastupdateAt'] > 300){
+                    $expired_array[$nodetypeid] = '';
+                }
+            }
+            // 清理过期数据并存回缓存
+            $new_array = array_diff_key($oldips_array, $expired_array);
+            Cache::put('ALIVE_IP_USER_'. $k, $new_array, 120);
+        }
 
         return response([
             'data' => true

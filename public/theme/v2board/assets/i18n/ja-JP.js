@@ -38,6 +38,7 @@ window.settings.i18n['ja-JP'] = {
   '该订阅长期有效': '時間制限なし',
   '已过期': '期限切れ',
   '已用 {used} / 总计 {total}': '使用済み {used} / 合計 {total}',
+  '在线设备 {alive_ip}/{device_limit}': 'オンラインデバイス {alive_ip}/{device_limit}',
   '查看订阅': 'プランを表示',
   '邮箱': 'E-mail アドレス',
   '邮箱验证码': '確認コード',

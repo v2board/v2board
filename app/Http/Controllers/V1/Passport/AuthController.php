@@ -153,6 +153,7 @@ class AuthController extends Controller
             $plan = Plan::find(config('v2board.try_out_plan_id'));
             if ($plan) {
                 $user->transfer_enable = $plan->transfer_enable * 1073741824;
+                $user->device_limit = $plan->device_limit;
                 $user->plan_id = $plan->id;
                 $user->group_id = $plan->group_id;
                 $user->expired_at = time() + (config('v2board.try_out_hour', 1) * 3600);

@@ -144,6 +144,7 @@ window.settings.i18n['en-US'] = {
   '该订阅长期有效': 'The subscription is valid for an unlimited time',
   '已过期': 'Expired',
   '已用 {used} / 总计 {total}': '{used} Used / Total {total}',
+  '在线设备 {alive_ip}/{device_limit}': 'Online {alive_ip}/{device_limit} Device',
   '重置订阅信息': 'Reset Subscription',
   '没有可用节点，如果您未订阅或已过期请': 'No access points are available. If you have not subscribed or the subscription has expired, please',
   '订阅': 'Subscription',
