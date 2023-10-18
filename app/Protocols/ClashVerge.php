@@ -52,6 +52,10 @@ class ClashVerge
                 array_push($proxy, self::buildTrojan($user['uuid'], $item));
                 array_push($proxies, $item['name']);
             }
+            if ($item['type'] === 'hysteria') {
+                array_push($proxy, self::buildHysteria($user['uuid'], $item));
+                array_push($proxies, $item['name']);
+            }
         }
 
         $config['proxies'] = array_merge($config['proxies'] ? $config['proxies'] : [], $proxy);
@@ -240,6 +244,38 @@ class ClashVerge
         $array['udp'] = true;
         if (!empty($server['server_name'])) $array['sni'] = $server['server_name'];
         if (!empty($server['allow_insecure'])) $array['skip-cert-verify'] = ($server['allow_insecure'] ? true : false);
+        return $array;
+    }
+
+    public static function buildHysteria($password, $server)
+    {
+        $array = [];
+        $array['name'] = $server['name'];
+        $array['server'] = $server['host'];
+        $array['port'] = $server['port'];
+        $array['udp'] = true;
+
+        if (isset($server['server_name'])) $array['sni'] = $server['server_name'];
+
+        if ($server['version'] === 2) {
+            $array['type'] = 'hysteria2';
+            $array['password'] = $password;
+            if (isset($server['obfs'])){
+                $array['obfs'] = $server['obfs'];
+                $array['obfs-password'] = $server['obfs_password'];
+            }
+        } else {
+            $array['type'] = 'hysteria';
+            $array['auth_str'] = $password;
+            if (isset($server['obfs']) && isset($server['obfs_password'])){
+                $array['obfs'] = $server['obfs_password'];
+            }
+            //Todo:完善客户端上下行
+            $array['up'] = $user->speed_limit ? min($server['down_mbps'], $user->speed_limit) : $server['down_mbps'];
+            $array['down'] = $user->speed_limit ? min($server['up_mbps'], $user->speed_limit) : $server['up_mbps'];
+            $array['protocol'] = 'udp';
+        }
+
         return $array;
     }
 

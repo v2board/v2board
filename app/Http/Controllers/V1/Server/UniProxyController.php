@@ -124,6 +124,8 @@ class UniProxyController extends Controller
                 if ($this->nodeInfo->version == 1) {
                    $response['obfs'] = $this->nodeInfo->obfs_password ?? null;
                 } elseif ($this->nodeInfo->version == 2) {
+                   //TODO 处理hy2客户端上下行宽带设置
+                   $response['ignore_client_bandwidth'] = true;
                    $response['obfs'] = $this->nodeInfo->obfs ?? null;
                    $response['obfs-password'] = $this->nodeInfo->obfs_password ?? null;
                 }
