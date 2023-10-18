@@ -153,6 +153,19 @@ class UserController extends Controller
                 abort(500, __('Subscription plan does not exist'));
             }
         }
+
+        //统计在线设备
+        $countalive = 0;
+        $ips_array = Cache::get('ALIVE_IP_USER_'. $request->user['id']);
+        if ($ips_array) {
+            foreach ($ips_array as $nodetypeid => $ip_array) {
+                foreach ($ip_array['aliveips'] as $ip) {
+                    $countalive++;
+                }
+            }
+        }
+        $user['alive_ip'] = $countalive;
+
         $user['subscribe_url'] = Helper::getSubscribeUrl("/api/v1/client/subscribe?token={$user['token']}");
         $userService = new UserService();
         $user['reset_day'] = $userService->getResetDay($user);

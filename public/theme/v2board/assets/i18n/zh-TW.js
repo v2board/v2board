@@ -38,6 +38,7 @@ window.settings.i18n['zh-TW'] = {
   '该订阅长期有效': '該訂閱長期有效',
   '已过期': '已過期',
   '已用 {used} / 总计 {total}': '已用 {used} / 總計 {total}',
+  '在线设备 {alive_ip}/{device_limit}': '在線設備 {alive_ip}/{device_limit}',
   '查看订阅': '查看訂閱',
   '邮箱': '郵箱',
   '邮箱验证码': '郵箱驗證碼',
