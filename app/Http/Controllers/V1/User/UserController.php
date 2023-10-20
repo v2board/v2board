@@ -158,11 +158,7 @@ class UserController extends Controller
         $countalive = 0;
         $ips_array = Cache::get('ALIVE_IP_USER_'. $request->user['id']);
         if ($ips_array) {
-            foreach ($ips_array as $nodetypeid => $ip_array) {
-                foreach ($ip_array['aliveips'] as $ip) {
-                    $countalive++;
-                }
-            }
+            $countalive = $ips_array['alive_ip'];
         }
         $user['alive_ip'] = $countalive;
 
