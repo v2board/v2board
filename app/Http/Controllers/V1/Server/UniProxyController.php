@@ -90,15 +90,18 @@ class UniProxyController extends Controller
             ], 400);
         }
 
-        foreach ($data as $nodeid => $ips) {
+        foreach ($data as $uid => $ips) {
             $updateAt = time();
-            $oldips_array = Cache::get('ALIVE_IP_USER_'. $nodeid) ?? [];
+            $oldips_array = Cache::get('ALIVE_IP_USER_'. $uid) ?? [];
 
             // 更新节点数据
             $oldips_array[$this->nodeType . $this->nodeId] = ['aliveips' => $ips, 'lastupdateAt' => $updateAt];
             // 删除过期节点在线数据
             $expired_array = [];
             foreach($oldips_array as $nodetypeid => $oldips) {
+                if (is_int($oldips)) {
+                    continue;
+                }
                 if ($updateAt - $oldips['lastupdateAt'] > 120){
                     $expired_array[$nodetypeid] = '';
                 }
@@ -107,12 +110,15 @@ class UniProxyController extends Controller
             $new_array = array_diff_key($oldips_array, $expired_array);
             $count = 0;
             foreach($new_array as $nodetypeid => $newdata) {
+                if (is_int($newdata)) {
+                    continue;
+                }
                 foreach($newdata['aliveips'] as $newip) {
                     $count++;
                 }
             }
             $new_array['alive_ip'] = $count;
-            Cache::put('ALIVE_IP_USER_'. $nodeid, $new_array, 120);
+            Cache::put('ALIVE_IP_USER_'. $uid, $new_array, 120);
         }
 
         return response([
