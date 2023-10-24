@@ -62,8 +62,8 @@ class StatUserJob implements ShouldQueue
                     ->lockForUpdate()->first();
                 if ($userdata) {
                     $userdata->update([
-                        'u' => $userdata['u'] + ($this->data[$userId][0] * $this->server['rate']),
-                        'd' => $userdata['d'] + ($this->data[$userId][1] * $this->server['rate'])
+                        'u' => $userdata['u'] + $this->data[$userId][0],
+                        'd' => $userdata['d'] + $this->data[$userId][1]
                     ]);
                 } else {
                     $insertData[] = [
