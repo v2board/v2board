@@ -47,7 +47,7 @@ class AppController extends Controller
                 array_push($proxies, $item['name']);
             }
             if ($item['type'] === 'trojan') {
-                array_push($proxy, \App\Http\Controllers\V1\Client\Protocols\Clash::buildTrojan($user['uuid'], $item));
+                array_push($proxy, \App\Protocols\Clash::buildTrojan($user['uuid'], $item));
                 array_push($proxies, $item['name']);
             }
         }
