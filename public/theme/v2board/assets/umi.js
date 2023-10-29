@@ -30880,7 +30880,7 @@
                     id: "\u5728\u7ebf\u8bbe\u5907 {alive_ip}/{device_limit}"
                 }, {
                     alive_ip: d.alive_ip,
-                    device_limit: d.device_limit == null ? "-" : d.device_limit
+                    device_limit: d.device_limit == null ? "∞" : d.device_limit
                 })))), y >= 80 && !Object(p["h"])(d.expired_at) && (null === d || void 0 === d ? void 0 : null === (e = d.plan) || void 0 === e ? void 0 : e.reset_price) && l.a.createElement("div", {
                     className: "mb-4"
                 }, l.a.createElement(i["a"], {

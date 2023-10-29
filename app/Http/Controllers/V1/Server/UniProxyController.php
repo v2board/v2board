@@ -44,6 +44,9 @@ class UniProxyController extends Controller
         $users = $users->toArray();
 
         $users = array_map(function ($user) {
+            if ($user['device_limit'] == null || $user['device_limit'] <= 0) {
+                return $user;
+            }
             $ips_array = Cache::get('ALIVE_IP_USER_'. $user['id']);
             $count = 0;
             if ($ips_array) {

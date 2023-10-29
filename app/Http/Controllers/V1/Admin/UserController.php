@@ -14,6 +14,7 @@ use App\Services\AuthService;
 use App\Utils\Helper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 
 class UserController extends Controller
 {
@@ -75,6 +76,13 @@ class UserController extends Controller
                 }
             }
             $res[$i]['subscribe_url'] = Helper::getSubscribeUrl('/api/v1/client/subscribe?token=' . $res[$i]['token']);
+            //统计在线设备
+            $countalive = 0;
+            $ips_array = Cache::get('ALIVE_IP_USER_'. $res[$i]['id']);
+            if ($ips_array) {
+                $countalive = $ips_array['alive_ip'];
+            }
+            $res[$i]['alive_ip'] = $countalive;
         }
         return response([
             'data' => $res,
