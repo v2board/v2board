@@ -104,7 +104,7 @@ class ClashMeta
             $password = "{$serverKey}:{$userKey}";
         }
         $array = [];
-        $array['name'] = $server['name'];
+        $array['name'] = rawurlencode($server['name']);
         $array['type'] = 'ss';
         $array['server'] = $server['host'];
         $array['port'] = $server['port'];
@@ -139,7 +139,7 @@ class ClashMeta
         if ($server['network'] === 'tcp') {
             $tcpSettings = $server['networkSettings'];
             if (isset($tcpSettings['header']['type'])) $array['network'] = $tcpSettings['header']['type'];
-            if (isset($tcpSettings['header']['request']['path'][0])) $array['http-opts']['path'] = $tcpSettings['header']['request']['path'][0];
+            if (isset($tcpSettings['header']['request']['path'])) $array['http-opts']['path'] = $tcpSettings['header']['request']['path'];
         }
         if ($server['network'] === 'ws') {
             $array['network'] = 'ws';
@@ -150,10 +150,6 @@ class ClashMeta
                     $array['ws-opts']['path'] = $wsSettings['path'];
                 if (isset($wsSettings['headers']['Host']) && !empty($wsSettings['headers']['Host']))
                     $array['ws-opts']['headers'] = ['Host' => $wsSettings['headers']['Host']];
-                if (isset($wsSettings['path']) && !empty($wsSettings['path']))
-                    $array['ws-path'] = $wsSettings['path'];
-                if (isset($wsSettings['headers']['Host']) && !empty($wsSettings['headers']['Host']))
-                    $array['ws-headers'] = ['Host' => $wsSettings['headers']['Host']];
             }
         }
         if ($server['network'] === 'grpc') {
@@ -176,12 +172,13 @@ class ClashMeta
         $array['server'] = $server['host'];
         $array['port'] = $server['port'];
         $array['uuid'] = $uuid;
-        $array['flow'] = !empty($server['flow']) ? $server['flow']: "";
-        $array['client-fingerprint'] = 'chrome';
         $array['udp'] = true;
 
         if ($server['tls']) {
             $array['tls'] = true;
+            $array['skip-cert-verify'] = isset($server['tls_settings']['allow_insecure']) && $server['tls_settings']['allow_insecure'] == 1 ? true : false;
+            $array['flow'] = !empty($server['flow']) ? $server['flow']: "";
+            $array['client-fingerprint'] = !empty($server['fingerprint']) ? $server['fingerprint'] : 'chrome';
             if ($server['tls_settings']) {
                 $tlsSettings = $server['tls_settings'];
                 if (isset($tlsSettings['server_name']) && !empty($tlsSettings['server_name']))
@@ -196,6 +193,8 @@ class ClashMeta
 
         if ($server['network'] === 'tcp') {
             $tcpSettings = $server['network_settings'];
+            if (isset($tcpSettings['header']['type']) && $tcpSettings['header']['type'] == 'http') $array['network'] = $tcpSettings['header']['type'];
+            if (isset($tcpSettings['header']['request']['path'])) $array['http-opts']['path'] = $tcpSettings['header']['request']['path'];
         }
 
         if ($server['network'] === 'ws') {
@@ -207,10 +206,6 @@ class ClashMeta
                     $array['ws-opts']['path'] = $wsSettings['path'];
                 if (isset($wsSettings['headers']['Host']) && !empty($wsSettings['headers']['Host']))
                     $array['ws-opts']['headers'] = ['Host' => $wsSettings['headers']['Host']];
-                if (isset($wsSettings['path']) && !empty($wsSettings['path']))
-                    $array['ws-path'] = $wsSettings['path'];
-                if (isset($wsSettings['headers']['Host']) && !empty($wsSettings['headers']['Host']))
-                    $array['ws-headers'] = ['Host' => $wsSettings['headers']['Host']];
             }
         }
         if ($server['network'] === 'grpc') {
@@ -243,6 +238,22 @@ class ClashMeta
         $array['port'] = $server['port'];
         $array['password'] = $password;
         $array['udp'] = true;
+        if(in_array($server['network'], ["grpc", "ws"])){
+            $array['network'] = $server['network'];
+            // grpc配置
+            if($server['network'] === "grpc" && isset($server['networkSettings']['serviceName'])) {
+                $array['grpc-opts']['grpc-service-name'] = $server['networkSettings']['serviceName'];
+            }
+            // ws配置
+            if($server['network'] === "ws") {
+                if(isset($server['networkSettings']['path'])) {
+                    $array['ws-opts']['path'] = $server['networkSettings']['path'];
+                }
+                if(isset($server['networkSettings']['headers']['Host'])){
+                    $array['ws-opts']['headers']['Host'] = $server['networkSettings']['headers']['Host'];
+                }
+            }
+        };
         if (!empty($server['server_name'])) $array['sni'] = $server['server_name'];
         if (!empty($server['allow_insecure'])) $array['skip-cert-verify'] = ($server['allow_insecure'] ? true : false);
         return $array;
@@ -255,6 +266,7 @@ class ClashMeta
         $array['server'] = $server['host'];
         $array['port'] = $server['port'];
         $array['udp'] = true;
+        $array['skip-cert-verify'] = $server['insecure'] == 1 ? true : false;
 
         if (isset($server['server_name'])) $array['sni'] = $server['server_name'];
 
@@ -272,8 +284,8 @@ class ClashMeta
                 $array['obfs'] = $server['obfs_password'];
             }
             //Todo:完善客户端上下行
-            $array['up'] = $server['up_mbps'];
-            $array['down'] = $server['down_mbps'];
+            $array['up'] = $server['down_mbps'];
+            $array['down'] = $server['up_mbps'];
             $array['protocol'] = 'udp';
         }
 

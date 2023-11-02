@@ -142,6 +142,7 @@ class Shadowrocket
             "mode" => "gun",
             "security" => $server['tls'] !=0 ? ($server['tls'] == 2 ? "reality":"tls") : "",
             "flow" => $server['flow'],
+            "fp" => isset($server['fingerprint']) ? $server['fingerprint'] : 'chrome',
             "sni" => "",
             "pbk" => "",
             "sid" =>"",
@@ -151,7 +152,7 @@ class Shadowrocket
         $output .= "?" . "type={$config['type']}" . "&encryption={$config['encryption']}" . "&security={$config['security']}";
 
         if ($server['tls']) {
-            if ($config['flow'] !="") $output .= "&flow={$config['flow']}";
+            if ($config['flow'] != "") $output .= "&flow={$config['flow']}";
             if ($server['tls_settings']) {
                 $tlsSettings = $server['tls_settings'];
                 if (isset($tlsSettings['server_name']) && !empty($tlsSettings['server_name'])) $config['sni'] = $tlsSettings['server_name'];
@@ -166,7 +167,8 @@ class Shadowrocket
         if ((string)$server['network'] === 'tcp') {
             $tcpSettings = $server['network_settings'];
             if (isset($tcpSettings['header']['type'])) $config['headerType'] = $tcpSettings['header']['type'];
-            $output .= "&headerType={$config['headerType']}";
+            if (isset($tcpSettings['header']['request']['path'])) $config['path'] = $tcpSettings['header']['request']['path'];
+            $output .= "&headerType={$config['headerType']}" . "&seed={$config['path']}";
         }
         if ((string)$server['network'] === 'kcp') {
             $kcpSettings = $server['network_settings'];
@@ -203,7 +205,8 @@ class Shadowrocket
             if (isset($grpcSettings['multiMode'])) $config['mode'] = $grpcSettings['multiMode'] ? "multi" : "gun";
             $output .= "&serviceName={$config['serviceName']}" . "&mode={$config['mode']}";
         }
-        $output .= "&fp=chrome" . "#" . $config['name'];
+
+        $output .= "&fp={$config['fp']}" . "#" . $config['name'];
 
         return $output . "\r\n";
     }
@@ -213,10 +216,26 @@ class Shadowrocket
         $name = rawurlencode($server['name']);
         $query = http_build_query([
             'allowInsecure' => $server['allow_insecure'],
-            'peer' => $server['server_name']
+            'peer' => $server['server_name'],
+            'sni' => $server['server_name']
         ]);
-        $uri = "trojan://{$password}@{$server['host']}:{$server['port']}?{$query}&tfo=1#{$name}";
-        $uri .= "\r\n";
+        $uri = "trojan://{$password}@{$server['host']}:{$server['port']}?{$query}";
+        if(in_array($server['network'], ["grpc", "ws"])){
+            $uri .= "&type={$server['network']}";
+            if($server['network'] === "grpc" && isset($server['networkSettings']['serviceName'])) {
+                $uri .= "&path={$server['networkSettings']['serviceName']}";
+            }
+            if($server['network'] === "ws") {
+                if(isset($server['networkSettings']['path'])) {
+                    $uri .= "&path={$server['networkSettings']['path']}";
+                }
+                if(isset($server['networkSettings']['headers']['Host'])) {
+                    $uri .= "&host={$server['networkSettings']['headers']['Host']}";
+                }
+            }
+        }
+        
+        $uri .= "#{$name}\r\n";
         return $uri;
     }
 
@@ -237,7 +256,7 @@ class Shadowrocket
                 'auth' => $password,
                 'insecure' => $server['insecure'],
                 'peer' => $server['server_name'],
-                'upmbps' => $server['up_mbps'],
+                'upmbps' => $server['down_mbps'],
                 'downmbps' => $server['up_mbps']
             ]);
             $uri .= $query;

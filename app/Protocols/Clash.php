@@ -130,7 +130,7 @@ class Clash
         if ($server['network'] === 'tcp') {
             $tcpSettings = $server['networkSettings'];
             if (isset($tcpSettings['header']['type'])) $array['network'] = $tcpSettings['header']['type'];
-            if (isset($tcpSettings['header']['request']['path'][0])) $array['http-opts']['path'] = $tcpSettings['header']['request']['path'][0];
+            if (isset($tcpSettings['header']['request']['path'])) $array['http-opts']['path'] = $tcpSettings['header']['request']['path'];
         }
         if ($server['network'] === 'ws') {
             $array['network'] = 'ws';
@@ -141,10 +141,6 @@ class Clash
                     $array['ws-opts']['path'] = $wsSettings['path'];
                 if (isset($wsSettings['headers']['Host']) && !empty($wsSettings['headers']['Host']))
                     $array['ws-opts']['headers'] = ['Host' => $wsSettings['headers']['Host']];
-                if (isset($wsSettings['path']) && !empty($wsSettings['path']))
-                    $array['ws-path'] = $wsSettings['path'];
-                if (isset($wsSettings['headers']['Host']) && !empty($wsSettings['headers']['Host']))
-                    $array['ws-headers'] = ['Host' => $wsSettings['headers']['Host']];
             }
         }
         if ($server['network'] === 'grpc') {
@@ -226,6 +222,22 @@ class Clash
         $array['port'] = $server['port'];
         $array['password'] = $password;
         $array['udp'] = true;
+        if(in_array($server['network'], ["grpc", "ws"])){
+            $array['network'] = $server['network'];
+            // grpc配置
+            if($server['network'] === "grpc" && isset($server['networkSettings']['serviceName'])) {
+                $array['grpc-opts']['grpc-service-name'] = $server['networkSettings']['serviceName'];
+            }
+            // ws配置
+            if($server['network'] === "ws") {
+                if(isset($server['networkSettings']['path'])) {
+                    $array['ws-opts']['path'] = $server['networkSettings']['path'];
+                }
+                if(isset($server['networkSettings']['headers']['Host'])){
+                    $array['ws-opts']['headers']['Host'] = $server['networkSettings']['headers']['Host'];
+                }
+            }
+        };
         if (!empty($server['server_name'])) $array['sni'] = $server['server_name'];
         if (!empty($server['allow_insecure'])) $array['skip-cert-verify'] = ($server['allow_insecure'] ? true : false);
         return $array;
