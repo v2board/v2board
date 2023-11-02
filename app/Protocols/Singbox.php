@@ -255,7 +255,7 @@ class SingBox
             'server_name' => $server['server_name']
         ];
 
-        if(in_array($server['network'], ["grpc", "ws"])){
+        if(isset($server['network']) && in_array($server['network'], ["grpc", "ws"])){
             $array['transport']['type'] = $server['network'];
             // grpc配置
             if($server['network'] === "grpc" && isset($server['networkSettings']['serviceName'])) {

@@ -238,7 +238,7 @@ class ClashVerge
         $array['port'] = $server['port'];
         $array['password'] = $password;
         $array['udp'] = true;
-        if(in_array($server['network'], ["grpc", "ws"])){
+        if(isset($server['network']) && in_array($server['network'], ["grpc", "ws"])){
             $array['network'] = $server['network'];
             // grpc配置
             if($server['network'] === "grpc" && isset($server['networkSettings']['serviceName'])) {

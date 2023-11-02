@@ -197,7 +197,7 @@ class General
             'sni' => $server['server_name']
         ]);
         $uri = "trojan://{$password}@{$server['host']}:{$server['port']}?{$query}";
-        if(in_array($server['network'], ["grpc", "ws"])){
+        if(isset($server['network']) && in_array($server['network'], ["grpc", "ws"])){
             $uri .= "&type={$server['network']}";
             if($server['network'] === "grpc" && isset($server['networkSettings']['serviceName'])) {
                 $uri .= "&path={$server['networkSettings']['serviceName']}";
