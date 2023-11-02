@@ -1061,7 +1061,7 @@
                 }),
                 Object(u["n"])() && (t.push({
                     title: "ClashMeta",
-                    href: "clash://install-config?url=" + encodeURIComponent(e) + "&flag=meta" + "&name=" + window.settings.title
+                    href: "clash://install-config?url=" + encodeURIComponent(e + "&flag=meta") + "&name=" + window.settings.title
                 }) && t.push({
                     title: "Clash For Windows",
                     href: "clash://install-config?url=" + encodeURIComponent(e) + "&name=" + window.settings.title
