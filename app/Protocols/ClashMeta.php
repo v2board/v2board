@@ -104,7 +104,7 @@ class ClashMeta
             $password = "{$serverKey}:{$userKey}";
         }
         $array = [];
-        $array['name'] = rawurlencode($server['name']);
+        $array['name'] = $server['name'];
         $array['type'] = 'ss';
         $array['server'] = $server['host'];
         $array['port'] = $server['port'];
