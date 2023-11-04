@@ -1037,7 +1037,10 @@
             renderSubscribeBox() {
                 var e = this.props.subscribeUrl
                   , t = [];
-                return (Object(u["i"])() || Object(u["j"])()) && (t.push({
+                return t.push({
+                    title: "Sing-box",
+                    href: "sing-box://import-remote-profile?url=" + encodeURIComponent(e + "&flag=sing-box") + "#" + window.settings.title
+                }), (Object(u["i"])() || Object(u["j"])()) && (t.push({
                     title: "Shadowrocket",
                     href: "shadowrocket://add/sub://" + window.btoa(e + "&flag=shadowrocket").replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "") + "?remark=" + window.settings.title
                 }),
@@ -1062,9 +1065,6 @@
                 Object(u["n"])() && (t.push({
                     title: "ClashMeta",
                     href: "clash://install-config?url=" + encodeURIComponent(e + "&flag=meta") + "&name=" + window.settings.title
-                }) && t.push({
-                    title: "Clash For Windows",
-                    href: "clash://install-config?url=" + encodeURIComponent(e) + "&name=" + window.settings.title
                 })),
                 Object(u["g"])() && (t.push({
                     title: "NekoBox For Android",
@@ -1072,9 +1072,6 @@
                 }) && t.push({
                     title: "ClashMeta For Android",
                     href: "clash://install-config?url=" + encodeURIComponent(e + "&flag=meta") + "&name=" + window.settings.title
-                }) && t.push({
-                    title: "Clash For Android",
-                    href: "clash://install-config?url=" + encodeURIComponent(e) + "&name=" + window.settings.title
                 }),
                 t.push({
                     title: "Surfboard",

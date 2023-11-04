@@ -121,7 +121,7 @@ class SingBox
     }
 
 
-    protected function buildVmess($uuid, $server) 
+    protected function buildVmess($uuid, $server)
     {
         $array = [];
         $array['tag'] = $server['name'];
@@ -289,7 +289,7 @@ class SingBox
             ]
         ];
 
-        if ($server['version'] == 1) {
+        if (is_null($server['version']) || $server['version'] == 1) {
             $array['auth_str'] = $password;
             $array['tag'] = $server['name'];
             $array['type'] = 'hysteria';
