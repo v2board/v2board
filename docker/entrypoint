@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+set -e
+
+composer install -vvv -o --working-dir="$WORKDIR"
+
+php-fpm

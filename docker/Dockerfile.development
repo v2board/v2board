@@ -1,0 +1,60 @@
+FROM php:8.2-fpm-alpine
+LABEL MAINTAINER="Vagner Cardoso <vagnercardosoweb@gmail.com>"
+
+# Environments
+ENV TZ=UTC
+ENV WORKDIR=/var/www
+
+# Set timezone
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+# Updates and installs system dependencies
+RUN apk add --update --no-cache \
+    git \
+    bash \
+    curl \
+    zip \
+    unzip \
+    vim \
+    tzdata \
+    libxml2-dev \
+    icu-dev \
+    oniguruma-dev \
+    linux-headers \
+    supervisor \
+    $PHPIZE_DEPS && \
+    rm -rf /var/cache/apk/*
+
+# Configure php dependencies and install
+RUN docker-php-ext-configure pcntl --enable-pcntl
+RUN docker-php-ext-install fileinfo bcmath mbstring pdo_mysql intl pcntl sockets
+
+# Install lib from pecl
+RUN pecl channel-update pecl.php.net \
+    && pecl install -o -f xdebug \
+    && pecl install -o -f redis \
+    && docker-php-ext-enable xdebug redis \
+    && rm -rf /tmp/pear
+
+# Install composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Copy php settings
+COPY ./php-ini ${PHP_INI_DIR}/conf.d
+
+# Copy supervisor
+COPY ./supervisord.conf /etc/supervisord.conf
+
+# Workdir
+RUN mkdir -p ${WORKDIR}
+WORKDIR ${WORKDIR}
+
+# Expose port
+EXPOSE 9000
+
+# Copy entrypoint
+COPY entrypoint /usr/local/bin/entrypoint
+RUN chmod +x /usr/local/bin/entrypoint
+
+# Run supervisor
+CMD ["supervisord", "-c", "/etc/supervisord.conf"]

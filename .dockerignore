@@ -1,0 +1,8 @@
+vendor/
+.github/
+docker/
+pm2.yaml
+init.sh
+update.sh
+update_dev.sh
+.env

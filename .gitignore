@@ -17,5 +17,6 @@ yarn-error.log
 composer.phar
 composer.lock
 yarn.lock
-docker-compose.yml
 .DS_Store
+/**/docker/redis-data/*
+/**/docker/mysql-data/*

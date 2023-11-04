@@ -1,0 +1,87 @@
+version: "3.7"
+
+networks:
+  v2board.network:
+    driver: bridge
+
+services:
+  php:
+    build:
+      context: ./docker
+      dockerfile: Dockerfile.development
+    restart: unless-stopped
+    container_name: v2board.php
+    tty: true
+    depends_on:
+      - mysql
+      - redis
+    networks:
+      - v2board.network
+    ports:
+      - "9000:9000"
+    volumes:
+      - .:/var/www
+
+  nginx:
+    image: nginx:1.25-alpine
+    container_name: v2board.nginx
+    restart: unless-stopped
+    tty: true
+    depends_on:
+      - php
+    ports:
+      - "80:80"
+      - "433:433"
+    volumes:
+      - ./docker/nginx.conf:/etc/nginx/conf.d/default.conf
+      - .:/var/www
+    networks:
+      - v2board.network
+
+  mysql:
+    image: mysql:5
+    restart: unless-stopped
+    container_name: v2board.mysql
+    tty: true
+    networks:
+      - v2board.network
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./docker/mysql.cnf:/etc/mysql/conf.d/custom.cnf
+      - ./docker/mysql-data:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE:-board}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-board}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-board}
+      MYSQL_USER: ${DB_USERNAME:-board}
+
+  phpmyadmin:
+    image: library/phpmyadmin
+    container_name: v2board.phpmyadmin
+    tty: true
+    networks:
+      - v2board.network
+    depends_on:
+      - mysql
+    environment:
+      PMA_HOSTS: mysql
+      PMA_ARBITRARY: 1
+      PMA_PORT: 3306
+    ports:
+      - '8080:80'
+
+  redis:
+    image: bitnami/redis:latest
+    restart: unless-stopped
+    container_name: v2board.redis
+    tty: true
+    volumes:
+      - ./docker/redis-data:/bitnami/redis/data
+    networks:
+      - v2board.network
+    environment:
+      ALLOW_EMPTY_PASSWORD: ${REDIS_ALLOW_EMPTY_PASSWORD:-no}
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-redis}
+    ports:
+      - "6379:6379"
