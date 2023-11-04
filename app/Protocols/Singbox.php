@@ -130,7 +130,7 @@ class SingBox
         $array['server_port'] = $server['port'];
         $array['uuid'] = $uuid;
         $array['security'] = 'auto';
-        $array['alterId'] = 0;
+        $array['alter_id'] = 0;
         $array['transport']= [];
 
         if ($server['tls']) {
