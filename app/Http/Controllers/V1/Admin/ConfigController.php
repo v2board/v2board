@@ -92,6 +92,7 @@ class ConfigController extends Controller
                 'app_description' => config('v2board.app_description', 'V2Board is best!'),
                 'app_url' => config('v2board.app_url'),
                 'subscribe_url' => config('v2board.subscribe_url'),
+                'subscribe_path' => config('v2board.subscribe_path'),
                 'try_out_plan_id' => (int)config('v2board.try_out_plan_id', 0),
                 'try_out_hour' => (int)config('v2board.try_out_hour', 1),
                 'tos_url' => config('v2board.tos_url'),

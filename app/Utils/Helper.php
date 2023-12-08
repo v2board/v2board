@@ -108,8 +108,10 @@ class Helper
         }
     }
 
-    public static function getSubscribeUrl($path)
+    public static function getSubscribeUrl($token)
     {
+        $path = config('v2board.subscribe_path', '/client/subscribe');
+        $path = "/api/v1{$path}?token={$token}";
         $subscribeUrls = explode(',', config('v2board.subscribe_url'));
         $subscribeUrl = $subscribeUrls[rand(0, count($subscribeUrls) - 1)];
         if ($subscribeUrl) return $subscribeUrl . $path;

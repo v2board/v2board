@@ -74,7 +74,7 @@ class UserController extends Controller
                     $res[$i]['plan_name'] = $plan[$k]['name'];
                 }
             }
-            $res[$i]['subscribe_url'] = Helper::getSubscribeUrl('/api/v1/client/subscribe?token=' . $res[$i]['token']);
+            $res[$i]['subscribe_url'] = Helper::getSubscribeUrl($res[$i]['token']);
         }
         return response([
             'data' => $res,
@@ -165,7 +165,7 @@ class UserController extends Controller
             $transferEnable = $user['transfer_enable'] ? $user['transfer_enable'] / 1073741824 : 0;
             $notUseFlow = (($user['transfer_enable'] - ($user['u'] + $user['d'])) / 1073741824) ?? 0;
             $planName = $user['plan_name'] ?? '无订阅';
-            $subscribeUrl = Helper::getSubscribeUrl('/api/v1/client/subscribe?token=' . $user['token']);
+            $subscribeUrl = Helper::getSubscribeUrl($user['token']);
             $data .= "{$user['email']},{$balance},{$commissionBalance},{$transferEnable},{$notUseFlow},{$expireDate},{$planName},{$subscribeUrl}\r\n";
         }
         echo "\xEF\xBB\xBF" . $data;
@@ -240,7 +240,7 @@ class UserController extends Controller
             $expireDate = $user['expired_at'] === NULL ? '长期有效' : date('Y-m-d H:i:s', $user['expired_at']);
             $createDate = date('Y-m-d H:i:s', $user['created_at']);
             $password = $request->input('password') ?? $user['email'];
-            $subscribeUrl = Helper::getSubscribeUrl('/api/v1/client/subscribe?token=' . $user['token']);
+            $subscribeUrl = Helper::getSubscribeUrl($user['token']);
             $data .= "{$user['email']},{$password},{$expireDate},{$user['uuid']},{$createDate},{$subscribeUrl}\r\n";
         }
         echo $data;
