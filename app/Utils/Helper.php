@@ -110,9 +110,10 @@ class Helper
 
     public static function getSubscribeUrl($token)
     {
-        $path = config('v2board.subscribe_path', '/client/subscribe');
+        $c = new \App\Services\ConfigService();
+        $path = $c->get('site.subscribe_path');
         $path = "/api/v1{$path}?token={$token}";
-        $subscribeUrls = explode(',', config('v2board.subscribe_url'));
+        $subscribeUrls = explode(',', config('v2board.subscribe_url', '/client/subscribe'));
         $subscribeUrl = $subscribeUrls[rand(0, count($subscribeUrls) - 1)];
         if ($subscribeUrl) return $subscribeUrl . $path;
         return url($path);
