@@ -20,7 +20,7 @@ class ClientRoute
             $router->get('/app/getVersion', 'V1\\Client\\AppController@getVersion');
         });
         if (config('v2board.subscribe_path')) {
-            \Route::get(config('v2board.subscribe_path'), 'V1\\Client\\ClientController@subscribe');
+            \Route::get(config('v2board.subscribe_path'), 'V1\\Client\\ClientController@subscribe')->middleware('client');
         }
     }
 }
