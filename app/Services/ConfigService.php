@@ -68,7 +68,9 @@ class ConfigService {
                 'email_username' => config('v2board.email_username'),
                 'email_password' => config('v2board.email_password'),
                 'email_encryption' => config('v2board.email_encryption'),
-                'email_from_address' => config('v2board.email_from_address')
+                'email_from_address' => config('v2board.email_from_address'),
+                'email_postal_host' => config('v2board.email_postal_host'),
+                'email_postal_key' => config('v2board.email_postal_key'),
             ],
             'telegram' => [
                 'telegram_bot_enable' => config('v2board.telegram_bot_enable', 0),

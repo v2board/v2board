@@ -22,6 +22,7 @@
         "laravel/tinker": "^2.5",
         "linfo/linfo": "^4.0",
         "php-curl-class/php-curl-class": "^8.6",
+        "postal/postal": "^2.0",
         "stripe/stripe-php": "^7.36.1",
         "symfony/yaml": "^4.3",
         "paragonie/sodium_compat": "^1.20"
