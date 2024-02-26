@@ -96,6 +96,9 @@ class ConfigService {
                 'register_limit_by_ip_enable' => (int)config('v2board.register_limit_by_ip_enable', 0),
                 'register_limit_count' => config('v2board.register_limit_count', 3),
                 'register_limit_expire' => config('v2board.register_limit_expire', 60),
+                'email_limit_by_ip_enable' => (int)config('v2board.email_limit_by_ip_enable', 1),
+                'email_limit_count' => config('v2board.email_limit_count', 3),
+                'email_limit_expire' => config('v2board.email_limit_expire', 30),
                 'password_limit_enable' => (int)config('v2board.password_limit_enable', 1),
                 'password_limit_count' => config('v2board.password_limit_count', 5),
                 'password_limit_expire' => config('v2board.password_limit_expire', 60)
