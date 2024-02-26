@@ -26,6 +26,15 @@ class CommController extends Controller
 
     public function sendEmailVerify(CommSendEmailVerify $request)
     {
+        if ((int)config('v2board.email_limit_by_ip_enable', 1)) {
+            $emailCountByIP = Cache::get(CacheKey::get('EMAIL_IP_RATE_LIMIT', $request->ip())) ?? 0;
+            if ((int)$emailCountByIP >= (int)config('v2board.email_limit_count', 3)) {
+                abort(500, __('Requesting emails too frequently, please try again after :minute minute', [
+                    'minute' => config('v2board.email_limit_expire', 30)
+                ]));
+            }
+        }
+
         if ((int)config('v2board.recaptcha_enable', 0)) {
             $recaptcha = new ReCaptcha(config('v2board.recaptcha_key'));
             $recaptchaResp = $recaptcha->verify($request->input('recaptcha_data'));
@@ -50,7 +59,13 @@ class CommController extends Controller
                 'url' => config('v2board.app_url')
             ]
         ]);
-
+        if ((int)config('v2board.email_limit_by_ip_enable', 1)) {
+            Cache::put(
+                CacheKey::get('EMAIL_IP_RATE_LIMIT', $request->ip()),
+                (int)$emailCountByIP + 1,
+                (int)config('v2board.email_limit_expire', 30) * 60
+            );
+        }
         Cache::put(CacheKey::get('EMAIL_VERIFY_CODE', $email), $code, 300);
         Cache::put(CacheKey::get('LAST_SEND_EMAIL_VERIFY_TIMESTAMP', $email), time(), 60);
         return response([
