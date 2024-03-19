@@ -1,0 +1,22 @@
+![NH5PZP@CP%8Y3GCRU5C WZG](https://github.com/v2board/v2board/assets/33739071/34730903-2636-486f-a3bc-2b5d23a453e2)
+
+1.Warning:is_dir0:open_basedir restriction in effect.File(/sys)is not within the allowed path(s):(/www/wwwroot/v../:/tmp/)in /www/wwwroot/
+p/vendor/linfo/linfo/src/Linfo/OS/Linux.php on line 65
+2.Fatal error:Uncaught RuntimeException:A facade root has not been set.in 
+
+Warning:is_dir0:open_basedir restriction in effect.File(/sys)is not within the allowed path(s):(/www/wwwroot/v../:/tmp/)in /www/wwwroot/
+p/vendor/linfo/linfo/src/Linfo/OS/Linux.php on line 65
+Fatal error:Uncaught RuntimeException:A facade root has not been set.in /www/wwwroot/../vendor/laravel/framework/src/llluminate/Support/Facades/Facade.php:258 Stack trace:#0
+/www/wwwroot/
+vendor/laravel/framework/src/llluminate/Foundation/Exceptions/RegisterErrorViewPaths.php(18):Illuminate\Support\Facades\Facade::callStatic()#1
+/www/wwwroot/
+/vendor/laravel/framework/src/llluminate/Foundation/Exceptions/Handler.php(598):Illuminate\Foundation\Exceptions\RegisterErrorViewPaths->invoke()#2
+/www/wwwroot/..
+/vendor/laravel/framework/src/llluminate/Foundation/Exceptions/Handler.php(579):Illuminate\Foundation\Exceptions\Handler->registerErrorViewPaths(#3
+/www/wwwroot
+L
+/vendor/laravel/framework/src/llluminate/Foundation/Exceptions/Handler.php(490):Illuminate\Foundation\Exceptions\Handler->renderHttpException(#4
+/www/wwwroot/w
+:/vendor/laravel/framework/src/llluminate/Foundation/Exceptions/Handler.php(356):Illuminate\Foundation\Exceptions\Handl in
+/www/wwwroot/w
+'vendor/laravel/framework/src/llluminate/Support/Facades/Facade.php on line 258
